@@ -1,13 +1,13 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import importPlugin from 'eslint-plugin-import'
-import tseslint from 'typescript-eslint'
-import prettierPlugin from 'eslint-plugin-prettier'
-import eslintConfigPrettier from 'eslint-config-prettier/flat'
-import { defineConfig, globalIgnores } from 'eslint/config'
+import js from '@eslint/js';
+import globals from 'globals';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import importPlugin from 'eslint-plugin-import';
+import tseslint from 'typescript-eslint';
+import prettierPlugin from 'eslint-plugin-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
+import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -27,7 +27,7 @@ export default defineConfig([
       globals: globals.browser,
     },
     settings: {
-      react: { version: 'detect'},
+      react: { version: 'detect' },
       'import/resolver': {
         typescript: {
           project: './tsconfig.json',
@@ -52,7 +52,6 @@ export default defineConfig([
             { pattern: './**/*.{css,scss,sass}', group: 'index', position: 'after' },
             { pattern: '*.{css,scss,sass}', group: 'index', position: 'after' },
           ],
-
           pathGroupsExcludedImportTypes: ['react'],
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
@@ -61,4 +60,4 @@ export default defineConfig([
     },
   },
   eslintConfigPrettier,
-])
+]);
