@@ -12,4 +12,12 @@ export default defineConfig({
     }),
     svgr({ include: '**/*.svg' }),
   ],
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
+  // server: { 추후 백엔드 설정에 따라 변경
+  //   port: 3000,
+  // },
 });
