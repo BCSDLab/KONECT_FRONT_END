@@ -1,6 +1,35 @@
-import { createGlobalStyle } from 'styled-components';
+@import 'tailwindcss';
 
-const GlobalStyle = createGlobalStyle`
+@import './styles/font.css';
+
+:root {
+  --primary-black: #021730;
+  --primary-white: #ffffff;
+
+  --sat: env(safe-area-inset-top);
+  --sar: env(safe-area-inset-right);
+  --sab: env(safe-area-inset-bottom);
+  --sal: env(safe-area-inset-left);
+
+  --font-suit:
+    'SUIT', Roboto, system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    sans-serif;
+}
+
+@layer base {
+  body {
+    position: relative;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: var(--font-suit);
+  }
+
+  svg {
+    pointer-events: none;
+  }
+
   html,
   body,
   div,
@@ -108,6 +137,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    margin: 0;
     line-height: 1;
   }
 
@@ -146,6 +176,8 @@ const GlobalStyle = createGlobalStyle`
   a {
     text-decoration: none;
   }
-`;
 
-export default GlobalStyle;
+  html {
+    font-family: var(--font-suit);
+  }
+}
