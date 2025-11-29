@@ -13,7 +13,7 @@ function useDebouncedCallback<F extends (...args: unknown[]) => ReturnType<F>>(
   callback: F,
   debounceTime: number = DEBOUNCE_DEFAULT_TIME
 ) {
-  const timer = useRef<NodeJS.Timeout | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const callbackRef = useRef(callback);
 
   useIsomorphicLayoutEffect(() => {
