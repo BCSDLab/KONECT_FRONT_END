@@ -17,4 +17,4 @@ jobs:
         run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
       - name: Run deploy.sh on EC2
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "bash /home/ubuntu/deploy/web/deploy.sh"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "bash  /home/user/Desktop/KONECT_FRONT_END/build.sh"
