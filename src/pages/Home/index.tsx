@@ -11,7 +11,7 @@ function Home() {
   const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
 
   return (
-    <div className="flex flex-1 flex-col gap-3 overflow-y-auto p-3 pb-15">
+    <div className="flex flex-col gap-3 p-3 pb-25">
       <div className="flex flex-col gap-2">
         <div className="text-sm leading-4 font-semibold">내 동아리</div>
         <div className="flex flex-col gap-2">
@@ -27,7 +27,7 @@ function Home() {
           <div className="mb-2 text-sm leading-4 font-semibold">나에게 맞는 동아리를 찾아보세요</div>
           <div className="text-xs leading-3.5">42개의 동아리가 기다리고 있어요</div>
         </div>
-        <Link to="/clubs" className="w-full rounded-sm bg-[#323532] py-3 text-center text-xs font-medium text-white">
+        <Link to="/clubs" className="bg-primary w-full rounded-sm py-3 text-center text-xs font-medium text-white">
           동아리 둘러보기
         </Link>
       </Card>
