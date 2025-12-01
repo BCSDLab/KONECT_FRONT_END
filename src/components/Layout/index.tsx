@@ -1,13 +1,14 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
+import BottomNav from './BottomNav';
 import Header from './Header';
 
-function AppLayout() {
+export function AppLayout() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="flex flex-1 pt-11">
+        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11">
           <Outlet />
         </div>
       </Suspense>
@@ -15,4 +16,16 @@ function AppLayout() {
   );
 }
 
-export default AppLayout;
+export function HomeLayout() {
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <Suspense>
+        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11">
+          <Outlet />
+        </div>
+      </Suspense>
+      <BottomNav />
+    </div>
+  );
+}

@@ -57,7 +57,7 @@ function ClubSearch() {
   }, [submittedQuery, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
-    <div className="flex flex-1 flex-col overflow-y-auto bg-[#fcfcfc]">
+    <>
       <SearchBar value={keyword} onChange={setKeyword} onSubmit={handleSubmit} />
 
       <div className="mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
@@ -85,7 +85,7 @@ function ClubSearch() {
           </>
         )}
       </div>
-    </div>
+    </>
   );
 }
 

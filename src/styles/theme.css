@@ -1,6 +1,10 @@
 @theme {
   --breakpoint-xs: 375px;
 
+  --color-background: #fcfcfc;
+
+  --color-primary: #323532;
+
   --color-indigo-0: #ffffff;
   --color-indigo-5: #f4f6f9;
   --color-indigo-25: #e8ebef;
