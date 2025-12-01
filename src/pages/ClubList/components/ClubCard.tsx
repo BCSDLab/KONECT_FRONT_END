@@ -6,7 +6,7 @@ interface ClubCardProps {
 
 function ClubCard({ club }: ClubCardProps) {
   return (
-    <div className="flex w-full items-start gap-3 rounded-lg bg-white p-3 shadow-[0_2px_2px_0_rgba(0,0,0,0.04)]">
+    <div className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3">
       <img src={club.imageUrl} className="border-indigo-5 h-13 w-13 rounded-sm border" alt={club.name} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1">
