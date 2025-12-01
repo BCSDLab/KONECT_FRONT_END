@@ -1,0 +1,18 @@
+@theme {
+  --breakpoint-xs: 375px;
+
+  --color-indigo-0: #ffffff;
+  --color-indigo-5: #f4f6f9;
+  --color-indigo-25: #e8ebef;
+  --color-indigo-50: #d6dae0;
+  --color-indigo-75: #c3cad2;
+  --color-indigo-100: #99a5b4;
+  --color-indigo-200: #738293;
+  --color-indigo-300: #5a6b7f;
+  --color-indigo-400: #3a4c61;
+  --color-indigo-500: #25374c;
+  --color-indigo-600: #12243a;
+  --color-indigo-700: #021730;
+  --color-indigo-800: #031224;
+  --color-indigo-900: #020b16;
+}

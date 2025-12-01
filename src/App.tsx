@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AppLayout from './components/Layout';
 import ClubList from './pages/ClubList';
+import ClubSearch from './pages/ClubSearch';
 
 function App() {
   return (
@@ -8,7 +9,10 @@ function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<div>Home</div>} />
-          <Route path="/clubs" element={<ClubList />} />
+          <Route path="/clubs">
+            <Route index element={<ClubList />} />
+            <Route path="search" element={<ClubSearch />} />
+          </Route>
         </Route>
       </Routes>
     </BrowserRouter>

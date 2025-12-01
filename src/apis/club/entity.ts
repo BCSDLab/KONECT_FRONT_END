@@ -18,4 +18,5 @@ export interface ClubResponse {
 export interface ClubRequestParams {
   page: number;
   limit: number;
+  query?: string;
 }
