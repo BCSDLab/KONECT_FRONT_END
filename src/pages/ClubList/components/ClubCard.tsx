@@ -18,7 +18,7 @@ function ClubCard({ club }: ClubCardProps) {
           <div className="text-[11px] leading-3 text-indigo-300">{club.categoryName}</div>
         </div>
         <div className="mt-0.5 truncate text-[13px] leading-4 text-indigo-300">{club.description}</div>
-        <div className="mt-1 flex gap-2.5">
+        <div className="mt-1 flex gap-1">
           {club.tags.map((tag) => (
             <div
               key={tag}
