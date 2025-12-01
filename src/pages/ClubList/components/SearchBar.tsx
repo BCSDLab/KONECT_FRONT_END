@@ -1,4 +1,3 @@
-// src/pages/ClubList/components/SearchBar.tsx
 import { type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@/assets/svg/search.svg';

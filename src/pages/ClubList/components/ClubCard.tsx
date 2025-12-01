@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Club } from '@/apis/club/entity';
 
 interface ClubCardProps {
@@ -6,7 +7,10 @@ interface ClubCardProps {
 
 function ClubCard({ club }: ClubCardProps) {
   return (
-    <div className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3">
+    <Link
+      to={`/clubs/${club.id}`}
+      className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3"
+    >
       <img src={club.imageUrl} className="border-indigo-5 h-13 w-13 rounded-sm border" alt={club.name} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1">
@@ -25,7 +29,7 @@ function ClubCard({ club }: ClubCardProps) {
           ))}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
