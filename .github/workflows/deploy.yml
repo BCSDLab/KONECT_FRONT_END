@@ -41,4 +41,4 @@ jobs:
           rsync -avz --delete \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
             ./dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/home/user/Desktop/KONECT_FRONT_END/KONECT_FRONT_END/
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/home/user/Desktop/KONECT_FRONT_END/
