@@ -62,10 +62,10 @@ function ClubSearch() {
 
       <div className="mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
         {!submittedQuery ? (
-          <div className="py-6 text-center text-xs text-[#5a6b7f]">검색어를 입력해서 동아리를 검색해보세요.</div>
+          <div className="py-6 text-center text-xs text-indigo-300">검색어를 입력해서 동아리를 검색해보세요.</div>
         ) : (
           <>
-            <div className="text-[10px] leading-4 text-[#5a6b7f]">
+            <div className="text-[10px] leading-4 text-indigo-300">
               총 <span className="font-bold text-black">{totalCount}개</span>의 동아리
             </div>
 
@@ -75,7 +75,7 @@ function ClubSearch() {
               ))}
 
               {submittedQuery && !allClubs.length && (
-                <div className="py-8 text-center text-xs text-[#5a6b7f]">
+                <div className="py-8 text-center text-xs text-indigo-300">
                   {submittedQuery}에 해당하는 동아리가 없습니다.
                 </div>
               )}

@@ -14,10 +14,10 @@ function SearchBar({ isButton, value, onChange, onSubmit }: SearchBarProps) {
   const wrapperClass = 'fixed left-0 right-0 bg-white px-3 py-2 shadow-[0_2px_2px_0_rgba(0,0,0,0.04)] z-10';
 
   const content = (
-    <div className="flex items-center gap-2.5 rounded-lg bg-[#f4f6f9] px-3 py-2">
+    <div className="bg-indigo-5 flex items-center gap-2.5 rounded-lg px-3 py-2">
       <SearchIcon />
       <input
-        className="flex-1 bg-transparent text-sm font-medium outline-none placeholder:text-[#738293]"
+        className="flex-1 bg-transparent font-medium outline-none placeholder:text-indigo-200"
         placeholder="동아리 이름/태그로 검색"
         readOnly={isButton && !onChange}
         value={value}
