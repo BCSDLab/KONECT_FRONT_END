@@ -18,5 +18,6 @@ export interface ClubResponse {
 export interface ClubRequestParams {
   page: number;
   limit: number;
+  isRecruiting: boolean;
   query?: string;
 }
