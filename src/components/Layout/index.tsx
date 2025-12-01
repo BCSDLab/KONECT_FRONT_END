@@ -7,7 +7,7 @@ function AppLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="flex flex-1 pt-11">
+        <div className="flex flex-1 bg-[#fcfcfc] pt-11">
           <Outlet />
         </div>
       </Suspense>
