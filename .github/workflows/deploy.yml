@@ -1,8 +1,12 @@
-name: Deploy to EC2 on main push
+name: Deploy KONECT Frontend to Server
 
 on:
   push:
     branches: ['main']
+
+concurrency:
+  group: deploy-main
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -24,13 +28,17 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Create .env file
         run: |
-          echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" >> .env
+          cat << 'EOF' > .env
+          VITE_API_PATH=${{ secrets.VITE_API_PATH }}
+          EOF
 
       - name: Build project
+        env:
+          CI: true
         run: pnpm build
 
       - name: Setup SSH key
@@ -38,11 +46,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }} 2>/dev/null >> ~/.ssh/known_hosts
 
-      - name: Deploy dist to EC2
+      - name: Deploy dist to server
         run: |
-          rsync -avz --delete \
+          rsync -avz --delete-after \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
             ./dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/home/user/Desktop/KONECT_FRONT_END/
