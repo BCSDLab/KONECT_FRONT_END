@@ -27,10 +27,35 @@ export interface JoinClub {
   name: string;
   imageUrl: string;
   categoryName: string;
-  position: string;
+  position: '일반 회원' | '운영진' | '회장';
   isFeePaid: boolean;
 }
 
 export interface JoinClubResponse {
   joinedClubs: JoinClub[];
+}
+
+export interface ClubDetailResponse {
+  id: number;
+  name: string;
+  location: string;
+  description: string;
+  introduce: string;
+  imageUrl: string;
+  categoryName: string;
+  memberCount: number;
+  recruitment: Recruitment;
+  representatives: representatives[];
+}
+
+interface Recruitment {
+  status: 'BEFORE' | 'ONGOING' | 'CLOSED';
+  startDate?: string;
+  endDate?: string;
+}
+
+interface representatives {
+  name: string;
+  phone: string;
+  email: string;
 }
