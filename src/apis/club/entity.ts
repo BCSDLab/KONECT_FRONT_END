@@ -21,3 +21,16 @@ export interface ClubRequestParams {
   isRecruiting: boolean;
   query?: string;
 }
+
+export interface JoinClub {
+  id: number;
+  name: string;
+  imageUrl: string;
+  categoryName: string;
+  position: string;
+  isFeePaid: boolean;
+}
+
+export interface JoinClubResponse {
+  joinedClubs: JoinClub[];
+}
