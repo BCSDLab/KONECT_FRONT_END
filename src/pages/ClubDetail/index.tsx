@@ -31,7 +31,7 @@ function ClubDetail() {
 
   return (
     <>
-      <div className="fixed bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.04)]">
+      <div className="fixed right-0 left-0 bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.04)]">
         <div className="flex items-start gap-4 p-4">
           <img
             className="border-indigo-5 h-16 w-16 rounded-sm border"
