@@ -1,0 +1,48 @@
+export const licenses = [
+  // Dependencies
+  { name: '@tailwindcss/vite', url: 'https://github.com/tailwindlabs/tailwindcss', license: 'MIT' },
+  { name: '@tanstack/react-query', url: 'https://github.com/TanStack/query', license: 'MIT' },
+  { name: 'clsx', url: 'https://github.com/lukeed/clsx', license: 'MIT' },
+  {
+    name: 'prettier-plugin-tailwindcss',
+    url: 'https://github.com/tailwindlabs/prettier-plugin-tailwindcss',
+    license: 'MIT',
+  },
+  { name: 'react', url: 'https://github.com/facebook/react', license: 'MIT' },
+  { name: 'react-dom', url: 'https://github.com/facebook/react', license: 'MIT' },
+  { name: 'react-router-dom', url: 'https://github.com/remix-run/react-router', license: 'MIT' },
+  { name: 'tailwind-merge', url: 'https://github.com/dcastil/tailwind-merge', license: 'MIT' },
+  { name: 'tailwindcss', url: 'https://github.com/tailwindlabs/tailwindcss', license: 'MIT' },
+
+  // Dev Dependencies
+  { name: '@eslint/js', url: 'https://github.com/eslint/eslint', license: 'MIT' },
+  { name: '@types/node', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
+  { name: '@types/react', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
+  { name: '@types/react-dom', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
+  { name: '@vite-pwa/assets-generator', url: 'https://github.com/vite-pwa/assets-generator', license: 'MIT' },
+  { name: '@vitejs/plugin-react', url: 'https://github.com/vitejs/vite-plugin-react', license: 'MIT' },
+  { name: 'babel-plugin-react-compiler', url: 'https://github.com/facebook/react', license: 'MIT' },
+  { name: 'eslint', url: 'https://github.com/eslint/eslint', license: 'MIT' },
+  { name: 'eslint-config-prettier', url: 'https://github.com/prettier/eslint-config-prettier', license: 'MIT' },
+  {
+    name: 'eslint-import-resolver-typescript',
+    url: 'https://github.com/import-js/eslint-import-resolver-typescript',
+    license: 'ISC',
+  },
+  { name: 'eslint-plugin-import', url: 'https://github.com/import-js/eslint-plugin-import', license: 'MIT' },
+  { name: 'eslint-plugin-prettier', url: 'https://github.com/prettier/eslint-plugin-prettier', license: 'MIT' },
+  { name: 'eslint-plugin-react', url: 'https://github.com/jsx-eslint/eslint-plugin-react', license: 'MIT' },
+  { name: 'eslint-plugin-react-hooks', url: 'https://github.com/facebook/react', license: 'MIT' },
+  {
+    name: 'eslint-plugin-react-refresh',
+    url: 'https://github.com/ArnaudBarre/eslint-plugin-react-refresh',
+    license: 'MIT',
+  },
+  { name: 'globals', url: 'https://github.com/sindresorhus/globals', license: 'MIT' },
+  { name: 'prettier', url: 'https://github.com/prettier/prettier', license: 'MIT' },
+  { name: 'typescript', url: 'https://github.com/microsoft/TypeScript', license: 'Apache-2.0' },
+  { name: 'typescript-eslint', url: 'https://github.com/typescript-eslint/typescript-eslint', license: 'MIT' },
+  { name: 'vite', url: 'https://github.com/vitejs/vite', license: 'MIT' },
+  { name: 'vite-plugin-pwa', url: 'https://github.com/vite-pwa/vite-plugin-pwa', license: 'MIT' },
+  { name: 'vite-plugin-svgr', url: 'https://github.com/pd4d10/vite-plugin-svgr', license: 'MIT' },
+];
