@@ -8,9 +8,11 @@ function Header() {
   const { pathname } = useLocation();
 
   const title = ROUTE_TITLES.find((route) => route.match(pathname))?.title ?? '';
+  const infoHeaderList = ['/', '/council'];
+
   return (
     <>
-      {pathname === '/' ? (
+      {infoHeaderList.includes(pathname) ? (
         <header className="fixed top-0 right-0 left-0 flex items-center bg-white px-3 py-2 shadow-[0_2px_2px_0_rgba(0,0,0,0.02)]">
           <div className="flex flex-1 flex-col gap-1">
             <div className="text-sm leading-4 font-semibold text-indigo-700">한국기술교육대학교</div>
@@ -19,7 +21,7 @@ function Header() {
           <BellIcon />
         </header>
       ) : (
-        <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
+        <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2 shadow-[0_1px_1px_0_rgba(0,0,0,0.04)]">
           <button
             type="button"
             aria-label="뒤로가기"
