@@ -4,6 +4,7 @@ import ClubDetail from './pages/ClubDetail';
 import ClubList from './pages/ClubList';
 import ClubSearch from './pages/ClubSearch';
 import CouncilDetail from './pages/CouncilDetail';
+import CouncilNotice from './pages/CouncilNotice';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import FinishStep from './pages/SignUp/FinishStep';
@@ -30,8 +31,10 @@ function App() {
         </Route>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
-          <Route path="/council" element={<CouncilDetail />} />
-          <Route path="/council/notice/:noticeId" element={<CouncilDetail />} />
+          <Route path="/council">
+            <Route index element={<CouncilDetail />} />
+            <Route path="notice/:noticeId" element={<CouncilNotice />} />
+          </Route>
         </Route>
         <Route element={<AppLayout />}>
           <Route path="/clubs">

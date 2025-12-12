@@ -27,3 +27,11 @@ export interface CouncilResponse {
   instagramUrl: string;
   imageUrl: string;
 }
+
+export interface CouncilNoticeDetail {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}

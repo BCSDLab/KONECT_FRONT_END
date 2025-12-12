@@ -34,7 +34,7 @@ export function HomeLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11">
+        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11 pb-19">
           <Outlet />
         </div>
       </Suspense>

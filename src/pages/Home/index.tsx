@@ -12,7 +12,7 @@ function Home() {
   const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
 
   return (
-    <div className="flex flex-col gap-3 p-3 pb-25">
+    <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
         {joinedClubsData?.joinedClubs.length === 0 ? (
           <Card>
