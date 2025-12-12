@@ -1,26 +1,32 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSignupStore } from '@/stores/signupStore';
+import StepLayout from './components/StepLayout';
 
 function StudentIdStep() {
   const navigate = useNavigate();
+  const update = useSignupStore((state) => state.update);
+
+  const [studentId, setStudentId] = useState('');
+
+  const handleNext = () => {
+    update({ studentId });
+    navigate('/signup/profile/name');
+  };
 
   return (
-    <div className="flex flex-1 flex-col justify-between px-8 py-5">
-      <div className="flex flex-col gap-2">
-        <div className="text-[28px] font-extrabold">학번을 입력해주세요</div>
-        <div className="text-sm font-semibold text-indigo-300">원활한 서비스 이용을 위해 학번을 입력해주세요</div>
-
-        <div className="mt-6 flex w-full flex-col gap-2">
-          <input type="text" className="border-b-2 border-indigo-400 py-4 text-lg" />
-        </div>
-      </div>
-
-      <button
-        onClick={() => navigate('/signup/profile/name')}
-        className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
-      >
-        다음
-      </button>
-    </div>
+    <StepLayout
+      title="학번을 입력해주세요"
+      description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
+      onNext={handleNext}
+    >
+      <input
+        type="text"
+        value={studentId}
+        onChange={(e) => setStudentId(e.target.value)}
+        className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
+      />
+    </StepLayout>
   );
 }
 

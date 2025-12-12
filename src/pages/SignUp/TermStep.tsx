@@ -3,21 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import BigCheckIcon from '@/assets/svg/big-check.svg';
 import CheckIcon from '@/assets/svg/check.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import { useSignupStore } from '@/stores/signupStore';
 import { AgreementAllRow, AgreementRow } from './components/AgreementArrow';
 
 function TermStep() {
   const navigate = useNavigate();
+  const update = useSignupStore((state) => state.update);
 
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [marketing, setMarketing] = useState(false);
 
   const allChecked = useMemo(() => terms && privacy && marketing, [terms, privacy, marketing]);
+  const requiredChecked = terms && privacy;
 
   const toggleAll = (next: boolean) => {
     setTerms(next);
     setPrivacy(next);
     setMarketing(next);
+  };
+
+  const handleNext = () => {
+    update({ marketing });
+    navigate('profile/school');
   };
 
   return (
@@ -64,8 +72,8 @@ function TermStep() {
 
       <button
         className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
-        disabled={!allChecked}
-        onClick={() => navigate('profile/school')}
+        disabled={!requiredChecked}
+        onClick={handleNext}
       >
         다음
       </button>

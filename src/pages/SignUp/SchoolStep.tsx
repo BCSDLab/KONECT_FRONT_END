@@ -1,44 +1,55 @@
 import { useNavigate } from 'react-router-dom';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import Card from '@/components/common/Card';
+import { useSignupStore } from '@/stores/signupStore';
+import useBooleanState from '@/utils/hooks/useBooleanState';
+import StepLayout from './components/StepLayout';
+
+const schools = ['한국기술교육대학교', '단국대학교 (천안)', '충북대학교', '충남대학교'];
+
+function SchoolCard({ label, onClick }: { label: string; onClick: () => void }) {
+  return (
+    <Card onClick={onClick} className="border-indigo-75 flex w-full flex-row items-center justify-between">
+      <div>{label}</div>
+      <RightArrowIcon />
+    </Card>
+  );
+}
 
 function SchoolStep() {
   const navigate = useNavigate();
+  const update = useSignupStore((state) => state.update);
+  const self = useBooleanState(false);
+
+  const handleSchoolSelect = (school: string) => () => {
+    update({ school });
+    navigate('/signup/profile/student-id');
+  };
+
+  if (self.value) {
+    return (
+      <StepLayout
+        title="학교를 입력해주세요"
+        description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
+        onNext={() => navigate('/signup/profile/student-id')}
+      >
+        <input
+          type="text"
+          className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
+        />
+      </StepLayout>
+    );
+  }
+
   return (
-    <div className="flex flex-1 flex-col justify-between px-8 py-5">
-      <div className="flex flex-col gap-2">
-        <div className="text-[28px] font-extrabold">학교를 선택해주세요</div>
-        <div className="font-semibold text-indigo-300">소속 학교를 알려주세요</div>
-
-        <div className="mt-7 flex w-full flex-col gap-2">
-          <Card
-            onClick={() => navigate('/signup/profile/student-id')}
-            className="border-indigo-75 flex flex-row items-center justify-between"
-          >
-            <div>한국기술교육대학교</div>
-            <RightArrowIcon />
-          </Card>
-          <Card className="border-indigo-75 flex flex-row items-center justify-between">
-            <div>한국기술교육대학교</div>
-            <RightArrowIcon />
-          </Card>
-          <Card className="border-indigo-75 flex flex-row items-center justify-between">
-            <div>한국기술교육대학교</div>
-            <RightArrowIcon />
-          </Card>
-          <Card className="border-indigo-75 flex flex-row items-center justify-between">
-            <div>한국기술교육대학교</div>
-            <RightArrowIcon />
-          </Card>
-          <Card className="border-indigo-75 flex flex-row items-center justify-between">
-            <div>한국기술교육대학교</div>
-            <RightArrowIcon />
-          </Card>
-        </div>
+    <StepLayout title="학교를 선택해주세요" description="동아리를 찾기 위해서 학교를 선택해주세요">
+      <div className="mt-7 flex flex-col gap-2">
+        {schools.map((school) => (
+          <SchoolCard key={school} label={school} onClick={handleSchoolSelect(school)} />
+        ))}
+        <SchoolCard label="직접 입력하기" onClick={self.setTrue} />
       </div>
-
-      {/* <button className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold">다음</button> */}
-    </div>
+    </StepLayout>
   );
 }
 
