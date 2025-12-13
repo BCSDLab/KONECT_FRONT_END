@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubIntro from './components/ClubIntro';
 import ClubMember from './components/ClubMember';
-import { useGetClubDetail } from './hooks/useGetJoinedClubs';
+import { useGetClubDetail } from './hooks/useGetClubDetail';
 
 type TabType = 'intro' | 'members';
 

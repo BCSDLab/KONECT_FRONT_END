@@ -45,7 +45,7 @@ export interface ClubDetailResponse {
   categoryName: string;
   memberCount: number;
   recruitment: Recruitment;
-  representatives: representatives[];
+  representatives: Representatives[];
 }
 
 interface Recruitment {
@@ -54,7 +54,7 @@ interface Recruitment {
   endDate?: string;
 }
 
-interface representatives {
+interface Representatives {
   name: string;
   phone: string;
   email: string;

@@ -2,11 +2,11 @@ import { Link } from 'react-router-dom';
 import type { JoinClub } from '@/apis/club/entity';
 import WarningIcon from '@/assets/svg/warning.svg';
 
-interface ClubCardProps {
+interface SimpleClubCardProps {
   club: JoinClub;
 }
 
-function SimpleClubCard({ club }: ClubCardProps) {
+function SimpleClubCard({ club }: SimpleClubCardProps) {
   return (
     <Link
       to={`/clubs/${club.id}`}

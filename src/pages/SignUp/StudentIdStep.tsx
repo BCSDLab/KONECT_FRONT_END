@@ -19,6 +19,7 @@ function StudentIdStep() {
       title="학번을 입력해주세요"
       description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
       onNext={handleNext}
+      nextDisabled={!studentId.trim()}
     >
       <input
         type="text"

@@ -34,20 +34,18 @@ function ClubMember() {
             <div className="mt-1 text-xs font-medium text-indigo-300">2022136039</div>
           </div>
         </Card>
-        <var>
-          <Card className="flex-row items-center gap-2">
-            <img className="h-10 w-10 rounded-full" src={clubImage} alt="Member Avatar" />
-            <div>
-              <div className="flex gap-1">
-                <div className="text-sm leading-4 font-medium text-indigo-700">김혜준</div>
-                <div className="text-indigo-0 flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5 text-[10px] leading-3 font-semibold">
-                  회장
-                </div>
+        <Card className="flex-row items-center gap-2">
+          <img className="h-10 w-10 rounded-full" src={clubImage} alt="Member Avatar" />
+          <div>
+            <div className="flex gap-1">
+              <div className="text-sm leading-4 font-medium text-indigo-700">김혜준</div>
+              <div className="text-indigo-0 flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5 text-[10px] leading-3 font-semibold">
+                회장
               </div>
-              <div className="mt-1 text-xs font-medium text-indigo-300">2022136039</div>
             </div>
-          </Card>
-        </var>
+            <div className="mt-1 text-xs font-medium text-indigo-300">2022136039</div>
+          </div>
+        </Card>
         <Card className="flex-row items-center gap-2">
           <img className="h-10 w-10 rounded-full" src={clubImage} alt="Member Avatar" />
           <div>

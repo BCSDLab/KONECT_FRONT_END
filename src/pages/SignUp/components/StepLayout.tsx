@@ -2,11 +2,13 @@ function StepLayout({
   title,
   description,
   onNext,
+  nextDisabled = false,
   children,
 }: {
   title: string;
   description: string;
   onNext?: () => void;
+  nextDisabled?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -18,7 +20,11 @@ function StepLayout({
       </div>
 
       {onNext && (
-        <button onClick={onNext} className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold">
+        <button
+          onClick={onNext}
+          disabled={nextDisabled}
+          className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
+        >
           다음
         </button>
       )}
