@@ -5,8 +5,7 @@ import Card from '@/components/common/Card';
 import { useSignupStore } from '@/stores/signupStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import StepLayout from './components/StepLayout';
-
-const schools = ['한국기술교육대학교', '단국대학교 (천안)', '충북대학교', '충남대학교'];
+import { useGetUniversityList } from './hooks/useUniversity';
 
 function SchoolCard({ label, onClick }: { label: string; onClick: () => void }) {
   return (
@@ -19,9 +18,12 @@ function SchoolCard({ label, onClick }: { label: string; onClick: () => void }) 
 
 function SchoolStep() {
   const navigate = useNavigate();
-  const update = useSignupStore((state) => state.update);
+
   const self = useBooleanState(false);
   const [customSchool, setCustomSchool] = useState('');
+  const update = useSignupStore((state) => state.update);
+
+  const { data: universityList } = useGetUniversityList();
 
   const handleSchoolSelect = (school: string) => () => {
     update({ school });
@@ -54,8 +56,8 @@ function SchoolStep() {
   return (
     <StepLayout title="학교를 선택해주세요" description="동아리를 찾기 위해서 학교를 선택해주세요">
       <div className="mt-7 flex flex-col gap-2">
-        {schools.map((school) => (
-          <SchoolCard key={school} label={school} onClick={handleSchoolSelect(school)} />
+        {universityList?.universities.map((university) => (
+          <SchoolCard key={university.id} label={university.name} onClick={handleSchoolSelect(university.name)} />
         ))}
         <SchoolCard label="직접 입력하기" onClick={self.setTrue} />
       </div>
