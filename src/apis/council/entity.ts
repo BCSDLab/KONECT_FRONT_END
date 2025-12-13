@@ -16,3 +16,22 @@ export interface NoticeResponse {
   currentPage: number;
   councilNotices: Notice[];
 }
+
+export interface CouncilResponse {
+  id: number;
+  name: string;
+  introduce: string;
+  location: string;
+  personalColor: string;
+  operatingHour: string;
+  instagramUrl: string;
+  imageUrl: string;
+}
+
+export interface CouncilNoticeDetail {
+  id: number;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
