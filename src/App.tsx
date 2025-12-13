@@ -3,8 +3,15 @@ import { AppLayout, AuthLayout, HomeLayout } from './components/Layout';
 import ClubDetail from './pages/ClubDetail';
 import ClubList from './pages/ClubList';
 import ClubSearch from './pages/ClubSearch';
+import CouncilDetail from './pages/CouncilDetail';
+import CouncilNotice from './pages/CouncilNotice';
 import Home from './pages/Home';
+import LicensePage from './pages/legal/LicensePage';
+import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
+import TermsPage from './pages/legal/TermsPage';
 import Login from './pages/Login';
+import MyPage from './pages/MyPage';
+import Profile from './pages/Profile';
 import FinishStep from './pages/SignUp/FinishStep';
 import NameStep from './pages/SignUp/NameStep';
 import SchoolStep from './pages/SignUp/SchoolStep';
@@ -29,8 +36,19 @@ function App() {
         </Route>
         <Route element={<HomeLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/me" element={<MyPage />} />
+          <Route path="/council">
+            <Route index element={<CouncilDetail />} />
+            <Route path="notice/:noticeId" element={<CouncilNotice />} />
+          </Route>
         </Route>
         <Route element={<AppLayout />}>
+          <Route path="profile" element={<Profile />} />
+          <Route path="legal">
+            <Route path="oss" element={<LicensePage />} />
+            <Route path="terms" element={<TermsPage />} />
+            <Route path="privacy" element={<PrivacyPolicyPage />} />
+          </Route>
           <Route path="/clubs">
             <Route index element={<ClubList />} />
             <Route path="search" element={<ClubSearch />} />

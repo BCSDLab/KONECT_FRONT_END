@@ -8,7 +8,7 @@ export function AppLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-12">
+        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11">
           <Outlet />
         </div>
       </Suspense>
@@ -21,7 +21,7 @@ export function AuthLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="bg-indigo-0 flex flex-1 flex-col overflow-y-auto pt-12">
+        <div className="bg-indigo-0 flex flex-1 flex-col overflow-y-auto pt-11">
           <Outlet />
         </div>
       </Suspense>
@@ -34,7 +34,7 @@ export function HomeLayout() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <Suspense>
-        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-12">
+        <div className="bg-background flex flex-1 flex-col overflow-y-auto pt-11 pb-19">
           <Outlet />
         </div>
       </Suspense>
