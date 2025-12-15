@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BigCheckIcon from '@/assets/svg/big-check.svg';
 import CheckIcon from '@/assets/svg/check.svg';
@@ -8,13 +8,13 @@ import { AgreementAllRow, AgreementRow } from './components/AgreementArrow';
 
 function TermStep() {
   const navigate = useNavigate();
-  const update = useSignupStore((state) => state.update);
+  const { isTermsAgreement, isPrivacyAgreement, isMarketingAgreement, update } = useSignupStore();
 
-  const [terms, setTerms] = useState(false);
-  const [privacy, setPrivacy] = useState(false);
-  const [marketing, setMarketing] = useState(false);
+  const [terms, setTerms] = useState(isTermsAgreement);
+  const [privacy, setPrivacy] = useState(isPrivacyAgreement);
+  const [marketing, setMarketing] = useState(isMarketingAgreement);
 
-  const allChecked = useMemo(() => terms && privacy && marketing, [terms, privacy, marketing]);
+  const allChecked = terms && privacy && marketing;
   const requiredChecked = terms && privacy;
 
   const toggleAll = (next: boolean) => {
@@ -24,8 +24,12 @@ function TermStep() {
   };
 
   const handleNext = () => {
-    update({ marketing });
-    navigate('profile/school');
+    update({
+      isTermsAgreement: terms,
+      isPrivacyAgreement: privacy,
+      isMarketingAgreement: marketing,
+    });
+    navigate('university');
   };
 
   return (
