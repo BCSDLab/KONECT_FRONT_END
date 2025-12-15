@@ -14,9 +14,9 @@ import MyPage from './pages/MyPage';
 import Profile from './pages/Profile';
 import FinishStep from './pages/SignUp/FinishStep';
 import NameStep from './pages/SignUp/NameStep';
-import SchoolStep from './pages/SignUp/SchoolStep';
 import StudentIdStep from './pages/SignUp/StudentIdStep';
 import TermStep from './pages/SignUp/TermStep';
+import UniversityStep from './pages/SignUp/UniversityStep';
 
 function App() {
   return (
@@ -26,11 +26,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup">
             <Route index element={<TermStep />} />
-            <Route path="profile">
-              <Route path="school" element={<SchoolStep />} />
-              <Route path="student-id" element={<StudentIdStep />} />
-              <Route path="name" element={<NameStep />} />
-            </Route>
+            <Route path="university" element={<UniversityStep />} />
+            <Route path="student-id" element={<StudentIdStep />} />
+            <Route path="name" element={<NameStep />} />
             <Route path="finish" element={<FinishStep />} />
           </Route>
         </Route>

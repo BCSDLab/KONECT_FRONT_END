@@ -6,17 +6,18 @@ import { useSignupMutation } from './hooks/useSignup';
 
 function NameStep() {
   const navigate = useNavigate();
-  const { school, studentId, reset } = useSignupStore();
+  const { universityId, studentId, isMarketingAgreement, name: savedName, reset } = useSignupStore();
   const { mutate, isPending, isError } = useSignupMutation();
 
-  const [name, setName] = useState('');
+  const [name, setName] = useState(savedName ?? '');
 
   const handleNext = () => {
     mutate(
       {
         name,
-        school,
+        universityId,
         studentNumber: studentId,
+        isMarketingAgreement,
       },
       {
         onSuccess: () => {

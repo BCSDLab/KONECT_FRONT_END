@@ -5,13 +5,13 @@ import StepLayout from './components/StepLayout';
 
 function StudentIdStep() {
   const navigate = useNavigate();
-  const update = useSignupStore((state) => state.update);
+  const { studentId: savedStudentId, update } = useSignupStore();
 
-  const [studentId, setStudentId] = useState('');
+  const [studentId, setStudentId] = useState(savedStudentId ?? '');
 
   const handleNext = () => {
     update({ studentId });
-    navigate('/signup/profile/name');
+    navigate('/signup/name');
   };
 
   return (
