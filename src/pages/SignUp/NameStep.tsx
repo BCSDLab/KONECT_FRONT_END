@@ -6,12 +6,13 @@ import { useSignupMutation } from './hooks/useSignup';
 
 function NameStep() {
   const navigate = useNavigate();
-  const { universityId, studentId, isMarketingAgreement, name: savedName, reset } = useSignupStore();
+  const { universityId, studentId, isMarketingAgreement, name: savedName, reset, update } = useSignupStore();
   const { mutate, isPending, isError } = useSignupMutation();
 
   const [name, setName] = useState(savedName ?? '');
 
   const handleNext = () => {
+    update({ name });
     mutate(
       {
         name,

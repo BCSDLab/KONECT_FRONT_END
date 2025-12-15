@@ -6,7 +6,7 @@ import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
 import { useGetUniversityList } from './hooks/useUniversity';
 
-function SchoolCard({ label, onClick }: { label: string; onClick: () => void }) {
+function UniversityCard({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Card onClick={onClick} className="border-indigo-75 flex w-full flex-row items-center justify-between">
       <div>{label}</div>
@@ -28,7 +28,7 @@ function UniversityStep() {
     ? (universityList?.universities ?? [])
     : (universityList?.universities.filter((university) => university.name.includes(trimmed)) ?? []);
 
-  const handleSchoolSelect = (universityId: string) => () => {
+  const handleUniversitySelect = (universityId: string) => () => {
     update({ universityId });
     navigate('/signup/student-id');
   };
@@ -44,7 +44,7 @@ function UniversityStep() {
       />
       <div className="mt-7 flex flex-col gap-2">
         {filteredUniversities.map((university) => (
-          <SchoolCard key={university.id} label={university.name} onClick={handleSchoolSelect(university.id)} />
+          <UniversityCard key={university.id} label={university.name} onClick={handleUniversitySelect(university.id)} />
         ))}
       </div>
     </StepLayout>
