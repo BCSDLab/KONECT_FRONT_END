@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 
 interface SignupState {
-  marketing: boolean;
-  school: string;
+  isMarketingAgreement: boolean;
+  isTermsAgreement: boolean;
+  isPrivacyAgreement: boolean;
+  universityId: string;
   studentId: string;
   name: string;
   update: (partial: Partial<SignupState>) => void;
@@ -10,8 +12,10 @@ interface SignupState {
 }
 
 const initialState = {
-  marketing: false,
-  school: '',
+  isMarketingAgreement: false,
+  isTermsAgreement: false,
+  isPrivacyAgreement: false,
+  universityId: '',
   studentId: '',
   name: '',
 };

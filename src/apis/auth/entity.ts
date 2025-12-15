@@ -1,6 +1,6 @@
 export interface SignupRequest {
   name: string;
-  school: string;
+  universityId: string;
   studentNumber: string;
-  // marketing: boolean;
+  isMarketingAgreement: boolean;
 }
