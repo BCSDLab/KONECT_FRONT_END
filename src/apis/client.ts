@@ -1,9 +1,20 @@
-import { getCookie } from '@/utils/ts/cookie';
-
 const BASE_URL = import.meta.env.VITE_API_PATH;
 
 if (!BASE_URL) {
   throw new Error('API 경로 환경변수가 설정되지 않았습니다.');
+}
+
+export interface ApiErrorResponse {
+  code: string;
+  message: string;
+  errorTraceId: string;
+}
+
+export interface ApiError extends Error {
+  status: number;
+  statusText: string;
+  url: string;
+  apiError?: ApiErrorResponse;
 }
 
 type QueryAtom = string | number | boolean;
@@ -67,16 +78,10 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
   options: FetchOptions<P> = {},
   timeout: number = 10000
 ): Promise<T> {
-  const { headers, body, method, params, requiresAuth = false, ...restOptions } = options;
+  const { headers, body, method, params, ...restOptions } = options;
 
   if (!method) {
     throw new Error('HTTP method가 설정되지 않았습니다.');
-  }
-
-  const sessionId = getCookie('JSESSIONID');
-
-  if (requiresAuth && !sessionId) {
-    throw new Error('인증이 필요합니다. 로그인해주세요.');
   }
 
   let url = joinUrl(BASE_URL, endPoint);
@@ -112,13 +117,14 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
-      const errorMessage = await parseResponseText(response);
-      const error = new Error(errorMessage || 'API 요청 실패');
-      Object.assign(error, {
-        status: response.status,
-        statusText: response.statusText,
-        url: response.url,
-      });
+      const errorData = await parseErrorResponse(response);
+
+      const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
+      error.status = response.status;
+      error.statusText = response.statusText;
+      error.url = response.url;
+      error.apiError = errorData ?? undefined;
+
       throw error;
     }
 
@@ -133,6 +139,18 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
   }
 }
 
+async function parseErrorResponse(response: Response): Promise<ApiErrorResponse | null> {
+  const contentType = response.headers.get('Content-Type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      return await response.json();
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
+
 async function parseResponse<T = unknown>(response: Response): Promise<T> {
   const contentType = response.headers.get('Content-Type') || '';
   if (contentType.includes('application/json')) {
@@ -145,13 +163,5 @@ async function parseResponse<T = unknown>(response: Response): Promise<T> {
     return (await response.text()) as unknown as T;
   } else {
     return null as unknown as T;
-  }
-}
-
-async function parseResponseText(response: Response): Promise<string> {
-  try {
-    return await response.text();
-  } catch {
-    return '서버로부터 응답을 받지 못했습니다.';
   }
 }
