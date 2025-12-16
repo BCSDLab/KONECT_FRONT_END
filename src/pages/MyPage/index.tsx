@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-
 import clubImage from '@/assets/image/동아리 사진.png';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
