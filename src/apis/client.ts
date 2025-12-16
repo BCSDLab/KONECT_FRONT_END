@@ -67,16 +67,16 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
   options: FetchOptions<P> = {},
   timeout: number = 10000
 ): Promise<T> {
-  const { headers, body, method, params, requiresAuth, ...restOptions } = options;
+  const { headers, body, method, params, requiresAuth = false, ...restOptions } = options;
 
   if (!method) {
     throw new Error('HTTP method가 설정되지 않았습니다.');
   }
 
-  const token = getCookie('AUTH_TOKEN_KEY');
+  const sessionId = getCookie('JSESSIONID');
 
-  if (requiresAuth && !token) {
-    return null as T;
+  if (requiresAuth && !sessionId) {
+    throw new Error('인증이 필요합니다. 로그인해주세요.');
   }
 
   let url = joinUrl(BASE_URL, endPoint);
@@ -94,11 +94,11 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     const fetchOptions: RequestInit = {
       headers: {
         ...(isJsonBody ? { 'Content-Type': 'application/json' } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },
       method,
       signal: abortController.signal,
+      credentials: 'include',
       ...restOptions,
     };
 
