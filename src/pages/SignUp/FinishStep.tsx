@@ -23,7 +23,7 @@ function FinishStep() {
       </div>
 
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/home')}
         className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
       >
         시작하기

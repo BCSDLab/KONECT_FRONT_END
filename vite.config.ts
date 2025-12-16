@@ -17,7 +17,7 @@ export default defineConfig({
       manifest: {
         name: 'KONECT',
         short_name: 'Konect',
-        start_url: '/login',
+        start_url: '/',
         display: 'standalone',
         theme_color: '#ffffff',
         background_color: '#ffffff',
