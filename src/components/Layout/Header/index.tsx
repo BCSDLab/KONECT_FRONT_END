@@ -10,7 +10,7 @@ function Header() {
   const { data: myInfo } = useGetMyInfo();
 
   const title = ROUTE_TITLES.find((route) => route.match(pathname))?.title ?? '';
-  const infoHeaderList = ['/', '/council'];
+  const infoHeaderList = ['/home', '/council'];
 
   if (pathname === '/me') {
     return (
