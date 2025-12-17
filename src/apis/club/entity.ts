@@ -59,3 +59,14 @@ interface Representatives {
   phone: string;
   email: string;
 }
+
+export interface ClubMember {
+  name: string;
+  imageUrl: string;
+  studentNumber: string;
+  position: '회장' | '운영진' | '일반 회원';
+}
+
+export interface ClubMembersResponse {
+  clubMembers: ClubMember[];
+}

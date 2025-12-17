@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import CheckInCircleIcon from '@/assets/svg/check-in-circle.svg';
+import { useGetMyInfo } from '../Profile/hooks/useMyInfo';
 
 function FinishStep() {
   const navigate = useNavigate();
+  const { data: myInfo } = useGetMyInfo();
 
   return (
     <div className="flex flex-1 flex-col justify-between px-8">
@@ -12,7 +14,7 @@ function FinishStep() {
         <div className="mt-8 text-2xl font-extrabold">환영합니다!</div>
 
         <div>
-          <div className="font-extrabold">공우진님</div>
+          <div className="font-extrabold">{myInfo.name}님</div>
           <div className="mt-1 text-xs text-indigo-300">
             <div>KONECT 가입이 완료되었습니다.</div>
             <div>동아리 활동을 시작해보세요!</div>
@@ -21,7 +23,7 @@ function FinishStep() {
       </div>
 
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate('/home')}
         className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
       >
         시작하기

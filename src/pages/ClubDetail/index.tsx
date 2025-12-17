@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubIntro from './components/ClubIntro';
-import ClubMember from './components/ClubMember';
+import ClubMemberTab from './components/ClubMember';
 import { useGetClubDetail } from './hooks/useGetClubDetail';
 
 type TabType = 'intro' | 'members';
@@ -66,7 +66,7 @@ function ClubDetail() {
           <ClubIntro clubDetail={clubDetail} />
         </Activity>
         <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
-          <ClubMember />
+          <ClubMemberTab />
         </Activity>
       </div>
     </>
