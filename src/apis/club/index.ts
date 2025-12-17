@@ -1,5 +1,11 @@
 import { apiClient } from '../client';
-import type { ClubDetailResponse, ClubRequestParams, ClubResponse, JoinClubResponse } from './entity';
+import type {
+  ClubDetailResponse,
+  ClubMembersResponse,
+  ClubRequestParams,
+  ClubResponse,
+  JoinClubResponse,
+} from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
   const response = await apiClient.get<ClubResponse, ClubRequestParams>('clubs', { params });
@@ -13,5 +19,10 @@ export const getJoinedClubs = async () => {
 
 export const getClubDetail = async (clubId: number) => {
   const response = await apiClient.get<ClubDetailResponse>(`clubs/${clubId}`);
+  return response;
+};
+
+export const getClubMembers = async (clubId: number) => {
+  const response = await apiClient.get<ClubMembersResponse>(`clubs/${clubId}/members`);
   return response;
 };
