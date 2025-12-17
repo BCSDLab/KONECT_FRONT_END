@@ -23,7 +23,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<AuthLayout />}>
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
           <Route path="/signup">
             <Route index element={<TermStep />} />
             <Route path="university" element={<UniversityStep />} />
@@ -33,7 +33,7 @@ function App() {
           </Route>
         </Route>
         <Route element={<HomeLayout />}>
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/me" element={<MyPage />} />
           <Route path="/council">
             <Route index element={<CouncilDetail />} />

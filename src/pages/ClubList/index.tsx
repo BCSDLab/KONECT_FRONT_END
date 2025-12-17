@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react';
+import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
 import { useGetClubs } from './hooks/useGetClubs';
 
 function ClubList() {
+  useScrollToTop();
   const observerRef = useRef<HTMLDivElement>(null);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({ limit: 10 });
 

@@ -11,9 +11,9 @@ function BottomNav() {
   return (
     <nav className="fixed right-0 bottom-0 left-0 z-20 border-t border-[#e0e0e0] bg-white">
       <div className="mx-auto flex min-h-[75px] max-w-md items-center justify-between px-7 py-2 text-xs font-semibold">
-        <Link to="/" className="flex flex-col items-center">
-          <HouseIcon className={clsx('h-5 w-5', pathname === '/' ? 'text-primary' : 'text-indigo-100')} />
-          <span className={clsx(pathname === '/' ? 'text-primary' : 'text-indigo-100')}>홈</span>
+        <Link to="/home" className="flex flex-col items-center">
+          <HouseIcon className={clsx('h-5 w-5', pathname === '/home' ? 'text-primary' : 'text-indigo-100')} />
+          <span className={clsx(pathname === '/home' ? 'text-primary' : 'text-indigo-100')}>홈</span>
         </Link>
 
         <Link to="/council" className="flex flex-col items-center">
