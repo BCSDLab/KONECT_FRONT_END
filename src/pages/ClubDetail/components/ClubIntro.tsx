@@ -21,10 +21,10 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
         </div>
         {isRecruitmentOpen ? (
           <Link
-            to="/clubs"
+            to="applications"
             className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
           >
-            지원하기
+            지원서 작성하기
           </Link>
         ) : (
           <span
