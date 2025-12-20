@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
-import AccountInfoCard from './components/accountInfo';
+import AccountInfoCard from './components/AccountInfo';
 import { useGetClubFee } from './hooks/useGetClubFee';
 
 function ClubFeePage() {

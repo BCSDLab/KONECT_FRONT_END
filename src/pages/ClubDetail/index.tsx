@@ -2,17 +2,19 @@ import { Activity } from 'react';
 import clsx from 'clsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
+import ClubAccount from './components/ClubAccount';
 import ClubIntro from './components/ClubIntro';
 import ClubMemberTab from './components/ClubMember';
+import ClubRecruit from './components/ClubRecruitment';
 import { useGetClubDetail } from './hooks/useGetClubDetail';
 
-type TabType = 'intro' | 'members';
+type TabType = 'recruitment' | 'intro' | 'members' | 'account';
 
 function ClubDetail() {
   useScrollToTop();
   const { clubId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'intro';
+  const currentTab = searchParams.get('tab') || 'recruitment';
 
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
 
@@ -21,8 +23,10 @@ function ClubDetail() {
   };
 
   const tabs: { key: TabType; label: string }[] = [
+    { key: 'recruitment', label: '모집' },
     { key: 'intro', label: '소개' },
     { key: 'members', label: '인원' },
+    { key: 'account', label: '계좌' },
   ];
 
   if (!clubDetail) {
@@ -62,11 +66,17 @@ function ClubDetail() {
         </div>
       </div>
       <div className="mt-35 flex flex-col gap-2 p-3">
+        <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
+          <ClubRecruit clubDetail={clubDetail} />
+        </Activity>
         <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
           <ClubIntro clubDetail={clubDetail} />
         </Activity>
         <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
           <ClubMemberTab />
+        </Activity>
+        <Activity mode={currentTab === 'account' ? 'visible' : 'hidden'}>
+          <ClubAccount />
         </Activity>
       </div>
     </>
