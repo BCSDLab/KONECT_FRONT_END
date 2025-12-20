@@ -1,13 +1,30 @@
 import { Link } from 'react-router-dom';
+import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import ClubCard from '../ClubList/components/ClubCard';
 import { useGetClubs } from '../ClubList/hooks/useGetClubs';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
+import { useGetScheduleList } from './hooks/useGetScheduleList';
+
+function formatScheduleDate(startedAt: string, endedAt: string): string {
+  const [startDate, startTime] = startedAt.split(' ');
+  const [endDate, endTime] = endedAt.split(' ');
+
+  const [startYear, startMonth, startDay] = startDate.split('.');
+  const [endYear, endMonth, endDay] = endDate.split('.');
+
+  if (startDate === endDate) {
+    return `${startYear}.${startMonth}.${startDay} ${startTime} ~ ${endTime}`;
+  } else {
+    return `${startYear}.${startMonth}.${startDay} ~ ${endYear}.${endMonth}.${endDay}`;
+  }
+}
 
 function Home() {
   const { data: clubsData } = useGetClubs({ limit: 10, isRecruiting: true });
   const { data: joinedClubsData } = useGetJoinedClubs();
+  const { data: scheduleListData } = useGetScheduleList();
 
   const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
 
@@ -37,6 +54,33 @@ function Home() {
             </div>
           </>
         )}
+      </div>
+
+      <div>
+        <div className="flex justify-between">
+          <div className="text-sm leading-4 font-semibold">다가오는 일정</div>
+          <Link to="/schedules" className="text-xs leading-3 text-[#3182F6]">
+            전체보기
+          </Link>
+        </div>
+        {scheduleListData?.schedules.slice(0, 3).map((schedule) => (
+          <Card key={schedule.title} className="mt-2">
+            <div className="flex gap-3">
+              <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
+                <div className="text-primary text-center text-[10px] leading-3 font-bold">
+                  {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
+                </div>
+                <CalendarIcon />
+              </div>
+              <div className="flex flex-1 flex-col justify-center gap-1">
+                <div className="text-[15px] leading-[17px] font-bold text-indigo-700">{schedule.title}</div>
+                <div className="text-[13px] leading-4 text-indigo-300">
+                  {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
+                </div>
+              </div>
+            </div>
+          </Card>
+        ))}
       </div>
 
       <div className="flex flex-col gap-2">
