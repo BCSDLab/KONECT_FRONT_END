@@ -5,10 +5,12 @@ import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
 import FileIcon from '@/assets/svg/file.svg';
 import LayersIcon from '@/assets/svg/layers.svg';
+import LogoutIcon from '@/assets/svg/logout.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import UserIcon from '@/assets/svg/user.svg';
 import Card from '@/components/common/Card';
 import { useGetMyInfo } from '../Profile/hooks/useMyInfo';
+import { useLogoutMutation } from './hooks/useLogout';
 
 const menuItems = [
   { to: '/profile', icon: UserIcon, label: '내 정보' },
@@ -20,6 +22,7 @@ const menuItems = [
 
 function MyPage() {
   const { data: myInfo } = useGetMyInfo();
+  const { mutate: logout } = useLogoutMutation();
 
   return (
     <div className="flex flex-col gap-2 p-3">
@@ -72,6 +75,12 @@ function MyPage() {
             <div className="text-[13px] leading-4 text-indigo-200">v1.0.0</div>
           </div>
         </div>
+        <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={() => logout()}>
+          <div className="flex items-center gap-4">
+            <LogoutIcon />
+            <div className="text-sm leading-4 font-semibold">로그아웃</div>
+          </div>
+        </button>
       </div>
     </div>
   );
