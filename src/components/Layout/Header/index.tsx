@@ -1,13 +1,13 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import BellIcon from '@/assets/svg/bell.svg';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
-import { useGetMyInfo } from '@/pages/Profile/hooks/useMyInfo';
+import { useMyInfo } from '@/pages/Profile/hooks/useMyInfo';
 import { ROUTE_TITLES } from './routeTitles';
 
 const INFO_HEADER_LIST = ['/home', '/council'];
 
 function InfoHeader() {
-  const { data: myInfo } = useGetMyInfo();
+  const { myInfo } = useMyInfo();
 
   return (
     <header className="fixed top-0 right-0 left-0 flex items-center bg-white px-3 py-2">
