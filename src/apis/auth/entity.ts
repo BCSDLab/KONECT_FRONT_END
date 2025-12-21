@@ -10,4 +10,14 @@ export interface MyInfoResponse {
   universityName: string;
   studentNumber: string;
   phoneNumber: string;
+  imageUrl: string;
+  joinedClubCount: number;
+  studyTime: string;
+  unreadCouncilNoticeCount: number;
+}
+
+export interface ModifyMyInfoRequest {
+  name?: string;
+  studentNumber?: string;
+  phoneNumber?: string;
 }

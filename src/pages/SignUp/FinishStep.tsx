@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import CheckInCircleIcon from '@/assets/svg/check-in-circle.svg';
-import { useGetMyInfo } from '../Profile/hooks/useMyInfo';
+import { useMyInfo } from '../Profile/hooks/useMyInfo';
 
 function FinishStep() {
   const navigate = useNavigate();
-  const { data: myInfo } = useGetMyInfo();
+  const { myInfo } = useMyInfo();
 
   return (
     <div className="flex flex-1 flex-col justify-between px-8">
