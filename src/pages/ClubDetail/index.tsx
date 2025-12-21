@@ -14,7 +14,7 @@ function ClubDetail() {
   useScrollToTop();
   const { clubId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'recruitment';
+  const currentTab = searchParams.get('tab') || 'intro';
 
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
 
