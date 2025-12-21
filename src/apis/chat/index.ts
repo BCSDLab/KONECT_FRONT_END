@@ -1,5 +1,11 @@
 import { apiClient } from '../client';
-import type { ChatMessage, ChatMessageRequestParam, ChatMessagesResponse, ChatRoomsResponse } from './entity';
+import type {
+  ChatMessage,
+  ChatMessageRequestParam,
+  ChatMessagesResponse,
+  ChatRoomsResponse,
+  CreateChatRoomResponse,
+} from './entity';
 
 export const getChatRooms = async () => {
   const response = await apiClient.get<ChatRoomsResponse>('/chats/rooms', {
@@ -9,7 +15,7 @@ export const getChatRooms = async () => {
 };
 
 export const postChatRooms = async (clubId: number) => {
-  const response = await apiClient.post<number>('/chats/rooms', {
+  const response = await apiClient.post<CreateChatRoomResponse>('/chats/rooms', {
     body: { clubId },
     requiresAuth: true,
   });
