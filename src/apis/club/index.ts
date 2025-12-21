@@ -8,6 +8,7 @@ import {
   type ClubRequestParams,
   type ClubResponse,
   type JoinClubResponse,
+  type ClubRecruitment,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -45,5 +46,10 @@ export const applyClub = async (clubId: number, answers: ClubApplyRequest) => {
 
 export const getClubFee = async (clubId: number) => {
   const response = await apiClient.get<ClubApplyResponse>(`clubs/${clubId}/fee`);
+  return response;
+};
+
+export const getClubRecruitment = async (clubId: number) => {
+  const response = await apiClient.get<ClubRecruitment>(`clubs/${clubId}/recruitments`);
   return response;
 };

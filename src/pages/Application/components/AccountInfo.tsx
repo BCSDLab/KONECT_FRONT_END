@@ -1,16 +1,10 @@
 import { Fragment } from 'react/jsx-runtime';
+import type { ClubApplyResponse } from '@/apis/club/entity';
 import CopyIcon from '@/assets/svg/copy.svg';
 import Card from '@/components/common/Card';
 
-interface AccountInfo {
-  amount: number;
-  bank: string;
-  accountHolder: string;
-  accountNumber: string;
-}
-
 interface AccountInfoCardProps {
-  accountInfo: AccountInfo;
+  accountInfo: ClubApplyResponse;
 }
 
 function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
@@ -35,7 +29,7 @@ function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
         ))}
       </div>
       <button
-        onClick={() => navigator.clipboard.writeText(accountInfo.accountNumber)}
+        onClick={() => navigator.clipboard.writeText(accountInfo.accountNumber ?? '')}
         className="bg-primary text-indigo-0 flex items-center justify-center gap-1.5 rounded-sm py-3 text-xs font-medium"
       >
         <CopyIcon /> 계좌번호 복사하기

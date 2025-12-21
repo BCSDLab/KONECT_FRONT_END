@@ -23,9 +23,9 @@ function ClubFeePage() {
         <div className="text-sm leading-4 font-bold text-indigo-700">회비 납부</div>
         <Card className="bg-indigo-25 rounded-sm">
           <div className="text-xs font-medium">납부금액</div>
-          <div className="text-primary text-lg leading-5 font-extrabold">{clubFee.amount}원</div>
+          <div className="text-primary text-lg leading-5 font-extrabold">{clubFee.amount?.toLocaleString()}원</div>
         </Card>
-        <div className="text-[10px] leading-3 font-medium text-indigo-300">납부 기한 : </div>
+        <div className="text-[10px] leading-3 font-medium text-indigo-300">납부 기한 : {clubFee.deadLine}</div>
       </Card>
 
       <AccountInfoCard accountInfo={clubFee} />

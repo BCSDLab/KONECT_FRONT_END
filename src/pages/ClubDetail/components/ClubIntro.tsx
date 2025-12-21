@@ -1,6 +1,8 @@
+import { Link } from 'react-router-dom';
 import type { ClubDetailResponse } from '@/apis/club/entity';
 import HumanIcon from '@/assets/svg/human.svg';
 import LocationIcon from '@/assets/svg/location.svg';
+import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
 import Card from '@/components/common/Card';
 
 interface ClubIntroProps {
@@ -41,6 +43,19 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           <div>{clubDetail.representatives[0].phone}</div>
           <div>{clubDetail.representatives[0].email}</div>
         </div>
+      </Card>
+      <Card>
+        <div className="flex flex-col items-center gap-1 text-indigo-300">
+          <div className="text-xs leading-3.5 font-medium">동아리에 대해 궁금한 점이 있으신가요?</div>
+          <div className="text-[10px] leading-3">편하게 문의해주세요!</div>
+        </div>
+        <Link
+          to={'/chat'}
+          className="bg-indigo-5 flex items-center justify-center gap-1 rounded-sm py-3 text-sm leading-3.5 font-medium"
+        >
+          <PaperPlaneIcon />
+          문의하기
+        </Link>
       </Card>
     </>
   );

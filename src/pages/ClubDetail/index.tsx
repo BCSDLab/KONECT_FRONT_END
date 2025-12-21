@@ -22,12 +22,14 @@ function ClubDetail() {
     setSearchParams({ tab }, { replace: true });
   };
 
-  const tabs: { key: TabType; label: string }[] = [
-    { key: 'recruitment', label: '모집' },
-    { key: 'intro', label: '소개' },
-    { key: 'members', label: '인원' },
-    { key: 'account', label: '계좌' },
+  const tabs: { key: TabType; label: string; show: boolean }[] = [
+    { key: 'recruitment', label: '모집', show: true },
+    { key: 'intro', label: '소개', show: true },
+    { key: 'members', label: '인원', show: clubDetail.isMember },
+    { key: 'account', label: '계좌', show: clubDetail.isMember || clubDetail.isApplied },
   ];
+
+  const visibleTabs = tabs.filter((tab) => tab.show);
 
   if (!clubDetail) {
     return <div>잘못된 경로입니다</div>;
@@ -49,7 +51,7 @@ function ClubDetail() {
           </div>
         </div>
         <div className="flex items-center gap-3 bg-white px-3">
-          {tabs.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleTabClick(tab.key)}
@@ -67,17 +69,21 @@ function ClubDetail() {
       </div>
       <div className="mt-35 flex flex-col gap-2 p-3">
         <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
-          <ClubRecruit clubDetail={clubDetail} />
+          <ClubRecruit clubId={Number(clubId)} />
         </Activity>
         <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
           <ClubIntro clubDetail={clubDetail} />
         </Activity>
-        <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
-          <ClubMemberTab />
-        </Activity>
-        <Activity mode={currentTab === 'account' ? 'visible' : 'hidden'}>
-          <ClubAccount />
-        </Activity>
+        {clubDetail.isMember && (
+          <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
+            <ClubMemberTab />
+          </Activity>
+        )}
+        {(clubDetail.isMember || clubDetail.isApplied) && (
+          <Activity mode={currentTab === 'account' ? 'visible' : 'hidden'}>
+            <ClubAccount />
+          </Activity>
+        )}
       </div>
     </>
   );

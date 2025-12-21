@@ -1,11 +1,17 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useParams } from 'react-router-dom';
 import useClubApply from './hooks/useClubApply';
 
 function ApplicationPage() {
   const { clubId } = useParams();
-  const { clubQuestions, applyToClub } = useClubApply(Number(clubId));
+  const { clubQuestions, applyToClub, applyDirectly, hasQuestions } = useClubApply(Number(clubId));
   const [answers, setAnswers] = useState<Record<number, string>>({});
+
+  useEffect(() => {
+    if (!hasQuestions) {
+      applyDirectly();
+    }
+  }, [hasQuestions, applyDirectly]);
 
   const handleChange = (questionId: number, value: string, target: HTMLTextAreaElement) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
