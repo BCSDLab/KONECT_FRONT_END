@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { applyClub, getClubQuestions } from '@/apis/club';
 import type { ClubApplyRequest } from '@/apis/club/entity';
 
-export const useClubApply = (clubId: number) => {
+const useClubApply = (clubId: number) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 

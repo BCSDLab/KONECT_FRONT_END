@@ -16,7 +16,7 @@ const menuItems = [
   { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스' },
   { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
   { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침' },
-  { to: '/contact', icon: ChatIcon, label: '문의하기' },
+  { to: '/chats', icon: ChatIcon, label: '문의하기' },
 ];
 
 function MyPage() {

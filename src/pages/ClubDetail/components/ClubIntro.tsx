@@ -1,15 +1,17 @@
-import { Link } from 'react-router-dom';
 import type { ClubDetailResponse } from '@/apis/club/entity';
 import HumanIcon from '@/assets/svg/human.svg';
 import LocationIcon from '@/assets/svg/location.svg';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
 import Card from '@/components/common/Card';
+import useChat from '@/pages/Chat/hooks/useChat';
 
 interface ClubIntroProps {
   clubDetail: ClubDetailResponse;
 }
 
 function ClubIntro({ clubDetail }: ClubIntroProps) {
+  const { createChatRoom } = useChat();
+
   return (
     <>
       <Card>
@@ -49,13 +51,13 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           <div className="text-xs leading-3.5 font-medium">동아리에 대해 궁금한 점이 있으신가요?</div>
           <div className="text-[10px] leading-3">편하게 문의해주세요!</div>
         </div>
-        <Link
-          to={'/chat'}
+        <button
+          onClick={() => createChatRoom(clubDetail.id)}
           className="bg-indigo-5 flex items-center justify-center gap-1 rounded-sm py-3 text-sm leading-3.5 font-medium"
         >
           <PaperPlaneIcon />
           문의하기
-        </Link>
+        </button>
       </Card>
     </>
   );

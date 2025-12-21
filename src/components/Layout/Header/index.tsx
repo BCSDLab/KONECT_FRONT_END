@@ -1,10 +1,26 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import BellIcon from '@/assets/svg/bell.svg';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
+import useChat from '@/pages/Chat/hooks/useChat';
 import { useMyInfo } from '@/pages/Profile/hooks/useMyInfo';
 import { ROUTE_TITLES } from './routeTitles';
 
 const INFO_HEADER_LIST = ['/home', '/council'];
+
+function NotificationBell() {
+  const { totalUnreadCount } = useChat();
+
+  return (
+    <Link to={'chats'} className="relative">
+      <BellIcon />
+      {totalUnreadCount > 0 && (
+        <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
+          {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
+        </span>
+      )}
+    </Link>
+  );
+}
 
 function InfoHeader() {
   const { myInfo } = useMyInfo();
@@ -17,7 +33,7 @@ function InfoHeader() {
           {myInfo.name} {myInfo.studentNumber}
         </div>
       </div>
-      <BellIcon />
+      <NotificationBell />
     </header>
   );
 }
@@ -25,7 +41,29 @@ function InfoHeader() {
 function ProfileHeader() {
   return (
     <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-end bg-white px-4 py-2 shadow-[0_1px_1px_0_rgba(0,0,0,0.04)]">
-      <BellIcon />
+      <NotificationBell />
+    </header>
+  );
+}
+
+function ChatHeader() {
+  const navigate = useNavigate();
+  const { chatRoomId } = useParams();
+  const { chatRoomList } = useChat();
+
+  const chatRoom = chatRoomList.chatRooms.find((room) => room.chatRoomId === Number(chatRoomId));
+
+  return (
+    <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
+      <button
+        type="button"
+        aria-label="뒤로가기"
+        onClick={() => navigate(-1)}
+        className="absolute top-1/2 left-4 -translate-y-1/2"
+      >
+        <ChevronLeftIcon />
+      </button>
+      <span className="text-lg">{chatRoom?.chatPartnerName ?? ''}</span>
     </header>
   );
 }
@@ -58,6 +96,10 @@ function Header() {
 
   if (INFO_HEADER_LIST.includes(pathname)) {
     return <InfoHeader />;
+  }
+
+  if (/^\/chats\/\d+$/.test(pathname)) {
+    return <ChatHeader />;
   }
 
   return <DefaultHeader title={title} />;

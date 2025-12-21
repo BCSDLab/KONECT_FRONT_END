@@ -3,6 +3,8 @@ import { AppLayout, AuthLayout, HomeLayout } from './components/Layout';
 import ApplicationPage from './pages/Application';
 import ApplyFinishPage from './pages/Application/applyFinishPage';
 import ClubFeePage from './pages/Application/clubFeePage';
+import ChatListPage from './pages/Chat';
+import ChatRoom from './pages/Chat/ChatRoom';
 import ClubDetail from './pages/ClubDetail';
 import ClubList from './pages/ClubList';
 import ClubSearch from './pages/ClubSearch';
@@ -57,6 +59,10 @@ function App() {
             <Route path=":clubId/applications" element={<ApplicationPage />} />
             <Route path=":clubId/fee" element={<ClubFeePage />} />
             <Route path=":clubId/finish" element={<ApplyFinishPage />} />
+          </Route>
+          <Route path="chats">
+            <Route index element={<ChatListPage />} />
+            <Route path=":chatRoomId" element={<ChatRoom />} />
           </Route>
         </Route>
       </Routes>
