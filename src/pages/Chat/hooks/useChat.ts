@@ -9,6 +9,7 @@ const useChat = (chatRoomId?: number) => {
   const { data: chatRoomList } = useSuspenseQuery({
     queryKey: ['chatList'],
     queryFn: () => getChatRooms(),
+    refetchInterval: 5000,
   });
 
   const { mutateAsync: createChatRoom } = useMutation({
@@ -33,6 +34,7 @@ const useChat = (chatRoomId?: number) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.currentPage < lastPage.totalPage ? lastPage.currentPage + 1 : undefined),
     enabled: !!chatRoomId,
+    refetchInterval: 3000,
   });
 
   const allMessages = useMemo(() => chatMessagesData?.pages.flatMap((page) => page.messages) ?? [], [chatMessagesData]);

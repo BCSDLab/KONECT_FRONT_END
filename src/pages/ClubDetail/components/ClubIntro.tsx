@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import type { ClubDetailResponse } from '@/apis/club/entity';
 import HumanIcon from '@/assets/svg/human.svg';
 import LocationIcon from '@/assets/svg/location.svg';
@@ -10,7 +11,13 @@ interface ClubIntroProps {
 }
 
 function ClubIntro({ clubDetail }: ClubIntroProps) {
+  const navigate = useNavigate();
   const { createChatRoom } = useChat();
+
+  const handleInquireClick = async () => {
+    const response = await createChatRoom(clubDetail.id);
+    navigate(`/chats/${response.chatRoomId}`);
+  };
 
   return (
     <>
@@ -52,7 +59,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           <div className="text-[10px] leading-3">편하게 문의해주세요!</div>
         </div>
         <button
-          onClick={() => createChatRoom(clubDetail.id)}
+          onClick={handleInquireClick}
           className="bg-indigo-5 flex items-center justify-center gap-1 rounded-sm py-3 text-sm leading-3.5 font-medium"
         >
           <PaperPlaneIcon />

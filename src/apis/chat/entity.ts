@@ -33,3 +33,7 @@ export interface ChatMessagesResponse {
   currentPage: number;
   messages: ChatMessage[];
 }
+
+export interface CreateChatRoomResponse {
+  chatRoomId: number;
+}

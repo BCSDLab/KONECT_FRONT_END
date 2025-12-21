@@ -15,7 +15,9 @@ const formatDate = (dateString: string) => {
 };
 
 const formatTime = (dateString: string) => {
-  return dateString.split(' ')[1];
+  const timePart = dateString.split(' ')[1];
+  const [hour, minute] = timePart.split(':');
+  return `${hour}:${minute}`;
 };
 
 function ChatRoom() {

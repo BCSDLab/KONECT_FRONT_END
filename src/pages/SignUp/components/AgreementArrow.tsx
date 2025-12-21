@@ -1,14 +1,16 @@
 import type { ComponentType } from 'react';
+import { Link } from 'react-router-dom';
 
 type AgreementRowProps = {
   checked: boolean;
   onChange: (next: boolean) => void;
   label: string;
+  route: string;
   RightIcon?: ComponentType<React.SVGAttributes<SVGElement>>;
   CheckIcon: ComponentType<React.SVGAttributes<SVGElement>>;
 };
 
-function AgreementRow({ checked, onChange, label, RightIcon, CheckIcon }: AgreementRowProps) {
+function AgreementRow({ checked, onChange, label, route, RightIcon, CheckIcon }: AgreementRowProps) {
   return (
     <div className="flex justify-between">
       <label className="flex cursor-pointer items-center gap-3">
@@ -22,7 +24,11 @@ function AgreementRow({ checked, onChange, label, RightIcon, CheckIcon }: Agreem
         <span className="text-sm font-medium text-indigo-100 peer-checked:text-black">{label}</span>
       </label>
 
-      {RightIcon ? <RightIcon className="text-indigo-100" /> : null}
+      {RightIcon ? (
+        <Link to={route}>
+          <RightIcon className="text-indigo-100" />
+        </Link>
+      ) : null}
     </div>
   );
 }
