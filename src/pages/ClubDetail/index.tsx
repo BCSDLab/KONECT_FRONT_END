@@ -23,7 +23,7 @@ function ClubDetail() {
   };
 
   const tabs: { key: TabType; label: string; show: boolean }[] = [
-    { key: 'recruitment', label: '모집', show: true },
+    { key: 'recruitment', label: '모집', show: clubDetail.recruitment.status !== 'CLOSED' },
     { key: 'intro', label: '소개', show: true },
     { key: 'members', label: '인원', show: clubDetail.isMember },
     { key: 'account', label: '계좌', show: clubDetail.isMember || clubDetail.isApplied },
@@ -68,9 +68,11 @@ function ClubDetail() {
         </div>
       </div>
       <div className="mt-35 flex flex-col gap-2 p-3">
-        <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
-          <ClubRecruit clubId={Number(clubId)} />
-        </Activity>
+        {clubDetail.recruitment.status !== 'CLOSED' && (
+          <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
+            <ClubRecruit clubId={Number(clubId)} />
+          </Activity>
+        )}
         <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
           <ClubIntro clubDetail={clubDetail} />
         </Activity>

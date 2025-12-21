@@ -70,17 +70,34 @@ function ChatHeader() {
 
 function DefaultHeader({ title }: { title: string }) {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const handleBack = () => {
+    if (pathname === '/signup') {
+      navigate('/');
+    } else {
+      navigate(-1);
+    }
+  };
 
   return (
     <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
       <button
         type="button"
         aria-label="뒤로가기"
-        onClick={() => navigate(-1)}
+        onClick={handleBack}
         className="absolute top-1/2 left-4 -translate-y-1/2"
       >
         <ChevronLeftIcon />
       </button>
+      <span className="text-lg">{title}</span>
+    </header>
+  );
+}
+
+function NormalHeader({ title }: { title: string }) {
+  return (
+    <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
       <span className="text-lg">{title}</span>
     </header>
   );
@@ -100,6 +117,10 @@ function Header() {
 
   if (/^\/chats\/\d+$/.test(pathname)) {
     return <ChatHeader />;
+  }
+
+  if (pathname === '/') {
+    return <NormalHeader title={title} />;
   }
 
   return <DefaultHeader title={title} />;

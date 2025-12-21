@@ -1,11 +1,15 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import CheckCircleIcon from '@/assets/svg/check-circle.svg';
 import { useGetClubDetail } from '../ClubDetail/hooks/useGetClubDetail';
 
 function ApplyFinishPage() {
-  const navigate = useNavigate();
   const { clubId } = useParams();
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
+
+  const handleGoToClubDetail = () => {
+    window.history.go(-3);
+  };
+
   return (
     <div className="flex min-h-0 flex-1 flex-col items-center px-3 pt-30 pb-10">
       <CheckCircleIcon className="mb-8" />
@@ -18,7 +22,7 @@ function ApplyFinishPage() {
       <button
         type="button"
         className="bg-primary mx-6 mt-auto w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold text-white"
-        onClick={() => navigate(`/clubs/${clubId}`)}
+        onClick={handleGoToClubDetail}
       >
         완료하기
       </button>

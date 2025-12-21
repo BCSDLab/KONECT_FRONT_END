@@ -12,6 +12,7 @@ import CouncilDetail from './pages/CouncilDetail';
 import CouncilNotice from './pages/CouncilNotice';
 import Home from './pages/Home';
 import LicensePage from './pages/legal/LicensePage';
+import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
 import Login from './pages/Login';
@@ -51,6 +52,7 @@ function App() {
             <Route path="oss" element={<LicensePage />} />
             <Route path="terms" element={<TermsPage />} />
             <Route path="privacy" element={<PrivacyPolicyPage />} />
+            <Route path="marketing" element={<MarketingPolicyPage />} />
           </Route>
           <Route path="/clubs">
             <Route index element={<ClubList />} />
