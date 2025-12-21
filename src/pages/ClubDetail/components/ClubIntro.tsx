@@ -1,40 +1,19 @@
-import { Link } from 'react-router-dom';
 import type { ClubDetailResponse } from '@/apis/club/entity';
 import HumanIcon from '@/assets/svg/human.svg';
 import LocationIcon from '@/assets/svg/location.svg';
+import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
 import Card from '@/components/common/Card';
+import useChat from '@/pages/Chat/hooks/useChat';
 
 interface ClubIntroProps {
   clubDetail: ClubDetailResponse;
 }
 
 function ClubIntro({ clubDetail }: ClubIntroProps) {
-  const isRecruitmentOpen = clubDetail.recruitment.status === 'ONGOING';
+  const { createChatRoom } = useChat();
+
   return (
     <>
-      <Card>
-        <div>
-          <div className="text-sm leading-4 font-bold text-indigo-700">신입 회원 모집</div>
-          <div className="mt-1.5 text-xs leading-3.5 text-indigo-300">
-            모집 기간 : {clubDetail.recruitment.startDate} ~ {clubDetail.recruitment.endDate}
-          </div>
-        </div>
-        {isRecruitmentOpen ? (
-          <Link
-            to="/clubs"
-            className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
-          >
-            지원하기
-          </Link>
-        ) : (
-          <span
-            className="w-full cursor-not-allowed rounded-sm bg-gray-300 py-3 text-center text-xs leading-3 font-medium text-gray-500"
-            aria-disabled="true"
-          >
-            지원하기
-          </span>
-        )}
-      </Card>
       <Card>
         <div className="text-sm leading-4 font-bold text-indigo-700">동아리 소개</div>
         <div className="mt-1.5 text-xs leading-3.5 text-indigo-300">{clubDetail.introduce}</div>
@@ -66,6 +45,19 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           <div>{clubDetail.representatives[0].phone}</div>
           <div>{clubDetail.representatives[0].email}</div>
         </div>
+      </Card>
+      <Card>
+        <div className="flex flex-col items-center gap-1 text-indigo-300">
+          <div className="text-xs leading-3.5 font-medium">동아리에 대해 궁금한 점이 있으신가요?</div>
+          <div className="text-[10px] leading-3">편하게 문의해주세요!</div>
+        </div>
+        <button
+          onClick={() => createChatRoom(clubDetail.id)}
+          className="bg-indigo-5 flex items-center justify-center gap-1 rounded-sm py-3 text-sm leading-3.5 font-medium"
+        >
+          <PaperPlaneIcon />
+          문의하기
+        </button>
       </Card>
     </>
   );

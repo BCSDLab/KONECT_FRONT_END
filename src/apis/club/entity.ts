@@ -46,6 +46,8 @@ export interface ClubDetailResponse {
   memberCount: number;
   recruitment: Recruitment;
   representatives: Representatives[];
+  isMember: boolean;
+  isApplied: boolean;
 }
 
 interface Recruitment {
@@ -69,4 +71,42 @@ export interface ClubMember {
 
 export interface ClubMembersResponse {
   clubMembers: ClubMember[];
+}
+
+export interface ClubQuestion {
+  id: number;
+  question: string;
+  isRequired: boolean;
+}
+
+export interface ClubQuestionsResponse {
+  questions: ClubQuestion[];
+}
+
+interface Answer {
+  questionId: number;
+  answer: string;
+}
+
+export interface ClubApplyRequest {
+  answers: Answer[];
+}
+
+export interface ClubApplyResponse {
+  amount?: number;
+  bank?: string;
+  accountNumber?: string;
+  accountHolder?: string;
+  deadLine?: string;
+}
+
+export interface ClubRecruitment {
+  id: number;
+  clubId: number;
+  status: 'BEFORE' | 'ONGOING' | 'CLOSED';
+  startDate: string;
+  endDate: string;
+  content: string;
+  imageUrl: string;
+  isApplied: boolean;
 }

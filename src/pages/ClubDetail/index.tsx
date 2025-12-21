@@ -2,17 +2,19 @@ import { Activity } from 'react';
 import clsx from 'clsx';
 import { useParams, useSearchParams } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
+import ClubAccount from './components/ClubAccount';
 import ClubIntro from './components/ClubIntro';
 import ClubMemberTab from './components/ClubMember';
+import ClubRecruit from './components/ClubRecruitment';
 import { useGetClubDetail } from './hooks/useGetClubDetail';
 
-type TabType = 'intro' | 'members';
+type TabType = 'recruitment' | 'intro' | 'members' | 'account';
 
 function ClubDetail() {
   useScrollToTop();
   const { clubId } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'intro';
+  const currentTab = searchParams.get('tab') || 'recruitment';
 
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
 
@@ -20,10 +22,14 @@ function ClubDetail() {
     setSearchParams({ tab }, { replace: true });
   };
 
-  const tabs: { key: TabType; label: string }[] = [
-    { key: 'intro', label: '소개' },
-    { key: 'members', label: '인원' },
+  const tabs: { key: TabType; label: string; show: boolean }[] = [
+    { key: 'recruitment', label: '모집', show: true },
+    { key: 'intro', label: '소개', show: true },
+    { key: 'members', label: '인원', show: clubDetail.isMember },
+    { key: 'account', label: '계좌', show: clubDetail.isMember || clubDetail.isApplied },
   ];
+
+  const visibleTabs = tabs.filter((tab) => tab.show);
 
   if (!clubDetail) {
     return <div>잘못된 경로입니다</div>;
@@ -45,7 +51,7 @@ function ClubDetail() {
           </div>
         </div>
         <div className="flex items-center gap-3 bg-white px-3">
-          {tabs.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleTabClick(tab.key)}
@@ -62,12 +68,22 @@ function ClubDetail() {
         </div>
       </div>
       <div className="mt-35 flex flex-col gap-2 p-3">
+        <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
+          <ClubRecruit clubId={Number(clubId)} />
+        </Activity>
         <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
           <ClubIntro clubDetail={clubDetail} />
         </Activity>
-        <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
-          <ClubMemberTab />
-        </Activity>
+        {clubDetail.isMember && (
+          <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
+            <ClubMemberTab />
+          </Activity>
+        )}
+        {(clubDetail.isMember || clubDetail.isApplied) && (
+          <Activity mode={currentTab === 'account' ? 'visible' : 'hidden'}>
+            <ClubAccount />
+          </Activity>
+        )}
       </div>
     </>
   );
