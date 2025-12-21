@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { CouncilResponse } from '@/apis/council/entity';
 import ClockIcon from '@/assets/svg/clock.svg';
 import InstagramIcon from '@/assets/svg/instagram.svg';
@@ -46,9 +47,9 @@ function CouncilIntro({ councilDetail }: CouncilIntroProps) {
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-[10px] leading-3 font-medium text-indigo-300">인스타그램</div>
-              <div className="text-sm leading-3.5 font-semibold text-indigo-700">
+              <Link to={councilDetail.instagramUrl} className="text-sm leading-3.5 font-semibold text-indigo-700">
                 @{councilDetail.instagramUrl.split('/').pop()}
-              </div>
+              </Link>
             </div>
           </div>
         </div>
