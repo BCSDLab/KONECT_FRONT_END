@@ -4,6 +4,7 @@ export interface Club {
   imageUrl: string;
   categoryName: string;
   description: string;
+  status: 'BEFORE' | 'ONGOING' | 'CLOSED';
   tags: string[];
 }
 
