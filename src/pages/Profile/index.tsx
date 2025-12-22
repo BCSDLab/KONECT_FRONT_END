@@ -9,7 +9,7 @@ const fields = [
 ] as const;
 
 function Profile() {
-  const { myInfo, modifyMyInfo } = useMyInfo();
+  const { myInfo, modifyMyInfo, error } = useMyInfo();
   const [form, setForm] = useState(() => ({
     name: myInfo?.name ?? '',
     studentNumber: myInfo?.studentNumber ?? '',
@@ -39,6 +39,17 @@ function Profile() {
           />
         </div>
       ))}
+
+      {error && (
+        <div className="text-sm text-red-500">
+          {error.apiError?.fieldErrors?.length ? (
+            error.apiError.fieldErrors.map((fieldError, index) => <p key={index}>{fieldError.message}</p>)
+          ) : (
+            <p>{error.message ?? '정보 수정에 실패했습니다.'}</p>
+          )}
+        </div>
+      )}
+
       <button
         onClick={handleSubmit}
         className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold"
