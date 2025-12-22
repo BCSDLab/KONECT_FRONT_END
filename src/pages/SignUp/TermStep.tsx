@@ -78,7 +78,7 @@ function TermStep() {
       </div>
 
       <button
-        className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
+        className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
         disabled={!requiredChecked}
         onClick={handleNext}
       >
