@@ -14,11 +14,17 @@ export default defineConfig({
     }),
     VitePWA({
       registerType: 'autoUpdate',
+      injectRegister: 'auto',
       manifest: {
         name: 'KONECT',
         short_name: 'Konect',
+        description: '대학 동아리 문화를 하나로, 당신의 캠퍼스 라이프를 넓히는 가장 확실한 연결 : Konect',
+        id: '/',
+
         start_url: '/',
+        scope: '/',
         display: 'standalone',
+        orientation: 'portrait',
         theme_color: '#ffffff',
         background_color: '#ffffff',
         icons: [
@@ -42,6 +48,31 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
+          },
+        ],
+      },
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+
+        // 런타임 캐싱: 이미지/폰트 같은 것들
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images',
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'font',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'fonts',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            },
           },
         ],
       },
