@@ -2,6 +2,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { useNavigate } from 'react-router-dom';
 import { getMyInfo, putMyInfo } from '@/apis/auth';
 import type { ModifyMyInfoRequest } from '@/apis/auth/entity';
+import type { ApiError } from '@/apis/client';
 
 export const useMyInfo = () => {
   const queryClient = useQueryClient();
@@ -12,7 +13,7 @@ export const useMyInfo = () => {
     queryFn: () => getMyInfo(),
   });
 
-  const { mutateAsync: modifyMyInfo } = useMutation({
+  const { mutateAsync: modifyMyInfo, error } = useMutation({
     mutationKey: ['modifyMyInfo'],
     mutationFn: (data: ModifyMyInfoRequest) => putMyInfo(data),
     onSuccess: () => {
@@ -21,5 +22,9 @@ export const useMyInfo = () => {
     },
   });
 
-  return { myInfo, modifyMyInfo };
+  return {
+    myInfo,
+    modifyMyInfo,
+    error: error as ApiError | null,
+  };
 };

@@ -42,7 +42,15 @@ function NameStep() {
         onChange={(e) => setName(e.target.value)}
         className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
       />
-      {error && <p className="mt-2 text-sm text-red-500"> {error.message ?? '회원가입에 실패했습니다.'}</p>}
+      {error && (
+        <div className="mt-2 text-sm text-red-500">
+          {error.apiError?.fieldErrors?.length ? (
+            error.apiError.fieldErrors.map((fieldError, index) => <p key={index}>{fieldError.message}</p>)
+          ) : (
+            <p>{error.message ?? '회원가입에 실패했습니다.'}</p>
+          )}
+        </div>
+      )}
     </StepLayout>
   );
 }

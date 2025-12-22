@@ -4,10 +4,17 @@ if (!BASE_URL) {
   throw new Error('API 경로 환경변수가 설정되지 않았습니다.');
 }
 
+export interface FieldError {
+  field: string;
+  message: string;
+  constraint: string;
+}
+
 export interface ApiErrorResponse {
   code: string;
   message: string;
   errorTraceId: string;
+  fieldErrors?: FieldError[];
 }
 
 export interface ApiError extends Error {
