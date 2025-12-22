@@ -24,7 +24,10 @@ function StudentIdStep() {
       <input
         type="text"
         value={studentId}
-        onChange={(e) => setStudentId(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value.replace(/[^0-9]/g, '');
+          setStudentId(value);
+        }}
         className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
       />
     </StepLayout>

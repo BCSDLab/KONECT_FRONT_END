@@ -30,3 +30,10 @@ export const putMyInfo = async (data: ModifyMyInfoRequest) => {
   });
   return response;
 };
+
+export const deleteMyAccount = async () => {
+  const response = await apiClient.delete('/users/withdraw', {
+    requiresAuth: true,
+  });
+  return response;
+};

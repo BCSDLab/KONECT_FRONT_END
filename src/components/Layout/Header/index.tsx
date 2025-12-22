@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import BellIcon from '@/assets/svg/bell.svg';
+import ChatCircleIcon from '@/assets/svg/chat-circle.svg';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
 import { useMyInfo } from '@/pages/Profile/hooks/useMyInfo';
@@ -12,7 +12,7 @@ function NotificationBell() {
 
   return (
     <Link to={'chats'} className="relative">
-      <BellIcon />
+      <ChatCircleIcon />
       {totalUnreadCount > 0 && (
         <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
           {totalUnreadCount > 99 ? '99+' : totalUnreadCount}

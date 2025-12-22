@@ -63,24 +63,34 @@ function Home() {
             전체보기
           </Link>
         </div>
-        {scheduleListData?.schedules.slice(0, 3).map((schedule) => (
-          <Card key={schedule.title} className="mt-2">
-            <div className="flex gap-3">
-              <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
-                <div className="text-primary text-center text-[10px] leading-3 font-bold">
-                  {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
-                </div>
-                <CalendarIcon />
-              </div>
-              <div className="flex flex-1 flex-col justify-center gap-1">
-                <div className="text-[15px] leading-[17px] font-bold text-indigo-700">{schedule.title}</div>
-                <div className="text-[13px] leading-4 text-indigo-300">
-                  {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
-                </div>
-              </div>
+        {scheduleListData?.schedules.length === 0 ? (
+          <Card className="mt-2">
+            <div className="flex flex-col items-center py-4 text-center">
+              <CalendarIcon className="mb-2 text-gray-300" />
+              <div className="text-sm text-gray-500">다가오는 일정이 없습니다</div>
+              <div className="mt-1 text-xs text-gray-400">동아리에 가입하면 일정을 확인할 수 있어요</div>
             </div>
           </Card>
-        ))}
+        ) : (
+          scheduleListData?.schedules.slice(0, 3).map((schedule) => (
+            <Card key={schedule.title} className="mt-2">
+              <div className="flex gap-3">
+                <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
+                  <div className="text-primary text-center text-[10px] leading-3 font-bold">
+                    {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
+                  </div>
+                  <CalendarIcon />
+                </div>
+                <div className="flex flex-1 flex-col justify-center gap-1">
+                  <div className="text-[15px] leading-[17px] font-bold text-indigo-700">{schedule.title}</div>
+                  <div className="text-[13px] leading-4 text-indigo-300">
+                    {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
       </div>
 
       <div className="flex flex-col gap-2">
@@ -91,9 +101,20 @@ function Home() {
           </Link>
         </div>
         <div className="flex flex-col gap-2">
-          {clubs.slice(0, 3).map((club) => (
-            <ClubCard key={club.id} club={club} />
-          ))}
+          {clubs.length === 0 ? (
+            <Card>
+              <div className="flex flex-col items-center py-4 text-center">
+                <div className="text-sm text-gray-500">현재 모집중인 동아리가 없습니다</div>
+                <div className="mt-1 text-xs text-gray-400">새로운 모집이 시작되면 알려드릴게요</div>
+              </div>
+            </Card>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {clubs.slice(0, 3).map((club) => (
+                <ClubCard key={club.id} club={club} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
