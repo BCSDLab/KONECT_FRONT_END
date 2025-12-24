@@ -10,6 +10,7 @@ export interface MyInfoResponse {
   universityName: string;
   studentNumber: string;
   phoneNumber: string;
+  email: string;
   imageUrl: string;
   joinedClubCount: number;
   studyTime: string;
