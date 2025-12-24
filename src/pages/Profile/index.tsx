@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useMyInfo } from './hooks/useMyInfo';
 
 const fields = [
-  { label: '이름', name: 'name', disabled: false },
   { label: '학교명', name: 'universityName', disabled: true },
+  { label: '이메일', name: 'email', disabled: true },
+  { label: '이름', name: 'name', disabled: false },
   { label: '학번', name: 'studentNumber', disabled: false },
   { label: '전화번호', name: 'phoneNumber', disabled: false },
 ] as const;
