@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import CheckCircleIcon from '@/assets/svg/check-circle.svg';
 import { useGetClubDetail } from '../ClubDetail/hooks/useGetClubDetail';
 
-function ApplyFinishPage() {
+function ApplyCompletePage() {
   const { clubId } = useParams();
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
 
@@ -30,4 +30,4 @@ function ApplyFinishPage() {
   );
 }
 
-export default ApplyFinishPage;
+export default ApplyCompletePage;
