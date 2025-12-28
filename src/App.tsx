@@ -34,7 +34,7 @@ function App() {
           <Route path="signup">
             <Route index element={<TermStep />} />
             <Route path="university" element={<UniversityStep />} />
-            <Route path="student-id" element={<StudentIdStep />} />
+            <Route path="studentid" element={<StudentIdStep />} />
             <Route path="name" element={<NameStep />} />
             <Route path="finish" element={<FinishStep />} />
           </Route>
