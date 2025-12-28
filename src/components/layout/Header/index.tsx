@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import ChatCircleIcon from '@/assets/svg/chat-circle.svg';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
-import { useMyInfo } from '@/pages/Profile/hooks/useMyInfo';
+import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 import { ROUTE_TITLES } from './routeTitles';
 
 const INFO_HEADER_LIST = ['/home', '/council'];

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
-import ClubCard from '../ClubList/components/ClubCard';
-import { useGetClubs } from '../ClubList/hooks/useGetClubs';
+import ClubCard from '../Club/ClubList/components/ClubCard';
+import { useGetClubs } from '../Club/ClubList/hooks/useGetClubs';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetScheduleList } from './hooks/useGetScheduleList';

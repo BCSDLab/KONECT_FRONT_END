@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
-import AccountInfoCard from '@/pages/Application/components/AccountInfo';
-import { useGetClubFee } from '@/pages/Application/hooks/useGetClubFee';
+import AccountInfoCard from '../../Application/components/AccountInfo';
+import { useGetClubFee } from '../../Application/hooks/useGetClubFee';
 
 function ClubAccount() {
   const { clubId } = useParams();
