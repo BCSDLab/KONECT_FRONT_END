@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { AppLayout, AuthLayout, HomeLayout } from './components/Layout';
+
+import Layout from './components/layout';
 import Login from './pages/Auth/Login';
 import FinishStep from './pages/Auth/SignUp/FinishStep';
 import NameStep from './pages/Auth/SignUp/NameStep';
@@ -28,7 +29,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AuthLayout />}>
+        <Route element={<Layout contentClassName="bg-indigo-0" />}>
           <Route path="/" element={<Login />} />
           <Route path="signup">
             <Route index element={<TermStep />} />
@@ -38,7 +39,7 @@ function App() {
             <Route path="finish" element={<FinishStep />} />
           </Route>
         </Route>
-        <Route element={<HomeLayout />}>
+        <Route element={<Layout showBottomNav />}>
           <Route path="home" element={<Home />} />
           <Route path="me" element={<MyPage />} />
           <Route path="council">
@@ -46,7 +47,7 @@ function App() {
             <Route path="notice/:noticeId" element={<CouncilNotice />} />
           </Route>
         </Route>
-        <Route element={<AppLayout />}>
+        <Route element={<Layout />}>
           <Route path="profile" element={<Profile />} />
           <Route path="legal">
             <Route path="oss" element={<LicensePage />} />
