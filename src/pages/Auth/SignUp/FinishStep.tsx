@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import CheckInCircleIcon from '@/assets/svg/check-in-circle.svg';
-import { useMyInfo } from '../Profile/hooks/useMyInfo';
+import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 
 function FinishStep() {
   const navigate = useNavigate();

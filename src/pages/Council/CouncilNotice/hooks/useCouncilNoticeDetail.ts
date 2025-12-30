@@ -44,6 +44,8 @@ export const useGetCouncilNoticeDetail = ({ noticeId }: UseGetCouncilNoticeDetai
 
       return changed ? next : old;
     });
+
+    queryClient.invalidateQueries({ queryKey: ['myInfo'], refetchType: 'all' });
   }, [noticeId, query.data, queryClient]);
 
   return query;

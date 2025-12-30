@@ -22,6 +22,10 @@ function ClubDetail() {
     setSearchParams({ tab }, { replace: true });
   };
 
+  if (!clubDetail) {
+    return <div>잘못된 경로입니다</div>;
+  }
+
   const tabs: { key: TabType; label: string; show: boolean }[] = [
     { key: 'recruitment', label: '모집', show: clubDetail.recruitment.status !== 'CLOSED' },
     { key: 'intro', label: '소개', show: true },
@@ -30,10 +34,6 @@ function ClubDetail() {
   ];
 
   const visibleTabs = tabs.filter((tab) => tab.show);
-
-  if (!clubDetail) {
-    return <div>잘못된 경로입니다</div>;
-  }
 
   return (
     <>

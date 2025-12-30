@@ -30,7 +30,7 @@ function UniversityStep() {
 
   const handleUniversitySelect = (universityId: string) => () => {
     update({ universityId });
-    navigate('/signup/student-id');
+    navigate('/signup/studentid');
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useCouncilNotice } from '@/pages/ClubDetail/hooks/useCouncilNotices';
+import { useCouncilNotice } from '@/pages/Club/ClubDetail/hooks/useCouncilNotices';
 
 function CouncilNotice() {
   const observerRef = useRef<HTMLDivElement>(null);
