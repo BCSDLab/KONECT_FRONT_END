@@ -11,7 +11,7 @@ interface LayoutProps {
 
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-dvh flex-col">
       <Header />
       <Suspense>
         <main
