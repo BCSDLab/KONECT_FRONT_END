@@ -32,7 +32,7 @@ function ClubFeePage() {
       <button
         type="button"
         className="bg-primary mt-auto w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold text-white"
-        onClick={() => navigate(`/clubs/${clubId}/finish`)}
+        onClick={() => navigate(`/clubs/${clubId}/complete`)}
       >
         제출하기
       </button>

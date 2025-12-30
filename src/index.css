@@ -18,8 +18,13 @@
 }
 
 @layer base {
+  html {
+    overscroll-behavior: none;
+  }
+
   body {
     position: relative;
+    overscroll-behavior-y: contain;
   }
 
   button {
