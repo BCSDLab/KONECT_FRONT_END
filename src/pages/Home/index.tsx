@@ -23,10 +23,12 @@ function formatScheduleDate(startedAt: string, endedAt: string): string {
 
 function Home() {
   const { data: clubsData } = useGetClubs({ limit: 10, isRecruiting: true });
+  const { data: allClubsData } = useGetClubs({ limit: 1, isRecruiting: false });
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetScheduleList();
 
   const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
+  const totalClubCount = allClubsData?.pages[0]?.totalCount ?? 0;
 
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
@@ -36,7 +38,7 @@ function Home() {
             <div className="mb-3">
               <div className="mb-1.5 text-xs leading-3.5">환영합니다!</div>
               <div className="mb-2 text-sm leading-4 font-semibold">나에게 맞는 동아리를 찾아보세요</div>
-              <div className="text-xs leading-3.5">42개의 동아리가 기다리고 있어요</div>
+              <div className="text-xs leading-3.5">{totalClubCount}개의 동아리가 기다리고 있어요</div>
             </div>
 
             <Link to="/clubs" className="bg-primary w-full rounded-sm py-3 text-center text-xs font-medium text-white">
