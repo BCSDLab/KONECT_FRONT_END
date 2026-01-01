@@ -1,9 +1,9 @@
 import clsx from 'clsx';
 import { useLocation, Link } from 'react-router-dom';
-import SearchIcon from '@/assets/svg/big-search.svg';
 import HouseIcon from '@/assets/svg/house.svg';
 import PeopleIcon from '@/assets/svg/people.svg';
 import PersonIcon from '@/assets/svg/person.svg';
+import TimerIcon from '@/assets/svg/timer.svg';
 
 function BottomNav() {
   const { pathname } = useLocation();
@@ -23,9 +23,9 @@ function BottomNav() {
           <span className={clsx(pathname.startsWith('/council') ? 'text-primary' : 'text-indigo-100')}>총동연</span>
         </Link>
 
-        <Link to="/clubs" className="flex flex-col items-center">
-          <SearchIcon className={clsx('h-5 w-5', pathname.startsWith('/clubs') ? 'text-primary' : 'text-indigo-100')} />
-          <span className={clsx(pathname.startsWith('/clubs') ? 'text-primary' : 'text-indigo-100')}>모집</span>
+        <Link to="/timer" className="flex flex-col items-center">
+          <TimerIcon className={clsx('h-5 w-5', pathname.startsWith('/timer') ? 'text-primary' : 'text-indigo-100')} />
+          <span className={clsx(pathname.startsWith('/timer') ? 'text-primary' : 'text-indigo-100')}>모집</span>
         </Link>
 
         <Link to="/me" className="flex flex-col items-center">
