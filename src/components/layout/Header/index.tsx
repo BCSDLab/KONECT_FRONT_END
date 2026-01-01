@@ -5,7 +5,7 @@ import useChat from '@/pages/Chat/hooks/useChat';
 import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 import { ROUTE_TITLES } from './routeTitles';
 
-const INFO_HEADER_LIST = ['/home', '/council'];
+const INFO_HEADER_LIST = ['/home', '/council', '/timer'];
 
 function NotificationBell() {
   const { totalUnreadCount } = useChat();

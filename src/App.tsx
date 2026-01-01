@@ -22,6 +22,7 @@ import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
+import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
 import Profile from './pages/User/Profile';
 
@@ -46,6 +47,7 @@ function App() {
             <Route index element={<CouncilDetail />} />
             <Route path="notice/:noticeId" element={<CouncilNotice />} />
           </Route>
+          <Route path="timer" element={<Timer />} />
         </Route>
         <Route element={<Layout />}>
           <Route path="profile" element={<Profile />} />
