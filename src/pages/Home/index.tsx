@@ -5,7 +5,7 @@ import ClubCard from '../Club/ClubList/components/ClubCard';
 import { useGetClubs } from '../Club/ClubList/hooks/useGetClubs';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
-import { useGetScheduleList } from './hooks/useGetScheduleList';
+import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
 
 function formatScheduleDate(startedAt: string, endedAt: string): string {
   const [startDate, startTime] = startedAt.split(' ');
@@ -25,7 +25,7 @@ function Home() {
   const { data: clubsData } = useGetClubs({ limit: 10, isRecruiting: true });
   const { data: allClubsData } = useGetClubs({ limit: 1, isRecruiting: false });
   const { data: joinedClubsData } = useGetJoinedClubs();
-  const { data: scheduleListData } = useGetScheduleList();
+  const { data: scheduleListData } = useGetUpComingScheduleList();
 
   const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
   const totalClubCount = allClubsData?.pages[0]?.totalCount ?? 0;
