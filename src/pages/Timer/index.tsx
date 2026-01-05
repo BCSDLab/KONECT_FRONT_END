@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import clsx from 'clsx';
 import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
-import { useTimer } from '@/utils/hooks/useTimer';
 import RankingItem from './components/RankingItem';
 import TimerButton from './components/TimerButton';
+import { useStudyTimer } from './hooks/useStudyTimer';
 
 type TabType = '동아리' | '학년' | '개인';
 
 function TimerPage() {
-  const { time, isRunning, toggle } = useTimer();
+  const { time, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
 
@@ -54,11 +54,16 @@ function TimerPage() {
   const myRanking = rankings.find((item) => item.isMe);
   const sortedRankings = rankings.slice().sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity));
 
+  const isBusy = isStarting || isStopping;
+
   return (
     <div className="relative h-full overflow-hidden">
       {isRunning && <div className="fixed inset-0 z-30 bg-black/70" />}
+
       <div className="py-3">
-        <TimerButton time={time} isRunning={isRunning} onToggle={toggle} />
+        <div className={clsx(isBusy && 'pointer-events-none opacity-80')}>
+          <TimerButton time={time} isRunning={isRunning} onToggle={toggle} />
+        </div>
       </div>
 
       <div
@@ -77,6 +82,7 @@ function TimerPage() {
         <div className="flex h-5 cursor-grab items-center justify-center active:cursor-grabbing" {...handlers}>
           <div className="h-1 w-11 rounded-full bg-indigo-300" />
         </div>
+
         <div className="relative flex items-center justify-center px-4 font-semibold">
           <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
           <button className="absolute right-5 text-sm leading-5 text-indigo-300">설정</button>
