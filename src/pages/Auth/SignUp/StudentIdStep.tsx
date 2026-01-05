@@ -7,7 +7,7 @@ function StudentIdStep() {
   const navigate = useNavigate();
   const { studentId: savedStudentId, update } = useSignupStore();
 
-  const [studentId, setStudentId] = useState(savedStudentId ?? 0);
+  const [studentId, setStudentId] = useState(savedStudentId ?? '');
 
   const handleNext = () => {
     update({ studentId });
@@ -19,14 +19,14 @@ function StudentIdStep() {
       title="학번을 입력해주세요"
       description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
       onNext={handleNext}
-      nextDisabled={!studentId}
+      nextDisabled={!studentId.trim()}
     >
       <input
-        type="number"
+        type="text"
         value={studentId}
         onChange={(e) => {
           const value = e.target.value.replace(/[^0-9]/g, '');
-          setStudentId(Number(value));
+          setStudentId(value);
         }}
         className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
       />

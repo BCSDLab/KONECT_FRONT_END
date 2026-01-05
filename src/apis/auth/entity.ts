@@ -1,14 +1,14 @@
 export interface SignupRequest {
   name: string;
   universityId: string;
-  studentNumber: number;
+  studentNumber: string;
   isMarketingAgreement: boolean;
 }
 
 export interface MyInfoResponse {
   name: string;
   universityName: string;
-  studentNumber: number;
+  studentNumber: string;
   phoneNumber: string;
   email: string;
   imageUrl: string;
@@ -19,6 +19,6 @@ export interface MyInfoResponse {
 
 export interface ModifyMyInfoRequest {
   name?: string;
-  studentNumber?: number;
+  studentNumber?: string;
   phoneNumber?: string;
 }
