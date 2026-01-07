@@ -1,59 +1,26 @@
 import { useState } from 'react';
 import clsx from 'clsx';
+import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
-import RankingItem from './components/RankingItem';
+import { RankingList } from './components/RankingItem';
 import TimerButton from './components/TimerButton';
 import { useStudyTimer } from './hooks/useStudyTimer';
 
-type TabType = '동아리' | '학년' | '개인';
+type TabType = '동아리' | '학번' | '개인';
+
+const TAB_TO_TYPE: Record<TabType, StudyRankingParams['type']> = {
+  동아리: 'CLUB',
+  학번: 'STUDENT_NUMBER',
+  개인: 'PERSONAL',
+};
 
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
+  const [sort] = useState<StudyRankingParams['sort']>('MONTHLY');
 
-  const rankingsData: Record<
-    TabType,
-    Array<{
-      rank: number | null;
-      name: string;
-      school: string;
-      total: string;
-      today: string;
-      isMe?: boolean;
-    }>
-  > = {
-    동아리: [
-      { rank: 4, name: 'BCSD', school: '', total: '1245시간', today: '32시간', isMe: true },
-      { rank: 1, name: 'KUT', school: '', total: '4000시간', today: '120시간' },
-      { rank: 2, name: '한소리', school: '', total: '3900시간', today: '93시간' },
-      { rank: 3, name: '비상', school: '', total: '3899시간', today: '101시간' },
-      { rank: 5, name: 'KORA', school: '', total: '1100시간', today: '45시간' },
-      { rank: 6, name: '밥버러지', school: '', total: '110시간', today: '43시간' },
-      { rank: 7, name: '동아퀴', school: '', total: '11시간', today: '4시간' },
-    ],
-    학년: [
-      { rank: 1, name: '1학년', school: '', total: '5000시간', today: '150시간' },
-      { rank: 2, name: '2학년', school: '', total: '4500시간', today: '130시간' },
-      { rank: 3, name: '3학년', school: '', total: '4000시간', today: '100시간', isMe: true },
-      { rank: 4, name: '4학년', school: '', total: '3500시간', today: '80시간' },
-    ],
-    개인: [
-      { rank: null, name: '이준영', school: '한국기술교육대학교', total: '50:42:49', today: '00:12:33', isMe: true },
-      { rank: 1, name: '김혜준', school: '한국기술교육대학교', total: '118:42:49', today: '12:34:44' },
-      { rank: 2, name: '공우진', school: '한국기술교육대학교', total: '112:41:49', today: '9:34:44' },
-      { rank: 3, name: '홍길동', school: '한국기술교육대학교', total: '100:30:00', today: '8:00:00' },
-      { rank: 4, name: '김철수', school: '한국기술교육대학교', total: '95:20:00', today: '7:30:00' },
-      { rank: 5, name: '이영희', school: '한국기술교육대학교', total: '90:10:00', today: '6:00:00' },
-    ],
-  };
-
-  const tabs: TabType[] = ['동아리', '학년', '개인'];
-  const rankings = rankingsData[activeTab];
-
-  const myRanking = rankings.find((item) => item.isMe);
-  const sortedRankings = rankings.slice().sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity));
-
+  const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
 
   return (
@@ -107,13 +74,7 @@ function TimerPage() {
             </button>
           ))}
         </div>
-
-        <div className="overflow-y-auto" style={{ height: 'calc(100% - 48px)' }}>
-          {myRanking && <RankingItem item={myRanking} />}
-          {sortedRankings.map((item, index) => (
-            <RankingItem key={index} item={item} />
-          ))}
-        </div>
+        <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
       </div>
     </div>
   );
