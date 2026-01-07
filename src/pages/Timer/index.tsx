@@ -8,7 +8,7 @@ import { useStudyTimer } from './hooks/useStudyTimer';
 type TabType = '동아리' | '학년' | '개인';
 
 function TimerPage() {
-  const { time, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
+  const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
 
@@ -62,7 +62,12 @@ function TimerPage() {
 
       <div className="py-3">
         <div className={clsx(isBusy && 'pointer-events-none opacity-80')}>
-          <TimerButton time={time} isRunning={isRunning} onToggle={toggle} />
+          <TimerButton
+            todayAccumulatedSeconds={todayAccumulatedSeconds}
+            sessionStartMs={sessionStartMs}
+            isRunning={isRunning}
+            onToggle={toggle}
+          />
         </div>
       </div>
 
