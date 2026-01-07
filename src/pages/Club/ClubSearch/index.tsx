@@ -1,5 +1,6 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import ClubCard from '../ClubList/components/ClubCard';
 import SearchBar from '../ClubList/components/SearchBar';
 import { useGetClubs } from '../ClubList/hooks/useGetClubs';
@@ -11,11 +12,13 @@ function ClubSearch() {
   const [keyword, setKeyword] = useState(initialQuery);
   const [submittedQuery, setSubmittedQuery] = useState(initialQuery);
 
-  const observerRef = useRef<HTMLDivElement>(null);
-
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({
     limit: 10,
     query: submittedQuery || undefined,
+    enabled: !!submittedQuery,
+  });
+
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
     enabled: !!submittedQuery,
   });
 
@@ -35,26 +38,6 @@ function ClubSearch() {
 
     setSubmittedQuery(trimmed);
   };
-
-  useEffect(() => {
-    if (!submittedQuery || !hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const currentObserver = observerRef.current;
-    if (currentObserver) observer.observe(currentObserver);
-
-    return () => {
-      if (currentObserver) observer.unobserve(currentObserver);
-    };
-  }, [submittedQuery, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <>

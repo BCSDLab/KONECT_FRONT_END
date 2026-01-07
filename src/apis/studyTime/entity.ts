@@ -39,6 +39,6 @@ export interface MyStudyRankingParams {
 
 export interface MyStudyRankingResponse {
   clubRankings: StudyRanking[];
-  studentNumberRankings: StudyRanking;
-  personalRanking: StudyRanking;
+  studentNumberRanking: StudyRanking | null;
+  personalRanking: StudyRanking | null;
 }

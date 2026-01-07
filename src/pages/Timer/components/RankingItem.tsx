@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
 import type { StudyRanking, StudyRankingParams } from '@/apis/studyTime/entity';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import { formatTime } from '@/utils/ts/time';
 import { useStudyTimeRanking } from '../hooks/useStudyTimeRanking';
 
@@ -45,38 +45,15 @@ interface RankingListProps {
 }
 
 export function RankingList({ type, sort }: RankingListProps) {
-  const observerRef = useRef<HTMLDivElement>(null);
   const { rankings, myRankings, fetchNextPage, hasNextPage, isFetchingNextPage } = useStudyTimeRanking({ type, sort });
-
-  useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const currentObserver = observerRef.current;
-    if (currentObserver) {
-      observer.observe(currentObserver);
-    }
-
-    return () => {
-      if (currentObserver) {
-        observer.unobserve(currentObserver);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   return (
     <div className="overflow-y-auto" style={{ height: 'calc(100% - 48px)' }}>
-      {myRankings.map((item, index) => (
-        <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} />
-      ))}
+      {myRankings.map(
+        (item, index) =>
+          item && <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} />
+      )}
       {rankings.map((item, index) => (
         <RankingItem key={`ranking-${index}-${item.rank}-${item.name}`} item={item} sort={sort} />
       ))}

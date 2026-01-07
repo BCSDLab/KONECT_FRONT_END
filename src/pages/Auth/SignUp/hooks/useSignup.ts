@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { signup } from '@/apis/auth';
-import type { ApiError } from '@/apis/client';
+import type { ApiError } from '@/interface/error';
 
 export const useSignupMutation = () => {
   const mutation = useMutation({

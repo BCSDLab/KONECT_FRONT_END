@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
@@ -6,35 +6,11 @@ import { useGetClubs } from './hooks/useGetClubs';
 
 function ClubList() {
   useScrollToTop();
-  const observerRef = useRef<HTMLDivElement>(null);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({ limit: 10 });
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const totalCount = data?.pages[0]?.totalCount ?? 0;
   const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];
-
-  useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const currentObserver = observerRef.current;
-    if (currentObserver) {
-      observer.observe(currentObserver);
-    }
-
-    return () => {
-      if (currentObserver) {
-        observer.unobserve(currentObserver);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="pb-15">

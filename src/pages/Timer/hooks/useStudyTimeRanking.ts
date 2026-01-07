@@ -29,17 +29,17 @@ export const useStudyTimeRanking = ({
   });
 
   const { data: myRankingData } = useSuspenseQuery({
-    queryKey: ['myStudyTimeRanking', sort],
+    queryKey: ['myStudyTimeRanking', sort, type],
     queryFn: () => getMyStudyTimeRanking({ sort }),
     select: (data) => {
       if (type === 'CLUB') return data.clubRankings;
-      if (type === 'STUDENT_NUMBER') return [data.studentNumberRankings];
+      if (type === 'STUDENT_NUMBER') return [data.studentNumberRanking];
       return [data.personalRanking];
     },
   });
 
   const rankings = data?.pages.flatMap((page) => page.rankings) ?? [];
-  const myRankings = myRankingData?.filter(Boolean) ?? [];
+  const myRankings = myRankingData ?? [];
 
   return {
     rankings,

@@ -1,7 +1,8 @@
-import { useRef, useEffect, type ChangeEvent } from 'react';
+import { useRef, useEffect, useMemo, type ChangeEvent } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import useChat from './hooks/useChat';
 
 const getDateKey = (dateString: string) => {
@@ -26,11 +27,11 @@ function ChatRoom() {
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
-  const topRef = useRef<HTMLDivElement>(null);
+  const topRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
 
-  const sortedMessages = [...chatMessages].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+  const sortedMessages = useMemo(
+    () => [...chatMessages].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()),
+    [chatMessages]
   );
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -59,23 +60,9 @@ function ChatRoom() {
     messagesEndRef.current?.scrollIntoView();
   }, [chatMessages]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (topRef.current) observer.observe(topRef.current);
-    return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
-      <div ref={messagesContainerRef} className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         <div ref={topRef} />
 
         {sortedMessages.map((message, index) => {
