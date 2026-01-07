@@ -29,8 +29,8 @@ export const useStudyTimeRanking = ({
   });
 
   const { data: myRankingData } = useSuspenseQuery({
-    queryKey: ['myStudyTimeRanking', type],
-    queryFn: getMyStudyTimeRanking,
+    queryKey: ['myStudyTimeRanking', sort],
+    queryFn: () => getMyStudyTimeRanking({ sort }),
     select: (data) => {
       if (type === 'CLUB') return data.clubRankings;
       if (type === 'STUDENT_NUMBER') return [data.studentNumberRankings];

@@ -1,5 +1,6 @@
 import { apiClient } from '../client';
 import type {
+  MyStudyRankingParams,
   MyStudyRankingResponse,
   StopTimerResponse,
   StudyRankingParams,
@@ -34,8 +35,9 @@ export const getStudyTimeRanking = async (params: StudyRankingParams) => {
   return response;
 };
 
-export const getMyStudyTimeRanking = async () => {
-  const response = await apiClient.get<MyStudyRankingResponse>('studytimes/rankings/me', {
+export const getMyStudyTimeRanking = async (params: MyStudyRankingParams) => {
+  const response = await apiClient.get<MyStudyRankingResponse, MyStudyRankingParams>('studytimes/rankings/me', {
+    params,
     requiresAuth: true,
   });
   return response;

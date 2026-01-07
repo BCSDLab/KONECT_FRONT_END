@@ -33,6 +33,10 @@ export interface StudyRankingResponse extends PaginationResponse {
   rankings: StudyRanking[];
 }
 
+export interface MyStudyRankingParams {
+  sort: 'MONTHLY' | 'DAILY';
+}
+
 export interface MyStudyRankingResponse {
   clubRankings: StudyRanking[];
   studentNumberRankings: StudyRanking;
