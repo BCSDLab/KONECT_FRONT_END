@@ -1,13 +1,32 @@
+import { useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { formatTime } from '@/utils/ts/time';
 
 interface TimerButtonProps {
-  time: number;
+  todayAccumulatedSeconds: number;
+  sessionStartMs: number | null;
   isRunning: boolean;
   onToggle: () => void;
 }
 
-function TimerButton({ time, isRunning, onToggle }: TimerButtonProps) {
+function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onToggle }: TimerButtonProps) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const tick = () => setNowMs(Date.now());
+
+    tick();
+
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, [isRunning]);
+
+  const sessionSeconds = isRunning && sessionStartMs != null ? Math.floor((nowMs - sessionStartMs) / 1000) : 0;
+
+  const time = todayAccumulatedSeconds + sessionSeconds;
+
   return (
     <button
       onClick={onToggle}
