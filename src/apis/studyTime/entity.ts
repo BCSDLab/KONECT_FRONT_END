@@ -1,16 +1,40 @@
+import type { PaginationParams, PaginationResponse } from '../common/pagination';
+
 export interface StudyTimeSummaryResponse {
   todayStudyTime: number;
   monthlyStudyTime: number;
   totalStudyTime: number;
 }
 
-export interface TimerOffRequest {
+export interface StopTimerRequest {
   totalSeconds: number;
 }
 
-export interface TimerOffResponse {
+export interface StopTimerResponse {
   sessionSeconds: number;
   dailySeconds: number;
   monthlySeconds: number;
   totalSeconds: number;
+}
+
+export interface StudyRankingParams extends PaginationParams {
+  type: 'CLUB' | 'STUDENT_NUMBER' | 'PERSONAL';
+  sort: 'MONTHLY' | 'DAILY';
+}
+
+export interface StudyRanking {
+  rank: number;
+  name: string;
+  monthlyStudyTime: number;
+  dailyStudyTime: number;
+}
+
+export interface StudyRankingResponse extends PaginationResponse {
+  rankings: StudyRanking[];
+}
+
+export interface MyStudyRankingResponse {
+  clubRankings: StudyRanking[];
+  studentNumberRankings: StudyRanking;
+  personalRanking: StudyRanking;
 }
