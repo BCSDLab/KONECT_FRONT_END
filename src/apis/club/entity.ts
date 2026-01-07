@@ -1,3 +1,5 @@
+import type { PaginationParams, PaginationResponse } from '../common/pagination';
+
 export interface Club {
   id: number;
   name: string;
@@ -8,17 +10,11 @@ export interface Club {
   tags: string[];
 }
 
-export interface ClubResponse {
-  totalCount: number;
-  currentCount: number;
-  totalPage: number;
-  currentPage: number;
+export interface ClubResponse extends PaginationResponse {
   clubs: Club[];
 }
 
-export interface ClubRequestParams {
-  page: number;
-  limit: number;
+export interface ClubRequestParams extends PaginationParams {
   isRecruiting: boolean;
   query?: string;
 }
