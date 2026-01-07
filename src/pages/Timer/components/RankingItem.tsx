@@ -74,11 +74,11 @@ export function RankingList({ type, sort }: RankingListProps) {
 
   return (
     <div className="overflow-y-auto" style={{ height: 'calc(100% - 48px)' }}>
-      {myRankings.map((item) => (
-        <RankingItem key={`my-${item.rank}-${item.name}`} item={item} isMe sort={sort} />
+      {myRankings.map((item, index) => (
+        <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} />
       ))}
-      {rankings.map((item) => (
-        <RankingItem key={`${item.rank}-${item.name}`} item={item} sort={sort} />
+      {rankings.map((item, index) => (
+        <RankingItem key={`ranking-${index}-${item.rank}-${item.name}`} item={item} sort={sort} />
       ))}
       {hasNextPage && <div ref={observerRef} className="flex h-20 items-center justify-center" />}
     </div>
