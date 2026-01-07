@@ -1,3 +1,5 @@
+import type { PaginationParams, PaginationResponse } from '../common/pagination';
+
 interface ChatRoom {
   chatRoomId: number;
   chatPartnerName: string;
@@ -20,17 +22,11 @@ export interface ChatMessage {
   isMine: boolean;
 }
 
-export interface ChatMessageRequestParam {
-  page: number;
-  limit: number;
+export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
 }
 
-export interface ChatMessagesResponse {
-  totalCount: number;
-  currentCount: number;
-  totalPage: number;
-  currentPage: number;
+export interface ChatMessagesResponse extends PaginationResponse {
   messages: ChatMessage[];
 }
 
