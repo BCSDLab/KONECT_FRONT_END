@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
 import AuthGuard from './components/auth/AuthGuard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
@@ -37,16 +36,13 @@ function App() {
           <Route element={<PublicRoute />}>
             <Route element={<Layout contentClassName="bg-indigo-0" />}>
               <Route path="/" element={<Login />} />
-            </Route>
-          </Route>
-
-          <Route element={<Layout contentClassName="bg-indigo-0" />}>
-            <Route path="signup">
-              <Route index element={<TermStep />} />
-              <Route path="university" element={<UniversityStep />} />
-              <Route path="studentid" element={<StudentIdStep />} />
-              <Route path="name" element={<NameStep />} />
-              <Route path="finish" element={<FinishStep />} />
+              <Route path="signup">
+                <Route index element={<TermStep />} />
+                <Route path="university" element={<UniversityStep />} />
+                <Route path="studentid" element={<StudentIdStep />} />
+                <Route path="name" element={<NameStep />} />
+                <Route path="finish" element={<FinishStep />} />
+              </Route>
             </Route>
           </Route>
 
