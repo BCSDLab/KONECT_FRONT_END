@@ -15,6 +15,7 @@ export interface MyInfoResponse {
   joinedClubCount: number;
   studyTime: string;
   unreadCouncilNoticeCount: number;
+  isClubManager: boolean;
 }
 
 export interface ModifyMyInfoRequest {
