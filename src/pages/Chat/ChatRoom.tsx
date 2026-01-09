@@ -1,4 +1,4 @@
-import { useRef, useEffect, useMemo, type ChangeEvent } from 'react';
+import { useRef, useEffect, type ChangeEvent } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
@@ -29,9 +29,8 @@ function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const topRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
 
-  const sortedMessages = useMemo(
-    () => [...chatMessages].sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()),
-    [chatMessages]
+  const sortedMessages = [...chatMessages].sort(
+    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
   );
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

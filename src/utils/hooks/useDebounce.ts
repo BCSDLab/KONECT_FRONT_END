@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import type { DependencyList, EffectCallback } from 'react';
 
 function useIsomorphicLayoutEffect(effect: EffectCallback, deps?: DependencyList) {
@@ -26,19 +26,15 @@ function useDebouncedCallback<F extends (...args: unknown[]) => ReturnType<F>>(
     }
   }, []);
 
-  return useMemo(
-    () =>
-      (...params: Parameters<F>) => {
-        if (timer.current) {
-          clearTimeout(timer.current);
-        }
+  return (...params: Parameters<F>) => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
 
-        timer.current = setTimeout(() => {
-          callbackRef.current(...params);
-        }, debounceTime);
-      },
-    [debounceTime]
-  );
+    timer.current = setTimeout(() => {
+      callbackRef.current(...params);
+    }, debounceTime);
+  };
 }
 
 export default useDebouncedCallback;
