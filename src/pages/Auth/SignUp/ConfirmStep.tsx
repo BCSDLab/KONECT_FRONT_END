@@ -5,11 +5,10 @@ import { useSignupMutation } from './hooks/useSignup';
 
 function ConfirmStep() {
   const navigate = useNavigate();
-  const { universityName, universityId, studentId, isMarketingAgreement, name, reset, update } = useSignupStore();
+  const { universityName, universityId, studentId, isMarketingAgreement, name, reset } = useSignupStore();
   const { mutate, isPending, error } = useSignupMutation();
 
   const handleNext = () => {
-    update({ name });
     mutate(
       {
         name,
@@ -28,7 +27,7 @@ function ConfirmStep() {
 
   return (
     <StepLayout
-      title="정보를 입력해주세요"
+      title="정보를 확인해주세요"
       description={`다시 한번 정보를 확인해주세요\n제공된 정보가 부정확할 경우 불이익이 발생할 수 있습니다`}
       onNext={handleNext}
       nextDisabled={isPending}
@@ -63,7 +62,7 @@ function ConfirmStep() {
       {error && (
         <div className="mt-2 text-sm text-red-500">
           {error.apiError?.fieldErrors?.length ? (
-            error.apiError.fieldErrors.map((fieldError, index) => <p key={index}>{fieldError.message}</p>)
+            error.apiError.fieldErrors.map((fieldError) => <p key={fieldError.message}>{fieldError.message}</p>)
           ) : (
             <p>{error.message ?? '회원가입에 실패했습니다.'}</p>
           )}

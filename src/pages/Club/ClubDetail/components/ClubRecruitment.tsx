@@ -50,12 +50,7 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
         {clubRecruitment.images.length > 0 && (
           <div className="mt-2 flex flex-col gap-2">
             {clubRecruitment.images.map((image, index) => (
-              <img
-                key={image.url + index}
-                src={image.url}
-                alt={`모집 공고 이미지 ${index + 1}`}
-                className="w-full rounded-sm"
-              />
+              <img key={index} src={image.url} alt={`모집 공고 이미지 ${index + 1}`} className="w-full rounded-sm" />
             ))}
           </div>
         )}

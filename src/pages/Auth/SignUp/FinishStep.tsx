@@ -9,6 +9,10 @@ function FinishStep() {
   const setUser = useAuthStore((state) => state.setUser);
 
   const handleStart = () => {
+    if (!myInfo) {
+      return;
+    }
+
     setUser(myInfo);
     navigate('/home');
   };
