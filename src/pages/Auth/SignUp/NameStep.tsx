@@ -2,31 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
-import { useSignupMutation } from './hooks/useSignup';
 
 function NameStep() {
   const navigate = useNavigate();
-  const { universityId, studentId, isMarketingAgreement, name: savedName, reset, update } = useSignupStore();
-  const { mutate, isPending, error } = useSignupMutation();
+  const { name: savedName, update } = useSignupStore();
 
   const [name, setName] = useState(savedName ?? '');
 
   const handleNext = () => {
     update({ name });
-    mutate(
-      {
-        name,
-        universityId,
-        studentNumber: studentId,
-        isMarketingAgreement,
-      },
-      {
-        onSuccess: () => {
-          reset();
-          navigate('/signup/finish');
-        },
-      }
-    );
+    navigate('/signup/confirm');
   };
 
   return (
@@ -34,7 +19,7 @@ function NameStep() {
       title="이름을 입력해주세요"
       description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
       onNext={handleNext}
-      nextDisabled={!name.trim() || isPending}
+      nextDisabled={!name.trim()}
     >
       <input
         type="text"
@@ -45,15 +30,6 @@ function NameStep() {
         }}
         className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300"
       />
-      {error && (
-        <div className="mt-2 text-sm text-red-500">
-          {error.apiError?.fieldErrors?.length ? (
-            error.apiError.fieldErrors.map((fieldError, index) => <p key={index}>{fieldError.message}</p>)
-          ) : (
-            <p>{error.message ?? '회원가입에 실패했습니다.'}</p>
-          )}
-        </div>
-      )}
     </StepLayout>
   );
 }
