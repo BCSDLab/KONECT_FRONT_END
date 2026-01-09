@@ -1,10 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import CheckInCircleIcon from '@/assets/svg/check-in-circle.svg';
 import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
+import { useAuthStore } from '@/stores/authStore';
 
 function FinishStep() {
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
+  const setUser = useAuthStore((state) => state.setUser);
+
+  const handleStart = () => {
+    setUser(myInfo);
+    navigate('/home');
+  };
 
   return (
     <div className="flex flex-1 flex-col justify-between px-8">
@@ -23,7 +30,7 @@ function FinishStep() {
       </div>
 
       <button
-        onClick={() => navigate('/home')}
+        onClick={handleStart}
         className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
       >
         시작하기

@@ -28,8 +28,8 @@ function UniversityStep() {
     ? (universityList?.universities ?? [])
     : (universityList?.universities.filter((university) => university.name.includes(trimmed)) ?? []);
 
-  const handleUniversitySelect = (universityId: string) => () => {
-    update({ universityId });
+  const handleUniversitySelect = (universityId: string, universityName: string) => () => {
+    update({ universityId, universityName });
     navigate('/signup/studentid');
   };
 
@@ -44,7 +44,11 @@ function UniversityStep() {
       />
       <div className="mt-7 flex flex-col gap-2">
         {filteredUniversities.map((university) => (
-          <UniversityCard key={university.id} label={university.name} onClick={handleUniversitySelect(university.id)} />
+          <UniversityCard
+            key={university.id}
+            label={university.name}
+            onClick={handleUniversitySelect(university.id, university.name)}
+          />
         ))}
       </div>
     </StepLayout>
