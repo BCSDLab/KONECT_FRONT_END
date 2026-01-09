@@ -11,7 +11,7 @@ interface ModalProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function Modal({ isOpen, onClose, children, className }: ModalProps) {
-  const modalRef = useRef<HTMLDialogElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useClickTouchOutside(modalRef, onClose);
   useScrollLock(isOpen);
@@ -21,16 +21,17 @@ function Modal({ isOpen, onClose, children, className }: ModalProps) {
   return (
     <Portal>
       <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/60">
-        <dialog
+        <div
           ref={modalRef}
-          open={isOpen}
+          role="dialog"
+          aria-modal="true"
           className={twMerge(
             'fixed top-1/2 left-1/2 min-w-11/12 -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white',
             className
           )}
         >
           {children}
-        </dialog>
+        </div>
       </div>
     </Portal>
   );
