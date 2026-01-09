@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import clsx from 'clsx';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
@@ -17,6 +17,8 @@ const TAB_TO_TYPE: Record<TabType, StudyRankingParams['type']> = {
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
+
+  const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
   const [sort] = useState<StudyRankingParams['sort']>('MONTHLY');
 
@@ -64,7 +66,7 @@ function TimerPage() {
           {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => startTransition(() => setActiveTab(tab))}
               className={clsx(
                 'flex-1 border-b-[1.4px] py-1.5 text-center text-[13px] font-semibold',
                 activeTab === tab ? 'border-blue-500 text-indigo-700' : 'border-transparent text-indigo-200'
@@ -74,7 +76,9 @@ function TimerPage() {
             </button>
           ))}
         </div>
-        <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+        <div className={clsx(isPending && 'opacity-60 transition-opacity')}>
+          <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+        </div>
       </div>
     </div>
   );
