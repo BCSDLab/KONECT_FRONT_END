@@ -61,11 +61,6 @@ export default defineConfig({
         // 런타임 캐싱: 이미지/폰트 같은 것들
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
-            handler: 'NetworkOnly',
-          },
-
-          {
             urlPattern: ({ request }) => request.destination === 'image',
             handler: 'CacheFirst',
             options: {
