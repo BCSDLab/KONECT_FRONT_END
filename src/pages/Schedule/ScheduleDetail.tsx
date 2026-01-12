@@ -1,25 +1,93 @@
+import type { Schedule } from '@/apis/schedule/entity';
 import CalendarIcon from '@/assets/svg/calendar.svg';
+import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
+import { useScheduleList } from './hooks/useGetSchedules';
 
 type scheduleDetailProps = {
   month: number;
   day: number;
 };
 
+const SCHEDULE_COLOR = {
+  UNIVERSITY: '#AEDCBA',
+  CLUB: '#FDE49B',
+  COUNCIL: '#E9F2FA',
+};
+
+const MOCK_SCHEDULES = [
+  {
+    title: '동아리 회의',
+    startedAt: '2026.09.12 00:00',
+    endedAt: '2026.09.12 00:00',
+    scheduleCategory: 'CLUB',
+  },
+  {
+    title: '총학 행사',
+    startedAt: '2026.09.12 00:00',
+    endedAt: '2026.09.14 00:00',
+    scheduleCategory: 'COUNCIL',
+  },
+  {
+    title: '대학교 축제',
+    startedAt: '2026.09.11 00:00',
+    endedAt: '2026.09.13 00:00',
+    scheduleCategory: 'UNIVERSITY',
+  },
+  {
+    title: '동아리 축제',
+    startedAt: '2026.09.21 00:00',
+    endedAt: '2026.09.21 00:00',
+    scheduleCategory: 'CLUB',
+  },
+];
+
 function ScheduleDetail({ month, day }: scheduleDetailProps) {
+  // const { data: schedules } = useScheduleList({ year: new Date().getFullYear(), month });
+  const parseDateOnly = (value: string) => {
+    const [date] = value.split(' ');
+    const [year, month, day] = date.split('.').map(Number);
+    return new Date(year, month - 1, day);
+  };
+
+  const dailySchedules = MOCK_SCHEDULES?.filter(({ startedAt, endedAt }) => {
+    const target = new Date(new Date().getFullYear(), month - 1, day);
+
+    const start = parseDateOnly(startedAt);
+    const end = parseDateOnly(endedAt);
+
+    return start <= target && target <= end;
+  });
+
   return (
     <div className="flex flex-col gap-2 bg-white px-6">
       <span className="text-[14px] leading-4 font-semibold">
         {month}월 {day}일 일정 상세보기
       </span>
-      <div className="flex items-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-sm bg-pink-300">
-          <CalendarIcon className="text-indigo-100" />
+      {dailySchedules?.length ? (
+        dailySchedules.map(({ title, startedAt, endedAt, scheduleCategory }) => (
+          <div
+            className="flex items-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3"
+            key={title}
+          >
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-sm"
+              style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }}
+            >
+              <CalendarIcon className="text-indigo-100" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="text-[14px] leading-[17px] font-bold">{title}</div>
+              <div className="text-[13px] leading-4 font-[400] text-indigo-300">
+                {formatScheduleTime({ startedAt, endedAt })}
+              </div>
+            </div>
+          </div>
+        ))
+      ) : (
+        <div className="flex h-34 items-center justify-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3">
+          <div className="text-[15px] leading-[17px] font-bold text-indigo-200">일정이 없습니다!</div>
         </div>
-        <div className="flex flex-col gap-1">
-          <div className="text-[14px] leading-[17px] font-bold">일정 제목</div>
-          <div className="text-[13px] leading-4 font-[400] text-indigo-300">일정 설명</div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
