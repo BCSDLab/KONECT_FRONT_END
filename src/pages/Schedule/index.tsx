@@ -2,6 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import DateBox from './components/DateBox';
 import MonthPicker from './components/MonthPicker';
+import ScheduleDetail from './ScheduleDetail';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -40,7 +41,7 @@ function Schedule() {
   };
 
   return (
-    <>
+    <div>
       <main className="flex w-full flex-col gap-6 bg-white">
         <header className="flex justify-center gap-5">
           <MonthPicker year={Number(year)} month={Number(month)} setDate={setDate} />
@@ -64,7 +65,8 @@ function Schedule() {
           ))}
         </ul>
       </main>
-    </>
+      <ScheduleDetail month={Number(month)} day={Number(day)} />
+    </div>
   );
 }
 
