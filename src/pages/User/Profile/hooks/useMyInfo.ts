@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { getMyInfo, putMyInfo } from '@/apis/auth';
 import type { ModifyMyInfoRequest } from '@/apis/auth/entity';
@@ -27,4 +27,14 @@ export const useMyInfo = () => {
     modifyMyInfo,
     error: error as ApiError | null,
   };
+};
+
+export const useCheckLogin = () => {
+  const { data: myInfo, isSuccess } = useQuery({
+    queryKey: ['myInfo'],
+    queryFn: () => getMyInfo(),
+    retry: false,
+  });
+
+  return { myInfo, isLoggedIn: isSuccess && !!myInfo };
 };
