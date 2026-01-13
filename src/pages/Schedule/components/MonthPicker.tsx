@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import RightArrowIcon from '@/assets/svg/chevron-down.svg';
 
 function MonthPicker({
   year,
@@ -46,7 +46,7 @@ function MonthPicker({
         {year}년 {String(month).padStart(2, '0')}월
       </button>
 
-      <RightArrowIcon className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2" />
+      <RightArrowIcon className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2 pl-1" />
     </div>
   );
 }
