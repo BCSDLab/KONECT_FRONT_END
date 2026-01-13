@@ -49,7 +49,7 @@ function ScheduleDetail({ month, day }: scheduleDetailProps) {
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-[14px] leading-[17px] font-bold">{title}</div>
-              <div className="text-[13px] leading-4 font-[400] text-indigo-300">
+              <div className="h-2 text-[13px] leading-4 font-[400] text-indigo-300">
                 {formatScheduleTime({ startedAt, endedAt })}
               </div>
             </div>
