@@ -1,20 +1,8 @@
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
-import { useCheckLogin } from '@/pages/User/Profile/hooks/useMyInfo';
 
 function Login() {
-  const navigate = useNavigate();
-  const { isLoggedIn } = useCheckLogin();
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/home', { replace: true });
-    }
-  }, [isLoggedIn, navigate]);
-
   return (
     <div className="flex flex-1 flex-col justify-between p-8 pb-23">
       <div>
