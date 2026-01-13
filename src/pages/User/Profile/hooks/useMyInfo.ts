@@ -2,7 +2,7 @@ import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-q
 import { useNavigate } from 'react-router-dom';
 import { getMyInfo, putMyInfo } from '@/apis/auth';
 import type { ModifyMyInfoRequest } from '@/apis/auth/entity';
-import type { ApiError } from '@/apis/client';
+import type { ApiError } from '@/interface/error';
 
 export const useMyInfo = () => {
   const queryClient = useQueryClient();

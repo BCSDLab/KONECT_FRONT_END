@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { getChatMessages, getChatRooms, postChatMessage, postChatRooms } from '@/apis/chat';
 import type { ChatRoomsResponse } from '@/apis/chat/entity';
@@ -37,14 +37,11 @@ const useChat = (chatRoomId?: number) => {
     refetchInterval: 3000,
   });
 
-  const allMessages = useMemo(() => chatMessagesData?.pages.flatMap((page) => page.messages) ?? [], [chatMessagesData]);
+  const allMessages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
 
   const markedReadRoomRef = useRef<number | null>(null);
 
-  const totalUnreadCount = useMemo(
-    () => chatRoomList.chatRooms.reduce((sum, room) => sum + room.unreadCount, 0),
-    [chatRoomList]
-  );
+  const totalUnreadCount = chatRoomList.chatRooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
   useEffect(() => {
     if (!chatRoomId) return;

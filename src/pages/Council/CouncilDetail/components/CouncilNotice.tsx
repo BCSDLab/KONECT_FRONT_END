@@ -1,36 +1,12 @@
-import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { useCouncilNotice } from '@/pages/Club/ClubDetail/hooks/useCouncilNotices';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 
 function CouncilNotice() {
-  const observerRef = useRef<HTMLDivElement>(null);
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useCouncilNotice({ limit: 10 });
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const allNotices = data?.pages.flatMap((page) => page.councilNotices) ?? [];
-
-  useEffect(() => {
-    if (!hasNextPage || isFetchingNextPage) return;
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.3 }
-    );
-
-    const currentObserver = observerRef.current;
-    if (currentObserver) {
-      observer.observe(currentObserver);
-    }
-
-    return () => {
-      if (currentObserver) {
-        observer.unobserve(currentObserver);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div className="mt-31.5">

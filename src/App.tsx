@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
+import AuthGuard from './components/auth/AuthGuard';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import PublicRoute from './components/auth/PublicRoute';
 import Layout from './components/layout';
 import Login from './pages/Auth/Login';
+import ConfirmStep from './pages/Auth/SignUp/ConfirmStep';
 import FinishStep from './pages/Auth/SignUp/FinishStep';
 import NameStep from './pages/Auth/SignUp/NameStep';
 import StudentIdStep from './pages/Auth/SignUp/StudentIdStep';
@@ -29,48 +32,56 @@ import Profile from './pages/User/Profile';
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout contentClassName="bg-indigo-0" />}>
-          <Route path="/" element={<Login />} />
-          <Route path="signup">
-            <Route index element={<TermStep />} />
-            <Route path="university" element={<UniversityStep />} />
-            <Route path="studentid" element={<StudentIdStep />} />
-            <Route path="name" element={<NameStep />} />
-            <Route path="finish" element={<FinishStep />} />
+      <AuthGuard>
+        <Routes>
+          <Route element={<PublicRoute />}>
+            <Route element={<Layout contentClassName="bg-indigo-0" />}>
+              <Route path="/" element={<Login />} />
+              <Route path="signup">
+                <Route index element={<TermStep />} />
+                <Route path="university" element={<UniversityStep />} />
+                <Route path="studentid" element={<StudentIdStep />} />
+                <Route path="name" element={<NameStep />} />
+                <Route path="confirm" element={<ConfirmStep />} />
+                <Route path="finish" element={<FinishStep />} />
+              </Route>
+            </Route>
           </Route>
-        </Route>
-        <Route element={<Layout showBottomNav />}>
-          <Route path="home" element={<Home />} />
-          <Route path="me" element={<MyPage />} />
-          <Route path="council">
-            <Route index element={<CouncilDetail />} />
-            <Route path="notice/:noticeId" element={<CouncilNotice />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout showBottomNav />}>
+              <Route path="home" element={<Home />} />
+              <Route path="me" element={<MyPage />} />
+              <Route path="council">
+                <Route index element={<CouncilDetail />} />
+                <Route path="notice/:noticeId" element={<CouncilNotice />} />
+              </Route>
+              <Route path="timer" element={<Timer />} />
+            </Route>
+            <Route element={<Layout />}>
+              <Route path="profile" element={<Profile />} />
+              <Route path="legal">
+                <Route path="oss" element={<LicensePage />} />
+                <Route path="terms" element={<TermsPage />} />
+                <Route path="privacy" element={<PrivacyPolicyPage />} />
+                <Route path="marketing" element={<MarketingPolicyPage />} />
+              </Route>
+              <Route path="clubs">
+                <Route index element={<ClubList />} />
+                <Route path="search" element={<ClubSearch />} />
+                <Route path=":clubId" element={<ClubDetail />} />
+                <Route path=":clubId/applications" element={<ApplicationPage />} />
+                <Route path=":clubId/fee" element={<ClubFeePage />} />
+                <Route path=":clubId/complete" element={<ApplyCompletePage />} />
+              </Route>
+              <Route path="chats">
+                <Route index element={<ChatListPage />} />
+                <Route path=":chatRoomId" element={<ChatRoom />} />
+              </Route>
+            </Route>
           </Route>
-          <Route path="timer" element={<Timer />} />
-        </Route>
-        <Route element={<Layout />}>
-          <Route path="profile" element={<Profile />} />
-          <Route path="legal">
-            <Route path="oss" element={<LicensePage />} />
-            <Route path="terms" element={<TermsPage />} />
-            <Route path="privacy" element={<PrivacyPolicyPage />} />
-            <Route path="marketing" element={<MarketingPolicyPage />} />
-          </Route>
-          <Route path="clubs">
-            <Route index element={<ClubList />} />
-            <Route path="search" element={<ClubSearch />} />
-            <Route path=":clubId" element={<ClubDetail />} />
-            <Route path=":clubId/applications" element={<ApplicationPage />} />
-            <Route path=":clubId/fee" element={<ClubFeePage />} />
-            <Route path=":clubId/complete" element={<ApplyCompletePage />} />
-          </Route>
-          <Route path="chats">
-            <Route index element={<ChatListPage />} />
-            <Route path=":chatRoomId" element={<ChatRoom />} />
-          </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </AuthGuard>
     </BrowserRouter>
   );
 }

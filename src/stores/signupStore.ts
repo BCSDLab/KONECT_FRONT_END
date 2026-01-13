@@ -5,6 +5,7 @@ interface SignupState {
   isTermsAgreement: boolean;
   isPrivacyAgreement: boolean;
   universityId: string;
+  universityName: string;
   studentId: string;
   name: string;
   update: (partial: Partial<SignupState>) => void;
@@ -16,6 +17,7 @@ const initialState = {
   isTermsAgreement: false,
   isPrivacyAgreement: false,
   universityId: '',
+  universityName: '',
   studentId: '',
   name: '',
 };

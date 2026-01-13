@@ -1,7 +1,6 @@
-export interface NoticeRequestParams {
-  page: number;
-  limit: number;
-}
+import type { PaginationParams, PaginationResponse } from '../common/pagination';
+
+export type NoticeRequestParams = PaginationParams;
 
 export interface Notice {
   id: number;
@@ -10,11 +9,7 @@ export interface Notice {
   isRead: boolean;
 }
 
-export interface NoticeResponse {
-  totalCount: number;
-  currentCount: number;
-  totalPage: number;
-  currentPage: number;
+export interface NoticeResponse extends PaginationResponse {
   councilNotices: Notice[];
 }
 

@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import Modal from '@/components/common/Modal';
+import useBooleanState from '@/utils/hooks/useBooleanState';
+import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
 
 const fields = [
@@ -11,6 +14,10 @@ const fields = [
 
 function Profile() {
   const { myInfo, modifyMyInfo, error } = useMyInfo();
+  const { mutate: withdraw } = useWithdrawMutation();
+
+  const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
+
   const [form, setForm] = useState(() => ({
     name: myInfo?.name ?? '',
     studentNumber: myInfo?.studentNumber ?? '',
@@ -40,6 +47,12 @@ function Profile() {
           />
         </div>
       ))}
+      <div className="text-[10px] leading-3 font-medium text-indigo-300">
+        <button type="button" onClick={openModal} className="text-[#3182f6]">
+          탈퇴
+        </button>
+        <span>를 원하시나요?</span>
+      </div>
 
       {error && (
         <div className="text-sm text-red-500">
@@ -57,6 +70,28 @@ function Profile() {
       >
         수정 완료
       </button>
+
+      <Modal isOpen={isOpen} onClose={closeModal}>
+        <div className="flex flex-col gap-5 p-5">
+          <div className="text-lg leading-8 font-bold whitespace-pre-wrap">
+            정말로 탈퇴하시겠어요?{'\n'}탈퇴 후 코넥트의 기능을 사용할 수 없어요
+          </div>
+          <div className="flex justify-between gap-3">
+            <button
+              onClick={closeModal}
+              className="bg-indigo-25 w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold text-indigo-400"
+            >
+              취소
+            </button>
+            <button
+              onClick={() => withdraw()}
+              className="w-full rounded-lg bg-indigo-700 py-3.5 text-center text-lg leading-7 font-bold text-white"
+            >
+              탈퇴하기
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
