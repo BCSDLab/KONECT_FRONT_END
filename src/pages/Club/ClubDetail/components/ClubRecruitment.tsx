@@ -47,7 +47,13 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
         <div className="text-xs leading-3.5 whitespace-pre-wrap text-indigo-300">
           {clubRecruitment.content.replace(/\\n/g, '\n')}
         </div>
-        <img src={clubRecruitment.imageUrl} alt={clubRecruitment.content} />
+        {clubRecruitment.images.length > 0 && (
+          <div className="mt-2 flex flex-col gap-2">
+            {clubRecruitment.images.map((image, index) => (
+              <img key={index} src={image.url} alt={`모집 공고 이미지 ${index + 1}`} className="w-full rounded-sm" />
+            ))}
+          </div>
+        )}
       </Card>
     </div>
   );

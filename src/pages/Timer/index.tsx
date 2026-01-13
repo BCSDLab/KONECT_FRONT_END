@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import clsx from 'clsx';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
+import Dropdown from '@/components/common/Dropdown';
 import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
 import { RankingList } from './components/RankingItem';
 import TimerButton from './components/TimerButton';
@@ -14,11 +15,18 @@ const TAB_TO_TYPE: Record<TabType, StudyRankingParams['type']> = {
   개인: 'PERSONAL',
 };
 
+const SORT_OPTIONS = [
+  { value: 'MONTHLY', label: '월간' },
+  { value: 'DAILY', label: '일간' },
+] as const;
+
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
+
+  const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
-  const [sort] = useState<StudyRankingParams['sort']>('MONTHLY');
+  const [sort, setSort] = useState<StudyRankingParams['sort']>('MONTHLY');
 
   const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
@@ -57,14 +65,19 @@ function TimerPage() {
 
         <div className="relative flex items-center justify-center px-4 font-semibold">
           <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
-          <button className="absolute right-5 text-sm leading-5 text-indigo-300">설정</button>
+          <Dropdown
+            className="absolute right-4"
+            options={SORT_OPTIONS}
+            value={sort}
+            onChange={(value) => startTransition(() => setSort(value))}
+          />
         </div>
 
         <div className="flex pt-2.5 pb-0.5">
           {tabs.map((tab) => (
             <button
               key={tab}
-              onClick={() => setActiveTab(tab)}
+              onClick={() => startTransition(() => setActiveTab(tab))}
               className={clsx(
                 'flex-1 border-b-[1.4px] py-1.5 text-center text-[13px] font-semibold',
                 activeTab === tab ? 'border-blue-500 text-indigo-700' : 'border-transparent text-indigo-200'
@@ -74,7 +87,9 @@ function TimerPage() {
             </button>
           ))}
         </div>
-        <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+        <div className={clsx(isPending && 'opacity-60 transition-opacity')}>
+          <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+        </div>
       </div>
     </div>
   );

@@ -4,6 +4,7 @@ import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
 import Layout from './components/layout';
 import Login from './pages/Auth/Login';
+import ConfirmStep from './pages/Auth/SignUp/ConfirmStep';
 import FinishStep from './pages/Auth/SignUp/FinishStep';
 import NameStep from './pages/Auth/SignUp/NameStep';
 import StudentIdStep from './pages/Auth/SignUp/StudentIdStep';
@@ -42,6 +43,7 @@ function App() {
                 <Route path="university" element={<UniversityStep />} />
                 <Route path="studentid" element={<StudentIdStep />} />
                 <Route path="name" element={<NameStep />} />
+                <Route path="confirm" element={<ConfirmStep />} />
                 <Route path="finish" element={<FinishStep />} />
               </Route>
             </Route>

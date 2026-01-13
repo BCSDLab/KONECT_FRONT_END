@@ -97,6 +97,10 @@ export interface ClubApplyResponse {
   deadLine?: string;
 }
 
+export interface ClubRecruitmentImage {
+  url: string;
+}
+
 export interface ClubRecruitment {
   id: number;
   clubId: number;
@@ -104,6 +108,6 @@ export interface ClubRecruitment {
   startDate: string;
   endDate: string;
   content: string;
-  imageUrl: string;
+  images: ClubRecruitmentImage[];
   isApplied: boolean;
 }
