@@ -80,7 +80,7 @@ function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules =
       </button>
 
       <span
-        className={`mt-1 flex h-6 w-6 items-center justify-center text-[13px] font-semibold ${isSunday ? 'text-red-500' : 'text-black'} ${!isCurrentMonth ? 'text-transparent' : ''} ${isToday && isCurrentMonth ? 'rounded-[3px] bg-[#DAECFF]' : ''} `}
+        className={`mt-1 flex h-5 w-8 items-center justify-center text-[13px] font-semibold ${isSunday ? 'text-red-500' : 'text-black'} ${!isCurrentMonth ? 'text-transparent' : ''} ${isToday && isCurrentMonth ? 'rounded-[3px] bg-[#DAECFF]' : ''} `}
       >
         {isCurrentMonth ? date.getDate() : ''}
       </span>
