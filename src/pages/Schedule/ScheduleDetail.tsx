@@ -1,4 +1,3 @@
-import type { Schedule } from '@/apis/schedule/entity';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { useScheduleList } from './hooks/useGetSchedules';
@@ -14,42 +13,15 @@ const SCHEDULE_COLOR = {
   COUNCIL: '#E9F2FA',
 };
 
-const MOCK_SCHEDULES = [
-  {
-    title: '동아리 회의',
-    startedAt: '2026.09.12 00:00',
-    endedAt: '2026.09.12 00:00',
-    scheduleCategory: 'CLUB',
-  },
-  {
-    title: '총학 행사',
-    startedAt: '2026.09.12 00:00',
-    endedAt: '2026.09.14 00:00',
-    scheduleCategory: 'COUNCIL',
-  },
-  {
-    title: '대학교 축제',
-    startedAt: '2026.09.11 00:00',
-    endedAt: '2026.09.13 00:00',
-    scheduleCategory: 'UNIVERSITY',
-  },
-  {
-    title: '동아리 축제',
-    startedAt: '2026.09.21 00:00',
-    endedAt: '2026.09.21 00:00',
-    scheduleCategory: 'CLUB',
-  },
-];
-
 function ScheduleDetail({ month, day }: scheduleDetailProps) {
-  // const { data: schedules } = useScheduleList({ year: new Date().getFullYear(), month });
+  const { data: schedules } = useScheduleList({ year: new Date().getFullYear(), month });
   const parseDateOnly = (value: string) => {
     const [date] = value.split(' ');
     const [year, month, day] = date.split('.').map(Number);
     return new Date(year, month - 1, day);
   };
 
-  const dailySchedules = MOCK_SCHEDULES?.filter(({ startedAt, endedAt }) => {
+  const dailySchedules = schedules?.schedules?.filter(({ startedAt, endedAt }) => {
     const target = new Date(new Date().getFullYear(), month - 1, day);
 
     const start = parseDateOnly(startedAt);
@@ -59,7 +31,7 @@ function ScheduleDetail({ month, day }: scheduleDetailProps) {
   });
 
   return (
-    <div className="flex flex-col gap-2 bg-white px-6">
+    <div className="flex flex-col gap-2 bg-white px-6 pb-6">
       <span className="text-[14px] leading-4 font-semibold">
         {month}월 {day}일 일정 상세보기
       </span>

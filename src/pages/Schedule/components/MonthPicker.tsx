@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg'; // 아래 화살표로 바꿔야함
+import { useRef } from 'react';
+import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 
 function MonthPicker({
   year,
@@ -11,17 +11,21 @@ function MonthPicker({
   setDate: (year?: number, month?: number) => void;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [tempYear, setTempYear] = useState(year);
-  const [tempMonth, setTempMonth] = useState(month);
 
   const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const [selectedYear, selectedMonth] = e.target.value.split('-').map(Number);
-    setTempYear(selectedYear);
-    setTempMonth(selectedMonth);
+
+    setDate(selectedYear, selectedMonth);
   };
 
-  const handleBlur = () => {
-    setDate(tempYear, tempMonth);
+  const openMonthPicker = () => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    input.focus();
+    if (typeof input.showPicker === 'function') {
+      input.showPicker();
+    }
   };
 
   return (
@@ -31,10 +35,18 @@ function MonthPicker({
         type="month"
         value={`${year}-${String(month).padStart(2, '0')}`}
         onChange={handleMonthChange}
-        onBlur={handleBlur}
-        className="text-subtitle-3-b w-full bg-transparent pr-7"
+        className="pointer-events-none absolute inset-0 opacity-0"
       />
-      <RightArrowIcon className="absolute top-1/2 right-2 -translate-y-1/2" />
+
+      <button
+        type="button"
+        onClick={openMonthPicker}
+        className="text-subtitle-3-b relative z-10 flex w-full cursor-pointer items-center bg-transparent pr-7 text-left"
+      >
+        {year}년 {String(month).padStart(2, '0')}월
+      </button>
+
+      <RightArrowIcon className="pointer-events-none absolute top-1/2 right-2 -translate-y-1/2" />
     </div>
   );
 }
