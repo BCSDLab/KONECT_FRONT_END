@@ -56,6 +56,8 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
 
+        navigateFallbackDenylist: [/^\/api(\/|$)/],
+
         // 런타임 캐싱: 이미지/폰트 같은 것들
         runtimeCaching: [
           {
