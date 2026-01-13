@@ -1,7 +1,7 @@
 import { useState, useTransition } from 'react';
 import clsx from 'clsx';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
-import SortDropdown from '@/components/common/Dropdown';
+import Dropdown from '@/components/common/Dropdown';
 import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
 import { RankingList } from './components/RankingItem';
 import TimerButton from './components/TimerButton';
@@ -64,8 +64,8 @@ function TimerPage() {
         </div>
 
         <div className="relative flex items-center justify-center px-4 font-semibold">
-          <div className="text-center text-[15px] leading-6 font-semibold text-indigo-700">랭킹</div>
-          <SortDropdown
+          <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
+          <Dropdown
             className="absolute right-4"
             options={SORT_OPTIONS}
             value={sort}

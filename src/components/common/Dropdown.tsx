@@ -49,7 +49,10 @@ export default function Dropdown<T extends string>({
         )}
       >
         <span>{selectedOption?.label}</span>
-        <ChevronDownIcon className={twMerge('h-3.5 w-3.5 transition-transform duration-200', isOpen && 'rotate-180')} />
+        <ChevronDownIcon
+          aria-hidden="true"
+          className={twMerge('h-3.5 w-3.5 transition-transform duration-200', isOpen && 'rotate-180')}
+        />
       </button>
 
       <div
@@ -71,6 +74,7 @@ export default function Dropdown<T extends string>({
           >
             <span>{option.label}</span>
             <CheckIcon
+              aria-hidden="true"
               className={twMerge(
                 'h-3.5 w-3.5 text-blue-500 transition-opacity',
                 option.value === value ? 'opacity-100' : 'opacity-0'
