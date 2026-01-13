@@ -18,7 +18,7 @@ function FinishStep() {
   };
 
   return (
-    <div className="flex flex-1 flex-col justify-between px-8">
+    <div className="flex flex-1 flex-col justify-between px-8 py-5">
       <div className="flex flex-col items-center text-center">
         <CheckInCircleIcon className="mt-15" />
 
@@ -35,7 +35,7 @@ function FinishStep() {
 
       <button
         onClick={handleStart}
-        className="bg-primary text-indigo-0 mb-8 h-12 items-center rounded-lg font-extrabold"
+        className="bg-primary text-indigo-0 mb-8 h-12 w-full items-center rounded-lg font-extrabold"
       >
         시작하기
       </button>
