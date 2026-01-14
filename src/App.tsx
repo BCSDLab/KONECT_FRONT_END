@@ -25,6 +25,7 @@ import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
+import Schedule from './pages/Schedule';
 import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
 import Profile from './pages/User/Profile';
@@ -78,6 +79,7 @@ function App() {
                 <Route index element={<ChatListPage />} />
                 <Route path=":chatRoomId" element={<ChatRoom />} />
               </Route>
+              <Route path="schedules" element={<Schedule />} />
             </Route>
           </Route>
         </Routes>
