@@ -42,21 +42,25 @@ function Schedule() {
   const dateList = getMonthDateList();
 
   const handleDateClick = (date: Date) => {
-    setSearchParams({
-      year: String(date.getFullYear()),
-      month: String(date.getMonth() + 1),
-      day: String(date.getDate()),
-    });
+    setSearchParams(
+      {
+        year: String(date.getFullYear()),
+        month: String(date.getMonth() + 1),
+        day: String(date.getDate()),
+      },
+      { replace: true }
+    );
   };
-
   const setDate = (year?: number, month?: number) => {
-    setSearchParams({
-      year: String(year ?? new Date().getFullYear()),
-      month: String(month ?? new Date().getMonth() + 1),
-      day: '1',
-    });
+    setSearchParams(
+      {
+        year: String(year ?? new Date().getFullYear()),
+        month: String(month ?? new Date().getMonth() + 1),
+        day: '1',
+      },
+      { replace: true }
+    );
   };
-
   const schedulesByDate = (date: Date): Schedule[] => {
     return schedules.filter((s) => isDateInRange(date, s.startedAt, s.endedAt));
   };
