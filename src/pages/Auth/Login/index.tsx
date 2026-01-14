@@ -2,7 +2,7 @@ import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
 
-const REDIRECT_URI = import.meta.env.PROD ? 'https://agit.gg/home' : 'http://localhost:3000/home';
+const REDIRECT_URI = import.meta.env.PROD ? 'https://agit.gg/home' : 'http://localhost:3000';
 
 function Login() {
   return (
