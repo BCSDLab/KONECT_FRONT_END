@@ -2,6 +2,8 @@ import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
 
+const REDIRECT_URI = import.meta.env.PROD ? 'https://agit.gg/home' : 'http://localhost:3000/home';
+
 function Login() {
   return (
     <div className="flex flex-1 flex-col justify-between p-8 pb-23">
@@ -11,21 +13,21 @@ function Login() {
       </div>
       <div className="flex flex-col gap-3">
         <a
-          href="https://api.agit.gg/oauth2/authorization/google"
+          href={`https://api.agit.gg/oauth2/authorization/google?redirect_uri=${REDIRECT_URI}`}
           className="flex h-12 items-center justify-center gap-3 rounded-lg border border-indigo-50 bg-white"
         >
           <GoogleIcon />
           <span className="leading-6 font-extrabold">Google로 계속하기</span>
         </a>
         <a
-          href="https://api.agit.gg/oauth2/authorization/kakao"
+          href={`https://api.agit.gg/oauth2/authorization/kakao?redirect_uri=${REDIRECT_URI}`}
           className="flex h-12 items-center justify-center gap-3 rounded-lg bg-[#FEE500]"
         >
           <KakaoIcon />
           <span className="leading-6 font-extrabold">카카오로 계속하기</span>
         </a>
         <a
-          href="https://api.agit.gg/oauth2/authorization/naver"
+          href={`https://api.agit.gg/oauth2/authorization/naver?redirect_uri=${REDIRECT_URI}`}
           className="flex h-12 items-center justify-center gap-3 rounded-lg bg-[#03C75A] text-white"
         >
           <NaverIcon />
