@@ -15,6 +15,7 @@ const SCHEDULE_COLOR = {
 
 function ScheduleDetail({ month, day }: scheduleDetailProps) {
   const { data: schedules } = useScheduleList({ year: new Date().getFullYear(), month });
+
   const parseDateOnly = (value: string) => {
     const [date] = value.split(' ');
     const [year, month, day] = date.split('.').map(Number);
@@ -45,7 +46,7 @@ function ScheduleDetail({ month, day }: scheduleDetailProps) {
               className="flex h-10 w-10 items-center justify-center rounded-sm"
               style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }}
             >
-              <CalendarIcon className="text-indigo-100" />
+              <CalendarIcon style={{ color: '#fff' }} />
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-[14px] leading-[17px] font-bold">{title}</div>
