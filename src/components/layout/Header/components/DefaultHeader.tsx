@@ -13,10 +13,7 @@ function DefaultHeader({ title, showBackButton = true, onBack }: DefaultHeaderPr
   const handleBack = onBack ?? (() => navigate(-1));
 
   return (
-    <header
-      className="fixed top-0 right-0 left-0 flex items-center justify-center bg-white px-4 py-2"
-      style={{ paddingTop: 'calc(var(--sat) + 8px)', height: 'calc(var(--header-h) + var(--sat))' }}
-    >
+    <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
       {showBackButton && (
         <button
           type="button"
