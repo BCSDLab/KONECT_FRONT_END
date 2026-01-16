@@ -191,3 +191,18 @@
     font-family: var(--font-suit);
   }
 }
+
+@layer utilities {
+  /* month input 관련 */
+  input[type='month']::-webkit-clear-button {
+    display: none;
+  }
+
+  input[type='month']::-webkit-inner-spin-button {
+    display: none;
+  }
+
+  input[type='month']::-webkit-calendar-picker-indicator {
+    opacity: 0;
+  }
+}

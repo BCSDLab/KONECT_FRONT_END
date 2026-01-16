@@ -47,7 +47,7 @@ function Profile() {
           />
         </div>
       ))}
-      <div className="text-[10px] leading-3 font-medium text-indigo-300">
+      <div className="flex justify-end text-[10px] leading-3 font-medium text-indigo-300">
         <button type="button" onClick={openModal} className="text-[#3182f6]">
           탈퇴
         </button>

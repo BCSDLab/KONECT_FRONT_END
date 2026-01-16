@@ -21,6 +21,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     type: 'signup',
     match: (pathname) => pathname === '/signup',
   },
+  {
+    type: 'schedule',
+    match: (pathname) => pathname == '/schedule',
+  },
 ];
 
 export const DEFAULT_HEADER_TYPE: HeaderConfig['type'] = 'default';

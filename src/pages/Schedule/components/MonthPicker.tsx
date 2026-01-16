@@ -41,7 +41,7 @@ function MonthPicker({
       <button
         type="button"
         onClick={openMonthPicker}
-        className="text-subtitle-3-b relative z-10 flex w-full cursor-pointer items-center bg-transparent pr-7 text-left"
+        className="text-subtitle-3-b relative z-2 flex w-full cursor-pointer items-center bg-transparent pr-7 text-left"
       >
         {year}년 {String(month).padStart(2, '0')}월
       </button>

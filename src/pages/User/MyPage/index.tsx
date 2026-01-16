@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
@@ -20,8 +20,12 @@ const menuItems = [
 ];
 
 function MyPage() {
+  const navigate = useNavigate();
   const { myInfo } = useMyInfo();
   const { mutate: logout } = useLogoutMutation();
+  const handleClick = (to: string) => {
+    navigate(to);
+  };
 
   return (
     <div className="flex flex-col gap-2 p-3">
@@ -41,14 +45,17 @@ function MyPage() {
             <div className="text-[10px] leading-3">가입 동아리</div>
             <div className="mt-1 text-sm leading-3 font-bold">{myInfo.joinedClubCount}</div>
           </div>
-          <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
+          <button onClick={() => handleClick('/timer')} className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
             <div className="text-[10px] leading-3">순공 시간</div>
             <div className="mt-1 text-sm leading-3 font-bold">{myInfo.studyTime}</div>
-          </div>
-          <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
+          </button>
+          <button
+            onClick={() => handleClick('/council?tab=notice')}
+            className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
+          >
             <div className="text-[10px] leading-3">읽지 않은 공지</div>
             <div className="mt-1 text-sm leading-3 font-bold">{myInfo.unreadCouncilNoticeCount}</div>
-          </div>
+          </button>
         </div>
       </Card>
 

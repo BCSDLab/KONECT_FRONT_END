@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
+import NavigateCard from '@/components/common/NavigateCard';
 import ClubCard from '../Club/ClubList/components/ClubCard';
 import { useGetClubs } from '../Club/ClubList/hooks/useGetClubs';
 import SimpleClubCard from './components/SimpleClubCard';
@@ -19,6 +20,13 @@ function formatScheduleDate(startedAt: string, endedAt: string): string {
   } else {
     return `${startYear}.${startMonth}.${startDay} ~ ${endYear}.${endMonth}.${endDay}`;
   }
+}
+
+function scheduleDateToPath(startedAt: string) {
+  const [date] = startedAt.split(' ');
+  const [year, month, day] = date.split('.').map(Number);
+
+  return `/schedules?year=${year}&month=${month}&day=${day}`;
 }
 
 function Home() {
@@ -75,7 +83,7 @@ function Home() {
           </Card>
         ) : (
           scheduleListData?.schedules.slice(0, 3).map((schedule) => (
-            <Card key={schedule.title} className="mt-2">
+            <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2">
               <div className="flex gap-3">
                 <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
                   <div className="text-primary text-center text-[10px] leading-3 font-bold">
@@ -90,7 +98,7 @@ function Home() {
                   </div>
                 </div>
               </div>
-            </Card>
+            </NavigateCard>
           ))
         )}
       </div>
