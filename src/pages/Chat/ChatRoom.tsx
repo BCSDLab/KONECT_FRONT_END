@@ -25,7 +25,7 @@ const formatTime = (dateString: string) => {
 function ChatRoom() {
   const { chatRoomId } = useParams();
   const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage } = useChat(Number(chatRoomId));
-  const keyboardHeight = useKeyboardHeight();
+  const { keyboardHeight, viewportHeight } = useKeyboardHeight();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -64,7 +64,10 @@ function ChatRoom() {
   return (
     <div
       className="bg-indigo-0 flex min-h-0 flex-1 flex-col"
-      style={{ paddingBottom: keyboardHeight > 0 ? keyboardHeight : undefined }}
+      style={{
+        height: viewportHeight ? `calc(${viewportHeight}px - var(--header-h) - var(--sat))` : undefined,
+        flex: viewportHeight ? 'none' : undefined,
+      }}
     >
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div ref={topRef} />
