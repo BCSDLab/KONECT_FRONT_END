@@ -33,1056 +33,167 @@
   --color-blue-500: #59a7fc;
 
   /* ========================================
-     FONT SIZES - Thin (100)
+     FONT WEIGHTS 
      ======================================== */
-  --font-size-display-1-t: 56px;
-  --font-size-display-1-t--line-height: 72px;
-  --font-size-display-1-t--letter-spacing: 1.12px;
-
-  --font-size-display-2-t: 48px;
-  --font-size-display-2-t--line-height: 60px;
-  --font-size-display-2-t--letter-spacing: 0.96px;
-
-  --font-size-display-3-t: 40px;
-  --font-size-display-3-t--line-height: 56px;
-  --font-size-display-3-t--letter-spacing: 0.8px;
-
-  --font-size-title-1-t: 36px;
-  --font-size-title-1-t--line-height: 48px;
-  --font-size-title-1-t--letter-spacing: -0.36px;
-
-  --font-size-title-2-t: 32px;
-  --font-size-title-2-t--line-height: 44px;
-  --font-size-title-2-t--letter-spacing: -0.32px;
-
-  --font-size-subtitle-1-t: 28px;
-  --font-size-subtitle-1-t--line-height: 40px;
-  --font-size-subtitle-1-t--letter-spacing: -0.28px;
-
-  --font-size-subtitle-2-t: 24px;
-  --font-size-subtitle-2-t--line-height: 36px;
-  --font-size-subtitle-2-t--letter-spacing: -0.24px;
-
-  --font-size-subtitle-3-t: 20px;
-  --font-size-subtitle-3-t--line-height: 32px;
-  --font-size-subtitle-3-t--letter-spacing: -0.2px;
-
-  --font-size-body-1-t: 18px;
-  --font-size-body-1-t--line-height: 28px;
-
-  --font-size-body-2-t: 16px;
-  --font-size-body-2-t--line-height: 24px;
-
-  --font-size-body-3-t: 15px;
-  --font-size-body-3-t--line-height: 24px;
-
-  --font-size-body-4-t: 14px;
-  --font-size-body-4-t--line-height: 20px;
-
-  --font-size-label-1-t: 13px;
-  --font-size-label-1-t--line-height: 16px;
-
-  --font-size-caption-1-t: 12px;
-  --font-size-caption-1-t--line-height: 16px;
-
-  --font-size-caption-2-t: 11px;
-  --font-size-caption-2-t--line-height: 14px;
-
-  --font-size-caption-3-t: 10px;
-  --font-size-caption-3-t--line-height: 14px;
-
-  /* ========================================
-     FONT WEIGHTS
-     ======================================== */
-  --font-weight-thin: 100;
-  --font-weight-extralight: 200;
-  --font-weight-light: 300;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
-  --font-weight-bold: 700;
   --font-weight-extrabold: 800;
 
   /* ========================================
-     LETTER SPACING
+     TYPOGRAPHY TOKENS (Mobile)
      ======================================== */
-  --letter-spacing-display: 1.12px;
-  --letter-spacing-display-2: 0.96px;
-  --letter-spacing-display-3: 0.8px;
-  --letter-spacing-tight-xs: -0.2px;
-  --letter-spacing-tight-sm: -0.24px;
-  --letter-spacing-tight-md: -0.28px;
-  --letter-spacing-tight-lg: -0.32px;
-  --letter-spacing-tight-xl: -0.36px;
 
-  /* ========================================
-     LINE HEIGHTS
-     ======================================== */
-  --line-height-display-1: 72px;
-  --line-height-display-2: 60px;
-  --line-height-display-3: 56px;
-  --line-height-title-1: 48px;
-  --line-height-title-2: 44px;
-  --line-height-subtitle-1: 40px;
-  --line-height-subtitle-2: 36px;
-  --line-height-subtitle-3: 32px;
-  --line-height-body-1: 28px;
-  --line-height-body-2: 24px;
-  --line-height-body-4: 20px;
-  --line-height-label: 16px;
-  --line-height-caption: 14px;
+  /* Display (150%) */
+  --text-d1: 32px;
+  --leading-d1: 48px;
+  --text-d2: 28px;
+  --leading-d2: 42px;
+
+  /* Heading (160%) */
+  --text-h1: 20px;
+  --leading-h1: 32px;
+  --text-h2: 18px;
+  --leading-h2: 28.8px;
+  --text-h3: 16px;
+  --leading-h3: 25.6px;
+  --text-h4: 14px;
+  --leading-h4: 22.4px;
+  --text-h5: 13px;
+  --leading-h5: 20.8px;
+
+  /* Subtitle (160%) */
+  --text-sub1: 16px;
+  --leading-sub1: 25.6px;
+  --text-sub2: 14px;
+  --leading-sub2: 22.4px;
+  --text-sub3: 13px;
+  --leading-sub3: 20.8px;
+  --text-sub4: 12px;
+  --leading-sub4: 19.2px;
+
+  /* Body (160%) */
+  --text-body1: 14px;
+  --leading-body1: 22.4px;
+  --text-body2: 13px;
+  --leading-body2: 20.8px;
+  --text-body3: 12px;
+  --leading-body3: 19.2px;
+
+  /* Caption (160%) */
+  --text-cap1: 11px;
+  --leading-cap1: 17.6px;
+  --text-cap2: 10px;
+  --leading-cap2: 16px;
 }
 
 /* ========================================
-   TYPOGRAPHY UTILITY CLASSES
-   Tailwind v4 - Using @utility directive
+   Semantic text utilities
    ======================================== */
-
-/* Display Sizes */
-@utility text-display-1 {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-}
-
-@utility text-display-2 {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-}
-
-@utility text-display-3 {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-}
-
-/* Title Sizes */
-@utility text-title-1 {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-}
-
-@utility text-title-2 {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-}
-
-/* Subtitle Sizes */
-@utility text-subtitle-1 {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-}
-
-@utility text-subtitle-2 {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-}
-
-@utility text-subtitle-3 {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-}
-
-/* Body Sizes */
-@utility text-body-1 {
-  font-size: 18px;
-  line-height: 28px;
-}
-
-@utility text-body-2 {
-  font-size: 16px;
-  line-height: 24px;
-}
-
-@utility text-body-3 {
-  font-size: 15px;
-  line-height: 24px;
-}
-
-@utility text-body-4 {
-  font-size: 14px;
-  line-height: 20px;
-}
-
-/* Label & Caption Sizes */
-@utility text-label-1 {
-  font-size: 13px;
-  line-height: 16px;
-}
-
-@utility text-caption-1 {
-  font-size: 12px;
-  line-height: 16px;
-}
-
-@utility text-caption-2 {
-  font-size: 11px;
-  line-height: 14px;
-}
-
-@utility text-caption-3 {
-  font-size: 10px;
-  line-height: 14px;
-}
-
-/* ========================================
-   COMBINED TYPOGRAPHY VARIANTS
-   Format: text-{size}-{weight}
-   Weights: t(thin), el(extralight), l(light), 
-            r(regular), m(medium), sb(semibold), 
-            b(bold), eb(extrabold)
-   ======================================== */
-
-/* Display 1 Variants */
-@utility text-display-1-t {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 100;
-}
-
-@utility text-display-1-el {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 200;
-}
-
-@utility text-display-1-l {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 300;
-}
-
-@utility text-display-1-r {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 400;
-}
-
-@utility text-display-1-m {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 500;
-}
-
-@utility text-display-1-sb {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 600;
-}
-
-@utility text-display-1-b {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 700;
-}
-
-@utility text-display-1-eb {
-  font-size: 56px;
-  line-height: 72px;
-  letter-spacing: 1.12px;
-  font-weight: 800;
-}
-
-/* Display 2 Variants */
-@utility text-display-2-t {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 100;
-}
-
-@utility text-display-2-el {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 200;
-}
-
-@utility text-display-2-l {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 300;
-}
-
-@utility text-display-2-r {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 400;
-}
-
-@utility text-display-2-m {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 500;
-}
-
-@utility text-display-2-sb {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 600;
-}
-
-@utility text-display-2-b {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 700;
-}
-
-@utility text-display-2-eb {
-  font-size: 48px;
-  line-height: 60px;
-  letter-spacing: 0.96px;
-  font-weight: 800;
-}
-
-/* Display 3 Variants */
-@utility text-display-3-t {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 100;
-}
-
-@utility text-display-3-el {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 200;
-}
-
-@utility text-display-3-l {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 300;
-}
-
-@utility text-display-3-r {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 400;
-}
-
-@utility text-display-3-m {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 500;
-}
-
-@utility text-display-3-sb {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 600;
-}
-
-@utility text-display-3-b {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 700;
-}
-
-@utility text-display-3-eb {
-  font-size: 40px;
-  line-height: 56px;
-  letter-spacing: 0.8px;
-  font-weight: 800;
-}
-
-/* Title 1 Variants */
-@utility text-title-1-t {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 100;
-}
-
-@utility text-title-1-el {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 200;
-}
-
-@utility text-title-1-l {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 300;
-}
-
-@utility text-title-1-r {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 400;
-}
-
-@utility text-title-1-m {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 500;
-}
-
-@utility text-title-1-sb {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 600;
-}
-
-@utility text-title-1-b {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 700;
-}
-
-@utility text-title-1-eb {
-  font-size: 36px;
-  line-height: 48px;
-  letter-spacing: -0.36px;
-  font-weight: 800;
-}
-
-/* Title 2 Variants */
-@utility text-title-2-t {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 100;
-}
-
-@utility text-title-2-el {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 200;
-}
-
-@utility text-title-2-l {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 300;
-}
-
-@utility text-title-2-r {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 400;
-}
-
-@utility text-title-2-m {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 500;
-}
-
-@utility text-title-2-sb {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 600;
-}
-
-@utility text-title-2-b {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 700;
-}
-
-@utility text-title-2-eb {
-  font-size: 32px;
-  line-height: 44px;
-  letter-spacing: -0.32px;
-  font-weight: 800;
-}
-
-/* Subtitle 1 Variants */
-@utility text-subtitle-1-t {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 100;
-}
-
-@utility text-subtitle-1-el {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 200;
-}
-
-@utility text-subtitle-1-l {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 300;
-}
-
-@utility text-subtitle-1-r {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 400;
-}
-
-@utility text-subtitle-1-m {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 500;
-}
-
-@utility text-subtitle-1-sb {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 600;
-}
-
-@utility text-subtitle-1-b {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 700;
-}
-
-@utility text-subtitle-1-eb {
-  font-size: 28px;
-  line-height: 40px;
-  letter-spacing: -0.28px;
-  font-weight: 800;
-}
-
-/* Subtitle 2 Variants */
-@utility text-subtitle-2-t {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 100;
-}
-
-@utility text-subtitle-2-el {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 200;
-}
-
-@utility text-subtitle-2-l {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 300;
-}
-
-@utility text-subtitle-2-r {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 400;
-}
-
-@utility text-subtitle-2-m {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 500;
-}
-
-@utility text-subtitle-2-sb {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 600;
-}
-
-@utility text-subtitle-2-b {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 700;
-}
-
-@utility text-subtitle-2-eb {
-  font-size: 24px;
-  line-height: 36px;
-  letter-spacing: -0.24px;
-  font-weight: 800;
-}
-
-/* Subtitle 3 Variants */
-@utility text-subtitle-3-t {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 100;
-}
-
-@utility text-subtitle-3-el {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 200;
-}
-
-@utility text-subtitle-3-l {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 300;
-}
-
-@utility text-subtitle-3-r {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 400;
-}
-
-@utility text-subtitle-3-m {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 500;
-}
-
-@utility text-subtitle-3-sb {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 600;
-}
-
-@utility text-subtitle-3-b {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 700;
-}
-
-@utility text-subtitle-3-eb {
-  font-size: 20px;
-  line-height: 32px;
-  letter-spacing: -0.2px;
-  font-weight: 800;
-}
-
-/* Body 1 Variants */
-@utility text-body-1-t {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 100;
-}
-
-@utility text-body-1-el {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 200;
-}
-
-@utility text-body-1-l {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 300;
-}
-
-@utility text-body-1-r {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 400;
-}
-
-@utility text-body-1-m {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 500;
-}
-
-@utility text-body-1-sb {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 600;
-}
-
-@utility text-body-1-b {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 700;
-}
-
-@utility text-body-1-eb {
-  font-size: 18px;
-  line-height: 28px;
-  font-weight: 800;
-}
-
-/* Body 2 Variants */
-@utility text-body-2-t {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 100;
-}
-
-@utility text-body-2-el {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 200;
-}
-
-@utility text-body-2-l {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 300;
-}
-
-@utility text-body-2-r {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-}
-
-@utility text-body-2-m {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 500;
-}
-
-@utility text-body-2-sb {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-}
-
-@utility text-body-2-b {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-}
-
-@utility text-body-2-eb {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 800;
-}
-
-/* Body 3 Variants */
-@utility text-body-3-t {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 100;
-}
-
-@utility text-body-3-el {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 200;
-}
-
-@utility text-body-3-l {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 300;
-}
-
-@utility text-body-3-r {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 400;
-}
-
-@utility text-body-3-m {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 500;
-}
-
-@utility text-body-3-sb {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 600;
-}
-
-@utility text-body-3-b {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 700;
-}
-
-@utility text-body-3-eb {
-  font-size: 15px;
-  line-height: 24px;
-  font-weight: 800;
-}
-
-/* Body 4 Variants */
-@utility text-body-4-t {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 100;
-}
-
-@utility text-body-4-el {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 200;
-}
-
-@utility text-body-4-l {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 300;
-}
-
-@utility text-body-4-r {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 400;
-}
-
-@utility text-body-4-m {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-}
-
-@utility text-body-4-sb {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-}
-
-@utility text-body-4-b {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 700;
-}
-
-@utility text-body-4-eb {
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 800;
-}
-
-/* Label 1 Variants */
-@utility text-label-1-t {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 100;
-}
-
-@utility text-label-1-el {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 200;
-}
-
-@utility text-label-1-l {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 300;
-}
-
-@utility text-label-1-r {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 400;
-}
-
-@utility text-label-1-m {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 500;
-}
-
-@utility text-label-1-sb {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 600;
-}
-
-@utility text-label-1-b {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 700;
-}
-
-@utility text-label-1-eb {
-  font-size: 13px;
-  line-height: 16px;
-  font-weight: 800;
-}
-
-/* Caption 1 Variants */
-@utility text-caption-1-t {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 100;
-}
-
-@utility text-caption-1-el {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 200;
-}
-
-@utility text-caption-1-l {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 300;
-}
-
-@utility text-caption-1-r {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-}
-
-@utility text-caption-1-m {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 500;
-}
-
-@utility text-caption-1-sb {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 600;
-}
-
-@utility text-caption-1-b {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 700;
-}
-
-@utility text-caption-1-eb {
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 800;
-}
-
-/* Caption 2 Variants */
-@utility text-caption-2-t {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 100;
-}
-
-@utility text-caption-2-el {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 200;
-}
-
-@utility text-caption-2-l {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 300;
-}
-
-@utility text-caption-2-r {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 400;
-}
-
-@utility text-caption-2-m {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 500;
-}
-
-@utility text-caption-2-sb {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 600;
-}
-
-@utility text-caption-2-b {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 700;
-}
-
-@utility text-caption-2-eb {
-  font-size: 11px;
-  line-height: 14px;
-  font-weight: 800;
-}
-
-/* Caption 3 Variants */
-@utility text-caption-3-t {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 100;
-}
-
-@utility text-caption-3-el {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 200;
-}
-
-@utility text-caption-3-l {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 300;
-}
-
-@utility text-caption-3-r {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 400;
-}
-
-@utility text-caption-3-m {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 500;
-}
-
-@utility text-caption-3-sb {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 600;
-}
-
-@utility text-caption-3-b {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 700;
-}
-
-@utility text-caption-3-eb {
-  font-size: 10px;
-  line-height: 14px;
-  font-weight: 800;
+@layer utilities {
+  /* Display */
+  .text-d1 {
+    font-size: var(--text-d1);
+    line-height: var(--leading-d1);
+    font-weight: var(--font-weight-extrabold);
+  }
+  .text-d2 {
+    font-size: var(--text-d2);
+    line-height: var(--leading-d2);
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  /* Heading */
+  .text-h1 {
+    font-size: var(--text-h1);
+    line-height: var(--leading-h1);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h2 {
+    font-size: var(--text-h2);
+    line-height: var(--leading-h2);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h3 {
+    font-size: var(--text-h3);
+    line-height: var(--leading-h3);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h4 {
+    font-size: var(--text-h4);
+    line-height: var(--leading-h4);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h5 {
+    font-size: var(--text-h5);
+    line-height: var(--leading-h5);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Subtitle */
+  .text-sub1 {
+    font-size: var(--text-sub1);
+    line-height: var(--leading-sub1);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub2 {
+    font-size: var(--text-sub2);
+    line-height: var(--leading-sub2);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub3 {
+    font-size: var(--text-sub3);
+    line-height: var(--leading-sub3);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub4 {
+    font-size: var(--text-sub4);
+    line-height: var(--leading-sub4);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Body */
+  .text-body1 {
+    font-size: var(--text-body1);
+    line-height: var(--leading-body1);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body2 {
+    font-size: var(--text-body2);
+    line-height: var(--leading-body2);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body3 {
+    font-size: var(--text-body3);
+    line-height: var(--leading-body3);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body3-strong {
+    font-size: var(--text-body3);
+    line-height: var(--leading-body3);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Caption */
+  .text-cap1 {
+    font-size: var(--text-cap1);
+    line-height: var(--leading-cap1);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-cap1-strong {
+    font-size: var(--text-cap1);
+    line-height: var(--leading-cap1);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .text-cap2 {
+    font-size: var(--text-cap2);
+    line-height: var(--leading-cap2);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-cap2-strong {
+    font-size: var(--text-cap2);
+    line-height: var(--leading-cap2);
+    font-weight: var(--font-weight-semibold);
+  }
 }
