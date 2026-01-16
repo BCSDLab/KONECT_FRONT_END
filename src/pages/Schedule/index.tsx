@@ -66,7 +66,7 @@ function Schedule() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-white">
       <main className="flex w-full flex-col gap-6 bg-white">
         <header className="flex justify-center gap-5">
           <MonthPicker year={year} month={month} setDate={setDate} />
