@@ -3,6 +3,7 @@ import ChatHeader from './components/ChatHeader';
 import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
 import ProfileHeader from './components/ProfileHeader';
+import ScheduleHeader from './components/ScheduleHeader';
 import { HEADER_CONFIGS, DEFAULT_HEADER_TYPE } from './headerConfig';
 import { ROUTE_TITLES } from './routeTitles';
 import type { HeaderType, HeaderRenderer } from './types';
@@ -18,6 +19,7 @@ function Header() {
     profile: () => <ProfileHeader />,
     info: () => <InfoHeader />,
     chat: () => <ChatHeader />,
+    schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
     default: ({ title }) => <DefaultHeader title={title} />,
