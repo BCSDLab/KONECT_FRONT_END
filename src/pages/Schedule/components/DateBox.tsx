@@ -2,7 +2,7 @@ type Schedule = {
   title: string;
   startedAt: string;
   endedAt: string;
-  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL';
+  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL' | 'DORM';
 };
 
 type DateBoxProps = {
@@ -20,6 +20,7 @@ const SCHEDULE_COLOR: Record<ScheduleCategory, string> = {
   UNIVERSITY: '#AEDCBA',
   CLUB: '#FDE49B',
   COUNCIL: '#E9F2FA',
+  DORM: '#B9ADEF',
 };
 
 function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules = [] }: DateBoxProps) {

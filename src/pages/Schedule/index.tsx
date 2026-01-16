@@ -11,7 +11,7 @@ type Schedule = {
   title: string;
   startedAt: string;
   endedAt: string;
-  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL';
+  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL' | 'DORM';
 };
 
 const toDateOnly = (value: string) => {

@@ -11,6 +11,7 @@ const SCHEDULE_COLOR = {
   UNIVERSITY: '#AEDCBA',
   CLUB: '#FDE49B',
   COUNCIL: '#E9F2FA',
+  DORM: '#B9ADEF',
 };
 
 function ScheduleDetail({ month, day }: scheduleDetailProps) {
