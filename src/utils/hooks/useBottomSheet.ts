@@ -16,6 +16,7 @@ export const useBottomSheet = (threshold = 30) => {
 
   const handleTouchMove = (e: React.TouchEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     const deltaY = e.touches[0].clientY - startY.current;
     setCurrentTranslate(deltaY);
   };
