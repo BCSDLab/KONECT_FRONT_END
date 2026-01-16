@@ -32,12 +32,12 @@ function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules =
         type="button"
         disabled={!isCurrentMonth}
         onClick={() => isCurrentMonth && onClick(date)}
-        className="relative h-10 w-full overflow-hidden"
+        className="relative flex h-10 w-full overflow-hidden"
       >
         {isCurrentMonth && <div className="absolute inset-0 mx-auto my-auto h-8 w-8 rounded-[3px] bg-[#F4F6F9]" />}
 
         {isCurrentMonth && schedules.length > 0 && (
-          <div className="absolute inset-0 mx-auto my-auto flex h-8 w-8 flex-col gap-[1px] overflow-hidden rounded-[3px]">
+          <div className="absolute inset-0 mx-auto my-auto flex h-8 w-8 flex-col gap-[1.5px] overflow-hidden rounded-[3px] bg-white">
             {schedules.length === 1 && (
               <div
                 className="flex-1"
@@ -54,6 +54,7 @@ function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules =
                   className="flex-1"
                   style={{
                     backgroundColor: SCHEDULE_COLOR[s.scheduleCategory],
+                    borderRadius: '3px',
                   }}
                 />
               ))}
@@ -66,12 +67,13 @@ function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules =
                     className="flex-1"
                     style={{
                       backgroundColor: SCHEDULE_COLOR[s.scheduleCategory],
+                      borderRadius: '3px',
                     }}
                   />
                 ))}
 
-                <div className="flex flex-1 items-center justify-center bg-white text-[9px] font-semibold text-indigo-500">
-                  +{extraCount}
+                <div className="flex justify-end bg-white text-[8px] font-semibold text-indigo-500">
+                  +{extraCount}개
                 </div>
               </>
             )}
