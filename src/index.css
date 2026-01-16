@@ -12,6 +12,8 @@
   --sab: env(safe-area-inset-bottom);
   --sal: env(safe-area-inset-left);
 
+  --viewport-height: 100dvh;
+
   --font-suit:
     'SUIT', Roboto, system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     sans-serif;

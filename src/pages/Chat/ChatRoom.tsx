@@ -25,7 +25,7 @@ const formatTime = (dateString: string) => {
 function ChatRoom() {
   const { chatRoomId } = useParams();
   const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage } = useChat(Number(chatRoomId));
-  const { keyboardHeight, viewportHeight } = useKeyboardHeight();
+  useKeyboardHeight();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -59,16 +59,10 @@ function ChatRoom() {
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView();
-  }, [chatMessages, keyboardHeight]);
+  }, [chatMessages]);
 
   return (
-    <div
-      className="bg-indigo-0 flex min-h-0 flex-1 flex-col"
-      style={{
-        height: viewportHeight ? `calc(${viewportHeight}px - var(--header-h) - var(--sat))` : undefined,
-        flex: viewportHeight ? 'none' : undefined,
-      }}
-    >
+    <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div ref={topRef} />
 
