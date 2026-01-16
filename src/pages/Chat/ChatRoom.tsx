@@ -111,7 +111,7 @@ function ChatRoom() {
         <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-indigo-25 sticky bottom-0 flex shrink-0 items-end gap-2 px-5 py-2">
+      <form onSubmit={handleSubmit} className="bg-indigo-25 flex shrink-0 items-end gap-2 px-5 py-2">
         <textarea
           ref={textareaRef}
           onChange={handleChange}
