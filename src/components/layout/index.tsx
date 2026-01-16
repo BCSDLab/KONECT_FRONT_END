@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import type { CSSProperties } from 'react';
 import { Outlet } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import BottomNav from './BottomNav';
@@ -16,10 +17,15 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
       <Suspense>
         <main
           className={twMerge(
-            'bg-background flex flex-1 flex-col overflow-y-auto pt-11',
-            showBottomNav && 'pb-19',
+            'bg-background flex flex-1 flex-col overflow-y-auto pt-(--layout-pt) pb-(--layout-pb)',
             contentClassName
           )}
+          style={
+            {
+              '--layout-pt': 'calc(var(--header-h) + var(--sat))',
+              '--layout-pb': showBottomNav ? 'calc(var(--bottom-nav-h) + var(--sab))' : '0px',
+            } as CSSProperties
+          }
         >
           <Outlet />
         </main>

@@ -9,7 +9,10 @@ function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-    <nav className="fixed right-0 bottom-0 left-0 z-20 border-t border-[#e0e0e0] bg-white">
+    <nav
+      className="fixed right-0 bottom-0 left-0 z-20 border-t border-[#e0e0e0] bg-white"
+      style={{ paddingBottom: 'var(--sab)' }}
+    >
       <div className="mx-auto flex min-h-[75px] max-w-md items-center justify-between px-7 py-2 text-xs font-semibold">
         <Link to="/home" className="flex flex-col items-center">
           <HouseIcon className={clsx('h-5 w-5', pathname === '/home' ? 'text-primary' : 'text-indigo-100')} />

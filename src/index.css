@@ -7,14 +7,28 @@
   --primary-black: #021730;
   --primary-white: #ffffff;
 
-  --sat: env(safe-area-inset-top);
-  --sar: env(safe-area-inset-right);
-  --sab: env(safe-area-inset-bottom);
-  --sal: env(safe-area-inset-left);
+  --header-h: 44px;
+  --bottom-nav-h: 75px;
+
+  --sat: 0px;
+  --sar: 0px;
+  --sab: 0px;
+  --sal: 0px;
 
   --font-suit:
     'SUIT', Roboto, system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
     sans-serif;
+}
+
+@supports (padding: env(safe-area-inset-top)) {
+  @media (hover: none) and (pointer: coarse) {
+    :root {
+      --sat: env(safe-area-inset-top);
+      --sar: env(safe-area-inset-right);
+      --sab: env(safe-area-inset-bottom);
+      --sal: env(safe-area-inset-left);
+    }
+  }
 }
 
 @layer base {
