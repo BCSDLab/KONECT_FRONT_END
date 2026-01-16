@@ -66,8 +66,8 @@ function Schedule() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="flex w-full flex-col gap-6 bg-white">
+    <div className="flex h-[calc(100vh-44px)] flex-col bg-white">
+      <main className="flex w-full shrink-0 flex-col gap-6 bg-white">
         <header className="flex justify-center gap-5">
           <MonthPicker year={year} month={month} setDate={setDate} />
         </header>
@@ -93,7 +93,10 @@ function Schedule() {
         </ul>
       </main>
 
-      <ScheduleDetail month={month} day={day} />
+      {/* 아래: 여기만 스크롤 */}
+      <section className="flex-1 overflow-y-auto">
+        <ScheduleDetail month={month} day={day} />
+      </section>
     </div>
   );
 }

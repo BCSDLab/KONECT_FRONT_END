@@ -33,7 +33,7 @@ function ScheduleDetail({ month, day }: scheduleDetailProps) {
   });
 
   return (
-    <div className="flex flex-col gap-2 bg-white px-6 pb-6">
+    <div className="flex flex-1 flex-col gap-2 bg-white px-6 pb-6">
       <span className="text-[14px] leading-4 font-semibold">
         {month}월 {day}일 일정 상세보기
       </span>
