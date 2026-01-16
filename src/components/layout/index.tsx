@@ -15,7 +15,11 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
       <Header />
       <Suspense>
         <main
-          className={twMerge('bg-background flex flex-1 flex-col pt-11', showBottomNav && 'pb-19', contentClassName)}
+          className={twMerge(
+            'bg-background box-border flex min-h-0 flex-1 flex-col pt-11',
+            showBottomNav && 'pb-19',
+            contentClassName
+          )}
         >
           <Outlet />
         </main>

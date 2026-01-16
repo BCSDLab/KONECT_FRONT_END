@@ -63,7 +63,7 @@ function ChatRoom() {
 
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="bg-indigo-0 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <div ref={topRef} />
 
         {sortedMessages.map((message, index) => {
