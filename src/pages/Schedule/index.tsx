@@ -93,7 +93,6 @@ function Schedule() {
         </ul>
       </main>
 
-      {/* 아래: 여기만 스크롤 */}
       <section className="flex-1 overflow-y-auto">
         <ScheduleDetail month={month} day={day} />
       </section>
