@@ -27,7 +27,6 @@
   body {
     position: relative;
     overscroll-behavior-y: contain;
-    padding-bottom: env(safe-area-inset-bottom);
     user-select: none;
     -webkit-user-select: none;
   }
