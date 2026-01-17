@@ -15,8 +15,8 @@ function ChatListPage() {
   if (chatRoomList.chatRooms.length === 0) {
     return (
       <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col items-center justify-center py-3">
-        <div className="text-sm text-gray-500">채팅방이 없습니다</div>
-        <div className="mt-1 text-xs text-gray-400">동아리에 문의하면 채팅이 시작됩니다</div>
+        <div className="text-sm text-gray-500">채팅방이 없어요</div>
+        <div className="mt-1 text-xs text-gray-400">동아리에 문의하면 채팅이 시작돼요</div>
       </div>
     );
   }
