@@ -16,7 +16,6 @@ function useKeyboardHeight() {
 
     setViewportHeight();
 
-    body.style.overflow = 'hidden';
     body.style.height = 'var(--viewport-height)';
     root.style.height = 'var(--viewport-height)';
 
