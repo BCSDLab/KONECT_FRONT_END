@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
+import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
 import useChat from './hooks/useChat';
 
 const getDateKey = (dateString: string) => {
@@ -24,6 +25,7 @@ const formatTime = (dateString: string) => {
 function ChatRoom() {
   const { chatRoomId } = useParams();
   const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage } = useChat(Number(chatRoomId));
+  useKeyboardHeight();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -61,7 +63,7 @@ function ChatRoom() {
 
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="bg-indigo-0 min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <div ref={topRef} />
 
         {sortedMessages.map((message, index) => {

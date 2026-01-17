@@ -49,7 +49,7 @@ export function RankingList({ type, sort }: RankingListProps) {
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   return (
-    <div className="overflow-y-auto" style={{ height: 'calc(100% - 48px)' }}>
+    <div className="h-full overflow-y-auto">
       {myRankings.map(
         (item, index) =>
           item && <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} />

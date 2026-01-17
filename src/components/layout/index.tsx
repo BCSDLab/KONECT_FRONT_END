@@ -11,12 +11,12 @@ interface LayoutProps {
 
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   return (
-    <div className="flex min-h-dvh flex-col">
+    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ height: 'var(--viewport-height)' }}>
       <Header />
       <Suspense>
         <main
           className={twMerge(
-            'bg-background flex flex-1 flex-col overflow-y-auto pt-11',
+            'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain pt-11',
             showBottomNav && 'pb-19',
             contentClassName
           )}

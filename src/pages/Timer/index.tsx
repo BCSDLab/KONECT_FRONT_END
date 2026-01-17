@@ -49,21 +49,22 @@ function TimerPage() {
       <div
         ref={sheetRef}
         className={clsx(
-          'fixed inset-x-0 bottom-0 z-20 rounded-t-3xl bg-white transition-transform duration-300 ease-out',
+          'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white transition-transform duration-300 ease-out',
           isDragging && 'transition-none'
         )}
         style={{
-          height: 'calc(100% - 48px)',
+          bottom: '75px',
+          height: position === 'full' ? 'calc(100% - 48px - 75px)' : 'calc(100% - 48px - 105px)',
           transform: `translateY(${
             position === 'half' ? `calc(55% + ${currentTranslate}px)` : `${Math.max(0, currentTranslate)}px`
           })`,
         }}
       >
-        <div className="flex h-5 cursor-grab items-center justify-center active:cursor-grabbing" {...handlers}>
+        <div className="flex h-5 shrink-0 cursor-grab items-center justify-center active:cursor-grabbing" {...handlers}>
           <div className="h-1 w-11 rounded-full bg-indigo-300" />
         </div>
 
-        <div className="relative flex items-center justify-center px-4 font-semibold">
+        <div className="relative flex shrink-0 items-center justify-center px-4 font-semibold">
           <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
           <Dropdown
             className="absolute right-4"
@@ -73,7 +74,7 @@ function TimerPage() {
           />
         </div>
 
-        <div className="flex pt-2.5 pb-0.5">
+        <div className="flex shrink-0 pt-2.5 pb-0.5">
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -87,7 +88,13 @@ function TimerPage() {
             </button>
           ))}
         </div>
-        <div className={clsx(isPending && 'opacity-60 transition-opacity')}>
+        <div
+          className={clsx('min-h-0 overflow-hidden', isPending && 'opacity-60 transition-opacity')}
+          style={{
+            height: position === 'half' ? 'calc(45% - 70px)' : undefined,
+            flex: position === 'full' ? 1 : undefined,
+          }}
+        >
           <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
         </div>
       </div>
