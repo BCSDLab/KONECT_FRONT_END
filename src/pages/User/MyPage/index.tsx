@@ -7,7 +7,9 @@ import LayersIcon from '@/assets/svg/layers.svg';
 import LogoutIcon from '@/assets/svg/logout.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import UserIcon from '@/assets/svg/user.svg';
+import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
+import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useMyInfo } from '../Profile/hooks/useMyInfo';
 import { useLogoutMutation } from './hooks/useLogout';
 
@@ -23,6 +25,8 @@ function MyPage() {
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
   const { mutate: logout } = useLogoutMutation();
+  const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
+
   const handleClick = (to: string) => {
     navigate(to);
   };
@@ -81,13 +85,30 @@ function MyPage() {
             <div className="text-[13px] leading-4 text-indigo-200">v1.0.0</div>
           </div>
         </div>
-        <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={() => logout()}>
+        <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={openModal}>
           <div className="flex items-center gap-4">
             <LogoutIcon />
             <div className="text-sm leading-4 font-semibold">로그아웃</div>
           </div>
         </button>
       </div>
+
+      <BottomModal isOpen={isOpen} onClose={closeModal}>
+        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">정말로 로그아웃 하시겠어요?</div>
+          <div>
+            <button
+              onClick={() => logout()}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+            >
+              로그아웃
+            </button>
+            <button onClick={closeModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+              취소
+            </button>
+          </div>
+        </div>
+      </BottomModal>
     </div>
   );
 }
