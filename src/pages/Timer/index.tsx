@@ -1,8 +1,8 @@
 import { useState, useTransition } from 'react';
 import clsx from 'clsx';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
+import BottomSheet from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
-import { useBottomSheet } from '@/utils/hooks/useBottomSheet';
 import { RankingList } from './components/RankingItem';
 import TimerButton from './components/TimerButton';
 import { useStudyTimer } from './hooks/useStudyTimer';
@@ -22,7 +22,6 @@ const SORT_OPTIONS = [
 
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
-  const { position, isDragging, currentTranslate, sheetRef, handlers } = useBottomSheet();
 
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
@@ -46,58 +45,45 @@ function TimerPage() {
         </div>
       </div>
 
-      <div
-        ref={sheetRef}
-        className={clsx(
-          'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white transition-transform duration-300 ease-out',
-          isDragging && 'transition-none'
-        )}
-        style={{
-          bottom: 'calc(75px + var(--sab))',
-          height: 'calc(100% - 48px - 105px - var(--sab))',
-          transform: `translateY(${
-            position === 'half' ? `calc(55% + ${currentTranslate}px)` : `${Math.max(0, currentTranslate)}px`
-          })`,
-        }}
-      >
-        <div className="flex h-5 shrink-0 cursor-grab items-center justify-center active:cursor-grabbing" {...handlers}>
-          <div className="h-1 w-11 rounded-full bg-indigo-300" />
-        </div>
+      <BottomSheet resizable bottomOffset={75} halfTopOffset={105} fullTopOffset={48}>
+        {(position) => (
+          <>
+            <div className="relative flex shrink-0 items-center justify-center px-4 font-semibold">
+              <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
+              <Dropdown
+                className="absolute right-4"
+                options={SORT_OPTIONS}
+                value={sort}
+                onChange={(value) => startTransition(() => setSort(value))}
+              />
+            </div>
 
-        <div className="relative flex shrink-0 items-center justify-center px-4 font-semibold">
-          <div className="text-center text-[15px] leading-6 text-indigo-700">랭킹</div>
-          <Dropdown
-            className="absolute right-4"
-            options={SORT_OPTIONS}
-            value={sort}
-            onChange={(value) => startTransition(() => setSort(value))}
-          />
-        </div>
-
-        <div className="flex shrink-0 pt-2.5 pb-0.5">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => startTransition(() => setActiveTab(tab))}
-              className={clsx(
-                'flex-1 border-b-[1.4px] py-1.5 text-center text-[13px] font-semibold',
-                activeTab === tab ? 'border-blue-500 text-indigo-700' : 'border-transparent text-indigo-200'
-              )}
+            <div className="flex shrink-0 pt-2.5 pb-0.5">
+              {tabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => startTransition(() => setActiveTab(tab))}
+                  className={clsx(
+                    'flex-1 border-b-[1.4px] py-1.5 text-center text-[13px] font-semibold',
+                    activeTab === tab ? 'border-blue-500 text-indigo-700' : 'border-transparent text-indigo-200'
+                  )}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+            <div
+              className={clsx('min-h-0 overflow-hidden', isPending && 'opacity-60 transition-opacity')}
+              style={{
+                height: position === 'half' ? 'calc(45% - 70px)' : undefined,
+                flex: position === 'full' ? 1 : undefined,
+              }}
             >
-              {tab}
-            </button>
-          ))}
-        </div>
-        <div
-          className={clsx('min-h-0 overflow-hidden', isPending && 'opacity-60 transition-opacity')}
-          style={{
-            height: position === 'half' ? 'calc(45% - 70px)' : undefined,
-            flex: position === 'full' ? 1 : undefined,
-          }}
-        >
-          <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
-        </div>
-      </div>
+              <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+            </div>
+          </>
+        )}
+      </BottomSheet>
     </div>
   );
 }

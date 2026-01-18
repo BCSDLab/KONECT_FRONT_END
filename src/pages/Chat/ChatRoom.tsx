@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
-import useKeyboardHeight from '@/utils/hooks/useKeyboardHeight';
+import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
 import useChat from './hooks/useChat';
 
 const getDateKey = (dateString: string) => {
