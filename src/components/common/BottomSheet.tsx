@@ -21,8 +21,6 @@ interface BottomSheetProps {
   onPositionChange?: (position: SheetPosition) => void;
 }
 
-export type { SheetPosition };
-
 export default function BottomSheet({
   children,
   resizable = false,
@@ -53,6 +51,8 @@ export default function BottomSheet({
 
   return (
     <div
+      role="region"
+      aria-label="Bottom Sheet"
       ref={sheetRef}
       className={clsx(
         'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white transition-transform duration-300 ease-out',
