@@ -1,9 +1,16 @@
 import { useRef, useState } from 'react';
 
-type SheetPosition = 'half' | 'full';
+export type SheetPosition = 'half' | 'full';
 
-export const useBottomSheet = (threshold = 30) => {
-  const [position, setPosition] = useState<SheetPosition>('half');
+interface UseBottomSheetOptions {
+  threshold?: number;
+  defaultPosition?: SheetPosition;
+  onPositionChange?: (position: SheetPosition) => void;
+}
+
+export const useBottomSheet = (options: UseBottomSheetOptions = {}) => {
+  const { threshold = 30, defaultPosition = 'half', onPositionChange } = options;
+  const [position, setPosition] = useState<SheetPosition>(defaultPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [currentTranslate, setCurrentTranslate] = useState(0);
   const startY = useRef(0);
@@ -24,10 +31,16 @@ export const useBottomSheet = (threshold = 30) => {
   const handleTouchEnd = () => {
     setIsDragging(false);
 
+    let newPosition = position;
     if (position === 'half' && currentTranslate < -threshold) {
-      setPosition('full');
+      newPosition = 'full';
     } else if (position === 'full' && currentTranslate > threshold) {
-      setPosition('half');
+      newPosition = 'half';
+    }
+
+    if (newPosition !== position) {
+      setPosition(newPosition);
+      onPositionChange?.(newPosition);
     }
 
     setCurrentTranslate(0);

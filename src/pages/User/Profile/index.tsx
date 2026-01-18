@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Modal from '@/components/common/Modal';
+import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
@@ -71,27 +71,24 @@ function Profile() {
         수정 완료
       </button>
 
-      <Modal isOpen={isOpen} onClose={closeModal}>
-        <div className="flex flex-col gap-5 p-5">
-          <div className="text-lg leading-8 font-bold whitespace-pre-wrap">
+      <BottomModal isOpen={isOpen} onClose={closeModal}>
+        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">
             정말로 탈퇴하시겠어요?{'\n'}탈퇴 후 코넥트의 기능을 사용할 수 없어요
           </div>
-          <div className="flex justify-between gap-3">
-            <button
-              onClick={closeModal}
-              className="bg-indigo-25 w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold text-indigo-400"
-            >
-              취소
-            </button>
+          <div>
             <button
               onClick={() => withdraw()}
-              className="w-full rounded-lg bg-indigo-700 py-3.5 text-center text-lg leading-7 font-bold text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
             >
               탈퇴하기
             </button>
+            <button onClick={closeModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+              취소
+            </button>
           </div>
         </div>
-      </Modal>
+      </BottomModal>
     </div>
   );
 }
