@@ -34,7 +34,7 @@ const useChat = (chatRoomId?: number) => {
     initialPageParam: 1,
     getNextPageParam: (lastPage) => (lastPage.currentPage < lastPage.totalPage ? lastPage.currentPage + 1 : undefined),
     enabled: !!chatRoomId,
-    refetchInterval: 3000,
+    refetchInterval: 1000,
   });
 
   const allMessages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
