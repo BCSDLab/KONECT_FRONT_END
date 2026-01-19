@@ -1,9 +1,10 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getClubRecruitment } from '@/apis/club';
+import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
 const useGetClubRecruitment = (clubId: number) => {
   return useSuspenseQuery({
-    queryKey: ['clubRecruitment', clubId],
+    queryKey: clubQueryKeys.recruitment(clubId),
     queryFn: () => getClubRecruitment(clubId),
   });
 };

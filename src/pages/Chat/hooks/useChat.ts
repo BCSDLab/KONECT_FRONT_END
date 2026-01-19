@@ -3,11 +3,17 @@ import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from 
 import { getChatMessages, getChatRooms, postChatMessage, postChatRooms } from '@/apis/chat';
 import type { ChatRoomsResponse } from '@/apis/chat/entity';
 
+export const chatQueryKeys = {
+  all: ['chat'],
+  rooms: () => [...chatQueryKeys.all, 'rooms'],
+  messages: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId],
+};
+
 const useChat = (chatRoomId?: number) => {
   const queryClient = useQueryClient();
 
   const { data: chatRoomList } = useSuspenseQuery({
-    queryKey: ['chatList'],
+    queryKey: chatQueryKeys.rooms(),
     queryFn: () => getChatRooms(),
     refetchInterval: 5000,
   });
@@ -24,7 +30,7 @@ const useChat = (chatRoomId?: number) => {
     isFetchingNextPage,
     isSuccess,
   } = useInfiniteQuery({
-    queryKey: ['chatMessages', chatRoomId],
+    queryKey: chatQueryKeys.messages(chatRoomId!),
     queryFn: ({ pageParam }) =>
       getChatMessages({
         chatRoomId: chatRoomId!,
@@ -50,7 +56,7 @@ const useChat = (chatRoomId?: number) => {
     if (markedReadRoomRef.current === chatRoomId) return;
     markedReadRoomRef.current = chatRoomId;
 
-    queryClient.setQueryData<ChatRoomsResponse>(['chatList'], (old) => {
+    queryClient.setQueryData<ChatRoomsResponse>(chatQueryKeys.rooms(), (old) => {
       if (!old) return old;
 
       const nextRooms = old.chatRooms.map((room) =>
@@ -66,8 +72,8 @@ const useChat = (chatRoomId?: number) => {
     mutationFn: ({ chatRoomId, content }: { chatRoomId: number; content: string }) =>
       postChatMessage(chatRoomId, content),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['chatMessages', chatRoomId] });
-      queryClient.invalidateQueries({ queryKey: ['chatList'] });
+      queryClient.invalidateQueries({ queryKey: chatQueryKeys.messages(chatRoomId!) });
+      queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
     },
   });
 
