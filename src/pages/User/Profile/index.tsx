@@ -7,7 +7,7 @@ import { useMyInfo } from './hooks/useMyInfo';
 const fields = [
   { label: '학교명', name: 'universityName', disabled: true },
   { label: '이메일', name: 'email', disabled: true },
-  { label: '이름', name: 'name', disabled: false },
+  { label: '이름', name: 'name', disabled: true },
   { label: '학번', name: 'studentNumber', disabled: false },
   { label: '전화번호', name: 'phoneNumber', disabled: false },
 ] as const;
@@ -47,6 +47,9 @@ function Profile() {
           />
         </div>
       ))}
+      <div className="text-end text-[10px] leading-3 font-medium text-indigo-300">
+        학번, 전화번호 외의 정보 수정은 관리자에게 문의해주세요
+      </div>
       <div className="flex justify-end text-[10px] leading-3 font-medium text-indigo-300">
         <button type="button" onClick={openModal} className="text-[#3182f6]">
           탈퇴

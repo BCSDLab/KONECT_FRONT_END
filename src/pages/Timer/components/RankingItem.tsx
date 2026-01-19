@@ -8,9 +8,10 @@ interface RankingItemProps {
   item: StudyRanking;
   isMe?: boolean;
   sort: 'MONTHLY' | 'DAILY';
+  type: StudyRankingParams['type'];
 }
 
-function RankingItem({ item, isMe, sort }: RankingItemProps) {
+function RankingItem({ item, isMe, sort, type }: RankingItemProps) {
   const studyTime = sort === 'MONTHLY' ? item.monthlyStudyTime : item.dailyStudyTime;
 
   return (
@@ -32,7 +33,10 @@ function RankingItem({ item, isMe, sort }: RankingItemProps) {
         )}
       </div>
       <div className="flex-1">
-        <span className="text-[17px] leading-[19px] font-bold text-indigo-700">{item.name}</span>
+        <span className="text-[17px] leading-[19px] font-bold text-indigo-700">
+          {item.name}
+          {type === 'STUDENT_NUMBER' && '학번'}
+        </span>
         <div className="text-[13px] leading-4 text-indigo-300">공부시간 : {formatTime(studyTime)}</div>
       </div>
     </div>
@@ -52,10 +56,10 @@ export function RankingList({ type, sort }: RankingListProps) {
     <div className="h-full overflow-y-auto">
       {myRankings.map(
         (item, index) =>
-          item && <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} />
+          item && <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} type={type} />
       )}
       {rankings.map((item, index) => (
-        <RankingItem key={`ranking-${index}-${item.rank}-${item.name}`} item={item} sort={sort} />
+        <RankingItem key={`ranking-${index}-${item.rank}-${item.name}`} item={item} sort={sort} type={type} />
       ))}
       {hasNextPage && <div ref={observerRef} className="flex h-20 items-center justify-center" />}
     </div>
