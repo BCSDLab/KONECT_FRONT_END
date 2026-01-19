@@ -32,6 +32,7 @@ function ConfirmStep() {
       onNext={handleNext}
       nextDisabled={isPending}
     >
+      <div className="text-sm font-medium text-red-500">반드시 정확한 값을 입력해주세요</div>
       <div className="flex flex-col gap-1">
         <label className="text-[15px] leading-6 font-medium text-indigo-300">학교명</label>
         <input
