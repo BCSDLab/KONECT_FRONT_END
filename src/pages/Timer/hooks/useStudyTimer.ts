@@ -1,6 +1,6 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useStudyTime, STUDY_TIME_SUMMARY_QUERY_KEY } from './useStudyTime';
+import { useStudyTime, studyTimeQueryKeys } from './useStudyTime';
 
 export const useStudyTimer = () => {
   const queryClient = useQueryClient();
@@ -42,7 +42,7 @@ export const useStudyTimer = () => {
       setSessionStartMs(null);
       setIsRunning(false);
 
-      queryClient.invalidateQueries({ queryKey: STUDY_TIME_SUMMARY_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() });
     } catch (error) {
       console.error('타이머 정지 실패:', error);
       setSessionStartMs(null);

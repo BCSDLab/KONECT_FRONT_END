@@ -5,6 +5,7 @@ import { getScheduleList } from '@/apis/schedule/index';
 export const scheduleQueryKeys = {
   all: ['schedules'],
   monthly: (params: ScheduleRequestParams) => [...scheduleQueryKeys.all, 'monthly', params.year, params.month],
+  upcoming: () => [...scheduleQueryKeys.all, 'upcoming'],
 };
 
 export const useScheduleList = (params: ScheduleRequestParams) => {

@@ -2,13 +2,29 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getStudyTimeSummary, startStudyTimer, stopStudyTimer } from '@/apis/studyTime';
 import { API_ERROR_CODES, isApiError } from '@/interface/error';
 
-export const STUDY_TIME_SUMMARY_QUERY_KEY = ['studyTimeSummary'] as const;
+export const studyTimeQueryKeys = {
+  all: ['studyTime'],
+  summary: () => [...studyTimeQueryKeys.all, 'summary'],
+  ranking: (params: { limit: number; sort: string; type: string }) => [
+    ...studyTimeQueryKeys.all,
+    'ranking',
+    params.limit,
+    params.sort,
+    params.type,
+  ],
+  myRanking: (params: { sort: string; type: string }) => [
+    ...studyTimeQueryKeys.all,
+    'myRanking',
+    params.sort,
+    params.type,
+  ],
+};
 
 export const useStudyTime = () => {
   const queryClient = useQueryClient();
 
   const { data: studyTime } = useQuery({
-    queryKey: STUDY_TIME_SUMMARY_QUERY_KEY,
+    queryKey: studyTimeQueryKeys.summary(),
     queryFn: getStudyTimeSummary,
   });
 
@@ -26,7 +42,7 @@ export const useStudyTime = () => {
       // 이미 실행 중인 타이머가 있으면 정리 후 재시도
       if (error.apiError?.code === API_ERROR_CODES.ALREADY_RUNNING_STUDY_TIMER) {
         await stopMutation.mutateAsync({ totalSeconds: 0 });
-        queryClient.invalidateQueries({ queryKey: STUDY_TIME_SUMMARY_QUERY_KEY });
+        queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() });
       }
 
       throw error;
