@@ -47,8 +47,11 @@ function CouncilIntro({ councilDetail }: CouncilIntroProps) {
             </div>
             <div className="flex flex-col gap-1">
               <div className="text-[10px] leading-3 font-medium text-indigo-300">인스타그램</div>
-              <Link to={councilDetail.instagramUrl} className="text-sm leading-3.5 font-semibold text-indigo-700">
-                @{councilDetail.instagramUrl.split('/').pop()}
+              <Link
+                to={`https://instagram.com/${councilDetail.instagramUserName}`}
+                className="text-sm leading-3.5 font-semibold text-indigo-700"
+              >
+                @{councilDetail.instagramUserName}
               </Link>
             </div>
           </div>

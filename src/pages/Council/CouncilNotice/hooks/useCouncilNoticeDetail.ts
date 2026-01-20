@@ -2,6 +2,8 @@ import { useEffect, useRef } from 'react';
 import { useQueryClient, useSuspenseQuery, type InfiniteData } from '@tanstack/react-query';
 import { getCouncilNoticeDetail } from '@/apis/council';
 import type { NoticeResponse } from '@/apis/council/entity';
+import { councilQueryKeys } from '@/pages/Council/CouncilDetail/hooks/useGetCouncilInfo';
+import { userQueryKeys } from '@/pages/User/Profile/hooks/useMyInfo';
 
 interface UseGetCouncilNoticeDetailParams {
   noticeId: number;
@@ -11,7 +13,7 @@ export const useGetCouncilNoticeDetail = ({ noticeId }: UseGetCouncilNoticeDetai
   const queryClient = useQueryClient();
 
   const query = useSuspenseQuery({
-    queryKey: ['councilNoticeDetail', noticeId],
+    queryKey: councilQueryKeys.noticeDetail(noticeId),
     queryFn: () => getCouncilNoticeDetail(noticeId),
   });
 
@@ -23,7 +25,7 @@ export const useGetCouncilNoticeDetail = ({ noticeId }: UseGetCouncilNoticeDetai
     if (patchedRef.current === noticeId) return;
     patchedRef.current = noticeId;
 
-    queryClient.setQueriesData<InfiniteData<NoticeResponse>>({ queryKey: ['councilNotice'] }, (old) => {
+    queryClient.setQueriesData<InfiniteData<NoticeResponse>>({ queryKey: councilQueryKeys.all }, (old) => {
       if (!old) return old;
 
       let changed = false;
@@ -45,7 +47,7 @@ export const useGetCouncilNoticeDetail = ({ noticeId }: UseGetCouncilNoticeDetai
       return changed ? next : old;
     });
 
-    queryClient.invalidateQueries({ queryKey: ['myInfo'], refetchType: 'all' });
+    queryClient.invalidateQueries({ queryKey: userQueryKeys.myInfo(), refetchType: 'all' });
   }, [noticeId, query.data, queryClient]);
 
   return query;

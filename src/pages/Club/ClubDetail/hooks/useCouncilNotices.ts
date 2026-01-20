@@ -1,5 +1,6 @@
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { getCouncilNotice } from '@/apis/council';
+import { councilQueryKeys } from '@/pages/Council/CouncilDetail/hooks/useGetCouncilInfo';
 
 interface UseCouncilNoticeParams {
   limit?: number;
@@ -7,7 +8,7 @@ interface UseCouncilNoticeParams {
 
 export const useCouncilNotice = ({ limit = 10 }: UseCouncilNoticeParams = {}) => {
   return useSuspenseInfiniteQuery({
-    queryKey: ['councilNotice', limit],
+    queryKey: councilQueryKeys.notices(limit),
     queryFn: ({ pageParam }) => getCouncilNotice({ page: pageParam, limit }),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

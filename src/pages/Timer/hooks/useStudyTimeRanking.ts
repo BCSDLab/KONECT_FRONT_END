@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { getMyStudyTimeRanking, getStudyTimeRanking } from '@/apis/studyTime';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
+import { studyTimeQueryKeys } from './useStudyTime';
 
 interface UseStudyTimeRankingParams {
   limit?: number;
@@ -14,7 +15,7 @@ export const useStudyTimeRanking = ({
   type = 'PERSONAL',
 }: UseStudyTimeRankingParams = {}) => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['studyTimeRanking', limit, sort, type],
+    queryKey: studyTimeQueryKeys.ranking({ limit, sort, type }),
     queryFn: ({ pageParam }) =>
       getStudyTimeRanking({
         page: pageParam,
@@ -29,7 +30,7 @@ export const useStudyTimeRanking = ({
   });
 
   const { data: myRankingData } = useSuspenseQuery({
-    queryKey: ['myStudyTimeRanking', sort, type],
+    queryKey: studyTimeQueryKeys.myRanking({ sort, type }),
     queryFn: () => getMyStudyTimeRanking({ sort }),
     select: (data) => {
       if (type === 'CLUB') return data.clubRankings;

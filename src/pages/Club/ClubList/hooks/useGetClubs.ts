@@ -2,6 +2,23 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getClubs } from '@/apis/club';
 import type { ClubResponse } from '@/apis/club/entity';
 
+export const clubQueryKeys = {
+  all: ['clubs'],
+  list: (params: { limit: number; query?: string; isRecruiting: boolean }) => [
+    ...clubQueryKeys.all,
+    'list',
+    params.limit,
+    params.query,
+    params.isRecruiting,
+  ],
+  detail: (clubId: number) => [...clubQueryKeys.all, 'detail', clubId],
+  members: (clubId: number) => [...clubQueryKeys.all, 'members', clubId],
+  recruitment: (clubId: number) => [...clubQueryKeys.all, 'recruitment', clubId],
+  fee: (clubId: number) => [...clubQueryKeys.all, 'fee', clubId],
+  questions: (clubId: number) => [...clubQueryKeys.all, 'questions', clubId],
+  joined: () => [...clubQueryKeys.all, 'joined'],
+};
+
 interface UseGetClubsParams {
   limit?: number;
   query?: string;
@@ -11,7 +28,7 @@ interface UseGetClubsParams {
 
 export const useGetClubs = ({ limit = 10, query, enabled = true, isRecruiting = false }: UseGetClubsParams = {}) => {
   return useInfiniteQuery({
-    queryKey: ['clubs', limit, query, isRecruiting],
+    queryKey: clubQueryKeys.list({ limit, query, isRecruiting }),
     queryFn: ({ pageParam = 1 }) =>
       getClubs({
         page: pageParam,

@@ -4,12 +4,17 @@ import { getMyInfo, putMyInfo } from '@/apis/auth';
 import type { ModifyMyInfoRequest } from '@/apis/auth/entity';
 import type { ApiError } from '@/interface/error';
 
+export const userQueryKeys = {
+  all: ['user'],
+  myInfo: () => [...userQueryKeys.all, 'myInfo'],
+};
+
 export const useMyInfo = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const { data: myInfo } = useSuspenseQuery({
-    queryKey: ['myInfo'],
+    queryKey: userQueryKeys.myInfo(),
     queryFn: () => getMyInfo(),
   });
 
@@ -17,7 +22,7 @@ export const useMyInfo = () => {
     mutationKey: ['modifyMyInfo'],
     mutationFn: (data: ModifyMyInfoRequest) => putMyInfo(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['myInfo'] });
+      queryClient.invalidateQueries({ queryKey: userQueryKeys.myInfo() });
       navigate(-1);
     },
   });

@@ -20,7 +20,7 @@ export interface CouncilResponse {
   location: string;
   personalColor: string;
   operatingHour: string;
-  instagramUrl: string;
+  instagramUserName: string;
   imageUrl: string;
 }
 
