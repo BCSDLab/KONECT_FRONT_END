@@ -4,7 +4,9 @@ export function installViewportVars() {
   const setViewportHeight = () => {
     const vv = window.visualViewport;
     const h = vv?.height ?? window.innerHeight;
+    const offset = Math.max(0, vv?.offsetTop ?? 0);
     document.documentElement.style.setProperty('--viewport-height', `${h}px`);
+    document.documentElement.style.setProperty('--viewport-offset', `${offset}px`);
   };
 
   const requestSetViewportHeight = () => {

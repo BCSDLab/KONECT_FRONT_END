@@ -13,6 +13,7 @@
   --sal: env(safe-area-inset-left, 0px);
 
   --viewport-height: 100dvh;
+  --viewport-offset: 0px;
 
   --font-suit:
     'SUIT', Roboto, system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',

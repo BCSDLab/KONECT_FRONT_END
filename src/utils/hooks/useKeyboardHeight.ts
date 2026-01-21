@@ -11,7 +11,9 @@ function useKeyboardHeight() {
 
     const setViewportHeight = () => {
       const height = visualViewport?.height ?? window.innerHeight;
+      const offset = Math.max(0, visualViewport?.offsetTop ?? 0);
       document.documentElement.style.setProperty('--viewport-height', `${height}px`);
+      document.documentElement.style.setProperty('--viewport-offset', `${offset}px`);
     };
 
     setViewportHeight();
