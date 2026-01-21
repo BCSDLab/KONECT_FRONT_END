@@ -26,7 +26,7 @@ export const useGetCouncilNoticeDetail = ({ noticeId }: UseGetCouncilNoticeDetai
     patchedRef.current = noticeId;
 
     queryClient.setQueriesData<InfiniteData<NoticeResponse>>({ queryKey: councilQueryKeys.all }, (old) => {
-      if (!old) return old;
+      if (!old || !old.pages) return old;
 
       let changed = false;
 

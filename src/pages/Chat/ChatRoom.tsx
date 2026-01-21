@@ -31,9 +31,7 @@ function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const topRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
 
-  const sortedMessages = [...chatMessages].sort(
-    (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-  );
+  const sortedMessages = [...chatMessages].reverse();
 
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const textarea = e.target;
