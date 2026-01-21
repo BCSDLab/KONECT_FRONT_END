@@ -11,7 +11,10 @@ interface LayoutProps {
 
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   return (
-    <div className="fixed inset-0 flex flex-col overflow-hidden" style={{ height: 'var(--viewport-height)' }}>
+    <div
+      className="fixed inset-0 flex flex-col overflow-hidden"
+      style={{ height: 'var(--viewport-height)', transform: 'translateY(var(--viewport-offset))' }}
+    >
       <Header />
       <Suspense>
         <main
