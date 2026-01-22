@@ -29,7 +29,7 @@ function MonthPicker({
   };
 
   return (
-    <div className="relative flex w-[140px] items-center">
+    <div className="relative flex items-center">
       <input
         ref={inputRef}
         type="month"

@@ -3,6 +3,7 @@ import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { useScheduleList } from './hooks/useGetSchedules';
 
 type scheduleDetailProps = {
+  year: number;
   month: number;
   day: number;
 };
@@ -14,8 +15,8 @@ const SCHEDULE_COLOR = {
   DORM: '#B9ADEF',
 };
 
-function ScheduleDetail({ month, day }: scheduleDetailProps) {
-  const { data: schedules } = useScheduleList({ year: new Date().getFullYear(), month });
+function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
+  const { data: schedules } = useScheduleList({ year, month });
 
   const parseDateOnly = (value: string) => {
     const [date] = value.split(' ');
