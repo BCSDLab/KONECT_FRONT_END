@@ -21,7 +21,7 @@ function AgreementRow({ checked, onChange, label, route, RightIcon, CheckIcon }:
           onChange={(e) => onChange(e.target.checked)}
         />
         <CheckIcon className="text-indigo-100 peer-checked:text-black" />
-        <span className="text-sm font-medium text-indigo-100 peer-checked:text-black">{label}</span>
+        <span className="text-sub2 text-indigo-100 peer-checked:text-black">{label}</span>
       </label>
 
       {RightIcon ? (
@@ -45,7 +45,7 @@ function AgreementAllRow({ checked, onChange, label, BigCheckIcon }: AgreementAl
     <label className="flex cursor-pointer items-center gap-3">
       <input type="checkbox" className="peer sr-only" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <BigCheckIcon className="text-indigo-100 peer-checked:text-black" />
-      <span className="font-semibold text-indigo-100 peer-checked:text-black">{label}</span>
+      <span className="text-h3 text-indigo-100 peer-checked:text-black">{label}</span>
     </label>
   );
 }

@@ -35,7 +35,7 @@ function TermStep() {
   return (
     <div className="flex flex-1 flex-col justify-between px-8 py-5" style={{ marginBottom: 'calc(32px + var(--sab))' }}>
       <div className="flex flex-col gap-2 text-center">
-        <div className="text-[28px] font-extrabold">서비스 이용 동의</div>
+        <div className="text-d2">서비스 이용 동의</div>
         <div className="font-semibold text-indigo-300">원활한 서비스 이용을 위해 동의해주세요</div>
 
         <div className="mt-10 flex w-full flex-col gap-3">

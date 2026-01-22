@@ -43,19 +43,19 @@ function Home() {
       <div className="flex flex-col gap-2">
         {joinedClubsData?.joinedClubs.length === 0 ? (
           <Card>
-            <div className="mb-3">
-              <div className="mb-1.5 text-xs leading-3.5">환영합니다!</div>
-              <div className="mb-2 text-sm leading-4 font-semibold">나에게 맞는 동아리를 찾아보세요</div>
-              <div className="text-xs leading-3.5">{totalClubCount}개의 동아리가 기다리고 있어요</div>
+            <div>
+              <div className="text-sub2 mb-1.5">환영합니다!</div>
+              <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
+              <div className="text-sub2">{totalClubCount}개의 동아리가 기다리고 있어요</div>
             </div>
 
-            <Link to="/clubs" className="bg-primary w-full rounded-sm py-3 text-center text-xs font-medium text-white">
+            <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
               동아리 둘러보기
             </Link>
           </Card>
         ) : (
           <>
-            <div className="text-sm leading-4 font-semibold">내 동아리</div>
+            <div className="text-h3">내 동아리</div>
 
             <div className="flex flex-col gap-2">
               {joinedClubsData.joinedClubs.map((club) => (
@@ -68,8 +68,8 @@ function Home() {
 
       <div>
         <div className="flex justify-between">
-          <div className="text-sm leading-4 font-semibold">다가오는 일정</div>
-          <Link to="/schedules" className="text-xs leading-3 text-[#3182F6]">
+          <div className="text-h3">다가오는 일정</div>
+          <Link to="/schedules" className="text-sub2 text-[#3182F6]">
             전체보기
           </Link>
         </div>
@@ -84,16 +84,16 @@ function Home() {
         ) : (
           scheduleListData?.schedules.slice(0, 3).map((schedule) => (
             <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2">
-              <div className="flex gap-3">
+              <div className="flex items-center gap-3">
                 <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
-                  <div className="text-primary text-center text-[10px] leading-3 font-bold">
+                  <div className="text-primary text-center text-xs leading-3 font-bold">
                     {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
                   </div>
                   <CalendarIcon />
                 </div>
-                <div className="flex flex-1 flex-col justify-center gap-1">
-                  <div className="text-[15px] leading-[17px] font-bold text-indigo-700">{schedule.title}</div>
-                  <div className="text-[13px] leading-4 text-indigo-300">
+                <div className="flex flex-1 flex-col">
+                  <div className="text-h3 text-indigo-700">{schedule.title}</div>
+                  <div className="text-sub2 text-indigo-300">
                     {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
                   </div>
                 </div>
@@ -105,8 +105,8 @@ function Home() {
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between">
-          <div className="text-sm leading-4 font-semibold">지금 모집중</div>
-          <Link to="/clubs" className="text-xs leading-3 text-[#3182F6]">
+          <div className="text-h3">지금 모집중</div>
+          <Link to="/clubs" className="text-sub2 text-[#3182F6]">
             전체보기
           </Link>
         </div>

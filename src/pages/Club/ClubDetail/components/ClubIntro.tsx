@@ -22,8 +22,8 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
   return (
     <>
       <Card>
-        <div className="text-sm leading-4 font-bold text-indigo-700">동아리 소개</div>
-        <div className="mt-1.5 text-xs leading-3.5 text-indigo-300">{clubDetail.introduce}</div>
+        <div className="text-h3 text-indigo-700">동아리 소개</div>
+        <div className="text-sub2 mt-1.5 text-indigo-300">{clubDetail.introduce}</div>
       </Card>
       <Card>
         <div className="text-sm leading-4 font-bold text-indigo-700">위치 및 회원 수</div>
@@ -54,13 +54,13 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
         </div>
       </Card>
       <Card>
-        <div className="flex flex-col items-center gap-1 text-indigo-300">
-          <div className="text-xs leading-3.5 font-medium">동아리에 대해 궁금한 점이 있으신가요?</div>
-          <div className="text-[10px] leading-3">편하게 문의해주세요!</div>
+        <div className="text-body3 flex flex-col items-center gap-1 text-indigo-300">
+          <div>동아리에 대해 궁금한 점이 있으신가요?</div>
+          <div>편하게 문의해주세요!</div>
         </div>
         <button
           onClick={handleInquireClick}
-          className="bg-indigo-5 flex items-center justify-center gap-1 rounded-sm py-3 text-sm leading-3.5 font-medium"
+          className="bg-indigo-5 text-body3 flex items-center justify-center gap-1 rounded-sm py-3"
         >
           <PaperPlaneIcon />
           문의하기

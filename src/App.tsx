@@ -47,6 +47,14 @@ function App() {
                 <Route path="finish" element={<FinishStep />} />
               </Route>
             </Route>
+            <Route element={<Layout />}>
+              <Route path="legal">
+                <Route path="oss" element={<LicensePage />} />
+                <Route path="terms" element={<TermsPage />} />
+                <Route path="privacy" element={<PrivacyPolicyPage />} />
+                <Route path="marketing" element={<MarketingPolicyPage />} />
+              </Route>
+            </Route>
           </Route>
 
           <Route element={<ProtectedRoute />}>
@@ -61,12 +69,6 @@ function App() {
             </Route>
             <Route element={<Layout />}>
               <Route path="profile" element={<Profile />} />
-              <Route path="legal">
-                <Route path="oss" element={<LicensePage />} />
-                <Route path="terms" element={<TermsPage />} />
-                <Route path="privacy" element={<PrivacyPolicyPage />} />
-                <Route path="marketing" element={<MarketingPolicyPage />} />
-              </Route>
               <Route path="clubs">
                 <Route index element={<ClubList />} />
                 <Route path="search" element={<ClubSearch />} />

@@ -51,6 +51,8 @@ function ChatRoom() {
         sendMessage({ chatRoomId: Number(chatRoomId), content: message });
         textareaRef.current.value = '';
         textareaRef.current.style.height = 'auto';
+        textareaRef.current.focus();
+        messagesEndRef.current?.scrollIntoView();
       }
     }
   };

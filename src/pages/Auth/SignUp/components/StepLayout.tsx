@@ -14,8 +14,8 @@ function StepLayout({
   return (
     <div className="flex flex-1 flex-col justify-between px-8 py-5" style={{ marginBottom: 'calc(32px + var(--sab))' }}>
       <div className="flex flex-col gap-2">
-        <div className="text-[28px] font-extrabold">{title}</div>
-        <div className="text-body-4-m whitespace-pre-line text-indigo-300">{description}</div>
+        <div className="text-d2">{title}</div>
+        <div className="text-sm leading-5 font-medium whitespace-pre-line text-indigo-300">{description}</div>
         {children}
       </div>
 
