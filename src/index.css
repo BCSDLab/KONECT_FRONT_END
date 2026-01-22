@@ -207,3 +207,8 @@
     opacity: 0;
   }
 }
+
+/* MonthPicker clear button 제거 */
+input[type="month"]::-webkit-clear-button {
+  display: none;
+}

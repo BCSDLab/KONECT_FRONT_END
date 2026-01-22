@@ -61,6 +61,7 @@ function Schedule() {
       { replace: true }
     );
   };
+
   const schedulesByDate = (date: Date): Schedule[] => {
     return schedules.filter((s) => isDateInRange(date, s.startedAt, s.endedAt));
   };
@@ -68,7 +69,7 @@ function Schedule() {
   return (
     <div className="flex h-[calc(100vh-44px)] flex-col bg-white">
       <main className="flex w-full shrink-0 flex-col gap-6 bg-white">
-        <header className="flex justify-center gap-5">
+        <header className="flex items-center justify-center">
           <MonthPicker year={year} month={month} setDate={setDate} />
         </header>
 
@@ -94,7 +95,7 @@ function Schedule() {
       </main>
 
       <section className="flex-1 overflow-y-auto">
-        <ScheduleDetail month={month} day={day} />
+        <ScheduleDetail year={year} month={month} day={day} />
       </section>
     </div>
   );
