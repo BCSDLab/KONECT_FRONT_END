@@ -61,6 +61,7 @@ function Schedule() {
       { replace: true }
     );
   };
+
   const schedulesByDate = (date: Date): Schedule[] => {
     return schedules.filter((s) => isDateInRange(date, s.startedAt, s.endedAt));
   };
@@ -94,7 +95,7 @@ function Schedule() {
       </main>
 
       <section className="flex-1 overflow-y-auto">
-        <ScheduleDetail month={month} day={day} />
+        <ScheduleDetail year={year} month={month} day={day} />
       </section>
     </div>
   );
