@@ -7,9 +7,10 @@ interface SearchBarProps {
   value?: string;
   onChange?: (value: string) => void;
   onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
+  autoFocus?: boolean;
 }
 
-function SearchBar({ isButton, value, onChange, onSubmit }: SearchBarProps) {
+function SearchBar({ isButton, value, onChange, onSubmit, autoFocus }: SearchBarProps) {
   const wrapperClass = 'fixed left-0 right-0 bg-white px-3 py-2 shadow-[0_2px_2px_0_rgba(0,0,0,0.04)] z-10';
 
   const content = (
@@ -21,6 +22,7 @@ function SearchBar({ isButton, value, onChange, onSubmit }: SearchBarProps) {
         readOnly={isButton && !onChange}
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        autoFocus={autoFocus}
       />
     </div>
   );
