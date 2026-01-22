@@ -35,7 +35,8 @@ function MonthPicker({
         type="month"
         value={`${year}-${String(month).padStart(2, '0')}`}
         onChange={handleMonthChange}
-        className="pointer-events-none absolute inset-0 opacity-0"
+        required
+        className="pointer-events-none absolute inset-0 opacity-0 [&::-webkit-clear-button]:hidden [&::-webkit-inner-spin-button]:hidden"
       />
 
       <button
