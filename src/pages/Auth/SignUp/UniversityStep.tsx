@@ -9,7 +9,7 @@ import { useGetUniversityList } from './hooks/useUniversity';
 function UniversityCard({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Card onClick={onClick} className="border-indigo-75 flex w-full flex-row items-center justify-between">
-      <div>{label}</div>
+      <div className="text-sub2">{label}</div>
       <RightArrowIcon />
     </Card>
   );
@@ -40,7 +40,7 @@ function UniversityStep() {
         value={universityName}
         placeholder="학교를 입력해주세요.."
         onChange={(e) => setUniversityName(e.target.value)}
-        className="mt-5 w-full border-b-2 border-indigo-400 py-4 text-[20px] font-bold text-indigo-300 placeholder:text-indigo-300"
+        className="text-h3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300 placeholder:text-indigo-300"
       />
       <div className="mt-7 flex flex-col gap-2">
         {filteredUniversities.map((university) => (

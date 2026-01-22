@@ -28,36 +28,36 @@ function ConfirmStep() {
   return (
     <StepLayout
       title="정보를 확인해주세요"
-      description={`다시 한번 정보를 확인해주세요\n제공된 정보가 부정확할 경우 불이익이 발생할 수 있습니다`}
+      description={`다시 한번 정보를 확인해주세요\n정보가 부정확할 경우 불이익이 발생할 수 있습니다`}
       onNext={handleNext}
       nextDisabled={isPending}
     >
       <div className="text-sm font-medium text-red-500">반드시 정확한 값을 입력해주세요</div>
       <div className="flex flex-col gap-1">
-        <label className="text-[15px] leading-6 font-medium text-indigo-300">학교명</label>
+        <label className="text-sub2 text-indigo-300">학교명</label>
         <input
           type="text"
           value={universityName}
           disabled
-          className="bg-indigo-5 rounded-lg p-2 text-[15px] leading-6 font-semibold disabled:text-indigo-200"
+          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-[15px] leading-6 font-medium text-indigo-300">학번</label>
+        <label className="text-sub2 text-indigo-300">학번</label>
         <input
           type="text"
           value={studentId}
           disabled
-          className="bg-indigo-5 rounded-lg p-2 text-[15px] leading-6 font-semibold disabled:text-indigo-200"
+          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-[15px] leading-6 font-medium text-indigo-300">이름</label>
+        <label className="text-sub2 text-indigo-300">이름</label>
         <input
           type="text"
           value={name}
           disabled
-          className="bg-indigo-5 rounded-lg p-2 text-[15px] leading-6 font-semibold disabled:text-indigo-200"
+          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
         />
       </div>
       {error && (

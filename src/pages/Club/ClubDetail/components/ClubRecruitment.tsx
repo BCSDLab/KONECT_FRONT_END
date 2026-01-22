@@ -23,7 +23,10 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
         <div>
           <div className="text-sm leading-4 font-bold text-indigo-700">신입 회원 모집</div>
           <div className="mt-1.5 text-xs leading-3.5 text-indigo-300">
-            모집 기간 : {clubRecruitment.startDate} ~ {clubRecruitment.endDate}
+            모집 기간 :{' '}
+            {clubRecruitment.startDate && clubRecruitment.endDate
+              ? `${clubRecruitment.startDate} ~ ${clubRecruitment.endDate}`
+              : '상세 모집'}
           </div>
         </div>
         {canApply ? (

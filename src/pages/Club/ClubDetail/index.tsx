@@ -40,14 +40,14 @@ function ClubDetail() {
       <div className="fixed right-0 left-0 bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.04)]">
         <div className="flex items-start gap-4 p-4">
           <img
-            className="border-indigo-5 h-16 w-16 rounded-sm border"
+            className="border-indigo-5 h-17.5 w-17.5 rounded-sm border"
             src={clubDetail.imageUrl}
             alt={clubDetail.name}
           />
-          <div>
-            <div className="mb-1 text-xl leading-5.5 font-black">{clubDetail.name}</div>
-            <div className="mb-1 text-[10px] leading-3">{clubDetail.categoryName}</div>
-            <div className="text-sm leading-3.5">{clubDetail.description}</div>
+          <div className="flex min-w-0 flex-col gap-1">
+            <div className="text-xl leading-5.5 font-black">{clubDetail.name}</div>
+            <div className="text-body3">{clubDetail.categoryName}</div>
+            <div className="text-sub2 truncate">{clubDetail.description}</div>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-white px-3">
