@@ -37,7 +37,7 @@ function Login() {
     <div className="flex flex-1 flex-col justify-between p-8 pb-23">
       <div>
         <div className="text-2xl font-extrabold whitespace-pre-wrap">모든 동아리를{'\n'}하나로 연결하다</div>
-        <div className="text-3xl font-black">KONECT</div>
+        <div className="text-4xl font-black">KONECT</div>
       </div>
       <div className="flex flex-col items-center gap-4">
         <span className="text-sm text-gray-500">소셜 계정으로 로그인</span>

@@ -22,11 +22,11 @@ function FinishStep() {
       <div className="flex flex-col items-center text-center">
         <CheckInCircleIcon className="mt-15" />
 
-        <div className="mt-8 text-2xl font-extrabold">환영합니다!</div>
+        <div className="text-d2 mt-8">환영합니다!</div>
 
         <div>
-          <div className="font-extrabold">{myInfo.name}님</div>
-          <div className="mt-1 text-xs text-indigo-300">
+          <div className="text-h1 my-3">{myInfo.name}님</div>
+          <div className="text-h5 text-indigo-300">
             <div>KONECT 가입이 완료되었습니다.</div>
             <div>동아리 활동을 시작해보세요!</div>
           </div>
