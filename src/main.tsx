@@ -10,12 +10,8 @@ installViewportVars();
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false,
       refetchOnReconnect: true,
-      refetchOnMount: false,
-    },
-    mutations: {
-      retry: 0,
+      retry: false,
     },
   },
 });
