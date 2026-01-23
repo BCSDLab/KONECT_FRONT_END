@@ -21,7 +21,7 @@ const useClubApply = (clubId: number) => {
       if (data.amount !== null) {
         navigate(`/clubs/${clubId}/fee`);
       } else {
-        navigate(`/clubs/${clubId}/finish`);
+        navigate(`/clubs/${clubId}/complete`);
       }
     },
   });
