@@ -111,3 +111,15 @@ export interface ClubRecruitment {
   images: ClubRecruitmentImage[];
   isApplied: boolean;
 }
+
+export interface AppliedClub {
+  id: number;
+  name: string;
+  imageUrl: string;
+  categoryName: string;
+  appliedAt: string;
+}
+
+export interface AppliedClubResponse {
+  appliedClubs: AppliedClub[];
+}
