@@ -26,7 +26,7 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
             모집 기간 :{' '}
             {clubRecruitment.startDate && clubRecruitment.endDate
               ? `${clubRecruitment.startDate} ~ ${clubRecruitment.endDate}`
-              : '상세 모집'}
+              : '상시 모집'}
           </div>
         </div>
         {canApply ? (
