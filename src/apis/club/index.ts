@@ -9,6 +9,7 @@ import {
   type ClubResponse,
   type JoinClubResponse,
   type ClubRecruitment,
+  type AppliedClubResponse,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -51,5 +52,10 @@ export const getClubFee = async (clubId: number) => {
 
 export const getClubRecruitment = async (clubId: number) => {
   const response = await apiClient.get<ClubRecruitment>(`clubs/${clubId}/recruitments`);
+  return response;
+};
+
+export const getAppliedClubs = async () => {
+  const response = await apiClient.get<AppliedClubResponse>('clubs/applied');
   return response;
 };

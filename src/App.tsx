@@ -47,13 +47,14 @@ function App() {
                 <Route path="finish" element={<FinishStep />} />
               </Route>
             </Route>
-            <Route element={<Layout />}>
-              <Route path="legal">
-                <Route path="oss" element={<LicensePage />} />
-                <Route path="terms" element={<TermsPage />} />
-                <Route path="privacy" element={<PrivacyPolicyPage />} />
-                <Route path="marketing" element={<MarketingPolicyPage />} />
-              </Route>
+          </Route>
+
+          <Route element={<Layout />}>
+            <Route path="legal">
+              <Route path="oss" element={<LicensePage />} />
+              <Route path="terms" element={<TermsPage />} />
+              <Route path="privacy" element={<PrivacyPolicyPage />} />
+              <Route path="marketing" element={<MarketingPolicyPage />} />
             </Route>
           </Route>
 

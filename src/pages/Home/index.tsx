@@ -4,7 +4,9 @@ import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
 import ClubCard from '../Club/ClubList/components/ClubCard';
 import { useGetClubs } from '../Club/ClubList/hooks/useGetClubs';
+import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
 import SimpleClubCard from './components/SimpleClubCard';
+import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
 
@@ -32,6 +34,7 @@ function scheduleDateToPath(startedAt: string) {
 function Home() {
   const { data: clubsData } = useGetClubs({ limit: 10, isRecruiting: true });
   const { data: allClubsData } = useGetClubs({ limit: 1, isRecruiting: false });
+  const { data: appliedClubsData } = useGetAppliedClubs();
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
 
@@ -41,7 +44,7 @@ function Home() {
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        {joinedClubsData?.joinedClubs.length === 0 ? (
+        {appliedClubsData?.appliedClubs.length === 0 && joinedClubsData?.joinedClubs.length === 0 ? (
           <Card>
             <div>
               <div className="text-sub2 mb-1.5">환영합니다!</div>
@@ -58,6 +61,9 @@ function Home() {
             <div className="text-h3">내 동아리</div>
 
             <div className="flex flex-col gap-2">
+              {appliedClubsData.appliedClubs.map((club) => (
+                <SimpleAppliedClubCard key={club.id} club={club} />
+              ))}
               {joinedClubsData.joinedClubs.map((club) => (
                 <SimpleClubCard key={club.id} club={club} />
               ))}

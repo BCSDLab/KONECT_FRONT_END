@@ -1,13 +1,14 @@
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
-import useScrollToTop from '@/utils/hooks/useScrollToTop';
+import useScrollRestore from '@/utils/hooks/useScrollRestore';
 import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
 import { useGetClubs } from './hooks/useGetClubs';
 
 function ClubList() {
-  useScrollToTop();
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({ limit: 10 });
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
+
+  useScrollRestore('clubList', !!data);
 
   const totalCount = data?.pages[0]?.totalCount ?? 0;
   const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];

@@ -1,5 +1,5 @@
-import { useInfiniteQuery } from '@tanstack/react-query';
-import { getClubs } from '@/apis/club';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { getClubs, getAppliedClubs, getJoinedClubs } from '@/apis/club';
 import type { ClubResponse } from '@/apis/club/entity';
 
 export const clubQueryKeys = {
@@ -17,6 +17,7 @@ export const clubQueryKeys = {
   fee: (clubId: number) => [...clubQueryKeys.all, 'fee', clubId],
   questions: (clubId: number) => [...clubQueryKeys.all, 'questions', clubId],
   joined: () => [...clubQueryKeys.all, 'joined'],
+  applied: () => [...clubQueryKeys.all, 'applied'],
 };
 
 interface UseGetClubsParams {
@@ -47,5 +48,19 @@ export const useGetClubs = ({ limit = 10, query, enabled = true, isRecruiting = 
       return firstPage.currentPage > 1 ? firstPage.currentPage - 1 : undefined;
     },
     enabled,
+  });
+};
+
+export const useGetAppliedClubs = () => {
+  return useQuery({
+    queryKey: clubQueryKeys.applied(),
+    queryFn: getAppliedClubs,
+  });
+};
+
+export const useGetJoinedClubs = () => {
+  return useQuery({
+    queryKey: clubQueryKeys.joined(),
+    queryFn: getJoinedClubs,
   });
 };
