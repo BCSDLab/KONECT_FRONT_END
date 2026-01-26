@@ -42,7 +42,7 @@ export interface ClubDetailResponse {
   categoryName: string;
   memberCount: number;
   recruitment: Recruitment;
-  representatives: Representatives[];
+  presidentName: string;
   isMember: boolean;
   isApplied: boolean;
 }
@@ -51,12 +51,6 @@ interface Recruitment {
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
   startDate?: string;
   endDate?: string;
-}
-
-interface Representatives {
-  name: string;
-  phone: string;
-  email: string;
 }
 
 export interface ClubMember {
