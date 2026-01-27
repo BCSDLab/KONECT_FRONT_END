@@ -25,7 +25,7 @@ function ClubCard({ club }: ClubCardProps) {
           )}
         </div>
         <div className="text-sub2 mt-0.5 truncate text-indigo-300">{club.description}</div>
-        <div className="mt-1 flex gap-1">
+        {/* <div className="mt-1 flex gap-1">
           {club.tags.map((tag) => (
             <div
               key={tag}
@@ -34,7 +34,7 @@ function ClubCard({ club }: ClubCardProps) {
               #{tag}
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </Link>
   );

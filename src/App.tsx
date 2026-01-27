@@ -62,14 +62,7 @@ function App() {
             <Route element={<Layout showBottomNav />}>
               <Route path="home" element={<Home />} />
               <Route path="me" element={<MyPage />} />
-              <Route path="council">
-                <Route index element={<CouncilDetail />} />
-                <Route path="notice/:noticeId" element={<CouncilNotice />} />
-              </Route>
               <Route path="timer" element={<Timer />} />
-            </Route>
-            <Route element={<Layout />}>
-              <Route path="profile" element={<Profile />} />
               <Route path="clubs">
                 <Route index element={<ClubList />} />
                 <Route path="search" element={<ClubSearch />} />
@@ -77,6 +70,13 @@ function App() {
                 <Route path=":clubId/applications" element={<ApplicationPage />} />
                 <Route path=":clubId/fee" element={<ClubFeePage />} />
                 <Route path=":clubId/complete" element={<ApplyCompletePage />} />
+              </Route>
+            </Route>
+            <Route element={<Layout />}>
+              <Route path="profile" element={<Profile />} />
+              <Route path="council">
+                <Route index element={<CouncilDetail />} />
+                <Route path="notice/:noticeId" element={<CouncilNotice />} />
               </Route>
               <Route path="chats">
                 <Route index element={<ChatListPage />} />
