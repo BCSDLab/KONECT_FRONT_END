@@ -3,7 +3,7 @@ export interface Schedule {
   startedAt: string;
   endedAt: string;
   dDay: number;
-  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL';
+  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL' | 'DORM';
 }
 
 export interface ScheduleListResponse {

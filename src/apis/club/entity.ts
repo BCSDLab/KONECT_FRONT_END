@@ -7,6 +7,9 @@ export interface Club {
   categoryName: string;
   description: string;
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
+  isPendingApproval: boolean;
+  isAlwaysRecruiting: boolean;
+  applicationDeadline: string;
   tags: string[];
 }
 
