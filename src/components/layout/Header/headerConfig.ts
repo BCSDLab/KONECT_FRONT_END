@@ -18,6 +18,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/',
   },
   {
+    type: 'full',
+    match: (pathname) => /^\/mypage\/manager(?:\/[^/]+)?$/.test(pathname),
+  },
+  {
     type: 'signup',
     match: (pathname) => pathname === '/signup',
   },
