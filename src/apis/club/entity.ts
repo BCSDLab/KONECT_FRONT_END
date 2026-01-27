@@ -7,6 +7,9 @@ export interface Club {
   categoryName: string;
   description: string;
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
+  isPendingApproval: boolean;
+  isAlwaysRecruiting: boolean;
+  applicationDeadline: string;
   tags: string[];
 }
 
@@ -42,7 +45,7 @@ export interface ClubDetailResponse {
   categoryName: string;
   memberCount: number;
   recruitment: Recruitment;
-  representatives: Representatives[];
+  presidentName: string;
   isMember: boolean;
   isApplied: boolean;
 }
@@ -51,12 +54,6 @@ interface Recruitment {
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
   startDate?: string;
   endDate?: string;
-}
-
-interface Representatives {
-  name: string;
-  phone: string;
-  email: string;
 }
 
 export interface ClubMember {
@@ -110,4 +107,16 @@ export interface ClubRecruitment {
   content: string;
   images: ClubRecruitmentImage[];
   isApplied: boolean;
+}
+
+export interface AppliedClub {
+  id: number;
+  name: string;
+  imageUrl: string;
+  categoryName: string;
+  appliedAt: string;
+}
+
+export interface AppliedClubResponse {
+  appliedClubs: AppliedClub[];
 }
