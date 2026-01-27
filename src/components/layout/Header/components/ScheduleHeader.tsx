@@ -9,7 +9,7 @@ function ScheduleHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBack = () => {
-    navigate('/main', { replace: true });
+    navigate('/home', { replace: true });
   };
 
   const handleHelpClick = () => {
