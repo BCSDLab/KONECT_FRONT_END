@@ -1,16 +1,22 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { twMerge } from 'tailwind-merge';
 import Card from '@/components/common/Card';
-import useManagerQuery from '@/pages/Manager/hooks/useManagerQuery';
+
+import { useManagerQuery } from '@/pages/Manager/hooks/useManagerQuery';
 import { useMyInfo } from '../../Profile/hooks/useMyInfo';
 
 interface UserInfoCardProps {
-  type?: 'user' | 'manager';
+  type?: 'user' | 'manager' | 'detail';
 }
 
-function UserInfoCard({ type = 'user' }: UserInfoCardProps) {
+function UserInfoCard({ type }: UserInfoCardProps) {
+  const params = useParams();
+  const clubId = params.clubId;
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
   const { managedClubList } = useManagerQuery();
+
+  const currentClub = managedClubList.joinedClubs.find((club) => club.id === Number(clubId));
 
   const handleClick = (to: string) => {
     navigate(to);
@@ -20,12 +26,21 @@ function UserInfoCard({ type = 'user' }: UserInfoCardProps) {
     <Card>
       <div className="flex items-center gap-3">
         <img className="h-12 w-12 rounded-full" src={myInfo.imageUrl} alt="Member Avatar" />
-        <div>
-          <div className="text-sub2 text-indigo-700">{myInfo.name}</div>
-          <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
-            {myInfo.studentNumber} · {myInfo.universityName}
+        {type === 'detail' ? (
+          <div>
+            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
+            <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
+              {myInfo.studentNumber} · {myInfo.universityName} · {currentClub?.position}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{myInfo.name}</div>
+            <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
+              {myInfo.studentNumber} · {myInfo.universityName}
+            </div>
+          </div>
+        )}
       </div>
       {type === 'user' && (
         <div className="flex justify-between gap-2">
