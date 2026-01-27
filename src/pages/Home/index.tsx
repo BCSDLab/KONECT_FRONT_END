@@ -93,10 +93,10 @@ function Home() {
                   style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
                   className="bg-indigo-25 flex h-11 w-11 flex-col items-center justify-center rounded-sm"
                 >
-                  <div className="text-primary text-center text-xs leading-3 font-bold">
+                  <div className="text-center text-xs leading-3 font-bold text-white">
                     {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
                   </div>
-                  <CalendarIcon />
+                  <CalendarIcon style={{ color: '#fff' }} />
                 </div>
                 <div className="flex flex-1 flex-col">
                   <div className="text-h3 text-indigo-700">{schedule.title}</div>
