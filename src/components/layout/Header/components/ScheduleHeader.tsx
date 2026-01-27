@@ -1,24 +1,34 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
+import CircleHelpIcon from '@/assets/svg/circle-help.svg';
+import ColorLegendModal from './ColorLegendModal';
 
 function ScheduleHeader() {
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBack = () => {
     navigate('/main', { replace: true });
   };
 
+  const handleHelpClick = () => {
+    setIsModalOpen(true);
+  };
+
   return (
-    <header className="fixed top-0 right-0 left-0 z-10 flex h-11 items-center justify-center bg-pink-700 px-4 py-2">
-      <button
-        type="button"
-        aria-label="뒤로가기"
-        onClick={handleBack}
-        className="absolute top-1/2 left-4 -translate-y-1/2"
-      >
-        <ChevronLeftIcon />
-      </button>
-    </header>
+    <>
+      <header className="fixed z-10 flex h-11 w-full justify-between bg-white px-4 py-2">
+        <button type="button" aria-label="뒤로가기" onClick={handleBack}>
+          <ChevronLeftIcon />
+        </button>
+        <button type="button" aria-label="help" onClick={handleHelpClick}>
+          <CircleHelpIcon />
+        </button>
+      </header>
+
+      <ColorLegendModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+    </>
   );
 }
 

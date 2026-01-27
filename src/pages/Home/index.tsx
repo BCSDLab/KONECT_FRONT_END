@@ -33,7 +33,7 @@ function scheduleDateToPath(startedAt: string) {
   const [date] = startedAt.split(' ');
   const [year, month, day] = date.split('.').map(Number);
 
-  return `/schedules?year=${year}&month=${month}&day=${day}`;
+  return `/schedule?year=${year}&month=${month}&day=${day}`;
 }
 
 function Home() {
@@ -60,7 +60,7 @@ function Home() {
       <div>
         <div className="flex justify-between">
           <div className="text-h3">다가오는 일정</div>
-          <Link to="/schedules" className="text-sub2 text-[#3182F6]">
+          <Link to="/schedule" className="text-sub2 text-[#3182F6]">
             전체보기
           </Link>
         </div>

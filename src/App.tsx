@@ -73,6 +73,7 @@ function App() {
               </Route>
             </Route>
             <Route element={<Layout />}>
+              <Route path="schedule" element={<Schedule />} />
               <Route path="profile" element={<Profile />} />
               <Route path="council">
                 <Route index element={<CouncilDetail />} />
@@ -82,7 +83,6 @@ function App() {
                 <Route index element={<ChatListPage />} />
                 <Route path=":chatRoomId" element={<ChatRoom />} />
               </Route>
-              <Route path="schedules" element={<Schedule />} />
             </Route>
           </Route>
         </Routes>
