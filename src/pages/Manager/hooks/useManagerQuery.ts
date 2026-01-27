@@ -1,12 +1,13 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { getManagedClubs } from '@/apis/club';
+import { getManagedClubApplications, getManagedClubs } from '@/apis/club';
 
 const managerQueryKeys = {
   all: ['manager'],
   managedClubs: () => [...managerQueryKeys.all, 'managedClubs'],
+  managedClubApplications: (clubId: number) => [...managerQueryKeys.all, 'managedClubApplications', clubId],
 };
 
-const useManagerQuery = () => {
+export const useManagerQuery = () => {
   const { data: managedClubList } = useSuspenseQuery({
     queryKey: managerQueryKeys.managedClubs(),
     queryFn: getManagedClubs,
@@ -14,4 +15,12 @@ const useManagerQuery = () => {
 
   return { managedClubList };
 };
-export default useManagerQuery;
+
+export const useManagedClubApplications = (clubId: number) => {
+  const { data: managedClubApplicationList } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedClubApplications(clubId),
+    queryFn: () => getManagedClubApplications(clubId),
+  });
+
+  return { managedClubApplicationList };
+};

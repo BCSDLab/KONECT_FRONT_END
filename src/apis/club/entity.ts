@@ -120,3 +120,16 @@ export interface AppliedClub {
 export interface AppliedClubResponse {
   appliedClubs: AppliedClub[];
 }
+
+//========================== Club Manager Entities =========================//
+interface Application {
+  id: number;
+  studentNumber: number;
+  name: string;
+  imageUrl: string;
+  appliedAt: string;
+}
+
+export interface ClubApplicationsResponse {
+  applications: Application[];
+}
