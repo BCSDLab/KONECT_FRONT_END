@@ -11,7 +11,7 @@ function ClubCard({ club }: ClubCardProps) {
       to={`/clubs/${club.id}${club.status === 'ONGOING' ? '?tab=recruitment' : ''}`}
       className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3"
     >
-      <img src={club.imageUrl} className="border-indigo-5 h-13 w-13 rounded-sm border" alt={club.name} />
+      <img src={club.imageUrl} className="border-indigo-5 h-12 w-12 rounded-sm border" alt={club.name} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
