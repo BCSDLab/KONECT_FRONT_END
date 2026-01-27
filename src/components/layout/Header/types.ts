@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export type HeaderType = 'info' | 'profile' | 'chat' | 'default' | 'normal' | 'signup' | 'schedule';
+export type HeaderType = 'info' | 'profile' | 'chat' | 'default' | 'normal' | 'full' | 'signup' | 'schedule';
 
 export interface HeaderConfig {
   type: HeaderType;
@@ -10,6 +10,7 @@ export interface HeaderConfig {
 export interface HeaderRenderContext {
   title: string;
   onBack?: () => void;
+  showNotificationBell?: boolean;
 }
 
 export type HeaderRenderer = (ctx: HeaderRenderContext) => ReactNode;

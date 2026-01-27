@@ -21,6 +21,7 @@ function Header() {
     chat: () => <ChatHeader />,
     schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
+    full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,
     signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
     default: ({ title }) => <DefaultHeader title={title} />,
   };

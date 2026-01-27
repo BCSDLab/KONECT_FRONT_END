@@ -5,11 +5,15 @@ import {
   type ClubDetailResponse,
   type ClubMembersResponse,
   type ClubQuestionsResponse,
+  type ClubQuestionsRequest,
   type ClubRequestParams,
   type ClubResponse,
   type JoinClubResponse,
   type ClubRecruitment,
   type AppliedClubResponse,
+  type ClubApplicationsResponse,
+  type ClubApplicationDetailResponse,
+  type ClubRecruitmentRequest,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -57,5 +61,51 @@ export const getClubRecruitment = async (clubId: number) => {
 
 export const getAppliedClubs = async () => {
   const response = await apiClient.get<AppliedClubResponse>('clubs/applied');
+  return response;
+};
+
+export const getManagedClubs = async () => {
+  const response = await apiClient.get<JoinClubResponse>('clubs/managed');
+  return response;
+};
+
+export const getManagedClubApplications = async (clubId: number) => {
+  const response = await apiClient.get<ClubApplicationsResponse>(`clubs/${clubId}/applications`);
+  return response;
+};
+
+export const getManagedClubApplicationDetail = async (clubId: number, applicationId: number) => {
+  const response = await apiClient.get<ClubApplicationDetailResponse>(`clubs/${clubId}/applications/${applicationId}`);
+  return response;
+};
+
+export const postClubRecruitment = async (clubId: number, recruitmentData: ClubRecruitmentRequest) => {
+  const response = await apiClient.post<void>(`clubs/${clubId}/recruitments`, {
+    body: recruitmentData,
+  });
+  return response;
+};
+
+export const putClubRecruitment = async (clubId: number, recruitmentData: ClubRecruitmentRequest) => {
+  const response = await apiClient.put<void>(`clubs/${clubId}/recruitments`, {
+    body: recruitmentData,
+  });
+  return response;
+};
+
+export const putClubQuestions = async (clubId: number, questionsData: ClubQuestionsRequest) => {
+  const response = await apiClient.put<ClubQuestionsResponse>(`clubs/${clubId}/questions`, {
+    body: questionsData,
+  });
+  return response;
+};
+
+export const postClubApplicationApprove = async (clubId: number, applicationId: number) => {
+  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/approve`);
+  return response;
+};
+
+export const postClubApplicationReject = async (clubId: number, applicationId: number) => {
+  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/reject`);
   return response;
 };

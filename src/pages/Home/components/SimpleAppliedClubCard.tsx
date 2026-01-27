@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { AppliedClub } from '@/apis/club/entity';
 import CircleWarningIcon from '@/assets/svg/circle-warning.svg';
+import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
 
 interface SimpleAppliedClubCardProps {
   club: AppliedClub;
@@ -23,9 +24,7 @@ function SimpleAppliedClubCard({ club }: SimpleAppliedClubCardProps) {
             </div>
           </div>
         </div>
-        <div className="text-sub2 mt-1 text-indigo-300">
-          지원일: {new Date(club.appliedAt).toLocaleDateString('ko-KR')}
-        </div>
+        <div className="text-sub2 mt-1 text-indigo-300">지원일: {formatIsoDateToYYYYMMDD(club.appliedAt)}</div>
       </div>
     </Link>
   );
