@@ -28,6 +28,7 @@ function StudentIdStep() {
           const value = e.target.value.replace(/[^0-9]/g, '');
           setStudentId(value);
         }}
+        placeholder="ex) 2022136039"
         className="text-h3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300"
       />
     </StepLayout>
