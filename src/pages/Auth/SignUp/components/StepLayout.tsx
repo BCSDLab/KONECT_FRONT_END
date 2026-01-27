@@ -4,18 +4,21 @@ function StepLayout({
   onNext,
   nextDisabled = false,
   children,
+  color = 'text-indigo-300',
 }: {
   title: string;
   description: string;
   onNext?: () => void;
   nextDisabled?: boolean;
   children: React.ReactNode;
+  color?: string;
 }) {
   return (
     <div className="flex flex-1 flex-col justify-between px-8 py-5" style={{ marginBottom: 'calc(32px + var(--sab))' }}>
       <div className="flex flex-col gap-2">
         <div className="text-d2">{title}</div>
-        <div className="text-sm leading-5 font-medium whitespace-pre-line text-indigo-300">{description}</div>
+        <div className={`${color} text-sm leading-5 font-medium whitespace-pre-line`}>{description}</div>
+
         {children}
       </div>
 

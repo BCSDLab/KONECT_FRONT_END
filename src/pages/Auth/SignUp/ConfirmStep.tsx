@@ -28,11 +28,11 @@ function ConfirmStep() {
   return (
     <StepLayout
       title="정보를 확인해주세요"
-      description={`다시 한번 정보를 확인해주세요\n정보가 부정확할 경우 불이익이 발생할 수 있습니다`}
+      description={`정보를 확인해주세요\n정보가 부정확할 경우 불이익이 발생할 수 있습니다`}
       onNext={handleNext}
       nextDisabled={isPending}
+      color="text-red-500"
     >
-      <div className="text-sm font-medium text-red-500">반드시 정확한 값을 입력해주세요</div>
       <div className="flex flex-col gap-1">
         <label className="text-sub2 text-indigo-300">학교명</label>
         <input
