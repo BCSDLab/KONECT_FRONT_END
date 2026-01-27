@@ -3,7 +3,7 @@ import type { HeaderConfig } from './types';
 export const HEADER_CONFIGS: HeaderConfig[] = [
   {
     type: 'profile',
-    match: (pathname) => pathname === '/me',
+    match: (pathname) => pathname === '/mypage',
   },
   {
     type: 'info',

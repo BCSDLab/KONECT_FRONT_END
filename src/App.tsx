@@ -25,6 +25,7 @@ import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
+import ManagedClubList from './pages/Manager/ManagedClubList';
 import Schedule from './pages/Schedule';
 import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
@@ -61,7 +62,14 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout showBottomNav />}>
               <Route path="home" element={<Home />} />
-              <Route path="me" element={<MyPage />} />
+              <Route path="mypage">
+                <Route index element={<MyPage />} />
+                <Route path="manager" element={<ManagedClubList />} />
+              </Route>
+              <Route path="council">
+                <Route index element={<CouncilDetail />} />
+                <Route path="notice/:noticeId" element={<CouncilNotice />} />
+              </Route>
               <Route path="timer" element={<Timer />} />
               <Route path="clubs">
                 <Route index element={<ClubList />} />

@@ -26,9 +26,11 @@ function BottomNav() {
           <span className={clsx(pathname.startsWith('/timer') ? 'text-primary' : 'text-indigo-100')}>타이머</span>
         </Link>
 
-        <Link to="/me" className="flex flex-col items-center">
-          <PersonIcon className={clsx('h-5 w-5', pathname.startsWith('/me') ? 'text-primary' : 'text-indigo-100')} />
-          <span className={clsx(pathname.startsWith('/me') ? 'text-primary' : 'text-indigo-100')}>내정보</span>
+        <Link to="/mypage" className="flex flex-col items-center">
+          <PersonIcon
+            className={clsx('h-5 w-5', pathname.startsWith('/mypage') ? 'text-primary' : 'text-indigo-100')}
+          />
+          <span className={clsx(pathname.startsWith('/mypage') ? 'text-primary' : 'text-indigo-100')}>내정보</span>
         </Link>
       </div>
     </nav>
