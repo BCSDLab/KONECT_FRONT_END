@@ -40,21 +40,34 @@ function Home() {
   const { data: appliedClubsData } = useGetAppliedClubs();
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
+
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        <>
-          <div className="text-h3">내 동아리</div>
+        {appliedClubsData?.appliedClubs.length === 0 && joinedClubsData?.joinedClubs.length === 0 ? (
+          <Card>
+            <div>
+              <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
+            </div>
 
-          <div className="flex flex-col gap-2">
-            {appliedClubsData.appliedClubs.map((club) => (
-              <SimpleAppliedClubCard key={club.id} club={club} />
-            ))}
-            {joinedClubsData.joinedClubs.map((club) => (
-              <SimpleClubCard key={club.id} club={club} />
-            ))}
-          </div>
-        </>
+            <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
+              동아리 둘러보기
+            </Link>
+          </Card>
+        ) : (
+          <>
+            <div className="text-h3">내 동아리</div>
+
+            <div className="flex flex-col gap-2">
+              {appliedClubsData.appliedClubs.map((club) => (
+                <SimpleAppliedClubCard key={club.id} club={club} />
+              ))}
+              {joinedClubsData.joinedClubs.map((club) => (
+                <SimpleClubCard key={club.id} club={club} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div>
