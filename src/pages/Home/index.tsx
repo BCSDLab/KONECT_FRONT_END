@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
+import { useCouncilNotice } from '../Club/ClubDetail/hooks/useCouncilNotices';
+import CouncilNoticeCard from './components/CouncilNoticeCard';
 import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
@@ -40,6 +42,11 @@ function Home() {
   const { data: appliedClubsData } = useGetAppliedClubs();
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
+  const { data: councilNoticeData } = useCouncilNotice({ limit: 3 });
+
+  const allNotices = councilNoticeData?.pages.flatMap((page) => page.councilNotices) ?? [];
+
+  console.log(councilNoticeData);
 
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
@@ -107,6 +114,29 @@ function Home() {
               </div>
             </NavigateCard>
           ))
+        )}
+      </div>
+
+      <div>
+        <div className="flex justify-between">
+          <div className="text-h3">총동아리연합회</div>
+          <Link to="/council" className="text-sub2 text-[#3182F6]">
+            더보기
+          </Link>
+        </div>
+
+        {councilNoticeData && (
+          <div className="mt-2 flex flex-col gap-2">
+            {allNotices.map((notice) => (
+              <CouncilNoticeCard
+                id={notice.id}
+                isRead={notice.isRead}
+                title={notice.title}
+                key={notice.id}
+                createdAt={notice.createdAt}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
