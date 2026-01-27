@@ -20,7 +20,7 @@ const menuItems = [
   { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
   { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침' },
   { to: '/chats', icon: ChatIcon, label: '문의하기' },
-  { to: '/mypage/manager', icon: UserIdCardIcon, label: '관리자 페이지' },
+  { to: 'manager', icon: UserIdCardIcon, label: '관리자 페이지' },
 ];
 
 function MyPage() {
