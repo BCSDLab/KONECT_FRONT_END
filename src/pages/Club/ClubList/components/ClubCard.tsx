@@ -5,6 +5,22 @@ interface ClubCardProps {
   club: Club;
 }
 
+function getDDay(dateString: string): string {
+  const [year, month, day] = dateString.split('.').map(Number);
+  const targetDate = new Date(year, month - 1, day);
+  const today = new Date();
+
+  targetDate.setHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
+
+  const diffTime = targetDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays > 0) return `D-${diffDays}`;
+  if (diffDays === 0) return 'D-Day';
+  return '마감';
+}
+
 function ClubCard({ club }: ClubCardProps) {
   return (
     <Link
@@ -18,9 +34,14 @@ function ClubCard({ club }: ClubCardProps) {
             <div className="text-h3 text-indigo-700">{club.name}</div>
             <div className="text-cap1 text-indigo-300">{club.categoryName}</div>
           </div>
-          {club.status === 'ONGOING' && (
+          {club.status === 'ONGOING' && !club.isAlwaysRecruiting && (
             <div className="text-cap2 flex items-center rounded-sm bg-[#3182f6] px-1 py-0.5 text-center text-white">
-              모집중
+              {getDDay(club.applicationDeadline)}
+            </div>
+          )}
+          {club.isAlwaysRecruiting && (
+            <div className="text-cap2 flex items-center rounded-sm bg-[#3182f6] px-1 py-0.5 text-center text-white">
+              상시모집
             </div>
           )}
         </div>
