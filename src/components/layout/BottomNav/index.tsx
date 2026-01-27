@@ -16,11 +16,9 @@ function BottomNav() {
           <span className={clsx(pathname === '/home' ? 'text-primary' : 'text-indigo-100')}>홈</span>
         </Link>
 
-        <Link to="/council" className="flex flex-col items-center">
-          <PeopleIcon
-            className={clsx('h-5 w-5', pathname.startsWith('/council') ? 'text-primary' : 'text-indigo-100')}
-          />
-          <span className={clsx(pathname.startsWith('/council') ? 'text-primary' : 'text-indigo-100')}>총동연</span>
+        <Link to="/clubs" className="flex flex-col items-center">
+          <PeopleIcon className={clsx('h-5 w-5', pathname.startsWith('/clubs') ? 'text-primary' : 'text-indigo-100')} />
+          <span className={clsx(pathname.startsWith('/clubs') ? 'text-primary' : 'text-indigo-100')}>동아리</span>
         </Link>
 
         <Link to="/timer" className="flex flex-col items-center">

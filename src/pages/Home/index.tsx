@@ -2,13 +2,18 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
-import ClubCard from '../Club/ClubList/components/ClubCard';
-import { useGetClubs } from '../Club/ClubList/hooks/useGetClubs';
 import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
+
+const SCHEDULE_COLOR = {
+  UNIVERSITY: '#AEDCBA',
+  CLUB: '#FDE49B',
+  COUNCIL: '#E9F2FA',
+  DORM: '#B9ADEF',
+};
 
 function formatScheduleDate(startedAt: string, endedAt: string): string {
   const [startDate, startTime] = startedAt.split(' ');
@@ -32,44 +37,24 @@ function scheduleDateToPath(startedAt: string) {
 }
 
 function Home() {
-  const { data: clubsData } = useGetClubs({ limit: 10, isRecruiting: true });
-  const { data: allClubsData } = useGetClubs({ limit: 1, isRecruiting: false });
   const { data: appliedClubsData } = useGetAppliedClubs();
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
-
-  const clubs = clubsData?.pages.flatMap((page) => page.clubs) ?? [];
-  const totalClubCount = allClubsData?.pages[0]?.totalCount ?? 0;
-
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        {appliedClubsData?.appliedClubs.length === 0 && joinedClubsData?.joinedClubs.length === 0 ? (
-          <Card>
-            <div>
-              <div className="text-sub2 mb-1.5">환영합니다!</div>
-              <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
-              <div className="text-sub2">{totalClubCount}개의 동아리가 기다리고 있어요</div>
-            </div>
+        <>
+          <div className="text-h3">내 동아리</div>
 
-            <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
-              동아리 둘러보기
-            </Link>
-          </Card>
-        ) : (
-          <>
-            <div className="text-h3">내 동아리</div>
-
-            <div className="flex flex-col gap-2">
-              {appliedClubsData.appliedClubs.map((club) => (
-                <SimpleAppliedClubCard key={club.id} club={club} />
-              ))}
-              {joinedClubsData.joinedClubs.map((club) => (
-                <SimpleClubCard key={club.id} club={club} />
-              ))}
-            </div>
-          </>
-        )}
+          <div className="flex flex-col gap-2">
+            {appliedClubsData.appliedClubs.map((club) => (
+              <SimpleAppliedClubCard key={club.id} club={club} />
+            ))}
+            {joinedClubsData.joinedClubs.map((club) => (
+              <SimpleClubCard key={club.id} club={club} />
+            ))}
+          </div>
+        </>
       </div>
 
       <div>
@@ -91,7 +76,10 @@ function Home() {
           scheduleListData?.schedules.slice(0, 3).map((schedule) => (
             <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2">
               <div className="flex items-center gap-3">
-                <div className="bg-indigo-25 flex h-10 w-10 flex-col items-center justify-center rounded-sm">
+                <div
+                  style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
+                  className="bg-indigo-25 flex h-11 w-11 flex-col items-center justify-center rounded-sm"
+                >
                   <div className="text-primary text-center text-xs leading-3 font-bold">
                     {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
                   </div>
@@ -107,31 +95,6 @@ function Home() {
             </NavigateCard>
           ))
         )}
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between">
-          <div className="text-h3">지금 모집중</div>
-          <Link to="/clubs" className="text-sub2 text-[#3182F6]">
-            전체보기
-          </Link>
-        </div>
-        <div className="flex flex-col gap-2">
-          {clubs.length === 0 ? (
-            <Card>
-              <div className="flex flex-col items-center py-4 text-center">
-                <div className="text-sm text-gray-500">현재 모집중인 동아리가 없습니다</div>
-                <div className="mt-1 text-xs text-gray-400">새로운 모집이 시작되면 알려드릴게요</div>
-              </div>
-            </Card>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {clubs.slice(0, 3).map((club) => (
-                <ClubCard key={club.id} club={club} />
-              ))}
-            </div>
-          )}
-        </div>
       </div>
     </div>
   );
