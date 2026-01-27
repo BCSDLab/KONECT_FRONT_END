@@ -25,7 +25,13 @@ import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
+import ManagedApplicationList from './pages/Manager/ManagedApplicationList';
+import ManagedApplicationDetail from './pages/Manager/ManagedApplictaionDetail';
+import ManagedClubDetail from './pages/Manager/ManagedClubDetail';
 import ManagedClubList from './pages/Manager/ManagedClubList';
+import ManagedRecruitment from './pages/Manager/ManagedRecruitment';
+import ManagedRecruitmentForm from './pages/Manager/ManagedRecruitmentForm';
+import ManagedRecruitmentWrite from './pages/Manager/ManagedRecruitmentWrite';
 import Schedule from './pages/Schedule';
 import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
@@ -64,11 +70,13 @@ function App() {
               <Route path="home" element={<Home />} />
               <Route path="mypage">
                 <Route index element={<MyPage />} />
-                <Route path="manager" element={<ManagedClubList />} />
-              </Route>
-              <Route path="council">
-                <Route index element={<CouncilDetail />} />
-                <Route path="notice/:noticeId" element={<CouncilNotice />} />
+                <Route path="manager">
+                  <Route index element={<ManagedClubList />} />
+                  <Route path=":clubId" element={<ManagedClubDetail />} />
+                  <Route path=":clubId/recruitment" element={<ManagedRecruitment />} />
+                  <Route path=":clubId/applications" element={<ManagedApplicationList />} />
+                  <Route path=":clubId/applications/:applicationId" element={<ManagedApplicationDetail />} />
+                </Route>
               </Route>
               <Route path="timer" element={<Timer />} />
               <Route path="clubs">
@@ -82,6 +90,8 @@ function App() {
             </Route>
             <Route element={<Layout />}>
               <Route path="schedule" element={<Schedule />} />
+              <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
+              <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
               <Route path="profile" element={<Profile />} />
               <Route path="council">
                 <Route index element={<CouncilDetail />} />

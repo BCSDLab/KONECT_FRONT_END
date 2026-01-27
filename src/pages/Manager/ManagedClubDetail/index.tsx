@@ -9,12 +9,12 @@ import UserIcon from '@/assets/svg/user.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 
 const menuItems = [
-  { to: '/profile', icon: UserIcon, label: '동아리 프로필 관리' },
-  { to: '/legal/oss', icon: FileSearchIcon, label: '동아리 소개 관리' },
-  { to: '/legal/terms', icon: FileIcon, label: '모집 공고 및 지원서 관리' },
+  { to: '', icon: UserIcon, label: '동아리 프로필 관리' },
+  { to: '', icon: FileSearchIcon, label: '동아리 소개 관리' },
+  { to: 'recruitment', icon: FileIcon, label: '모집 공고 및 지원서 관리' },
   { to: 'applications', icon: UserSquareIcon, label: '지원자 관리' },
-  { to: '/chats', icon: ChatIcon, label: '부원 명부 관리' },
-  { to: '/mypage/manager', icon: UserIdCardIcon, label: '일정 관리' },
+  { to: '', icon: ChatIcon, label: '부원 명부 관리' },
+  { to: '', icon: UserIdCardIcon, label: '일정 관리' },
 ];
 
 function ManagedClubDetail() {
