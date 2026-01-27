@@ -59,3 +59,8 @@ export const getAppliedClubs = async () => {
   const response = await apiClient.get<AppliedClubResponse>('clubs/applied');
   return response;
 };
+
+export const getManagedClubs = async () => {
+  const response = await apiClient.get<JoinClubResponse>('clubs/managed');
+  return response;
+};
