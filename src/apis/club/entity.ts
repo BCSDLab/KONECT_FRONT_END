@@ -120,3 +120,63 @@ export interface AppliedClub {
 export interface AppliedClubResponse {
   appliedClubs: AppliedClub[];
 }
+
+//========================== Club Manager Entities =========================//
+interface Application {
+  id: number;
+  studentNumber: number;
+  name: string;
+  imageUrl: string;
+  appliedAt: string;
+}
+
+export interface ClubApplicationsResponse {
+  applications: Application[];
+}
+
+interface ApplicationAnswer {
+  questionId: number;
+  question: string;
+  isRequired: boolean;
+  answer: string;
+}
+
+export interface ClubApplicationDetailResponse {
+  applicationId: number;
+  studentNumber: number;
+  name: string;
+  imageUrl: string;
+  appliedAt: string;
+  answers: ApplicationAnswer[];
+}
+
+interface RecruitmentImage {
+  url: string;
+}
+
+type BaseRecruitment = {
+  content: string;
+  images: RecruitmentImage[];
+};
+
+export type ClubRecruitmentRequest =
+  | (BaseRecruitment & {
+      isAlwaysRecruiting: true;
+      startDate?: never;
+      endDate?: never;
+    })
+  | (BaseRecruitment & {
+      isAlwaysRecruiting: false;
+      startDate: string;
+      endDate: string;
+    });
+
+export interface ClubQuestionRequest {
+  questionId?: number;
+  question: string;
+  isRequired: boolean;
+}
+
+export interface ClubQuestionsRequest {
+  questions: ClubQuestionRequest[];
+}

@@ -1,13 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
+import NotificationBell from './NotificationBell';
 
 interface DefaultHeaderProps {
   title: string;
   showBackButton?: boolean;
+  showNotificationBell?: boolean;
   onBack?: () => void;
 }
 
-function DefaultHeader({ title, showBackButton = true, onBack }: DefaultHeaderProps) {
+function DefaultHeader({ title, showBackButton = true, showNotificationBell = false, onBack }: DefaultHeaderProps) {
   const navigate = useNavigate();
 
   const handleBack = onBack ?? (() => navigate(-1));
@@ -25,6 +27,11 @@ function DefaultHeader({ title, showBackButton = true, onBack }: DefaultHeaderPr
         </button>
       )}
       <span className="text-lg">{title}</span>
+      {showNotificationBell && (
+        <div className="absolute top-1/2 right-4 -translate-y-1/2">
+          <NotificationBell />
+        </div>
+      )}
     </header>
   );
 }

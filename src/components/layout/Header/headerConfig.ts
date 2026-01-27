@@ -3,7 +3,7 @@ import type { HeaderConfig } from './types';
 export const HEADER_CONFIGS: HeaderConfig[] = [
   {
     type: 'profile',
-    match: (pathname) => pathname === '/me',
+    match: (pathname) => pathname === '/mypage',
   },
   {
     type: 'info',
@@ -16,6 +16,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   {
     type: 'normal',
     match: (pathname) => pathname === '/',
+  },
+  {
+    type: 'full',
+    match: (pathname) => /^\/mypage\/manager(?:\/[^/]+)?$/.test(pathname),
   },
   {
     type: 'signup',
