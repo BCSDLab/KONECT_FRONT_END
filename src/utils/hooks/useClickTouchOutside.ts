@@ -22,7 +22,7 @@ export default function useClickTouchOutside<T extends HTMLElement>(
     };
 
     window.addEventListener('mousedown', listener);
-    window.addEventListener('touchstart', listener);
+    window.addEventListener('touchstart', listener, { passive: false });
 
     return () => {
       window.removeEventListener('mousedown', listener);
