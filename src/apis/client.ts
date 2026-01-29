@@ -124,7 +124,7 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
 
     if (response.status === 401 && requiresAuth) {
       clearTimeout(timeoutId);
-      return handleUnauthorized<T, P>(endPoint, options, timeout);
+      return await handleUnauthorized<T, P>(endPoint, options, timeout);
     }
 
     if (!response.ok) {
@@ -163,7 +163,7 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
     const newAccessToken = await refreshPromise;
     useAuthStore.getState().setAccessToken(newAccessToken);
 
-    return sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
+    return await sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
   } catch {
     useAuthStore.getState().clearAuth();
     window.location.href = '/';
