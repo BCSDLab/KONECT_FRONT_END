@@ -16,13 +16,11 @@ export default function useClickTouchOutside<T extends HTMLElement>(
       if (!element) return;
       if (element.contains(event.target as Node)) return;
 
-      event.preventDefault();
-      event.stopPropagation();
       handlerRef.current(event);
     };
 
     window.addEventListener('mousedown', listener);
-    window.addEventListener('touchstart', listener, { passive: false });
+    window.addEventListener('touchstart', listener);
 
     return () => {
       window.removeEventListener('mousedown', listener);

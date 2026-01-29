@@ -1,18 +1,22 @@
 import { create } from 'zustand';
-import { getMyInfo } from '@/apis/auth';
+import { getMyInfo, refreshAccessToken } from '@/apis/auth';
 import type { MyInfoResponse } from '@/apis/auth/entity';
 
 interface AuthState {
   user: MyInfoResponse | null;
+  accessToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   initialize: () => Promise<void>;
   setUser: (user: MyInfoResponse | null) => void;
+  setAccessToken: (token: string | null) => void;
+  getAccessToken: () => string | null;
   clearAuth: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
+  accessToken: null,
   isAuthenticated: false,
   isLoading: true,
 
@@ -23,14 +27,21 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     try {
+      const accessToken = await refreshAccessToken();
+      set({ accessToken });
+
       const user = await getMyInfo();
       set({ user, isAuthenticated: true, isLoading: false });
     } catch {
-      set({ user: null, isAuthenticated: false, isLoading: false });
+      set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
   },
 
   setUser: (user) => set({ user, isAuthenticated: !!user, isLoading: false }),
 
-  clearAuth: () => set({ user: null, isAuthenticated: false, isLoading: false }),
+  setAccessToken: (token) => set({ accessToken: token }),
+
+  getAccessToken: () => get().accessToken,
+
+  clearAuth: () => set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false }),
 }));
