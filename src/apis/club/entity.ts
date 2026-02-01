@@ -194,3 +194,17 @@ export interface ClubProfileRequest {
   introduce: string;
   imageUrl: string;
 }
+
+export interface Bank {
+  id: number;
+  name: string;
+  imageUrl: string;
+}
+
+export interface ClubFeeRequest {
+  amount: number;
+  bank: string;
+  accountNumber: string;
+  accountHolder: string;
+  deadLine: string;
+}

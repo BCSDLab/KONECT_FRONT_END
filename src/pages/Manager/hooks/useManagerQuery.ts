@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
+  getBanks,
+  getClubFee,
   getClubQuestions,
   getClubRecruitment,
   getManagedClub,
@@ -9,11 +11,17 @@ import {
   getManagedClubs,
   postClubApplicationApprove,
   postClubApplicationReject,
+  putClubFee,
   putClubProfile,
   putClubQuestions,
   putClubRecruitment,
 } from '@/apis/club';
-import type { ClubProfileRequest, ClubQuestionsRequest, ClubRecruitmentRequest } from '@/apis/club/entity';
+import type {
+  ClubFeeRequest,
+  ClubProfileRequest,
+  ClubQuestionsRequest,
+  ClubRecruitmentRequest,
+} from '@/apis/club/entity';
 import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
 const managerQueryKeys = {
@@ -30,6 +38,8 @@ const managerQueryKeys = {
   managedClubRecruitment: (clubId: number) => [...managerQueryKeys.all, 'managedClubRecruitment', clubId],
   managedClubQuestions: (clubId: number) => [...managerQueryKeys.all, 'managedClubQuestions', clubId],
   managedClubProfile: (clubId: number) => [...managerQueryKeys.all, 'managedClubProfile', clubId],
+  banks: () => [...managerQueryKeys.all, 'banks'],
+  managedClubFee: (clubId: number) => [...managerQueryKeys.all, 'managedClubFee', clubId],
 };
 
 export const useManagerQuery = () => {
@@ -81,8 +91,7 @@ export const useManagedClubRecruitment = (clubId: number) => {
 
   return useMutation({
     mutationKey: managerQueryKeys.managedClubRecruitment(clubId),
-    mutationFn: (recruitmentData: ClubRecruitmentRequest) =>
-      putClubRecruitment(clubId, recruitmentData),
+    mutationFn: (recruitmentData: ClubRecruitmentRequest) => putClubRecruitment(clubId, recruitmentData),
     onSuccess: () => navigate(-1),
   });
 };
@@ -151,6 +160,38 @@ export const useManagedClubProfile = (clubId: number) => {
     mutationFn: (data: ClubProfileRequest) => putClubProfile(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      navigate(-1);
+    },
+  });
+};
+
+export const useGetBanks = () => {
+  const { data: banks } = useSuspenseQuery({
+    queryKey: managerQueryKeys.banks(),
+    queryFn: getBanks,
+  });
+
+  return { banks };
+};
+
+export const useManagedClubFee = (clubId: number) => {
+  const { data: managedClubFee } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedClubFee(clubId),
+    queryFn: () => getClubFee(clubId),
+  });
+
+  return { managedClubFee };
+};
+
+export const useManagedClubFeeMutation = (clubId: number) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: managerQueryKeys.managedClubFee(clubId),
+    mutationFn: (data: ClubFeeRequest) => putClubFee(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubFee(clubId) });
       navigate(-1);
     },
   });

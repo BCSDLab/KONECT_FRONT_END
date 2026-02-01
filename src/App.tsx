@@ -25,6 +25,7 @@ import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
 import PrivacyPolicyPage from './pages/legal/PrivacyPolicyPage';
 import TermsPage from './pages/legal/TermsPage';
+import ManagedAccount from './pages/Manager/ManagedAccount';
 import ManagedApplicationList from './pages/Manager/ManagedApplicationList';
 import ManagedApplicationDetail from './pages/Manager/ManagedApplictaionDetail';
 import ManagedClubDetail from './pages/Manager/ManagedClubDetail';
@@ -94,6 +95,7 @@ function App() {
               <Route path="mypage/manager/:clubId/profile" element={<ManagedClubProfile />} />
               <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
               <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
+              <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
               <Route path="profile" element={<Profile />} />
               <Route path="council">
                 <Route index element={<CouncilDetail />} />

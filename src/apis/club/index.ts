@@ -16,7 +16,11 @@ import {
   type ClubRecruitmentRequest,
   type ClubProfileRequest,
   type ManagedClubResponse,
+  type Bank,
+  type ClubFeeRequest,
 } from './entity';
+
+export type { Bank, ClubFeeRequest };
 
 export const getClubs = async (params: ClubRequestParams) => {
   const response = await apiClient.get<ClubResponse, ClubRequestParams>('clubs', { params, requiresAuth: true });
@@ -122,6 +126,19 @@ export const getManagedClub = async (clubId: number) => {
 
 export const putClubProfile = async (clubId: number, data: ClubProfileRequest) => {
   const response = await apiClient.put<void>(`clubs/${clubId}/profile`, {
+    body: data,
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const getBanks = async () => {
+  const response = await apiClient.get<{ banks: Bank[] }>('banks', { requiresAuth: true });
+  return response.banks;
+};
+
+export const putClubFee = async (clubId: number, data: ClubFeeRequest) => {
+  const response = await apiClient.put<void>(`clubs/${clubId}/fee`, {
     body: data,
     requiresAuth: true,
   });

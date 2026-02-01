@@ -7,6 +7,7 @@ import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 const menuItems = [
   { to: 'write', icon: FileSearchIcon, label: '모집 공고 관리' },
   { to: 'form', icon: FileIcon, label: '지원서 양식 관리' },
+  { to: 'account', icon: FileIcon, label: '계좌 관리' },
 ];
 
 function ManagedRecruitment() {
