@@ -9,7 +9,6 @@ import {
   getManagedClubs,
   postClubApplicationApprove,
   postClubApplicationReject,
-  postClubRecruitment,
   putClubProfile,
   putClubQuestions,
   putClubRecruitment,
@@ -77,13 +76,13 @@ export const useManagedClubRecruitmentQuery = (clubId: number) => {
   });
 };
 
-export const useManagedClubRecruitment = (clubId: number, hasExisting: boolean) => {
+export const useManagedClubRecruitment = (clubId: number) => {
   const navigate = useNavigate();
 
   return useMutation({
     mutationKey: managerQueryKeys.managedClubRecruitment(clubId),
     mutationFn: (recruitmentData: ClubRecruitmentRequest) =>
-      hasExisting ? putClubRecruitment(clubId, recruitmentData) : postClubRecruitment(clubId, recruitmentData),
+      putClubRecruitment(clubId, recruitmentData),
     onSuccess: () => navigate(-1),
   });
 };

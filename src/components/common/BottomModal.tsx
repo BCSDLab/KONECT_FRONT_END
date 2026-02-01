@@ -20,12 +20,23 @@ function BottomModal({ isOpen, onClose, children, className }: BottomModalProps)
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-100 bg-black/60">
+      <div
+        className="fixed inset-0 z-100 bg-black/60"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+      >
         <div
           ref={modalRef}
           role="dialog"
           aria-modal="true"
           className={twMerge('fixed inset-x-0 bottom-0 rounded-t-3xl bg-white', className)}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
         >
           {children}
         </div>

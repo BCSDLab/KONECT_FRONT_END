@@ -2,12 +2,10 @@ import { Link } from 'react-router-dom';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
 import FileIcon from '@/assets/svg/file.svg';
-import UserIcon from '@/assets/svg/user.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 
 const menuItems = [
-  { to: 'write', icon: UserIcon, label: '모집 공고 등록' },
-  { to: '', icon: FileSearchIcon, label: '모집 공고 수정' },
+  { to: 'write', icon: FileSearchIcon, label: '모집 공고 관리' },
   { to: 'form', icon: FileIcon, label: '지원서 양식 관리' },
 ];
 

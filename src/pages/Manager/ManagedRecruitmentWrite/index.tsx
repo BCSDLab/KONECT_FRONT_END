@@ -1,16 +1,19 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ImageIcon from '@/assets/svg/image.svg';
+import BottomModal from '@/components/common/BottomModal';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useManagedClubRecruitment, useManagedClubRecruitmentQuery } from '@/pages/Manager/hooks/useManagerQuery';
+import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 
 interface ImageItem {
-  file: File;
-  previewUrl: string;
+  file?: File; // 새 이미지일 경우에만 존재
+  previewUrl: string; // 미리보기 URL (blob: 또는 기존 URL)
+  isExisting?: boolean; // 기존 이미지 여부
 }
 
 const dateButtonStyle = twMerge(
@@ -24,6 +27,11 @@ function formatDateDot(date: Date): string {
   return `${year}.${month}.${day}`;
 }
 
+function parseDateDot(dateStr: string): Date {
+  const [year, month, day] = dateStr.split('.').map(Number);
+  return new Date(year, month - 1, day);
+}
+
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
@@ -34,13 +42,42 @@ function ManagedRecruitmentWrite() {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
+  const [hasHandledExisting, setHasHandledExisting] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage();
   const { data: existingRecruitment } = useManagedClubRecruitmentQuery(Number(clubId));
-  const hasExisting = !!existingRecruitment;
-  const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId), hasExisting);
+  const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId));
+  const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
+
+  useEffect(() => {
+    if (existingRecruitment && !hasHandledExisting) {
+      openChoiceModal();
+    }
+  }, [existingRecruitment, hasHandledExisting, openChoiceModal]);
+
+  const applyExistingRecruitment = () => {
+    if (!existingRecruitment) return;
+
+    setContent(existingRecruitment.content);
+    if (existingRecruitment.startDate && existingRecruitment.endDate) {
+      setStartDate(parseDateDot(existingRecruitment.startDate));
+      setEndDate(parseDateDot(existingRecruitment.endDate));
+    }
+    const isAlways = !existingRecruitment.startDate || !existingRecruitment.endDate;
+    setIsAlwaysRecruiting(isAlways);
+    if (existingRecruitment.images && existingRecruitment.images.length > 0) {
+      setImages(
+        existingRecruitment.images.map((img) => ({
+          previewUrl: img.url,
+          isExisting: true,
+        }))
+      );
+    }
+    setHasHandledExisting(true);
+    closeChoiceModal();
+  };
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -54,6 +91,20 @@ function ManagedRecruitmentWrite() {
     if (isStartAfterEnd) return '시작일은 종료일보다 앞서야 합니다.';
     if (isEndBeforeToday) return '종료일은 오늘 이후여야 합니다.';
     return null;
+  };
+
+  const handleReset = () => {
+    setStartDate(new Date());
+    setEndDate(new Date());
+    setContent('');
+    setIsAlwaysRecruiting(false);
+    images.forEach((img) => {
+      if (!img.isExisting) URL.revokeObjectURL(img.previewUrl);
+    });
+    setImages([]);
+    setCurrentImageIndex(0);
+    setHasHandledExisting(true);
+    closeChoiceModal();
   };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -108,8 +159,14 @@ function ManagedRecruitmentWrite() {
 
     setIsUploading(true);
     try {
-      const uploadResults = await Promise.all(images.map((img) => uploadImage(img.file)));
-      const imageData = uploadResults.map((res) => ({ url: res.fileUrl }));
+      // 새 이미지만 업로드 (file이 있는 것만)
+      const newImages = images.filter((img) => img.file);
+      const existingImages = images.filter((img) => img.isExisting);
+
+      const uploadResults = await Promise.all(newImages.map((img) => uploadImage(img.file!)));
+      const uploadedImageData = uploadResults.map((res) => ({ url: res.fileUrl }));
+      const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
+      const imageData = [...existingImageData, ...uploadedImageData];
 
       const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
 
@@ -136,7 +193,7 @@ function ManagedRecruitmentWrite() {
     <div className="flex h-full flex-col">
       <form id="recruitment-form" onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 overflow-auto p-3">
         <section className="flex w-full flex-col gap-4">
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between gap-3">
             <span className="text-h4">모집 일시</span>
             <div className="flex items-center gap-2">
               <label htmlFor="alwaysRecruit" className="text-h4 cursor-pointer select-none">
@@ -282,28 +339,32 @@ function ManagedRecruitmentWrite() {
         {uploadError && (
           <p className="text-sm text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
         )}
-        {error && (
-          <p className="text-sm text-red-500">
-            {error.message ?? (hasExisting ? '모집 공고 수정에 실패했습니다.' : '모집 공고 등록에 실패했습니다.')}
-          </p>
-        )}
+        {error && <p className="text-sm text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
         <button
           type="submit"
           form="recruitment-form"
           disabled={isPending || isUploading || !content.trim() || hasDateError}
           className="bg-primary w-full rounded-lg py-3 text-white transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-indigo-300"
         >
-          {isUploading
-            ? '이미지 업로드 중...'
-            : isPending
-              ? hasExisting
-                ? '수정 중...'
-                : '등록 중...'
-              : hasExisting
-                ? '모집 공고 수정'
-                : '모집 공고 등록'}
+          {isUploading ? '이미지 업로드 중...' : isPending ? '수정 중...' : '모집 공고 수정'}
         </button>
       </div>
+      <BottomModal isOpen={isChoiceModalOpen} onClose={closeChoiceModal}>
+        <div className="flex flex-col gap-6 px-6 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">기존 모집 공고가 있습니다. 불러와서 수정할까요?</div>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={applyExistingRecruitment}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+            >
+              기존 공고 불러오기
+            </button>
+            <button onClick={handleReset} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+              처음부터 작성
+            </button>
+          </div>
+        </div>
+      </BottomModal>
     </div>
   );
 }
