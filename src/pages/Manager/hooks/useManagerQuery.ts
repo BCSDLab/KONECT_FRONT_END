@@ -10,10 +10,12 @@ import {
   postClubApplicationApprove,
   postClubApplicationReject,
   postClubRecruitment,
+  putClubProfile,
   putClubQuestions,
   putClubRecruitment,
 } from '@/apis/club';
-import type { ClubQuestionsRequest, ClubRecruitmentRequest } from '@/apis/club/entity';
+import type { ClubProfileRequest, ClubQuestionsRequest, ClubRecruitmentRequest } from '@/apis/club/entity';
+import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
 const managerQueryKeys = {
   all: ['manager'],
@@ -28,6 +30,7 @@ const managerQueryKeys = {
   ],
   managedClubRecruitment: (clubId: number) => [...managerQueryKeys.all, 'managedClubRecruitment', clubId],
   managedClubQuestions: (clubId: number) => [...managerQueryKeys.all, 'managedClubQuestions', clubId],
+  managedClubProfile: (clubId: number) => [...managerQueryKeys.all, 'managedClubProfile', clubId],
 };
 
 export const useManagerQuery = () => {
@@ -136,6 +139,20 @@ export const useApplicationReject = (clubId: number, options: ApplicationMutatio
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubApplications(clubId) });
       if (navigateBack) navigate(-1);
+    },
+  });
+};
+
+export const useManagedClubProfile = (clubId: number) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: managerQueryKeys.managedClubProfile(clubId),
+    mutationFn: (data: ClubProfileRequest) => putClubProfile(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      navigate(-1);
     },
   });
 };

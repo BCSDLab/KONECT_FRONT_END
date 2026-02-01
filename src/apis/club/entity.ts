@@ -189,3 +189,8 @@ export interface ManagedClubResponse {
   studentNumber: string;
   position: '회장' | '부회장' | '운영진';
 }
+
+export interface ClubProfileRequest {
+  introduce: string;
+  imageUrl: string;
+}
