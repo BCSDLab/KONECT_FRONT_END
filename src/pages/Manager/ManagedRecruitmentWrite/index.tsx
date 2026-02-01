@@ -6,6 +6,12 @@ import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ImageIcon from '@/assets/svg/image.svg';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useManagedClubRecruitment, useManagedClubRecruitmentQuery } from '@/pages/Manager/hooks/useManagerQuery';
+import useUploadImage from '@/utils/hooks/useUploadImage';
+
+interface ImageItem {
+  file: File;
+  previewUrl: string;
+}
 
 const dateButtonStyle = twMerge(
   'rounded-lg bg-white px-4 py-2 text-indigo-700 transition-colors active:bg-indigo-25 shadow-[0_2px_4px_rgba(0,0,0,0.1)] text-h1 font-bold'
@@ -25,11 +31,13 @@ function ManagedRecruitmentWrite() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [content, setContent] = useState('');
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage();
   const { data: existingRecruitment } = useManagedClubRecruitmentQuery(Number(clubId));
   const hasExisting = !!existingRecruitment;
   const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId), hasExisting);
@@ -60,9 +68,12 @@ function ManagedRecruitmentWrite() {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    const newImageUrls = Array.from(files).map((file) => URL.createObjectURL(file));
+    const newItems = Array.from(files).map((file) => ({
+      file,
+      previewUrl: URL.createObjectURL(file),
+    }));
     setImages((prev) => {
-      const newImages = [...prev, ...newImageUrls];
+      const newImages = [...prev, ...newItems];
       setCurrentImageIndex(newImages.length - 1);
       return newImages;
     });
@@ -78,6 +89,7 @@ function ManagedRecruitmentWrite() {
   };
 
   const handleDeleteImage = () => {
+    URL.revokeObjectURL(images[currentImageIndex].previewUrl);
     const newImages = images.filter((_, index) => index !== currentImageIndex);
     setImages(newImages);
     if (currentImageIndex >= newImages.length && newImages.length > 0) {
@@ -91,39 +103,32 @@ function ManagedRecruitmentWrite() {
     fileInputRef.current?.click();
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const imageData = images.map((url) => ({ url }));
+    setIsUploading(true);
+    try {
+      const uploadResults = await Promise.all(images.map((img) => uploadImage(img.file)));
+      const imageData = uploadResults.map((res) => ({ url: res.fileUrl }));
 
-    if (isAlwaysRecruiting) {
-      saveRecruitment(
-        {
-          content,
-          images: imageData,
-          isAlwaysRecruiting: true,
-        },
-        {
-          onSuccess: () => {
-            navigate(`/manager/${clubId}/recruitment`);
+      const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
+
+      if (isAlwaysRecruiting) {
+        saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
+      } else {
+        saveRecruitment(
+          {
+            content,
+            images: imageData,
+            isAlwaysRecruiting: false,
+            startDate: formatDateDot(startDate),
+            endDate: formatDateDot(endDate),
           },
-        }
-      );
-    } else {
-      saveRecruitment(
-        {
-          content,
-          images: imageData,
-          isAlwaysRecruiting: false,
-          startDate: formatDateDot(startDate),
-          endDate: formatDateDot(endDate),
-        },
-        {
-          onSuccess: () => {
-            navigate(`/manager/${clubId}/recruitment`);
-          },
-        }
-      );
+          { onSuccess }
+        );
+      }
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -222,7 +227,7 @@ function ManagedRecruitmentWrite() {
                   )}
                   <div className="relative h-40 w-40 overflow-hidden rounded-xl">
                     <img
-                      src={images[currentImageIndex]}
+                      src={images[currentImageIndex].previewUrl}
                       alt={`업로드 이미지 ${currentImageIndex + 1}`}
                       className="h-full w-full object-cover"
                     />
@@ -274,6 +279,9 @@ function ManagedRecruitmentWrite() {
         </section>
       </form>
       <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
+        {uploadError && (
+          <p className="text-sm text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+        )}
         {error && (
           <p className="text-sm text-red-500">
             {error.message ?? (hasExisting ? '모집 공고 수정에 실패했습니다.' : '모집 공고 등록에 실패했습니다.')}
@@ -282,10 +290,18 @@ function ManagedRecruitmentWrite() {
         <button
           type="submit"
           form="recruitment-form"
-          disabled={isPending || !content.trim() || hasDateError}
+          disabled={isPending || isUploading || !content.trim() || hasDateError}
           className="bg-primary w-full rounded-lg py-3 text-white transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-indigo-300"
         >
-          {isPending ? (hasExisting ? '수정 중...' : '등록 중...') : hasExisting ? '모집 공고 수정' : '모집 공고 등록'}
+          {isUploading
+            ? '이미지 업로드 중...'
+            : isPending
+              ? hasExisting
+                ? '수정 중...'
+                : '등록 중...'
+              : hasExisting
+                ? '모집 공고 수정'
+                : '모집 공고 등록'}
         </button>
       </div>
     </div>

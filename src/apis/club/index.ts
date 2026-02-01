@@ -14,6 +14,7 @@ import {
   type ClubApplicationsResponse,
   type ClubApplicationDetailResponse,
   type ClubRecruitmentRequest,
+  type ManagedClubResponse,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -118,5 +119,10 @@ export const postClubApplicationReject = async (clubId: number, applicationId: n
   const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/reject`, {
     requiresAuth: true,
   });
+  return response;
+};
+
+export const getManagedClub = async (clubId: number) => {
+  const response = await apiClient.get<ManagedClubResponse>(`clubs/managed/${clubId}`, { requiresAuth: true });
   return response;
 };

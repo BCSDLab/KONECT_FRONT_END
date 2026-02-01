@@ -180,3 +180,12 @@ export interface ClubQuestionRequest {
 export interface ClubQuestionsRequest {
   questions: ClubQuestionRequest[];
 }
+
+export interface ManagedClubResponse {
+  clubId: number;
+  imageUrl: string;
+  clubName: string;
+  name: string;
+  studentNumber: string;
+  position: '회장' | '부회장' | '운영진';
+}

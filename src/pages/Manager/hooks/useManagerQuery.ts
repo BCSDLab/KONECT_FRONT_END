@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getClubQuestions,
   getClubRecruitment,
+  getManagedClub,
   getManagedClubApplicationDetail,
   getManagedClubApplications,
   getManagedClubs,
@@ -17,6 +18,7 @@ import type { ClubQuestionsRequest, ClubRecruitmentRequest } from '@/apis/club/e
 const managerQueryKeys = {
   all: ['manager'],
   managedClubs: () => [...managerQueryKeys.all, 'managedClubs'],
+  managedClub: (clubId: number) => [...managerQueryKeys.all, 'managedClub', clubId],
   managedClubApplications: (clubId: number) => [...managerQueryKeys.all, 'managedClubApplications', clubId],
   managedClubApplicationDetail: (clubId: number, applicationId: number) => [
     ...managerQueryKeys.all,
@@ -35,6 +37,15 @@ export const useManagerQuery = () => {
   });
 
   return { managedClubList };
+};
+
+export const useManagedClub = (clubId: number) => {
+  const { data: managedClub } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedClub(clubId),
+    queryFn: () => getManagedClub(clubId),
+  });
+
+  return { managedClub };
 };
 
 export const useManagedClubApplications = (clubId: number) => {
