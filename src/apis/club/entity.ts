@@ -208,3 +208,59 @@ export interface ClubFeeRequest {
   accountHolder: string;
   deadLine: string;
 }
+
+//========================== Member & Position Entities =========================//
+
+export type PositionGroup = 'PRESIDENT' | 'VICE_PRESIDENT' | 'MANAGER' | 'MEMBER';
+
+export interface Position {
+  positionId: number;
+  name: string;
+  positionGroup: PositionGroup;
+  priority: number;
+  memberCount: number;
+}
+
+export interface PositionsResponse {
+  positions: Position[];
+}
+
+export interface ManagedMember {
+  memberId: number;
+  userId: number;
+  name: string;
+  imageUrl: string;
+  studentNumber: string;
+  positionId: number;
+  positionName: string;
+}
+
+export interface ManagedMembersResponse {
+  clubMembers: ManagedMember[];
+}
+
+export interface TransferPresidentRequest {
+  newPresidentUserId: number;
+}
+
+export interface AddMemberRequest {
+  userId: number;
+  positionId: number;
+}
+
+export interface ChangeVicePresidentRequest {
+  vicePresidentUserId: number | null;
+}
+
+export interface ChangeMemberPositionRequest {
+  positionId: number;
+}
+
+export interface CreatePositionRequest {
+  name: string;
+  positionGroup: 'MANAGER' | 'MEMBER';
+}
+
+export interface RenamePositionRequest {
+  name: string;
+}

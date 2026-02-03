@@ -1,17 +1,15 @@
 import { Link } from 'react-router-dom';
+import BadgeIcon from '@/assets/svg/badge.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
-import CreditCardIcon from '@/assets/svg/credit-card.svg';
-import FileIcon from '@/assets/svg/file.svg';
-import MegaphoneIcon from '@/assets/svg/megaphone.svg';
+import PeopleGroupIcon from '@/assets/svg/people-group.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 
 const menuItems = [
-  { to: 'write', icon: MegaphoneIcon, label: '모집 공고 관리' },
-  { to: 'form', icon: FileIcon, label: '지원서 양식 관리' },
-  { to: 'account', icon: CreditCardIcon, label: '계좌 관리' },
+  { to: 'list', icon: PeopleGroupIcon, label: '부원 관리' },
+  { to: 'positions', icon: BadgeIcon, label: '직책 관리' },
 ];
 
-function ManagedRecruitment() {
+function ManagedMember() {
   return (
     <div className="flex h-full flex-col gap-2 p-3">
       <UserInfoCard type="detail" />
@@ -32,4 +30,4 @@ function ManagedRecruitment() {
   );
 }
 
-export default ManagedRecruitment;
+export default ManagedMember;

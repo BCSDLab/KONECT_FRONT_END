@@ -15,12 +15,28 @@ import {
   putClubProfile,
   putClubQuestions,
   putClubRecruitment,
+  getClubPositions,
+  getManagedClubMembers,
+  postTransferPresident,
+  postAddMember,
+  patchVicePresident,
+  patchMemberPosition,
+  deleteMember,
+  postCreatePosition,
+  deletePosition,
+  patchRenamePosition,
 } from '@/apis/club';
 import type {
+  AddMemberRequest,
+  ChangeMemberPositionRequest,
+  ChangeVicePresidentRequest,
   ClubFeeRequest,
   ClubProfileRequest,
   ClubQuestionsRequest,
   ClubRecruitmentRequest,
+  CreatePositionRequest,
+  RenamePositionRequest,
+  TransferPresidentRequest,
 } from '@/apis/club/entity';
 import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
@@ -40,6 +56,8 @@ const managerQueryKeys = {
   managedClubProfile: (clubId: number) => [...managerQueryKeys.all, 'managedClubProfile', clubId],
   banks: () => [...managerQueryKeys.all, 'banks'],
   managedClubFee: (clubId: number) => [...managerQueryKeys.all, 'managedClubFee', clubId],
+  managedMembers: (clubId: number) => [...managerQueryKeys.all, 'managedMembers', clubId],
+  clubPositions: (clubId: number) => [...managerQueryKeys.all, 'clubPositions', clubId],
 };
 
 export const useManagerQuery = () => {
@@ -193,6 +211,123 @@ export const useManagedClubFeeMutation = (clubId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubFee(clubId) });
       navigate(-1);
+    },
+  });
+};
+
+//========================== Member & Position Hooks =========================//
+
+export const useManagedMembers = (clubId: number) => {
+  const { data: managedMemberList } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedMembers(clubId),
+    queryFn: () => getManagedClubMembers(clubId),
+  });
+
+  return { managedMemberList };
+};
+
+export const useClubPositions = (clubId: number) => {
+  const { data: clubPositions } = useSuspenseQuery({
+    queryKey: managerQueryKeys.clubPositions(clubId),
+    queryFn: () => getClubPositions(clubId),
+  });
+
+  return { clubPositions };
+};
+
+export const useTransferPresident = (clubId: number) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: TransferPresidentRequest) => postTransferPresident(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClub(clubId) });
+      navigate(-1);
+    },
+  });
+};
+
+export const useChangeVicePresident = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ChangeVicePresidentRequest) => patchVicePresident(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+    },
+  });
+};
+
+export const useChangeMemberPosition = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ memberId, data }: { memberId: number; data: ChangeMemberPositionRequest }) =>
+      patchMemberPosition(clubId, memberId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+    },
+  });
+};
+
+export const useRemoveMember = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (memberId: number) => deleteMember(clubId, memberId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+    },
+  });
+};
+
+export const useAddMember = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: AddMemberRequest) => postAddMember(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+    },
+  });
+};
+
+export const useCreatePosition = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: CreatePositionRequest) => postCreatePosition(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+    },
+  });
+};
+
+export const useDeletePosition = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (positionId: number) => deletePosition(clubId, positionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+    },
+  });
+};
+
+export const useRenamePosition = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ positionId, data }: { positionId: number; data: RenamePositionRequest }) =>
+      patchRenamePosition(clubId, positionId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.clubPositions(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
     },
   });
 };
