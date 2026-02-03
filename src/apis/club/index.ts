@@ -17,27 +17,27 @@ import {
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
-  const response = await apiClient.get<ClubResponse, ClubRequestParams>('clubs', { params });
+  const response = await apiClient.get<ClubResponse, ClubRequestParams>('clubs', { params, requiresAuth: true });
   return response;
 };
 
 export const getJoinedClubs = async () => {
-  const response = await apiClient.get<JoinClubResponse>('clubs/joined');
+  const response = await apiClient.get<JoinClubResponse>('clubs/joined', { requiresAuth: true });
   return response;
 };
 
 export const getClubDetail = async (clubId: number) => {
-  const response = await apiClient.get<ClubDetailResponse>(`clubs/${clubId}`);
+  const response = await apiClient.get<ClubDetailResponse>(`clubs/${clubId}`, { requiresAuth: true });
   return response;
 };
 
 export const getClubMembers = async (clubId: number) => {
-  const response = await apiClient.get<ClubMembersResponse>(`clubs/${clubId}/members`);
+  const response = await apiClient.get<ClubMembersResponse>(`clubs/${clubId}/members`, { requiresAuth: true });
   return response;
 };
 
 export const getClubQuestions = async (clubId: number) => {
-  const response = await apiClient.get<ClubQuestionsResponse>(`clubs/${clubId}/questions`);
+  const response = await apiClient.get<ClubQuestionsResponse>(`clubs/${clubId}/questions`, { requiresAuth: true });
   return response;
 };
 
@@ -50,38 +50,43 @@ export const applyClub = async (clubId: number, answers: ClubApplyRequest) => {
 };
 
 export const getClubFee = async (clubId: number) => {
-  const response = await apiClient.get<ClubApplyResponse>(`clubs/${clubId}/fee`);
+  const response = await apiClient.get<ClubApplyResponse>(`clubs/${clubId}/fee`, { requiresAuth: true });
   return response;
 };
 
 export const getClubRecruitment = async (clubId: number) => {
-  const response = await apiClient.get<ClubRecruitment>(`clubs/${clubId}/recruitments`);
+  const response = await apiClient.get<ClubRecruitment>(`clubs/${clubId}/recruitments`, { requiresAuth: true });
   return response;
 };
 
 export const getAppliedClubs = async () => {
-  const response = await apiClient.get<AppliedClubResponse>('clubs/applied');
+  const response = await apiClient.get<AppliedClubResponse>('clubs/applied', { requiresAuth: true });
   return response;
 };
 
 export const getManagedClubs = async () => {
-  const response = await apiClient.get<JoinClubResponse>('clubs/managed');
+  const response = await apiClient.get<JoinClubResponse>('clubs/managed', { requiresAuth: true });
   return response;
 };
 
 export const getManagedClubApplications = async (clubId: number) => {
-  const response = await apiClient.get<ClubApplicationsResponse>(`clubs/${clubId}/applications`);
+  const response = await apiClient.get<ClubApplicationsResponse>(`clubs/${clubId}/applications`, {
+    requiresAuth: true,
+  });
   return response;
 };
 
 export const getManagedClubApplicationDetail = async (clubId: number, applicationId: number) => {
-  const response = await apiClient.get<ClubApplicationDetailResponse>(`clubs/${clubId}/applications/${applicationId}`);
+  const response = await apiClient.get<ClubApplicationDetailResponse>(`clubs/${clubId}/applications/${applicationId}`, {
+    requiresAuth: true,
+  });
   return response;
 };
 
 export const postClubRecruitment = async (clubId: number, recruitmentData: ClubRecruitmentRequest) => {
   const response = await apiClient.post<void>(`clubs/${clubId}/recruitments`, {
     body: recruitmentData,
+    requiresAuth: true,
   });
   return response;
 };
@@ -89,6 +94,7 @@ export const postClubRecruitment = async (clubId: number, recruitmentData: ClubR
 export const putClubRecruitment = async (clubId: number, recruitmentData: ClubRecruitmentRequest) => {
   const response = await apiClient.put<void>(`clubs/${clubId}/recruitments`, {
     body: recruitmentData,
+    requiresAuth: true,
   });
   return response;
 };
@@ -96,16 +102,21 @@ export const putClubRecruitment = async (clubId: number, recruitmentData: ClubRe
 export const putClubQuestions = async (clubId: number, questionsData: ClubQuestionsRequest) => {
   const response = await apiClient.put<ClubQuestionsResponse>(`clubs/${clubId}/questions`, {
     body: questionsData,
+    requiresAuth: true,
   });
   return response;
 };
 
 export const postClubApplicationApprove = async (clubId: number, applicationId: number) => {
-  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/approve`);
+  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/approve`, {
+    requiresAuth: true,
+  });
   return response;
 };
 
 export const postClubApplicationReject = async (clubId: number, applicationId: number) => {
-  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/reject`);
+  const response = await apiClient.post<void>(`clubs/${clubId}/applications/${applicationId}/reject`, {
+    requiresAuth: true,
+  });
   return response;
 };

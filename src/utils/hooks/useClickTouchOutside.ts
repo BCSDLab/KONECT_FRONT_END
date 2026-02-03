@@ -15,6 +15,7 @@ export default function useClickTouchOutside<T extends HTMLElement>(
       const element = ref.current;
       if (!element) return;
       if (element.contains(event.target as Node)) return;
+
       handlerRef.current(event);
     };
 

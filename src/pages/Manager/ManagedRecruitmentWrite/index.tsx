@@ -146,28 +146,32 @@ function ManagedRecruitmentWrite() {
               />
             </div>
           </div>
-          <div className="flex items-center justify-between gap-3">
-            <DatePicker
-              selectedDate={startDate}
-              onChange={setStartDate}
-              renderTrigger={(toggle) => (
-                <button type="button" onClick={toggle} className={dateButtonStyle}>
-                  {formatDateDot(startDate)}
-                </button>
-              )}
-            />
-            <span className="text-indigo-400">~</span>
-            <DatePicker
-              selectedDate={endDate}
-              onChange={setEndDate}
-              renderTrigger={(toggle) => (
-                <button type="button" onClick={toggle} className={dateButtonStyle}>
-                  {formatDateDot(endDate)}
-                </button>
-              )}
-            />
-            {hasDateError && <p className="text-sm text-red-500">{getDateErrorMessage()}</p>}
-          </div>
+          {!isAlwaysRecruiting && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between gap-3">
+                <DatePicker
+                  selectedDate={startDate}
+                  onChange={setStartDate}
+                  renderTrigger={(toggle) => (
+                    <button type="button" onClick={toggle} className={dateButtonStyle}>
+                      {formatDateDot(startDate)}
+                    </button>
+                  )}
+                />
+                <span className="text-indigo-400">~</span>
+                <DatePicker
+                  selectedDate={endDate}
+                  onChange={setEndDate}
+                  renderTrigger={(toggle) => (
+                    <button type="button" onClick={toggle} className={dateButtonStyle}>
+                      {formatDateDot(endDate)}
+                    </button>
+                  )}
+                />
+              </div>
+              {hasDateError && <p className="text-sm text-red-500">{getDateErrorMessage()}</p>}
+            </div>
+          )}
         </section>
         <section className="flex w-full flex-col gap-4">
           <span className="text-h4">

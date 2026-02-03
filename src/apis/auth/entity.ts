@@ -23,3 +23,7 @@ export interface ModifyMyInfoRequest {
   studentNumber?: string;
   phoneNumber?: string;
 }
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+}
