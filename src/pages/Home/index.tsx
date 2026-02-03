@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
+import useScrollRestore from '@/utils/hooks/useScrollRestore';
 import { useCouncilNotice } from '../Club/ClubDetail/hooks/useCouncilNotices';
 import CouncilNoticeCard from './components/CouncilNoticeCard';
 import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
@@ -43,6 +44,7 @@ function Home() {
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
   const { data: councilNoticeData } = useCouncilNotice({ limit: 3 });
+  useScrollRestore('home', !!appliedClubsData);
 
   const allNotices = councilNoticeData?.pages.flatMap((page) => page.councilNotices) ?? [];
 
