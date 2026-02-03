@@ -1,6 +1,15 @@
 import type { ReactNode } from 'react';
 
-export type HeaderType = 'info' | 'profile' | 'chat' | 'default' | 'normal' | 'full' | 'signup' | 'schedule';
+export type HeaderType =
+  | 'info'
+  | 'profile'
+  | 'chat'
+  | 'default'
+  | 'normal'
+  | 'full'
+  | 'signup'
+  | 'schedule'
+  | 'council';
 
 export interface HeaderConfig {
   type: HeaderType;
