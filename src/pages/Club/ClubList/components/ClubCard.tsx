@@ -71,7 +71,7 @@ function ClubCard({ club }: ClubCardProps) {
           </div>
           {clubTag && (
             <div
-              className="text-cap1 flex items-center gap-0.5 rounded-full px-3 py-1.5"
+              className="text-cap1 flex items-center gap-0.5 rounded-full px-3 py-1"
               style={{
                 backgroundColor: clubTag.bgColor,
                 color: clubTag.textColor,
@@ -82,7 +82,7 @@ function ClubCard({ club }: ClubCardProps) {
             </div>
           )}
         </div>
-        <div className="text-sub2 mt-0.5 truncate text-indigo-300">{club.description}</div>
+        <div className="text-sub2 truncate text-indigo-300">{club.description}</div>
       </div>
     </Link>
   );

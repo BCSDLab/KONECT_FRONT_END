@@ -46,8 +46,6 @@ function Home() {
 
   const allNotices = councilNoticeData?.pages.flatMap((page) => page.councilNotices) ?? [];
 
-  console.log(councilNoticeData);
-
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">

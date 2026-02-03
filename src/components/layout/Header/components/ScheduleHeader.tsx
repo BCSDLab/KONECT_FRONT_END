@@ -9,6 +9,8 @@ function ScheduleHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleBack = () => {
+    sessionStorage.setItem('home:scroll', String(window.scrollY));
+
     navigate('/home', { replace: true });
   };
 

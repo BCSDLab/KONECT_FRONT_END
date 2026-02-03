@@ -15,7 +15,7 @@ function CouncilNoticeCard({
     <Link
       to={`/council/notice/${id}`}
       key={id}
-      className="bg-indigo-0 border-indigo-5 block rounded-lg border-b px-5 py-4"
+      className="bg-indigo-0 border-indigo-5 block rounded-lg border-b px-3 py-3"
     >
       <div className="flex items-center gap-1">
         <div className="text-h3 leading-[15px] font-semibold text-indigo-700">{title}</div>
