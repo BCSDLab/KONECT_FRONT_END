@@ -98,7 +98,7 @@ function Home() {
               <div className="flex items-center gap-3">
                 <div
                   style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
-                  className="bg-indigo-25 flex h-11 w-11 flex-col items-center justify-center rounded-sm"
+                  className="bg-indigo-25 flex h-13 w-13 flex-col items-center justify-center rounded-sm"
                 >
                   <div className="text-center text-xs leading-3 font-bold text-white">
                     {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
