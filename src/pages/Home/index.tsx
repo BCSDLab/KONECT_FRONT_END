@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
+import useScrollRestore from '@/utils/hooks/useScrollRestore';
+import { useCouncilNotice } from '../Club/ClubDetail/hooks/useCouncilNotices';
+import CouncilNoticeCard from './components/CouncilNoticeCard';
 import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
@@ -40,21 +43,38 @@ function Home() {
   const { data: appliedClubsData } = useGetAppliedClubs();
   const { data: joinedClubsData } = useGetJoinedClubs();
   const { data: scheduleListData } = useGetUpComingScheduleList();
+  const { data: councilNoticeData } = useCouncilNotice({ limit: 3 });
+  useScrollRestore('home', !!appliedClubsData);
+
+  const allNotices = councilNoticeData?.pages.flatMap((page) => page.councilNotices) ?? [];
+
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        <>
-          <div className="text-h3">내 동아리</div>
+        {appliedClubsData?.appliedClubs.length === 0 && joinedClubsData?.joinedClubs.length === 0 ? (
+          <Card>
+            <div>
+              <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
+            </div>
 
-          <div className="flex flex-col gap-2">
-            {appliedClubsData.appliedClubs.map((club) => (
-              <SimpleAppliedClubCard key={club.id} club={club} />
-            ))}
-            {joinedClubsData.joinedClubs.map((club) => (
-              <SimpleClubCard key={club.id} club={club} />
-            ))}
-          </div>
-        </>
+            <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
+              동아리 둘러보기
+            </Link>
+          </Card>
+        ) : (
+          <>
+            <div className="text-h3">내 동아리</div>
+
+            <div className="flex flex-col gap-2">
+              {appliedClubsData.appliedClubs.map((club) => (
+                <SimpleAppliedClubCard key={club.id} club={club} />
+              ))}
+              {joinedClubsData.joinedClubs.map((club) => (
+                <SimpleClubCard key={club.id} club={club} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div>
@@ -78,12 +98,12 @@ function Home() {
               <div className="flex items-center gap-3">
                 <div
                   style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
-                  className="bg-indigo-25 flex h-11 w-11 flex-col items-center justify-center rounded-sm"
+                  className="bg-indigo-25 flex h-13 w-13 flex-col items-center justify-center rounded-sm"
                 >
-                  <div className="text-primary text-center text-xs leading-3 font-bold">
+                  <div className="text-center text-xs leading-3 font-bold text-white">
                     {schedule.dDay > 0 ? `D-${schedule.dDay}` : 'Today'}
                   </div>
-                  <CalendarIcon />
+                  <CalendarIcon style={{ color: '#fff' }} />
                 </div>
                 <div className="flex flex-1 flex-col">
                   <div className="text-h3 text-indigo-700">{schedule.title}</div>
@@ -94,6 +114,29 @@ function Home() {
               </div>
             </NavigateCard>
           ))
+        )}
+      </div>
+
+      <div>
+        <div className="flex justify-between">
+          <div className="text-h3">총동아리연합회</div>
+          <Link to="/council" className="text-sub2 text-[#3182F6]">
+            더보기
+          </Link>
+        </div>
+
+        {councilNoticeData && (
+          <div className="mt-2 flex flex-col gap-2">
+            {allNotices.map((notice) => (
+              <CouncilNoticeCard
+                id={notice.id}
+                isRead={notice.isRead}
+                title={notice.title}
+                key={notice.id}
+                createdAt={notice.createdAt}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
