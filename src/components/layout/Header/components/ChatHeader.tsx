@@ -1,9 +1,10 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
+import { useSmartBack } from '@/utils/hooks/useSmartBack';
 
 function ChatHeader() {
-  const navigate = useNavigate();
+  const smartBack = useSmartBack();
   const { chatRoomId } = useParams();
   const { chatRoomList } = useChat();
 
@@ -14,7 +15,7 @@ function ChatHeader() {
       <button
         type="button"
         aria-label="뒤로가기"
-        onClick={() => navigate(-1)}
+        onClick={smartBack}
         className="absolute top-1/2 left-4 -translate-y-1/2"
       >
         <ChevronLeftIcon />

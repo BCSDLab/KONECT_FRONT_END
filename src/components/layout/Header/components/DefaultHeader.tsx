@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
+import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import NotificationBell from './NotificationBell';
 
 interface DefaultHeaderProps {
@@ -10,9 +10,9 @@ interface DefaultHeaderProps {
 }
 
 function DefaultHeader({ title, showBackButton = true, showNotificationBell = false, onBack }: DefaultHeaderProps) {
-  const navigate = useNavigate();
+  const smartBack = useSmartBack();
 
-  const handleBack = onBack ?? (() => navigate(-1));
+  const handleBack = onBack ?? smartBack;
 
   return (
     <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
