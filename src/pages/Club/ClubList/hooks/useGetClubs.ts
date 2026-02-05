@@ -1,5 +1,5 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { getClubs, getAppliedClubs, getJoinedClubs } from '@/apis/club';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { getClubs } from '@/apis/club';
 import type { ClubResponse } from '@/apis/club/entity';
 
 export const clubQueryKeys = {
@@ -48,19 +48,5 @@ export const useGetClubs = ({ limit = 10, query, enabled = true, isRecruiting = 
       return firstPage.currentPage > 1 ? firstPage.currentPage - 1 : undefined;
     },
     enabled,
-  });
-};
-
-export const useGetAppliedClubs = () => {
-  return useQuery({
-    queryKey: clubQueryKeys.applied(),
-    queryFn: getAppliedClubs,
-  });
-};
-
-export const useGetJoinedClubs = () => {
-  return useQuery({
-    queryKey: clubQueryKeys.joined(),
-    queryFn: getJoinedClubs,
   });
 };
