@@ -1,6 +1,25 @@
 import { create } from 'zustand';
 import { getMyInfo, refreshAccessToken } from '@/apis/auth';
 import type { MyInfoResponse } from '@/apis/auth/entity';
+import { registerPushToken } from '@/apis/notification';
+import { getCookie } from '@/utils/ts/cookie';
+
+const PUSH_TOKEN_STORAGE_KEY = 'REGISTERED_PUSH_TOKEN';
+
+async function registerPushTokenIfNeeded() {
+  const token = getCookie('EXPO_PUSH_TOKEN');
+  if (!token) return;
+
+  const lastRegisteredToken = localStorage.getItem(PUSH_TOKEN_STORAGE_KEY);
+  if (lastRegisteredToken === token) return;
+
+  try {
+    await registerPushToken(token);
+    localStorage.setItem(PUSH_TOKEN_STORAGE_KEY, token);
+  } catch (error) {
+    console.error('푸시 토큰 등록 실패:', error);
+  }
+}
 
 interface AuthState {
   user: MyInfoResponse | null;
@@ -32,6 +51,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       const user = await getMyInfo();
       set({ user, isAuthenticated: true, isLoading: false });
+
+      registerPushTokenIfNeeded();
     } catch {
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
