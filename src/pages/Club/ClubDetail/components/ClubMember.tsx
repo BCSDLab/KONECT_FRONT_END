@@ -10,7 +10,7 @@ const ClubMemberCard = (clubMember: ClubMember) => {
       <div>
         <div className="flex gap-1">
           <div className="text-sm leading-4 font-medium text-indigo-700">{clubMember.name}</div>
-          {clubMember.position !== '일반 회원' && (
+          {clubMember.position !== 'MEMBER' && (
             <div className="text-indigo-0 flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5 text-[10px] leading-3 font-semibold">
               {clubMember.position}
             </div>
