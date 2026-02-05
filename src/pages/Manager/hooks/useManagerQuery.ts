@@ -97,13 +97,20 @@ export const useManagedClubRecruitmentQuery = (clubId: number) => {
   });
 };
 
-export const useManagedClubRecruitment = (clubId: number) => {
+interface MutationOptions {
+  onSuccess?: () => void;
+}
+
+export const useManagedClubRecruitment = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
 
   return useMutation({
     mutationKey: managerQueryKeys.managedClubRecruitment(clubId),
     mutationFn: (recruitmentData: ClubRecruitmentRequest) => putClubRecruitment(clubId, recruitmentData),
-    onSuccess: () => navigate(-1),
+    onSuccess: () => {
+      options.onSuccess?.();
+      navigate(-1);
+    },
   });
 };
 
@@ -116,7 +123,7 @@ export const useManagedClubQuestions = (clubId: number) => {
   return { managedClubQuestions };
 };
 
-export const useManagedClubQuestionsMutation = (clubId: number) => {
+export const useManagedClubQuestionsMutation = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -125,12 +132,13 @@ export const useManagedClubQuestionsMutation = (clubId: number) => {
     mutationFn: (questionsData: ClubQuestionsRequest) => putClubQuestions(clubId, questionsData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubQuestions(clubId) });
+      options.onSuccess?.();
       navigate(-1);
     },
   });
 };
 
-interface ApplicationMutationOptions {
+interface ApplicationMutationOptions extends MutationOptions {
   navigateBack?: boolean;
 }
 
@@ -143,6 +151,7 @@ export const useApplicationApprove = (clubId: number, options: ApplicationMutati
     mutationFn: (applicationId: number) => postClubApplicationApprove(clubId, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubApplications(clubId) });
+      options.onSuccess?.();
       if (navigateBack) navigate(-1);
     },
   });
@@ -157,12 +166,13 @@ export const useApplicationReject = (clubId: number, options: ApplicationMutatio
     mutationFn: (applicationId: number) => postClubApplicationReject(clubId, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubApplications(clubId) });
+      options.onSuccess?.();
       if (navigateBack) navigate(-1);
     },
   });
 };
 
-export const useManagedClubInfo = (clubId: number) => {
+export const useManagedClubInfo = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -171,6 +181,7 @@ export const useManagedClubInfo = (clubId: number) => {
     mutationFn: (data: ClubInfoRequest) => putClubInfo(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      options.onSuccess?.();
       navigate(-1);
     },
   });
@@ -194,7 +205,7 @@ export const useManagedClubFee = (clubId: number) => {
   return { managedClubFee };
 };
 
-export const useManagedClubFeeMutation = (clubId: number) => {
+export const useManagedClubFeeMutation = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -203,6 +214,7 @@ export const useManagedClubFeeMutation = (clubId: number) => {
     mutationFn: (data: ClubFeeRequest) => putClubFee(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubFee(clubId) });
+      options.onSuccess?.();
       navigate(-1);
     },
   });
@@ -219,7 +231,7 @@ export const useManagedMembers = (clubId: number) => {
   return { managedMemberList };
 };
 
-export const useTransferPresident = (clubId: number) => {
+export const useTransferPresident = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -228,23 +240,25 @@ export const useTransferPresident = (clubId: number) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClub(clubId) });
+      options.onSuccess?.();
       navigate(-1);
     },
   });
 };
 
-export const useChangeVicePresident = (clubId: number) => {
+export const useChangeVicePresident = (clubId: number, options: MutationOptions = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: ChangeVicePresidentRequest) => patchVicePresident(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
     },
   });
 };
 
-export const useChangeMemberPosition = (clubId: number) => {
+export const useChangeMemberPosition = (clubId: number, options: MutationOptions = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -252,28 +266,31 @@ export const useChangeMemberPosition = (clubId: number) => {
       patchMemberPosition(clubId, userId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
     },
   });
 };
 
-export const useRemoveMember = (clubId: number) => {
+export const useRemoveMember = (clubId: number, options: MutationOptions = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (userId: number) => deleteMember(clubId, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
     },
   });
 };
 
-export const useAddPreMember = (clubId: number) => {
+export const useAddPreMember = (clubId: number, options: MutationOptions = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (data: AddPreMemberRequest) => postAddPreMember(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
     },
   });
 };

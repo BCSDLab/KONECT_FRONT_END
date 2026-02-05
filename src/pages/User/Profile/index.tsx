@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import BottomModal from '@/components/common/BottomModal';
+import Toast from '@/components/common/Toast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { useToast } from '@/utils/hooks/useToast';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
 
@@ -13,7 +15,10 @@ const fields = [
 ] as const;
 
 function Profile() {
-  const { myInfo, modifyMyInfo, error } = useMyInfo();
+  const { toast, showToast, hideToast } = useToast();
+  const { myInfo, modifyMyInfo, error } = useMyInfo({
+    onSuccess: () => showToast('프로필이 수정되었습니다'),
+  });
   const { mutate: withdraw } = useWithdrawMutation();
 
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
@@ -92,6 +97,8 @@ function Profile() {
           </div>
         </div>
       </BottomModal>
+
+      <Toast toast={toast} onClose={hideToast} />
     </div>
   );
 }

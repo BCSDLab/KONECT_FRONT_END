@@ -9,7 +9,11 @@ export const userQueryKeys = {
   myInfo: () => [...userQueryKeys.all, 'myInfo'],
 };
 
-export const useMyInfo = () => {
+interface UseMyInfoOptions {
+  onSuccess?: () => void;
+}
+
+export const useMyInfo = (options: UseMyInfoOptions = {}) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -23,6 +27,7 @@ export const useMyInfo = () => {
     mutationFn: (data: ModifyMyInfoRequest) => putMyInfo(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userQueryKeys.myInfo() });
+      options.onSuccess?.();
       navigate(-1);
     },
   });

@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import type { ClubMember, PositionType } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
+import Toast from '@/components/common/Toast';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import type { ClubMember, PositionType } from '@/apis/club/entity';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { useToast } from '@/utils/hooks/useToast';
 import {
   useAddPreMember,
   useChangeMemberPosition,
@@ -40,9 +42,7 @@ function groupMembers(members: ClubMember[]) {
     }
     grouped.get(pos)!.push(member);
   }
-  const sorted = [...grouped.entries()].sort(
-    ([a], [b]) => POSITION_PRIORITY[a] - POSITION_PRIORITY[b],
-  );
+  const sorted = [...grouped.entries()].sort(([a], [b]) => POSITION_PRIORITY[a] - POSITION_PRIORITY[b]);
   return sorted;
 }
 
@@ -50,13 +50,24 @@ function ManagedMemberList() {
   const params = useParams();
   const clubId = Number(params.clubId);
 
+  const { toast, showToast, hideToast } = useToast();
   const { managedMemberList } = useManagedMembers(clubId);
 
-  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId);
-  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId);
-  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId);
-  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId);
-  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId);
+  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId, {
+    onSuccess: () => showToast('회장이 위임되었습니다'),
+  });
+  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId, {
+    onSuccess: () => showToast('부회장이 변경되었습니다'),
+  });
+  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId, {
+    onSuccess: () => showToast('직책이 변경되었습니다'),
+  });
+  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId, {
+    onSuccess: () => showToast('부원이 추방되었습니다'),
+  });
+  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId, {
+    onSuccess: () => showToast('부원이 추가되었습니다'),
+  });
 
   const isPending = isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding;
 
@@ -172,21 +183,14 @@ function ManagedMemberList() {
 
         {groupedEntries.map(([position, groupMembers]) => (
           <div key={position} className="flex flex-col gap-1">
-            <div className="text-body2 text-indigo-700 px-1 py-1 font-semibold">
-              {POSITION_LABELS[position]}
-            </div>
+            <div className="text-body2 px-1 py-1 font-semibold text-indigo-700">{POSITION_LABELS[position]}</div>
             {groupMembers.map((member) => (
               <Card key={member.userId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
-                  <img
-                    className="h-10 w-10 rounded-full object-cover"
-                    src={member.imageUrl}
-                    alt={member.name}
-                  />
+                  <img className="h-10 w-10 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
                   <div>
                     <div className="text-body2 text-indigo-700">
-                      {member.name}{' '}
-                      <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
+                      {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
                     <div className="text-cap1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
                   </div>
@@ -196,7 +200,7 @@ function ManagedMemberList() {
                     type="button"
                     onClick={() => handleMemberAction(member)}
                     disabled={isPending}
-                    className="text-indigo-400 hover:bg-indigo-5 rounded-full p-2 disabled:opacity-50"
+                    className="hover:bg-indigo-5 rounded-full p-2 text-indigo-400 disabled:opacity-50"
                   >
                     ⋯
                   </button>
@@ -210,9 +214,7 @@ function ManagedMemberList() {
       {/* Member Action Modal */}
       <BottomModal isOpen={isActionOpen} onClose={closeAction}>
         <div className="flex flex-col gap-2 p-5">
-          <div className="text-body2 text-indigo-700 pb-2 font-semibold">
-            {selectedMember?.name} 관리
-          </div>
+          <div className="text-body2 pb-2 font-semibold text-indigo-700">{selectedMember?.name} 관리</div>
           <button
             type="button"
             onClick={handleOpenPositionChange}
@@ -233,7 +235,7 @@ function ManagedMemberList() {
       {/* Transfer President Modal */}
       <BottomModal isOpen={isTransferOpen} onClose={closeTransfer}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 text-indigo-700 font-semibold">회장 위임</div>
+          <div className="text-body2 font-semibold text-indigo-700">회장 위임</div>
           <div className="text-cap1 text-indigo-400">새 회장을 선택해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {nonPresidentMembers.map((member) => {
@@ -272,7 +274,7 @@ function ManagedMemberList() {
       {/* Change Vice President Modal */}
       <BottomModal isOpen={isVPOpen} onClose={closeVP}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 text-indigo-700 font-semibold">부회장 변경</div>
+          <div className="text-body2 font-semibold text-indigo-700">부회장 변경</div>
           <div className="text-cap1 text-indigo-400">새 부회장을 선택하거나 해제해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             <button
@@ -321,9 +323,7 @@ function ManagedMemberList() {
       {/* Change Position Modal */}
       <BottomModal isOpen={isPositionOpen} onClose={closePosition}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 text-indigo-700 font-semibold">
-            {selectedMember?.name} 직책 변경
-          </div>
+          <div className="text-body2 font-semibold text-indigo-700">{selectedMember?.name} 직책 변경</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {(['MANAGER', 'MEMBER'] as const).map((position) => {
               const isSelected = selectedPosition === position;
@@ -358,10 +358,8 @@ function ManagedMemberList() {
       {/* Remove Member Confirm Modal */}
       <BottomModal isOpen={isRemoveOpen} onClose={closeRemove}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 text-indigo-700 font-semibold">부원 추방</div>
-          <div className="text-body3 text-indigo-400">
-            정말 {selectedMember?.name}님을 추방하시겠어요?
-          </div>
+          <div className="text-body2 font-semibold text-indigo-700">부원 추방</div>
+          <div className="text-body3 text-indigo-400">정말 {selectedMember?.name}님을 추방하시겠어요?</div>
           <div className="flex gap-2">
             <button
               type="button"
@@ -385,10 +383,8 @@ function ManagedMemberList() {
       {/* Add Member Modal */}
       <BottomModal isOpen={isAddOpen} onClose={closeAdd}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 text-indigo-700 font-semibold">부원 추가</div>
-          <div className="text-cap1 text-indigo-400">
-            서비스에 가입하지 않은 학생을 사전 등록합니다.
-          </div>
+          <div className="text-body2 font-semibold text-indigo-700">부원 추가</div>
+          <div className="text-cap1 text-indigo-400">서비스에 가입하지 않은 학생을 사전 등록합니다.</div>
           <div className="flex flex-col gap-2">
             <label className="text-cap1 text-indigo-400">학번</label>
             <input
@@ -419,6 +415,8 @@ function ManagedMemberList() {
           </button>
         </div>
       </BottomModal>
+
+      <Toast toast={toast} onClose={hideToast} />
     </div>
   );
 }
