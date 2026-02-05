@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import DateBox from './components/DateBox';
@@ -14,18 +15,34 @@ type Schedule = {
   scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL' | 'DORM';
 };
 
-const toDateOnly = (value: string) => {
+const toDateKey = (date: Date) => `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
+const parseDate = (value: string) => {
   const [d] = value.split(' ');
   const [y, m, day] = d.split('.').map(Number);
   return new Date(y, m - 1, day);
 };
 
-const isDateInRange = (date: Date, startedAt: string, endedAt: string) => {
-  const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  const start = toDateOnly(startedAt);
-  const end = toDateOnly(endedAt);
-  return start <= target && target <= end;
-};
+function buildScheduleMap(schedules: Schedule[]): Map<string, Schedule[]> {
+  const map = new Map<string, Schedule[]>();
+
+  for (const schedule of schedules) {
+    const start = parseDate(schedule.startedAt);
+    const end = parseDate(schedule.endedAt);
+
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = toDateKey(d);
+      const existing = map.get(key);
+      if (existing) {
+        existing.push(schedule);
+      } else {
+        map.set(key, [schedule]);
+      }
+    }
+  }
+
+  return map;
+}
 
 function Schedule() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -35,11 +52,13 @@ function Schedule() {
   const day = Number(searchParams.get('day') || new Date().getDate());
 
   const { data } = useScheduleList({ year, month });
-  const schedules: Schedule[] = data?.schedules ?? [];
 
   const { isCurrentMonth, isSelectedDay, isSunday, getMonthDateList } = dateUtils(year, month, day);
 
   const dateList = getMonthDateList();
+
+  // 스케줄을 날짜별로 미리 인덱싱 (O(n*m) -> O(1) 조회)
+  const scheduleMap = useMemo(() => buildScheduleMap(data?.schedules ?? []), [data?.schedules]);
 
   const handleDateClick = (date: Date) => {
     setSearchParams(
@@ -62,8 +81,8 @@ function Schedule() {
     );
   };
 
-  const schedulesByDate = (date: Date): Schedule[] => {
-    return schedules.filter((s) => isDateInRange(date, s.startedAt, s.endedAt));
+  const getSchedulesForDate = (date: Date): Schedule[] => {
+    return scheduleMap.get(toDateKey(date)) ?? [];
   };
 
   return (
@@ -88,7 +107,7 @@ function Schedule() {
               isToday={isSelectedDay(date)}
               isSunday={isSunday(date)}
               onClick={handleDateClick}
-              schedules={schedulesByDate(date)}
+              schedules={getSchedulesForDate(date)}
             />
           ))}
         </ul>
