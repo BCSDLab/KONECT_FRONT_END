@@ -33,7 +33,7 @@ function MyPage() {
       <UserInfoCard />
       <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
         {menuItems
-          .filter(({ to }) => to !== '/mypage/manager' || myInfo.isClubManager)
+          .filter(({ to }) => to !== 'manager' || myInfo.isClubManager)
           .map(({ to, icon: Icon, label }) => (
             <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
               <div className="flex items-center justify-between px-3 py-2">

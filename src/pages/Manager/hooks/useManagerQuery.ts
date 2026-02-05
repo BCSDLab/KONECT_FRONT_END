@@ -1,22 +1,43 @@
 import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
+  getBanks,
+  getClubFee,
   getClubQuestions,
   getClubRecruitment,
+  getManagedClub,
   getManagedClubApplicationDetail,
   getManagedClubApplications,
   getManagedClubs,
   postClubApplicationApprove,
   postClubApplicationReject,
-  postClubRecruitment,
+  putClubFee,
+  putClubInfo,
   putClubQuestions,
   putClubRecruitment,
+  getClubMembers,
+  postTransferPresident,
+  postAddPreMember,
+  patchVicePresident,
+  patchMemberPosition,
+  deleteMember,
 } from '@/apis/club';
-import type { ClubQuestionsRequest, ClubRecruitmentRequest } from '@/apis/club/entity';
+import type {
+  AddPreMemberRequest,
+  ChangeMemberPositionRequest,
+  ChangeVicePresidentRequest,
+  ClubFeeRequest,
+  ClubInfoRequest,
+  ClubQuestionsRequest,
+  ClubRecruitmentRequest,
+  TransferPresidentRequest,
+} from '@/apis/club/entity';
+import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
 const managerQueryKeys = {
   all: ['manager'],
   managedClubs: () => [...managerQueryKeys.all, 'managedClubs'],
+  managedClub: (clubId: number) => [...managerQueryKeys.all, 'managedClub', clubId],
   managedClubApplications: (clubId: number) => [...managerQueryKeys.all, 'managedClubApplications', clubId],
   managedClubApplicationDetail: (clubId: number, applicationId: number) => [
     ...managerQueryKeys.all,
@@ -26,6 +47,10 @@ const managerQueryKeys = {
   ],
   managedClubRecruitment: (clubId: number) => [...managerQueryKeys.all, 'managedClubRecruitment', clubId],
   managedClubQuestions: (clubId: number) => [...managerQueryKeys.all, 'managedClubQuestions', clubId],
+  managedClubInfo: (clubId: number) => [...managerQueryKeys.all, 'managedClubInfo', clubId],
+  banks: () => [...managerQueryKeys.all, 'banks'],
+  managedClubFee: (clubId: number) => [...managerQueryKeys.all, 'managedClubFee', clubId],
+  managedMembers: (clubId: number) => [...managerQueryKeys.all, 'managedMembers', clubId],
 };
 
 export const useManagerQuery = () => {
@@ -35,6 +60,15 @@ export const useManagerQuery = () => {
   });
 
   return { managedClubList };
+};
+
+export const useManagedClub = (clubId: number) => {
+  const { data: managedClub } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedClub(clubId),
+    queryFn: () => getManagedClub(clubId),
+  });
+
+  return { managedClub };
 };
 
 export const useManagedClubApplications = (clubId: number) => {
@@ -63,14 +97,20 @@ export const useManagedClubRecruitmentQuery = (clubId: number) => {
   });
 };
 
-export const useManagedClubRecruitment = (clubId: number, hasExisting: boolean) => {
+interface MutationOptions {
+  onSuccess?: () => void;
+}
+
+export const useManagedClubRecruitment = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
 
   return useMutation({
     mutationKey: managerQueryKeys.managedClubRecruitment(clubId),
-    mutationFn: (recruitmentData: ClubRecruitmentRequest) =>
-      hasExisting ? putClubRecruitment(clubId, recruitmentData) : postClubRecruitment(clubId, recruitmentData),
-    onSuccess: () => navigate(-1),
+    mutationFn: (recruitmentData: ClubRecruitmentRequest) => putClubRecruitment(clubId, recruitmentData),
+    onSuccess: () => {
+      options.onSuccess?.();
+      navigate(-1);
+    },
   });
 };
 
@@ -83,7 +123,7 @@ export const useManagedClubQuestions = (clubId: number) => {
   return { managedClubQuestions };
 };
 
-export const useManagedClubQuestionsMutation = (clubId: number) => {
+export const useManagedClubQuestionsMutation = (clubId: number, options: MutationOptions = {}) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -92,12 +132,13 @@ export const useManagedClubQuestionsMutation = (clubId: number) => {
     mutationFn: (questionsData: ClubQuestionsRequest) => putClubQuestions(clubId, questionsData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubQuestions(clubId) });
+      options.onSuccess?.();
       navigate(-1);
     },
   });
 };
 
-interface ApplicationMutationOptions {
+interface ApplicationMutationOptions extends MutationOptions {
   navigateBack?: boolean;
 }
 
@@ -110,6 +151,7 @@ export const useApplicationApprove = (clubId: number, options: ApplicationMutati
     mutationFn: (applicationId: number) => postClubApplicationApprove(clubId, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubApplications(clubId) });
+      options.onSuccess?.();
       if (navigateBack) navigate(-1);
     },
   });
@@ -124,7 +166,131 @@ export const useApplicationReject = (clubId: number, options: ApplicationMutatio
     mutationFn: (applicationId: number) => postClubApplicationReject(clubId, applicationId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubApplications(clubId) });
+      options.onSuccess?.();
       if (navigateBack) navigate(-1);
+    },
+  });
+};
+
+export const useManagedClubInfo = (clubId: number, options: MutationOptions = {}) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: managerQueryKeys.managedClubInfo(clubId),
+    mutationFn: (data: ClubInfoRequest) => putClubInfo(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      options.onSuccess?.();
+      navigate(-1);
+    },
+  });
+};
+
+export const useGetBanks = () => {
+  const { data: banks } = useSuspenseQuery({
+    queryKey: managerQueryKeys.banks(),
+    queryFn: getBanks,
+  });
+
+  return { banks };
+};
+
+export const useManagedClubFee = (clubId: number) => {
+  const { data: managedClubFee } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedClubFee(clubId),
+    queryFn: () => getClubFee(clubId),
+  });
+
+  return { managedClubFee };
+};
+
+export const useManagedClubFeeMutation = (clubId: number, options: MutationOptions = {}) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: managerQueryKeys.managedClubFee(clubId),
+    mutationFn: (data: ClubFeeRequest) => putClubFee(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClubFee(clubId) });
+      options.onSuccess?.();
+      navigate(-1);
+    },
+  });
+};
+
+//========================== Member Management Hooks =========================//
+
+export const useManagedMembers = (clubId: number) => {
+  const { data: managedMemberList } = useSuspenseQuery({
+    queryKey: managerQueryKeys.managedMembers(clubId),
+    queryFn: () => getClubMembers(clubId),
+  });
+
+  return { managedMemberList };
+};
+
+export const useTransferPresident = (clubId: number, options: MutationOptions = {}) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: TransferPresidentRequest) => postTransferPresident(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedClub(clubId) });
+      options.onSuccess?.();
+      navigate(-1);
+    },
+  });
+};
+
+export const useChangeVicePresident = (clubId: number, options: MutationOptions = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: ChangeVicePresidentRequest) => patchVicePresident(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
+    },
+  });
+};
+
+export const useChangeMemberPosition = (clubId: number, options: MutationOptions = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ userId, data }: { userId: number; data: ChangeMemberPositionRequest }) =>
+      patchMemberPosition(clubId, userId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
+    },
+  });
+};
+
+export const useRemoveMember = (clubId: number, options: MutationOptions = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (userId: number) => deleteMember(clubId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
+    },
+  });
+};
+
+export const useAddPreMember = (clubId: number, options: MutationOptions = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: AddPreMemberRequest) => postAddPreMember(clubId, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      options.onSuccess?.();
     },
   });
 };
