@@ -13,6 +13,7 @@ function ManagedAccount() {
 
   const [isFeeEnabled, setIsFeeEnabled] = useState(true);
   const [amount, setAmount] = useState(managedClubFee.amount?.toString() || '');
+  const [selectedBankId, setSelectedBankId] = useState<number | null>(managedClubFee.bankId ?? null);
   const [selectedBank, setSelectedBank] = useState(managedClubFee.bank || '');
   const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder || '');
   const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber || '');
@@ -22,6 +23,7 @@ function ManagedAccount() {
   const handleSubmit = () => {
     const payload: ClubFeeRequest = isFeeEnabled
       ? {
+          bankId: selectedBankId,
           amount: Number(amount) || 0,
           bank: selectedBank,
           accountNumber,
@@ -29,6 +31,7 @@ function ManagedAccount() {
           deadLine,
         }
       : {
+          bankId: null,
           amount: 0,
           bank: '',
           accountNumber: '',
@@ -166,6 +169,7 @@ function ManagedAccount() {
                 key={bank.id}
                 type="button"
                 onClick={() => {
+                  setSelectedBankId(bank.id);
                   setSelectedBank(bank.name);
                   setIsBankModalOpen(false);
                 }}

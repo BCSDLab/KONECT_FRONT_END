@@ -90,6 +90,7 @@ export interface ClubApplyRequest {
 }
 
 export interface ClubApplyResponse {
+  bankId?: number;
   amount?: number;
   bank?: string;
   accountNumber?: string;
@@ -207,6 +208,7 @@ export interface Bank {
 }
 
 export interface ClubFeeRequest {
+  bankId: number | null;
   amount: number;
   bank: string;
   accountNumber: string;

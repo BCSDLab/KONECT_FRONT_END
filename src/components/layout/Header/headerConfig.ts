@@ -19,7 +19,7 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   },
   {
     type: 'normal',
-    match: (pathname) => pathname === '/',
+    match: (pathname) => pathname === '/' || /^\/clubs\/\d+\/(applications|fee|complete)$/.test(pathname),
   },
   {
     type: 'full',
