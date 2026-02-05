@@ -1,17 +1,14 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { useState, type FormEvent } from 'react';
 import { useParams } from 'react-router-dom';
+import BottomModal from '@/components/common/BottomModal';
+import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClubApply from './hooks/useClubApply';
 
 function ApplicationPage() {
   const { clubId } = useParams();
-  const { clubQuestions, applyToClub, applyDirectly, hasQuestions } = useClubApply(Number(clubId));
+  const { clubQuestions, applyToClub } = useClubApply(Number(clubId));
   const [answers, setAnswers] = useState<Record<number, string>>({});
-
-  useEffect(() => {
-    if (!hasQuestions) {
-      applyDirectly();
-    }
-  }, [hasQuestions, applyDirectly]);
+  const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
 
   const handleChange = (questionId: number, value: string, target: HTMLTextAreaElement) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -19,14 +16,16 @@ function ApplicationPage() {
     target.style.height = `${target.scrollHeight}px`;
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    openConfirm();
+  };
 
+  const handleConfirm = async () => {
     const formattedAnswers = Object.entries(answers).map(([questionId, answer]) => ({
       questionId: Number(questionId),
       answer,
     }));
-
     await applyToClub({ answers: formattedAnswers });
   };
 
@@ -57,6 +56,27 @@ function ApplicationPage() {
           제출하기
         </button>
       </form>
+      <BottomModal isOpen={isConfirmOpen} onClose={closeConfirm}>
+        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">지원서를 제출하시겠어요?</div>
+          <div>
+            <button
+              type="button"
+              onClick={handleConfirm}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+            >
+              제출하기
+            </button>
+            <button
+              type="button"
+              onClick={closeConfirm}
+              className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400"
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      </BottomModal>
     </div>
   );
 }

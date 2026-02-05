@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
+import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
+import useBooleanState from '@/utils/hooks/useBooleanState';
+import useClubApply from '../../Application/hooks/useClubApply';
 import useGetClubRecruitment from '../hooks/useGetClubRecruitment';
 
 interface ClubRecruitProps {
@@ -8,6 +11,8 @@ interface ClubRecruitProps {
 
 function ClubRecruitment({ clubId }: ClubRecruitProps) {
   const { data: clubRecruitment } = useGetClubRecruitment(clubId);
+  const { hasQuestions, applyDirectly } = useClubApply(clubId);
+  const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
   const isRecruitmentOpen = clubRecruitment.status === 'ONGOING';
   const canApply = isRecruitmentOpen && !clubRecruitment.isApplied;
 
@@ -30,12 +35,22 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
           </div>
         </div>
         {canApply ? (
-          <Link
-            to="applications"
-            className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
-          >
-            지원서 작성하기
-          </Link>
+          hasQuestions ? (
+            <Link
+              to="applications"
+              className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
+            >
+              지원하기
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={openConfirm}
+              className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
+            >
+              지원하기
+            </button>
+          )
         ) : (
           <span
             className="w-full cursor-not-allowed rounded-sm bg-gray-300 py-3 text-center text-xs leading-3 font-medium text-gray-500"
@@ -58,6 +73,27 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
           </div>
         )}
       </Card>
+      <BottomModal isOpen={isConfirmOpen} onClose={closeConfirm}>
+        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">동아리에 지원하시겠어요?</div>
+          <div>
+            <button
+              type="button"
+              onClick={() => applyDirectly()}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+            >
+              지원하기
+            </button>
+            <button
+              type="button"
+              onClick={closeConfirm}
+              className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400"
+            >
+              취소
+            </button>
+          </div>
+        </div>
+      </BottomModal>
     </div>
   );
 }
