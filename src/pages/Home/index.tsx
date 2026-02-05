@@ -42,8 +42,71 @@ function scheduleDateToPath(startedAt: string) {
   return `/schedule?year=${year}&month=${month}&day=${day}`;
 }
 
-function SectionSkeleton() {
-  return <div className="h-20 animate-pulse rounded-lg bg-indigo-50" />;
+function ClubCardSkeleton() {
+  return (
+    <div className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3">
+      <div className="h-13 w-13 shrink-0 animate-pulse rounded-sm bg-indigo-50" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between">
+          <div className="h-4 w-24 animate-pulse rounded bg-indigo-50" />
+          <div className="h-6 w-20 animate-pulse rounded-full bg-indigo-50" />
+        </div>
+        <div className="mt-2 h-3 w-32 animate-pulse rounded bg-indigo-50" />
+      </div>
+    </div>
+  );
+}
+
+function MyClubsSkeleton() {
+  return (
+    <>
+      <div className="h-5 w-20 animate-pulse rounded bg-indigo-50" />
+      <div className="flex flex-col gap-2">
+        <ClubCardSkeleton />
+        <ClubCardSkeleton />
+      </div>
+    </>
+  );
+}
+
+function ScheduleCardSkeleton() {
+  return (
+    <div className="border-indigo-5 mt-2 flex w-full items-start gap-3 rounded-lg border bg-white p-3">
+      <div className="h-13 w-13 shrink-0 animate-pulse rounded-sm bg-indigo-50" />
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="h-4 w-32 animate-pulse rounded bg-indigo-50" />
+        <div className="h-3 w-48 animate-pulse rounded bg-indigo-50" />
+      </div>
+    </div>
+  );
+}
+
+function ScheduleSkeleton() {
+  return (
+    <>
+      <ScheduleCardSkeleton />
+      <ScheduleCardSkeleton />
+    </>
+  );
+}
+
+function NoticeCardSkeleton() {
+  return (
+    <div className="bg-indigo-0 border-indigo-5 rounded-lg border-b px-3 py-3">
+      <div className="h-4 w-48 animate-pulse rounded bg-indigo-50" />
+      <div className="mt-2 h-3 w-24 animate-pulse rounded bg-indigo-50" />
+    </div>
+  );
+}
+
+function NoticeSkeleton() {
+  return (
+    <div className="mt-2 flex flex-col gap-2">
+      <NoticeCardSkeleton />
+      <NoticeCardSkeleton />
+      <NoticeCardSkeleton />
+    </div>
+  );
 }
 
 function MyClubsSection() {
@@ -145,7 +208,7 @@ function Home() {
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        <Suspense fallback={<SectionSkeleton />}>
+        <Suspense fallback={<MyClubsSkeleton />}>
           <MyClubsSection />
         </Suspense>
       </div>
@@ -157,7 +220,7 @@ function Home() {
             전체보기
           </Link>
         </div>
-        <Suspense fallback={<SectionSkeleton />}>
+        <Suspense fallback={<ScheduleSkeleton />}>
           <ScheduleSection />
         </Suspense>
       </div>
@@ -169,7 +232,7 @@ function Home() {
             더보기
           </Link>
         </div>
-        <Suspense fallback={<SectionSkeleton />}>
+        <Suspense fallback={<NoticeSkeleton />}>
           <CouncilNoticeSection />
         </Suspense>
       </div>
