@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import BookOpenIcon from '@/assets/svg/book-open.svg';
 import CalendarDaysIcon from '@/assets/svg/calendar-days.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import ClipboardListIcon from '@/assets/svg/clipboard-list.svg';
@@ -9,11 +8,10 @@ import UserIcon from '@/assets/svg/user.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 
 const menuItems = [
-  { to: 'profile', icon: UserIcon, label: '동아리 프로필 관리' },
-  { to: '', icon: BookOpenIcon, label: '동아리 소개 관리' },
+  { to: 'info', icon: UserIcon, label: '동아리 정보 관리' },
   { to: 'recruitment', icon: ClipboardListIcon, label: '모집 공고 및 지원서 관리' },
   { to: 'applications', icon: UserSquareIcon, label: '지원자 관리' },
-  { to: 'members', icon: PeopleGroupIcon, label: '부원 명부 관리' },
+  { to: 'members', icon: PeopleGroupIcon, label: '부원 관리' },
   { to: '', icon: CalendarDaysIcon, label: '일정 관리' },
 ];
 

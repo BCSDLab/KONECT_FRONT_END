@@ -30,10 +30,8 @@ import ManagedApplicationList from './pages/Manager/ManagedApplicationList';
 import ManagedApplicationDetail from './pages/Manager/ManagedApplictaionDetail';
 import ManagedClubDetail from './pages/Manager/ManagedClubDetail';
 import ManagedClubList from './pages/Manager/ManagedClubList';
-import ManagedClubProfile from './pages/Manager/ManagedClubProfile';
-import ManagedMember from './pages/Manager/ManagedMember';
+import ManagedClubInfo from './pages/Manager/ManagedClubProfile';
 import ManagedMemberList from './pages/Manager/ManagedMemberList';
-import ManagedPositionList from './pages/Manager/ManagedPositionList';
 import ManagedRecruitment from './pages/Manager/ManagedRecruitment';
 import ManagedRecruitmentForm from './pages/Manager/ManagedRecruitmentForm';
 import ManagedRecruitmentWrite from './pages/Manager/ManagedRecruitmentWrite';
@@ -78,7 +76,7 @@ function App() {
                 <Route path="manager">
                   <Route index element={<ManagedClubList />} />
                   <Route path=":clubId" element={<ManagedClubDetail />} />
-                  <Route path=":clubId/members" element={<ManagedMember />} />
+                  <Route path=":clubId/members" element={<ManagedMemberList />} />
                   <Route path=":clubId/recruitment" element={<ManagedRecruitment />} />
                   <Route path=":clubId/applications" element={<ManagedApplicationList />} />
                   <Route path=":clubId/applications/:applicationId" element={<ManagedApplicationDetail />} />
@@ -96,9 +94,7 @@ function App() {
             </Route>
             <Route element={<Layout />}>
               <Route path="schedule" element={<Schedule />} />
-              <Route path="mypage/manager/:clubId/members/list" element={<ManagedMemberList />} />
-              <Route path="mypage/manager/:clubId/members/positions" element={<ManagedPositionList />} />
-              <Route path="mypage/manager/:clubId/profile" element={<ManagedClubProfile />} />
+              <Route path="mypage/manager/:clubId/info" element={<ManagedClubInfo />} />
               <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
               <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
               <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />

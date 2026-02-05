@@ -14,17 +14,19 @@ import {
   type ClubApplicationsResponse,
   type ClubApplicationDetailResponse,
   type ClubRecruitmentRequest,
-  type ClubProfileRequest,
+  type ClubInfoRequest,
   type ManagedClubResponse,
   type Bank,
   type ClubFeeRequest,
-  type PositionsResponse,
   type TransferPresidentRequest,
-  type AddMemberRequest,
+  type TransferPresidentResponse,
   type ChangeVicePresidentRequest,
+  type ChangeVicePresidentResponse,
   type ChangeMemberPositionRequest,
-  type CreatePositionRequest,
-  type RenamePositionRequest,
+  type ChangeMemberPositionResponse,
+  type AddPreMemberRequest,
+  type AddPreMemberResponse,
+  type PositionType,
 } from './entity';
 
 export type { Bank, ClubFeeRequest };
@@ -44,8 +46,12 @@ export const getClubDetail = async (clubId: number) => {
   return response;
 };
 
-export const getClubMembers = async (clubId: number) => {
-  const response = await apiClient.get<ClubMembersResponse>(`clubs/${clubId}/members`, { requiresAuth: true });
+export const getClubMembers = async (clubId: number, position?: PositionType) => {
+  const params = position ? { position } : undefined;
+  const response = await apiClient.get<ClubMembersResponse, { position?: PositionType } | undefined>(
+    `clubs/${clubId}/members`,
+    { params, requiresAuth: true },
+  );
   return response;
 };
 
@@ -131,8 +137,8 @@ export const getManagedClub = async (clubId: number) => {
   return response;
 };
 
-export const putClubProfile = async (clubId: number, data: ClubProfileRequest) => {
-  const response = await apiClient.put<void>(`clubs/${clubId}/profile`, {
+export const putClubInfo = async (clubId: number, data: ClubInfoRequest) => {
+  const response = await apiClient.put<void>(`clubs/${clubId}/info`, {
     body: data,
     requiresAuth: true,
   });
@@ -152,28 +158,10 @@ export const putClubFee = async (clubId: number, data: ClubFeeRequest) => {
   return response;
 };
 
-//========================== Member & Position APIs =========================//
-
-export const getClubPositions = async (clubId: number) => {
-  const response = await apiClient.get<PositionsResponse>(`clubs/${clubId}/positions`, { requiresAuth: true });
-  return response;
-};
-
-export const getManagedClubMembers = async (clubId: number) => {
-  const response = await apiClient.get<ClubMembersResponse>(`clubs/${clubId}/members`, { requiresAuth: true });
-  return response;
-};
+//========================== Member Management APIs =========================//
 
 export const postTransferPresident = async (clubId: number, data: TransferPresidentRequest) => {
-  const response = await apiClient.post<void>(`clubs/${clubId}/president/transfer`, {
-    body: data,
-    requiresAuth: true,
-  });
-  return response;
-};
-
-export const postAddMember = async (clubId: number, data: AddMemberRequest) => {
-  const response = await apiClient.post<void>(`clubs/${clubId}/members`, {
+  const response = await apiClient.post<TransferPresidentResponse>(`clubs/${clubId}/president/transfer`, {
     body: data,
     requiresAuth: true,
   });
@@ -181,41 +169,28 @@ export const postAddMember = async (clubId: number, data: AddMemberRequest) => {
 };
 
 export const patchVicePresident = async (clubId: number, data: ChangeVicePresidentRequest) => {
-  const response = await apiClient.patch<void>(`clubs/${clubId}/vice-president`, {
+  const response = await apiClient.patch<ChangeVicePresidentResponse>(`clubs/${clubId}/vice-president`, {
     body: data,
     requiresAuth: true,
   });
   return response;
 };
 
-export const patchMemberPosition = async (clubId: number, memberId: number, data: ChangeMemberPositionRequest) => {
-  const response = await apiClient.patch<void>(`clubs/${clubId}/members/${memberId}/position`, {
+export const patchMemberPosition = async (clubId: number, userId: number, data: ChangeMemberPositionRequest) => {
+  const response = await apiClient.patch<ChangeMemberPositionResponse>(`clubs/${clubId}/members/${userId}/position`, {
     body: data,
     requiresAuth: true,
   });
   return response;
 };
 
-export const deleteMember = async (clubId: number, memberId: number) => {
-  const response = await apiClient.delete<void>(`clubs/${clubId}/members/${memberId}`, { requiresAuth: true });
+export const deleteMember = async (clubId: number, userId: number) => {
+  const response = await apiClient.delete<void>(`clubs/${clubId}/members/${userId}`, { requiresAuth: true });
   return response;
 };
 
-export const postCreatePosition = async (clubId: number, data: CreatePositionRequest) => {
-  const response = await apiClient.post<void>(`clubs/${clubId}/positions`, {
-    body: data,
-    requiresAuth: true,
-  });
-  return response;
-};
-
-export const deletePosition = async (clubId: number, positionId: number) => {
-  const response = await apiClient.delete<void>(`clubs/${clubId}/positions/${positionId}`, { requiresAuth: true });
-  return response;
-};
-
-export const patchRenamePosition = async (clubId: number, positionId: number, data: RenamePositionRequest) => {
-  const response = await apiClient.patch<void>(`clubs/${clubId}/positions/${positionId}`, {
+export const postAddPreMember = async (clubId: number, data: AddPreMemberRequest) => {
+  const response = await apiClient.post<AddPreMemberResponse>(`clubs/${clubId}/pre-members`, {
     body: data,
     requiresAuth: true,
   });

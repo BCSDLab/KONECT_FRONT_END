@@ -56,11 +56,14 @@ interface Recruitment {
   endDate?: string;
 }
 
+export type PositionType = 'PRESIDENT' | 'VICE_PRESIDENT' | 'MANAGER' | 'MEMBER';
+
 export interface ClubMember {
+  userId: number;
   name: string;
   imageUrl: string;
   studentNumber: string;
-  position: '회장' | '운영진' | '일반 회원';
+  position: PositionType;
 }
 
 export interface ClubMembersResponse {
@@ -190,9 +193,11 @@ export interface ManagedClubResponse {
   position: '회장' | '부회장' | '운영진';
 }
 
-export interface ClubProfileRequest {
-  introduce: string;
+export interface ClubInfoRequest {
+  description: string;
   imageUrl: string;
+  location: string;
+  introduce: string;
 }
 
 export interface Bank {
@@ -209,58 +214,49 @@ export interface ClubFeeRequest {
   deadLine: string;
 }
 
-//========================== Member & Position Entities =========================//
-
-export type PositionGroup = 'PRESIDENT' | 'VICE_PRESIDENT' | 'MANAGER' | 'MEMBER';
-
-export interface Position {
-  positionId: number;
-  name: string;
-  positionGroup: PositionGroup;
-  priority: number;
-  memberCount: number;
-}
-
-export interface PositionsResponse {
-  positions: Position[];
-}
-
-export interface ManagedMember {
-  memberId: number;
-  userId: number;
-  name: string;
-  imageUrl: string;
-  studentNumber: string;
-  positionId: number;
-  positionName: string;
-}
-
-export interface ManagedMembersResponse {
-  clubMembers: ManagedMember[];
-}
+//========================== Member Management Entities =========================//
 
 export interface TransferPresidentRequest {
   newPresidentUserId: number;
 }
 
-export interface AddMemberRequest {
-  userId: number;
-  positionId: number;
+export interface TransferPresidentResponse {
+  changedMembers: ChangedMember[];
 }
 
 export interface ChangeVicePresidentRequest {
   vicePresidentUserId: number | null;
 }
 
+export interface ChangeVicePresidentResponse {
+  changedMembers: ChangedMember[];
+}
+
 export interface ChangeMemberPositionRequest {
-  positionId: number;
+  position: 'MANAGER' | 'MEMBER';
 }
 
-export interface CreatePositionRequest {
+export interface ChangeMemberPositionResponse {
+  clubId: number;
+  userId: number;
+  userName: string;
+  position: PositionType;
+}
+
+interface ChangedMember {
+  clubId: number;
+  userId: number;
+  userName: string;
+  position: PositionType;
+}
+
+export interface AddPreMemberRequest {
+  studentNumber: string;
   name: string;
-  positionGroup: 'MANAGER' | 'MEMBER';
 }
 
-export interface RenamePositionRequest {
+export interface AddPreMemberResponse {
+  clubId: number;
+  studentNumber: string;
   name: string;
 }

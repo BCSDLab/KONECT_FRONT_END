@@ -3,31 +3,36 @@ import { useParams } from 'react-router-dom';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
-import Dropdown from '@/components/common/Dropdown';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import type { ClubMember } from '@/apis/club/entity';
+import type { ClubMember, PositionType } from '@/apis/club/entity';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import {
-  useAddMember,
+  useAddPreMember,
   useChangeMemberPosition,
   useChangeVicePresident,
-  useClubPositions,
   useManagedMembers,
   useRemoveMember,
   useTransferPresident,
 } from '../hooks/useManagerQuery';
 
-const POSITION_PRIORITY: Record<string, number> = {
-  '회장': 0,
-  '부회장': 1,
-  '운영진': 2,
-  '일반 회원': 3,
+const POSITION_PRIORITY: Record<PositionType, number> = {
+  PRESIDENT: 0,
+  VICE_PRESIDENT: 1,
+  MANAGER: 2,
+  MEMBER: 3,
 };
 
-const PROTECTED_POSITIONS = new Set(['회장', '부회장']);
+const POSITION_LABELS: Record<PositionType, string> = {
+  PRESIDENT: '회장',
+  VICE_PRESIDENT: '부회장',
+  MANAGER: '운영진',
+  MEMBER: '일반 회원',
+};
+
+const PROTECTED_POSITIONS = new Set<PositionType>(['PRESIDENT', 'VICE_PRESIDENT']);
 
 function groupMembers(members: ClubMember[]) {
-  const grouped = new Map<string, ClubMember[]>();
+  const grouped = new Map<PositionType, ClubMember[]>();
   for (const member of members) {
     const pos = member.position;
     if (!grouped.has(pos)) {
@@ -36,7 +41,7 @@ function groupMembers(members: ClubMember[]) {
     grouped.get(pos)!.push(member);
   }
   const sorted = [...grouped.entries()].sort(
-    ([a], [b]) => (POSITION_PRIORITY[a] ?? 99) - (POSITION_PRIORITY[b] ?? 99),
+    ([a], [b]) => POSITION_PRIORITY[a] - POSITION_PRIORITY[b],
   );
   return sorted;
 }
@@ -46,13 +51,12 @@ function ManagedMemberList() {
   const clubId = Number(params.clubId);
 
   const { managedMemberList } = useManagedMembers(clubId);
-  const { clubPositions } = useClubPositions(clubId);
 
   const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId);
   const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId);
   const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId);
   const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId);
-  const { mutate: addMember, isPending: isAdding } = useAddMember(clubId);
+  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId);
 
   const isPending = isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding;
 
@@ -65,21 +69,16 @@ function ManagedMemberList() {
   const { value: isRemoveOpen, setTrue: openRemove, setFalse: closeRemove } = useBooleanState();
   const { value: isAddOpen, setTrue: openAdd, setFalse: closeAdd } = useBooleanState();
 
-  const [transferTarget, setTransferTarget] = useState<string | null>(null);
-  const [vpTarget, setVPTarget] = useState<string | null>(null);
-  const [selectedPositionId, setSelectedPositionId] = useState<number | null>(null);
+  const [transferTarget, setTransferTarget] = useState<number | null>(null);
+  const [vpTarget, setVPTarget] = useState<number | null>(null);
+  const [selectedPosition, setSelectedPosition] = useState<'MANAGER' | 'MEMBER' | null>(null);
   const [newStudentNumber, setNewStudentNumber] = useState('');
-  const [newPositionId, setNewPositionId] = useState<number | null>(null);
+  const [newMemberName, setNewMemberName] = useState('');
 
   const members = managedMemberList.clubMembers;
-  const positions = clubPositions.positions;
 
   const groupedEntries = useMemo(() => groupMembers(members), [members]);
   const total = members.length;
-
-  const positionOptions = positions
-    .filter((p) => p.positionGroup === 'MANAGER' || p.positionGroup === 'MEMBER')
-    .map((p) => ({ value: String(p.positionId), label: p.name }));
 
   const nonPresidentMembers = members.filter((m) => !PROTECTED_POSITIONS.has(m.position));
 
@@ -90,7 +89,7 @@ function ManagedMemberList() {
 
   const handleOpenPositionChange = () => {
     closeAction();
-    setSelectedPositionId(null);
+    setSelectedPosition(null);
     openPosition();
   };
 
@@ -101,20 +100,20 @@ function ManagedMemberList() {
 
   const handleTransferPresident = () => {
     if (transferTarget === null) return;
-    transferPresident({ newPresidentUserId: Number(transferTarget) });
+    transferPresident({ newPresidentUserId: transferTarget });
     closeTransfer();
   };
 
   const handleChangeVP = () => {
-    changeVicePresident({ vicePresidentUserId: vpTarget ? Number(vpTarget) : null });
+    changeVicePresident({ vicePresidentUserId: vpTarget });
     closeVP();
   };
 
   const handleChangePosition = () => {
-    if (!selectedMember || selectedPositionId === null) return;
+    if (!selectedMember || selectedPosition === null) return;
     changeMemberPosition({
-      memberId: Number(selectedMember.studentNumber),
-      data: { positionId: selectedPositionId },
+      userId: selectedMember.userId,
+      data: { position: selectedPosition },
     });
     closePosition();
     setSelectedMember(null);
@@ -122,17 +121,17 @@ function ManagedMemberList() {
 
   const handleRemoveMember = () => {
     if (!selectedMember) return;
-    removeMember(Number(selectedMember.studentNumber));
+    removeMember(selectedMember.userId);
     closeRemove();
     setSelectedMember(null);
   };
 
   const handleAddMember = () => {
-    if (!newStudentNumber || newPositionId === null) return;
-    addMember({ userId: Number(newStudentNumber), positionId: newPositionId });
+    if (!newStudentNumber || !newMemberName) return;
+    addPreMember({ studentNumber: newStudentNumber, name: newMemberName });
     closeAdd();
     setNewStudentNumber('');
-    setNewPositionId(null);
+    setNewMemberName('');
   };
 
   return (
@@ -174,10 +173,10 @@ function ManagedMemberList() {
         {groupedEntries.map(([position, groupMembers]) => (
           <div key={position} className="flex flex-col gap-1">
             <div className="text-body2 text-indigo-700 px-1 py-1 font-semibold">
-              {position}
+              {POSITION_LABELS[position]}
             </div>
             {groupMembers.map((member) => (
-              <Card key={member.studentNumber} className="flex-row items-center gap-2">
+              <Card key={member.userId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
                   <img
                     className="h-10 w-10 rounded-full object-cover"
@@ -189,7 +188,7 @@ function ManagedMemberList() {
                       {member.name}{' '}
                       <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
-                    <div className="text-cap1 text-indigo-300">{member.position}</div>
+                    <div className="text-cap1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
                   </div>
                 </div>
                 {!PROTECTED_POSITIONS.has(position) && (
@@ -238,12 +237,12 @@ function ManagedMemberList() {
           <div className="text-cap1 text-indigo-400">새 회장을 선택해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {nonPresidentMembers.map((member) => {
-              const isSelected = transferTarget === member.studentNumber;
+              const isSelected = transferTarget === member.userId;
               return (
                 <button
-                  key={member.studentNumber}
+                  key={member.userId}
                   type="button"
-                  onClick={() => setTransferTarget(member.studentNumber)}
+                  onClick={() => setTransferTarget(member.userId)}
                   className={`flex items-center justify-between rounded-lg p-2 ${
                     isSelected ? 'bg-indigo-5' : 'active:bg-indigo-5'
                   }`}
@@ -287,12 +286,12 @@ function ManagedMemberList() {
               {vpTarget === null && <CheckIcon className="h-4 w-4 text-blue-500" />}
             </button>
             {nonPresidentMembers.map((member) => {
-              const isSelected = vpTarget === member.studentNumber;
+              const isSelected = vpTarget === member.userId;
               return (
                 <button
-                  key={member.studentNumber}
+                  key={member.userId}
                   type="button"
-                  onClick={() => setVPTarget(member.studentNumber)}
+                  onClick={() => setVPTarget(member.userId)}
                   className={`flex items-center justify-between rounded-lg p-2 ${
                     isSelected ? 'bg-indigo-5' : 'active:bg-indigo-5'
                   }`}
@@ -326,31 +325,29 @@ function ManagedMemberList() {
             {selectedMember?.name} 직책 변경
           </div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
-            {positions
-              .filter((p) => p.positionGroup === 'MANAGER' || p.positionGroup === 'MEMBER')
-              .map((position) => {
-                const isSelected = selectedPositionId === position.positionId;
-                return (
-                  <button
-                    key={position.positionId}
-                    type="button"
-                    onClick={() => setSelectedPositionId(position.positionId)}
-                    className={`flex items-center justify-between rounded-lg p-2 ${
-                      isSelected ? 'bg-indigo-5' : 'active:bg-indigo-5'
-                    }`}
-                  >
-                    <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
-                      {position.name}
-                    </div>
-                    {isSelected && <CheckIcon className="h-4 w-4 text-blue-500" />}
-                  </button>
-                );
-              })}
+            {(['MANAGER', 'MEMBER'] as const).map((position) => {
+              const isSelected = selectedPosition === position;
+              return (
+                <button
+                  key={position}
+                  type="button"
+                  onClick={() => setSelectedPosition(position)}
+                  className={`flex items-center justify-between rounded-lg p-2 ${
+                    isSelected ? 'bg-indigo-5' : 'active:bg-indigo-5'
+                  }`}
+                >
+                  <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
+                    {POSITION_LABELS[position]}
+                  </div>
+                  {isSelected && <CheckIcon className="h-4 w-4 text-blue-500" />}
+                </button>
+              );
+            })}
           </div>
           <button
             type="button"
             onClick={handleChangePosition}
-            disabled={selectedPositionId === null || isPending}
+            disabled={selectedPosition === null || isPending}
             className="bg-primary w-full rounded-lg py-3 text-center font-bold text-white disabled:opacity-50"
           >
             {isChangingPosition ? '변경 중...' : '확인'}
@@ -389,6 +386,9 @@ function ManagedMemberList() {
       <BottomModal isOpen={isAddOpen} onClose={closeAdd}>
         <div className="flex flex-col gap-3 p-5">
           <div className="text-body2 text-indigo-700 font-semibold">부원 추가</div>
+          <div className="text-cap1 text-indigo-400">
+            서비스에 가입하지 않은 학생을 사전 등록합니다.
+          </div>
           <div className="flex flex-col gap-2">
             <label className="text-cap1 text-indigo-400">학번</label>
             <input
@@ -400,19 +400,19 @@ function ManagedMemberList() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-cap1 text-indigo-400">직책</label>
-            <div className="flex items-center gap-2">
-              <Dropdown
-                options={positionOptions}
-                value={newPositionId !== null ? String(newPositionId) : ''}
-                onChange={(val) => setNewPositionId(Number(val))}
-              />
-            </div>
+            <label className="text-cap1 text-indigo-400">이름</label>
+            <input
+              type="text"
+              value={newMemberName}
+              onChange={(e) => setNewMemberName(e.target.value)}
+              placeholder="이름을 입력해주세요"
+              className="border-indigo-25 rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
+            />
           </div>
           <button
             type="button"
             onClick={handleAddMember}
-            disabled={!newStudentNumber || newPositionId === null || isPending}
+            disabled={!newStudentNumber || !newMemberName || isPending}
             className="bg-primary w-full rounded-lg py-3 text-center font-bold text-white disabled:opacity-50"
           >
             {isAdding ? '추가 중...' : '추가'}
