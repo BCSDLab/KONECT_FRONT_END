@@ -11,6 +11,13 @@ import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
 
+function getCookie(name: string): string | null {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+}
+
 const SCHEDULE_COLOR = {
   UNIVERSITY: '#AEDCBA',
   CLUB: '#FDE49B',
@@ -46,10 +53,16 @@ function Home() {
   const { data: councilNoticeData } = useCouncilNotice({ limit: 3 });
   useScrollRestore('home', !!appliedClubsData);
 
+  const expoPushToken = getCookie('EXPO_PUSH_TOKEN');
+
   const allNotices = councilNoticeData?.pages.flatMap((page) => page.councilNotices) ?? [];
 
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
+      <div className="rounded-md bg-gray-100 p-3 text-xs break-all">
+        <div className="font-bold">EXPO_PUSH_TOKEN:</div>
+        <div className="mt-1">{expoPushToken || '토큰 없음'}</div>
+      </div>
       <div className="flex flex-col gap-2">
         {appliedClubsData?.appliedClubs.length === 0 && joinedClubsData?.joinedClubs.length === 0 ? (
           <Card>
