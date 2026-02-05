@@ -47,11 +47,10 @@ export const getClubDetail = async (clubId: number) => {
 };
 
 export const getClubMembers = async (clubId: number, position?: PositionType) => {
-  const params = position ? { position } : undefined;
-  const response = await apiClient.get<ClubMembersResponse, { position?: PositionType } | undefined>(
-    `clubs/${clubId}/members`,
-    { params, requiresAuth: true },
-  );
+  const response = await apiClient.get<ClubMembersResponse, { position: PositionType }>(`clubs/${clubId}/members`, {
+    params: position ? { position } : undefined,
+    requiresAuth: true,
+  });
   return response;
 };
 
