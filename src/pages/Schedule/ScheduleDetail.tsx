@@ -51,10 +51,8 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
             <div className="flex flex-col gap-1">
-              <div className="text-[14px] leading-[17px] font-bold">{title}</div>
-              <div className="h-2 text-[13px] leading-4 font-[400] text-indigo-300">
-                {formatScheduleTime({ startedAt, endedAt })}
-              </div>
+              <div className="text-[14px] leading-4 font-bold">{title}</div>
+              <div className="text-[13px] leading-3 text-indigo-300">{formatScheduleTime({ startedAt, endedAt })}</div>
             </div>
           </div>
         ))
