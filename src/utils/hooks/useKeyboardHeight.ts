@@ -22,9 +22,11 @@ function useKeyboardHeight() {
     body.style.height = 'var(--viewport-height)';
     root.style.height = 'var(--viewport-height)';
 
-    visualViewport?.addEventListener('resize', setViewportHeight);
-    visualViewport?.addEventListener('scroll', setViewportHeight);
-    window.addEventListener('resize', setViewportHeight);
+    const options = { passive: true } as const;
+
+    visualViewport?.addEventListener('resize', setViewportHeight, options);
+    visualViewport?.addEventListener('scroll', setViewportHeight, options);
+    window.addEventListener('resize', setViewportHeight, options);
 
     return () => {
       visualViewport?.removeEventListener('resize', setViewportHeight);

@@ -46,13 +46,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     try {
+      // 1. 토큰 갱신 (필수 - 이후 API 호출에 필요)
       const accessToken = await refreshAccessToken();
       set({ accessToken });
 
-      const user = await getMyInfo();
-      set({ user, isAuthenticated: true, isLoading: false });
+      // 2. 사용자 정보와 푸시 토큰 등록을 병렬로 실행
+      const [user] = await Promise.all([getMyInfo(), registerPushTokenIfNeeded()]);
 
-      registerPushTokenIfNeeded();
+      set({ user, isAuthenticated: true, isLoading: false });
     } catch {
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
     }
