@@ -14,7 +14,7 @@ function FinishStep() {
     }
 
     setUser(myInfo);
-    navigate('/home');
+    navigate('/guide');
   };
 
   return (
