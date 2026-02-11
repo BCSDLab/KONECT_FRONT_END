@@ -20,6 +20,7 @@ import ClubList from './pages/Club/ClubList';
 import ClubSearch from './pages/Club/ClubSearch';
 import CouncilDetail from './pages/Council/CouncilDetail';
 import CouncilNotice from './pages/Council/CouncilNotice';
+import GuidePage from './pages/Guide';
 import Home from './pages/Home';
 import LicensePage from './pages/legal/LicensePage';
 import MarketingPolicyPage from './pages/legal/MarketingPolicyPage';
@@ -58,6 +59,8 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          <Route path="/guide" element={<GuidePage />} />
 
           <Route element={<Layout />}>
             <Route path="legal">
