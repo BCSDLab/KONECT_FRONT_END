@@ -59,7 +59,9 @@ function App() {
             </Route>
           </Route>
 
-          <Route path="/signup/finish" element={<FinishStep />} />
+          <Route element={<Layout contentClassName="bg-indigo-0" />}>
+            <Route path="/signup/finish" element={<FinishStep />} />
+          </Route>
           <Route path="/guide" element={<GuidePage />} />
 
           <Route element={<Layout />}>
