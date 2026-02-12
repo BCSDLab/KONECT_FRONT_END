@@ -1,7 +1,3 @@
-import guide1 from '@/assets/image/1번.png';
-import guide2 from '@/assets/image/2번.png';
-import guide3 from '@/assets/image/3번.png';
-
 export interface GuideItem {
   id: number;
   image: string;
@@ -9,7 +5,7 @@ export interface GuideItem {
 }
 
 export const GUIDE_ITEMS = [
-  { id: 1, image: guide1, duration: 3000 },
-  { id: 2, image: guide2, duration: 3000 },
-  { id: 3, image: guide3, duration: 4000 },
+  { id: 1, image: 'https://stage-static.koreatech.in/konect/guide/1%EB%B2%88.png', duration: 3000 },
+  { id: 2, image: 'https://stage-static.koreatech.in/konect/guide/2%EB%B2%88.png', duration: 3000 },
+  { id: 3, image: 'https://stage-static.koreatech.in/konect/guide/3%EB%B2%88.png', duration: 4000 },
 ];
