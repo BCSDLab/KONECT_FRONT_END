@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router-dom';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import DateBox from './components/DateBox';
 import MonthPicker from './components/MonthPicker';
+import ScheduleDetail from './components/ScheduleDetail';
 import { useScheduleList } from './hooks/useGetSchedules';
-import ScheduleDetail from './ScheduleDetail';
+import { useMonthSwipe } from './hooks/useMonthSwipe';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -85,9 +86,19 @@ function Schedule() {
     return scheduleMap.get(toDateKey(date)) ?? [];
   };
 
+  const { handleTouchStart, handleTouchEnd } = useMonthSwipe({
+    year,
+    month,
+    onChange: setDate,
+  });
+
   return (
     <div className="flex h-[calc(100vh-44px)] flex-col bg-white">
-      <main className="flex w-full shrink-0 flex-col gap-6 bg-white">
+      <main
+        className="flex w-full shrink-0 touch-pan-y flex-col gap-6 bg-white"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <header className="flex items-center justify-center">
           <MonthPicker year={year} month={month} setDate={setDate} />
         </header>

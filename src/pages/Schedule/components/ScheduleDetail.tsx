@@ -1,6 +1,6 @@
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
-import { useScheduleList } from './hooks/useGetSchedules';
+import { useScheduleList } from '../hooks/useGetSchedules';
 
 type scheduleDetailProps = {
   year: number;
