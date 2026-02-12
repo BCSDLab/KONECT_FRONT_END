@@ -55,11 +55,11 @@ function App() {
                 <Route path="studentid" element={<StudentIdStep />} />
                 <Route path="name" element={<NameStep />} />
                 <Route path="confirm" element={<ConfirmStep />} />
-                <Route path="finish" element={<FinishStep />} />
               </Route>
             </Route>
           </Route>
 
+          <Route path="/signup/finish" element={<FinishStep />} />
           <Route path="/guide" element={<GuidePage />} />
 
           <Route element={<Layout />}>
