@@ -2,10 +2,10 @@ name: Deploy KONECT Frontend to Server
 
 on:
   push:
-    branches: ['main']
+    branches: ['main', 'develop']
 
 concurrency:
-  group: deploy-main
+  group: deploy-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -32,9 +32,11 @@ jobs:
 
       - name: Create .env file
         run: |
-          cat << 'EOF' > .env
-          VITE_API_PATH=${{ secrets.VITE_API_PATH }}
-          EOF
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" > .env
+          else
+            echo "VITE_API_PATH=${{ secrets.VITE_API_PATH_STAGE }}" > .env
+          fi
 
       - name: Build project
         env:
@@ -50,7 +52,12 @@ jobs:
 
       - name: Deploy dist to server
         run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            DEPLOY_PATH="/opt/konect/prod/client"
+          else
+            DEPLOY_PATH="/opt/konect/stage/client"
+          fi
           rsync -avz --delete-after \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
             ./dist/ \
-            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:/opt/konect/client
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:$DEPLOY_PATH
