@@ -52,7 +52,7 @@ function MyPage() {
               <LayersIcon />
               <div className="text-sm leading-4 font-semibold">버전관리</div>
             </div>
-            <div className="text-[13px] leading-4 text-indigo-200">v1.0.0</div>
+            <div className="text-[13px] leading-4 text-indigo-200">v1.0.3</div>
           </div>
         </div>
         <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={openModal}>
