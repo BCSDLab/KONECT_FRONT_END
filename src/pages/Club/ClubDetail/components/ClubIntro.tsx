@@ -16,7 +16,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
   const { createChatRoom } = useChat();
 
   const handleInquireClick = async () => {
-    const response = await createChatRoom(clubDetail.id);
+    const response = await createChatRoom(clubDetail.presidentUserId);
     navigate(`/chats/${response.chatRoomId}`);
   };
 
