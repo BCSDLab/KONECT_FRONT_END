@@ -1,16 +1,17 @@
 import type { PaginationParams, PaginationResponse } from '../common/pagination';
 
-interface ChatRoom {
-  chatRoomId: number;
-  chatPartnerName: string;
-  chatPartnerProfileImage: string;
-  lastMessage?: string;
-  lastSentTime?: string;
+export interface Room {
+  roomId: number;
+  chatType: 'DIRECT' | 'GROUP';
+  roomName: string;
+  roomImageUrl: string;
+  lastMessage: string | null;
+  lastSentAt: string | null;
   unreadCount: number;
 }
 
 export interface ChatRoomsResponse {
-  chatRooms: ChatRoom[];
+  rooms: Room[];
 }
 
 export interface ChatMessage {
