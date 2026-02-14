@@ -14,9 +14,9 @@ export const getChatRooms = async () => {
   return response;
 };
 
-export const postChatRooms = async (clubId: number) => {
+export const postChatRooms = async (userId: number) => {
   const response = await apiClient.post<CreateChatRoomResponse>('chats/rooms', {
-    body: { clubId },
+    body: { userId },
     requiresAuth: true,
   });
   return response;

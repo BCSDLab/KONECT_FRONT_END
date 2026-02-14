@@ -20,7 +20,7 @@ const useChat = (chatRoomId?: number) => {
 
   const { mutateAsync: createChatRoom } = useMutation({
     mutationKey: ['createChatRoom'],
-    mutationFn: (clubId: number) => postChatRooms(clubId),
+    mutationFn: (userId: number) => postChatRooms(userId),
   });
 
   const {
