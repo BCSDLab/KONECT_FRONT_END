@@ -1,58 +1,59 @@
 import { useState } from 'react';
 import BottomModal from '@/components/common/BottomModal';
 import Toast from '@/components/common/Toast';
+import { useInquiryMutation } from '@/pages/Auth/SignUp/hooks/useInquiry';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useToast } from '@/utils/hooks/useToast';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
 
 const fields = [
-  { label: '학교명', name: 'universityName', disabled: true },
-  { label: '이메일', name: 'email', disabled: true },
-  { label: '이름', name: 'name', disabled: true },
-  { label: '학번', name: 'studentNumber', disabled: false },
+  { label: '학교명', name: 'universityName' },
+  { label: '이메일', name: 'email' },
+  { label: '이름', name: 'name' },
+  { label: '학번', name: 'studentNumber' },
 ] as const;
 
 function Profile() {
   const { toast, showToast, hideToast } = useToast();
-  const { myInfo, modifyMyInfo, error } = useMyInfo({
-    onSuccess: () => showToast('프로필이 수정되었습니다'),
-  });
+  const { myInfo } = useMyInfo({});
   const { mutate: withdraw } = useWithdrawMutation();
+  const { mutate: submitInquiry, isPending: isInquiryPending } = useInquiryMutation();
 
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
+  const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
+  const [inquiryContent, setInquiryContent] = useState('');
 
-  const [form, setForm] = useState(() => ({
-    name: myInfo?.name ?? '',
-    studentNumber: myInfo?.studentNumber ?? '',
-    phoneNumber: myInfo?.phoneNumber ?? '',
-  }));
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = () => {
-    modifyMyInfo(form);
+  const handleInquirySubmit = () => {
+    const trimmedContent = inquiryContent.trim();
+    if (!trimmedContent) return;
+    submitInquiry(
+      { type: 'PROFILE_MODIFY', content: trimmedContent },
+      {
+        onSuccess: () => {
+          closeInquiryModal();
+          setInquiryContent('');
+          showToast('문의가 접수되었습니다', 'success');
+        },
+      }
+    );
   };
 
   return (
     <div className="flex flex-1 flex-col gap-2 bg-white px-5 py-6 pb-10">
-      {fields.map(({ label, name, disabled }) => (
+      {fields.map(({ label, name }) => (
         <div key={name} className="flex flex-col gap-1">
           <label className="text-[15px] leading-6 font-medium text-indigo-300">{label}</label>
           <input
             name={name}
-            value={disabled ? (myInfo?.[name] ?? '') : form[name]}
-            disabled={disabled}
-            onChange={handleChange}
+            value={myInfo?.[name] ?? ''}
+            disabled
             className="bg-indigo-5 rounded-lg p-2 text-[15px] leading-6 font-semibold disabled:text-indigo-200"
           />
         </div>
       ))}
       <div className="text-end text-[10px] leading-3 font-medium text-indigo-300">
-        학번 외의 정보 수정은 관리자에게 문의해주세요
+        정보 수정은 관리자에게 문의해주세요
       </div>
       <div className="flex justify-end text-[10px] leading-3 font-medium text-indigo-300">
         <button type="button" onClick={openModal} className="text-[#3182f6]">
@@ -61,22 +62,31 @@ function Profile() {
         <span>를 원하시나요?</span>
       </div>
 
-      {error && (
-        <div className="text-sm text-red-500">
-          {error.apiError?.fieldErrors?.length ? (
-            error.apiError.fieldErrors.map((fieldError, index) => <p key={index}>{fieldError.message}</p>)
-          ) : (
-            <p>{error.message ?? '정보 수정에 실패했습니다.'}</p>
-          )}
-        </div>
-      )}
-
       <button
-        onClick={handleSubmit}
-        className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold"
+        onClick={openInquiryModal}
+        className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold"
       >
-        수정 완료
+        문의하기
       </button>
+
+      <BottomModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal}>
+        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
+          <div className="text-h3 text-center whitespace-pre-wrap">프로필 정보 수정 문의</div>
+          <textarea
+            value={inquiryContent}
+            onChange={(e) => setInquiryContent(e.target.value)}
+            placeholder="문의 내용을 입력해주세요"
+            className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
+          />
+          <button
+            onClick={handleInquirySubmit}
+            disabled={isInquiryPending || !inquiryContent.trim()}
+            className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+          >
+            {isInquiryPending ? '전송 중...' : '문의하기'}
+          </button>
+        </div>
+      </BottomModal>
 
       <BottomModal isOpen={isOpen} onClose={closeModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
