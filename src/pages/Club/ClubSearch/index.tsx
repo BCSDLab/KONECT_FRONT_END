@@ -1,5 +1,6 @@
-import { type FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import useDebouncedCallback from '@/utils/hooks/useDebounce';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import ClubCard from '../ClubList/components/ClubCard';
 import SearchBar from '../ClubList/components/SearchBar';
@@ -10,41 +11,42 @@ function ClubSearch() {
   const initialQuery = searchParams.get('query') ?? '';
 
   const [keyword, setKeyword] = useState(initialQuery);
-  const [submittedQuery, setSubmittedQuery] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({
-    limit: 10,
-    query: submittedQuery || undefined,
-    enabled: !!submittedQuery,
-  });
-
-  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
-    enabled: !!submittedQuery,
-  });
-
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
-  const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const trimmed = keyword.trim();
-
+  const updateDebouncedQuery = useDebouncedCallback((value: string) => {
+    const trimmed = value.trim();
     if (trimmed) {
       setSearchParams({ query: trimmed }, { replace: true });
     } else {
       setSearchParams({}, { replace: true });
     }
+    setDebouncedQuery(trimmed);
+  }, 300);
 
-    setSubmittedQuery(trimmed);
+  const handleChange = (value: string) => {
+    setKeyword(value);
+    updateDebouncedQuery(value);
   };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({
+    limit: 10,
+    query: debouncedQuery || undefined,
+    enabled: !!debouncedQuery,
+  });
+
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
+    enabled: !!debouncedQuery,
+  });
+
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+  const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];
 
   return (
     <>
-      <SearchBar value={keyword} onChange={setKeyword} onSubmit={handleSubmit} autoFocus />
+      <SearchBar value={keyword} onChange={handleChange} autoFocus />
 
       <div className="mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
-        {!submittedQuery ? (
+        {!debouncedQuery ? (
           <div className="py-6 text-center text-xs text-indigo-300">검색어를 입력해서 동아리를 검색해보세요.</div>
         ) : (
           <>
@@ -57,9 +59,9 @@ function ClubSearch() {
                 <ClubCard key={club.id} club={club} />
               ))}
 
-              {submittedQuery && !allClubs.length && (
+              {debouncedQuery && !allClubs.length && (
                 <div className="py-8 text-center text-xs text-indigo-300">
-                  {submittedQuery}에 해당하는 동아리가 없습니다.
+                  {debouncedQuery}에 해당하는 동아리가 없습니다.
                 </div>
               )}
             </div>

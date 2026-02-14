@@ -1,6 +1,6 @@
-import { Activity } from 'react';
+import { Activity, useEffect } from 'react';
 import clsx from 'clsx';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useLocation } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubAccount from './components/ClubAccount';
 import ClubIntro from './components/ClubIntro';
@@ -8,11 +8,21 @@ import ClubMemberTab from './components/ClubMember';
 import ClubRecruit from './components/ClubRecruitment';
 import { useGetClubDetail } from './hooks/useGetClubDetail';
 
+const SCROLL_RESTORE_KEY = 'clubList_shouldRestore';
+
 type TabType = 'recruitment' | 'intro' | 'members' | 'account';
 
 function ClubDetail() {
   useScrollToTop();
   const { clubId } = useParams();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.from === 'clubList') {
+      sessionStorage.setItem(SCROLL_RESTORE_KEY, 'true');
+    }
+  }, [location.state]);
+
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') || 'intro';
 

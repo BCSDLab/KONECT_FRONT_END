@@ -59,9 +59,9 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
         </div>
         <button
           onClick={handleInquireClick}
-          className="bg-indigo-5 text-body3 flex items-center justify-center gap-1 rounded-sm py-3"
+          className="bg-primary text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
         >
-          <PaperPlaneIcon />
+          <PaperPlaneIcon className="text-white" />
           문의하기
         </button>
       </Card>

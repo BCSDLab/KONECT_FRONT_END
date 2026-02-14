@@ -8,7 +8,7 @@ function ChatHeader() {
   const { chatRoomId } = useParams();
   const { chatRoomList } = useChat();
 
-  const chatRoom = chatRoomList.chatRooms.find((room) => room.chatRoomId === Number(chatRoomId));
+  const chatRoom = chatRoomList.rooms.find((room) => room.roomId === Number(chatRoomId));
 
   return (
     <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
@@ -20,7 +20,7 @@ function ChatHeader() {
       >
         <ChevronLeftIcon />
       </button>
-      <span className="text-lg">{chatRoom?.chatPartnerName ?? ''}</span>
+      <span className="text-lg">{chatRoom?.roomName ?? ''}</span>
     </header>
   );
 }

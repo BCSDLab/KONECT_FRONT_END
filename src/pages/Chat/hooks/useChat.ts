@@ -47,7 +47,7 @@ const useChat = (chatRoomId?: number) => {
 
   const markedReadRoomRef = useRef<number | null>(null);
 
-  const totalUnreadCount = chatRoomList.chatRooms.reduce((sum, room) => sum + room.unreadCount, 0);
+  const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
   useEffect(() => {
     if (!chatRoomId) return;
@@ -59,11 +59,9 @@ const useChat = (chatRoomId?: number) => {
     queryClient.setQueryData<ChatRoomsResponse>(chatQueryKeys.rooms(), (old) => {
       if (!old) return old;
 
-      const nextRooms = old.chatRooms.map((room) =>
-        room.chatRoomId === chatRoomId ? { ...room, unreadCount: 0 } : room
-      );
+      const nextRooms = old.rooms.map((room) => (room.roomId === chatRoomId ? { ...room, unreadCount: 0 } : room));
 
-      return { ...old, chatRooms: nextRooms };
+      return { ...old, rooms: nextRooms };
     });
   }, [chatRoomId, isSuccess, queryClient]);
 
