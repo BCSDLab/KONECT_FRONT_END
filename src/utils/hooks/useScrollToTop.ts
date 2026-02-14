@@ -2,9 +2,11 @@ import { useEffect } from 'react';
 
 export default function useScrollToTop() {
   useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-    });
+    const mainElement = document.querySelector('main');
+    if (mainElement) {
+      mainElement.scrollTo({ top: 0, left: 0 });
+    } else {
+      window.scrollTo({ top: 0, left: 0 });
+    }
   }, []);
 }

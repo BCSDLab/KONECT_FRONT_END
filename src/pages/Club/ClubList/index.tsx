@@ -4,11 +4,16 @@ import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
 import { useGetClubs } from './hooks/useGetClubs';
 
+const SCROLL_RESTORE_KEY = 'clubList_shouldRestore';
+
 function ClubList() {
+  const shouldRestoreScroll = sessionStorage.getItem(SCROLL_RESTORE_KEY) === 'true';
+  sessionStorage.removeItem(SCROLL_RESTORE_KEY);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({ limit: 10 });
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
-  useScrollRestore('clubList', !!data);
+  useScrollRestore('clubList', !!data, shouldRestoreScroll);
 
   const totalCount = data?.pages[0]?.totalCount ?? 0;
   const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];

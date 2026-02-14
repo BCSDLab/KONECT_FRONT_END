@@ -1,7 +1,9 @@
 import { useParams } from 'react-router-dom';
+import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import { useGetCouncilNoticeDetail } from './hooks/useCouncilNoticeDetail';
 
 function CouncilNotice() {
+  useScrollToTop();
   const { noticeId } = useParams();
   const { data: councilNoticeDetail } = useGetCouncilNoticeDetail({ noticeId: Number(noticeId) });
 

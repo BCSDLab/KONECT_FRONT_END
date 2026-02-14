@@ -3,7 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 export function useSmartBack() {
   const navigate = useNavigate();
-  const { pathname } = useLocation();
+  const location = useLocation();
+  const { pathname } = location;
+  const fromClubList = location.state?.from === 'clubList';
 
   return useCallback(() => {
     if (window.history.length > 1) {
@@ -12,8 +14,8 @@ export function useSmartBack() {
     }
 
     let targetPath = '/home';
+    let state: { from?: string } | undefined;
 
-    // Apply inference rules from most specific to least specific
     if (pathname.startsWith('/chats/')) {
       targetPath = '/chats';
     } else if (pathname === '/chats') {
@@ -32,6 +34,9 @@ export function useSmartBack() {
         targetPath = `/clubs/${clubId}`;
       } else {
         targetPath = `/clubs`;
+        if (fromClubList) {
+          state = { from: 'clubDetail' };
+        }
       }
     } else if (pathname === '/clubs') {
       targetPath = '/home';
@@ -70,6 +75,6 @@ export function useSmartBack() {
       targetPath = '/home';
     }
 
-    navigate(targetPath, { replace: true });
-  }, [navigate, pathname]);
+    navigate(targetPath, { replace: true, state });
+  }, [navigate, pathname, fromClubList]);
 }

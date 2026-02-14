@@ -60,6 +60,7 @@ function ClubCard({ club }: ClubCardProps) {
   return (
     <Link
       to={`/clubs/${club.id}${club.status === 'ONGOING' ? '?tab=recruitment' : ''}`}
+      state={{ from: 'clubList' }}
       className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3"
     >
       <img src={club.imageUrl} className="border-indigo-5 h-12 w-12 rounded-sm border" alt={club.name} />
