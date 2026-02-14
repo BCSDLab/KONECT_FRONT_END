@@ -45,6 +45,7 @@ export interface ClubDetailResponse {
   categoryName: string;
   memberCount: number;
   recruitment: Recruitment;
+  presidentUserId: number;
   presidentName: string;
   isMember: boolean;
   isApplied: boolean;
