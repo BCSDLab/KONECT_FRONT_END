@@ -46,8 +46,10 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
       <div style={{ fontSize: '18cqw' }} className="font-semibold">
         {formatTime(time)}
       </div>
-      <div style={{ fontSize: '4.5cqw' }} className="px-2 text-center font-medium">
-        {isRunning ? '타이머가 작동중입니다!' : '화면을 클릭해 타이머를 작동시키세요!'}
+      <div style={{ fontSize: '4.5cqw' }} className="px-2 text-center font-medium whitespace-pre-wrap">
+        {isRunning
+          ? '타이머가 작동중입니다!\n중지하려면 타이머를 클릭해주세요'
+          : '화면을 클릭해 타이머를 작동시키세요!'}
       </div>
     </button>
   );
