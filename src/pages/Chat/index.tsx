@@ -12,7 +12,7 @@ function ChatListPage() {
     return `${period} ${displayHour}:${String(minute).padStart(2, '0')}`;
   };
 
-  if (chatRoomList.chatRooms.length === 0) {
+  if (chatRoomList.rooms.length === 0) {
     return (
       <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col items-center justify-center py-3">
         <div className="text-sm text-gray-500">채팅방이 없어요</div>
@@ -23,31 +23,31 @@ function ChatListPage() {
 
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col py-3">
-      {chatRoomList.chatRooms.map((chatRoom) => (
+      {chatRoomList.rooms.map((room) => (
         <Link
-          to={`${chatRoom.chatRoomId}`}
-          key={chatRoom.chatRoomId}
+          to={`${room.roomId}`}
+          key={room.roomId}
           className="active:bg-indigo-5 bg-indigo-0 flex items-center gap-3 px-5 py-4"
         >
           <img
-            src={chatRoom.chatPartnerProfileImage}
-            alt={chatRoom.chatPartnerName}
+            src={room.roomImageUrl}
+            alt={room.roomName}
             className="border-indigo-5 h-11 w-11 shrink-0 rounded-full border"
           />
           <div className="flex min-w-0 flex-1 flex-col gap-2">
             <div className="flex items-center justify-between">
-              <div className="text-sm leading-4 font-bold text-indigo-700">{chatRoom.chatPartnerName}</div>
+              <div className="text-sm leading-4 font-bold text-indigo-700">{room.roomName}</div>
               <div className="shrink-0 text-xs leading-3.5 font-medium text-indigo-300">
-                {chatRoom.lastSentTime ? formatTime(chatRoom.lastSentTime) : ''}
+                {room.lastSentAt ? formatTime(room.lastSentAt) : ''}
               </div>
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="max-w-[80%] min-w-0 truncate text-xs leading-3.5 font-medium text-indigo-300">
-                {chatRoom.lastMessage ? chatRoom.lastMessage : '동아리에 궁금한 점을 물어보세요'}
+                {room.lastMessage ? room.lastMessage : '동아리에 궁금한 점을 물어보세요'}
               </div>
-              {chatRoom.unreadCount > 0 && (
+              {room.unreadCount > 0 && (
                 <div className="text-indigo-0 shrink-0 rounded-full bg-[#3182f6] px-1 py-0.5 text-center">
-                  {chatRoom.unreadCount}
+                  {room.unreadCount}
                 </div>
               )}
             </div>
