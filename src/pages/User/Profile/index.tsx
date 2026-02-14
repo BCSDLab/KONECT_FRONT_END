@@ -35,6 +35,9 @@ function Profile() {
           setInquiryContent('');
           showToast('문의가 접수되었습니다', 'success');
         },
+        onError: () => {
+          showToast('문의 접수에 실패했습니다. 다시 시도해주세요', 'error');
+        },
       }
     );
   };
@@ -76,6 +79,7 @@ function Profile() {
             value={inquiryContent}
             onChange={(e) => setInquiryContent(e.target.value)}
             placeholder="문의 내용을 입력해주세요"
+            aria-label="문의 내용"
             className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
           />
           <button
