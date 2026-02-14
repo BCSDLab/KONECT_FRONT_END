@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import MegaphoneIcon from '@/assets/svg/megaphone.svg';
 import { useCouncilNotice } from '@/pages/Club/ClubDetail/hooks/useCouncilNotices';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 
@@ -7,6 +8,16 @@ function CouncilNotice() {
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const allNotices = data?.pages.flatMap((page) => page.councilNotices) ?? [];
+
+  if (allNotices.length === 0) {
+    return (
+      <div className="mt-31.5 flex flex-col items-center justify-center py-16">
+        <MegaphoneIcon className="mb-3 h-12 w-12 text-gray-300" />
+        <div className="text-sm text-gray-500">등록된 공지사항이 없어요</div>
+        <div className="mt-1 text-xs text-gray-400">새로운 공지사항이 등록되면 여기에 표시돼요</div>
+      </div>
+    );
+  }
 
   return (
     <div className="mt-31.5">

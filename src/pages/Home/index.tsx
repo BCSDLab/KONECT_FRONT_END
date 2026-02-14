@@ -189,6 +189,17 @@ function CouncilNoticeSection() {
   const { data: councilNoticeData } = useCouncilNotice(COUNCIL_NOTICE_PARAMS);
   const allNotices = councilNoticeData.pages.flatMap((page) => page.councilNotices);
 
+  if (allNotices.length === 0) {
+    return (
+      <Card className="mt-2">
+        <div className="flex flex-col items-center py-4 text-center">
+          <div className="text-sm text-gray-500">등록된 공지사항이 없어요</div>
+          <div className="mt-1 text-xs text-gray-400">새로운 공지사항이 등록되면 여기에 표시돼요</div>
+        </div>
+      </Card>
+    );
+  }
+
   return (
     <div className="mt-2 flex flex-col gap-2">
       {allNotices.map((notice) => (
@@ -228,7 +239,7 @@ function Home() {
       <div>
         <div className="flex justify-between">
           <div className="text-h3">총동아리연합회</div>
-          <Link to="/council" className="text-sub2 text-[#3182F6]">
+          <Link to="/council?tab=notice" className="text-sub2 text-[#3182F6]">
             더보기
           </Link>
         </div>
