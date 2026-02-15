@@ -35,7 +35,7 @@ function ManagedApplicationList() {
       <UserInfoCard type="detail" />
       <Card className="text-body3 flex-row">
         <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">지원자 수 : {total}명</div>
-        <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">CSV 추출하기</div>
+        {/* <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">CSV 추출하기</div> */}
       </Card>
       {managedClubApplicationList.applications.map((application) => (
         <Card key={application.id} className="flex-row items-center gap-2" onClick={() => handleDetail(application.id)}>

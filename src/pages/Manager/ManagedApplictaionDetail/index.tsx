@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import CheckIcon from '@/assets/svg/check.svg';
 import WarningIcon from '@/assets/svg/warning.svg';
 import BottomModal from '@/components/common/BottomModal';
+import Portal from '@/components/common/Portal';
 import Toast from '@/components/common/Toast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useToast } from '@/utils/hooks/useToast';
@@ -24,6 +25,7 @@ function ManagedApplicationDetail() {
     onSuccess: () => showToast('지원이 거절되었습니다'),
   });
 
+  const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
   const { value: isApproveOpen, setTrue: openApprove, setFalse: closeApprove } = useBooleanState();
   const { value: isRejectOpen, setTrue: openReject, setFalse: closeReject } = useBooleanState();
 
@@ -58,6 +60,17 @@ function ManagedApplicationDetail() {
             </div>
           </div>
         </section>
+
+        {application.feePaymentImageUrl && (
+          <section className="flex flex-col gap-3 rounded-lg bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
+            <span className="text-h4">회비 납부 인증</span>
+            <div className="flex justify-center">
+              <button type="button" onClick={openImage} className="h-52 w-36 overflow-hidden rounded-xl">
+                <img src={application.feePaymentImageUrl} alt="회비 납부 인증" className="h-full w-full object-cover" />
+              </button>
+            </div>
+          </section>
+        )}
 
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
@@ -159,6 +172,19 @@ function ManagedApplicationDetail() {
           </div>
         </div>
       </BottomModal>
+
+      {isImageOpen && application.feePaymentImageUrl && (
+        <Portal>
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80" onClick={closeImage}>
+            <img
+              src={application.feePaymentImageUrl}
+              alt="회비 납부 인증"
+              className="max-h-[85vh] max-w-[90vw] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </Portal>
+      )}
 
       <Toast toast={toast} onClose={hideToast} />
     </div>

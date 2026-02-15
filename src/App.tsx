@@ -92,12 +92,12 @@ function App() {
                 <Route index element={<ClubList />} />
                 <Route path="search" element={<ClubSearch />} />
                 <Route path=":clubId" element={<ClubDetail />} />
-                <Route path=":clubId/applications" element={<ApplicationPage />} />
-                <Route path=":clubId/fee" element={<ClubFeePage />} />
-                <Route path=":clubId/complete" element={<ApplyCompletePage />} />
               </Route>
             </Route>
             <Route element={<Layout />}>
+              <Route path="clubs/:clubId/applications" element={<ApplicationPage />} />
+              <Route path="clubs/:clubId/fee" element={<ClubFeePage />} />
+              <Route path="clubs/:clubId/complete" element={<ApplyCompletePage />} />
               <Route path="schedule" element={<Schedule />} />
               <Route path="mypage/manager/:clubId/info" element={<ManagedClubInfo />} />
               <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />

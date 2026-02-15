@@ -1,13 +1,21 @@
 import { useState, type FormEvent } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import BottomModal from '@/components/common/BottomModal';
+import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClubApply from './hooks/useClubApply';
 
 function ApplicationPage() {
   const { clubId } = useParams();
-  const { clubQuestions, applyToClub } = useClubApply(Number(clubId));
-  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const navigate = useNavigate();
+  const { clubQuestions, applyToClub, isFeeRequired, isFeeLoading } = useClubApply(Number(clubId));
+  const { answers: storedAnswers, clubId: storedClubId } = useClubApplicationStore();
+  const setApplication = useClubApplicationStore((s) => s.setApplication);
+  const [answers, setAnswers] = useState<Record<number, string>>(() =>
+    storedClubId === Number(clubId)
+      ? Object.fromEntries(storedAnswers.map(({ questionId, answer }) => [questionId, answer]))
+      : {}
+  );
   const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
 
   const handleChange = (questionId: number, value: string, target: HTMLTextAreaElement) => {
@@ -26,13 +34,22 @@ function ApplicationPage() {
       questionId: Number(questionId),
       answer,
     }));
-    await applyToClub({ answers: formattedAnswers });
+
+    if (isFeeRequired) {
+      setApplication(Number(clubId), formattedAnswers);
+      navigate(`/clubs/${clubId}/fee`);
+    } else {
+      await applyToClub({ answers: formattedAnswers });
+    }
   };
 
   return (
-    <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col px-3 pt-3 pb-10">
-      <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col gap-5">
-        <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-y-auto">
+    <div
+      className="bg-indigo-0 flex flex-1 flex-col justify-between px-3 pt-3"
+      style={{ marginBottom: 'calc(20px + var(--sab))' }}
+    >
+      <form onSubmit={handleSubmit} className="flex flex-1 flex-col justify-between">
+        <div className="flex flex-col gap-5">
           {clubQuestions?.questions.map((question) => (
             <div key={question.id} className="flex flex-col gap-2">
               <label className="text-[15px] leading-6 font-medium text-indigo-300">
@@ -51,7 +68,8 @@ function ApplicationPage() {
         </div>
         <button
           type="submit"
-          className="bg-primary w-full rounded-lg py-3.5 text-center text-lg leading-7 font-bold text-white"
+          disabled={isFeeLoading}
+          className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white disabled:opacity-50"
         >
           제출하기
         </button>
