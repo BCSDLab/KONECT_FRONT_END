@@ -8,14 +8,14 @@ import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import AccountInfoCard from './components/AccountInfo';
-import useClubApply from './hooks/useClubApply';
+import useApplyToClub from './hooks/useApplyToClub';
 import { useGetClubFee } from './hooks/useGetClubFee';
 
 function ClubFeePage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
   const { data: clubFee } = useGetClubFee(Number(clubId));
-  const { applyToClub } = useClubApply(Number(clubId));
+  const { applyToClub } = useApplyToClub(Number(clubId));
   const { answers, clubId: storedClubId } = useClubApplicationStore();
 
   useEffect(() => {
@@ -31,13 +31,20 @@ function ClubFeePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setImageFile(file);
-    const objectUrl = URL.createObjectURL(file);
-    setPreviewUrl(objectUrl);
+    setPreviewUrl(URL.createObjectURL(file));
   };
 
   const handleSubmit = async () => {

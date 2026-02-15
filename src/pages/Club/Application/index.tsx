@@ -8,11 +8,13 @@ import useClubApply from './hooks/useClubApply';
 function ApplicationPage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const { clubQuestions, applyToClub, isFeeRequired } = useClubApply(Number(clubId));
-  const { answers: storedAnswers } = useClubApplicationStore();
+  const { clubQuestions, applyToClub, isFeeRequired, isFeeLoading } = useClubApply(Number(clubId));
+  const { answers: storedAnswers, clubId: storedClubId } = useClubApplicationStore();
   const setApplication = useClubApplicationStore((s) => s.setApplication);
   const [answers, setAnswers] = useState<Record<number, string>>(() =>
-    Object.fromEntries(storedAnswers.map(({ questionId, answer }) => [questionId, answer]))
+    storedClubId === Number(clubId)
+      ? Object.fromEntries(storedAnswers.map(({ questionId, answer }) => [questionId, answer]))
+      : {}
   );
   const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
 
@@ -66,7 +68,8 @@ function ApplicationPage() {
         </div>
         <button
           type="submit"
-          className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white"
+          disabled={isFeeLoading}
+          className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white disabled:opacity-50"
         >
           제출하기
         </button>
