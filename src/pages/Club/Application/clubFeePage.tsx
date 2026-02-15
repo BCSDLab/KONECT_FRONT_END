@@ -15,7 +15,6 @@ function ClubFeePage() {
   const { data: clubFee } = useGetClubFee(Number(clubId));
   const { applyToClub } = useClubApply(Number(clubId));
   const { answers, clubId: storedClubId } = useClubApplicationStore();
-  const clearApplication = useClubApplicationStore((s) => s.clearApplication);
 
   useEffect(() => {
     if (storedClubId == null || storedClubId !== Number(clubId)) {
@@ -45,7 +44,6 @@ function ClubFeePage() {
     try {
       const { fileUrl } = await uploadImage(imageFile);
       await applyToClub({ answers, feePaymentImageUrl: fileUrl });
-      clearApplication();
     } finally {
       setIsSubmitting(false);
     }
