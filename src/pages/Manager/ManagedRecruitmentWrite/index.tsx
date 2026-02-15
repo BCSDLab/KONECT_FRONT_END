@@ -46,7 +46,7 @@ function ManagedRecruitmentWrite() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage();
+  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { data: existingRecruitment } = useManagedClubRecruitmentQuery(Number(clubId));
   const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId));
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);

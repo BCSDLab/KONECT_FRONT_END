@@ -59,6 +59,17 @@ function ManagedApplicationDetail() {
           </div>
         </section>
 
+        {application.feePaymentImageUrl && (
+          <section className="flex flex-col gap-3 rounded-lg bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
+            <span className="text-h4">회비 납부 인증</span>
+            <img
+              src={application.feePaymentImageUrl}
+              alt="회비 납부 인증"
+              className="w-full rounded-lg object-contain"
+            />
+          </section>
+        )}
+
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <span className="text-h4">지원서 내용</span>

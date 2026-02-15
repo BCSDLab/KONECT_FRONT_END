@@ -1,6 +1,6 @@
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { applyClub, getClubQuestions } from '@/apis/club';
+import { applyClub, getClubFee, getClubQuestions } from '@/apis/club';
 import type { ClubApplyRequest } from '@/apis/club/entity';
 import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
@@ -13,16 +13,19 @@ const useClubApply = (clubId: number) => {
     queryFn: () => getClubQuestions(clubId),
   });
 
+  const { data: clubFee } = useQuery({
+    queryKey: clubQueryKeys.fee(clubId),
+    queryFn: () => getClubFee(clubId),
+  });
+
+  const isFeeRequired = clubFee?.amount != null && clubFee.amount > 0;
+
   const { mutateAsync: applyToClub } = useMutation({
     mutationKey: ['applyToClub', clubId],
-    mutationFn: (answers: ClubApplyRequest) => applyClub(clubId, answers),
-    onSuccess: (data) => {
+    mutationFn: (body: ClubApplyRequest) => applyClub(clubId, body),
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
-      if (data.amount !== null) {
-        navigate(`/clubs/${clubId}/fee`);
-      } else {
-        navigate(`/clubs/${clubId}/complete`);
-      }
+      navigate(`/clubs/${clubId}/complete`);
     },
   });
 
@@ -30,7 +33,7 @@ const useClubApply = (clubId: number) => {
 
   const hasQuestions = clubQuestions && clubQuestions.questions.length > 0;
 
-  return { clubQuestions, applyToClub, applyDirectly, hasQuestions };
+  return { clubQuestions, applyToClub, applyDirectly, hasQuestions, isFeeRequired };
 };
 
 export default useClubApply;

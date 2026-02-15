@@ -88,6 +88,7 @@ interface Answer {
 
 export interface ClubApplyRequest {
   answers: Answer[];
+  feePaymentImageUrl?: string;
 }
 
 export interface ClubApplyResponse {
@@ -152,6 +153,7 @@ export interface ClubApplicationDetailResponse {
   name: string;
   imageUrl: string;
   appliedAt: string;
+  feePaymentImageUrl?: string;
   answers: ApplicationAnswer[];
 }
 
