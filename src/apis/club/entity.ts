@@ -112,6 +112,7 @@ export interface ClubRecruitment {
   endDate: string;
   content: string;
   images: ClubRecruitmentImage[];
+  isFeeRequired: boolean;
   isApplied: boolean;
 }
 
@@ -164,6 +165,7 @@ interface RecruitmentImage {
 type BaseRecruitment = {
   content: string;
   images: RecruitmentImage[];
+  isFeeRequired: boolean;
 };
 
 export type ClubRecruitmentRequest =
