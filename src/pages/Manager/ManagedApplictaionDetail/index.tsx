@@ -64,13 +64,11 @@ function ManagedApplicationDetail() {
         {application.feePaymentImageUrl && (
           <section className="flex flex-col gap-3 rounded-lg bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
             <span className="text-h4">회비 납부 인증</span>
-            <button type="button" onClick={openImage} className="cursor-pointer">
-              <img
-                src={application.feePaymentImageUrl}
-                alt="회비 납부 인증"
-                className="w-full rounded-lg object-contain"
-              />
-            </button>
+            <div className="flex justify-center">
+              <button type="button" onClick={openImage} className="h-52 w-36 overflow-hidden rounded-xl">
+                <img src={application.feePaymentImageUrl} alt="회비 납부 인증" className="h-full w-full object-cover" />
+              </button>
+            </div>
           </section>
         )}
 

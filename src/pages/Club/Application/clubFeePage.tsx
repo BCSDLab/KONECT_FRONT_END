@@ -3,7 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ImageIcon from '@/assets/svg/image.svg';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
+import Portal from '@/components/common/Portal';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
+import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import AccountInfoCard from './components/AccountInfo';
 import useClubApply from './hooks/useClubApply';
@@ -27,6 +29,7 @@ function ClubFeePage() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -75,12 +78,14 @@ function ClubFeePage() {
         <AccountInfoCard accountInfo={clubFee} />
 
         <Card>
-          <div className="text-sm leading-4 font-bold text-indigo-700">입금 확인 이미지</div>
+          <div className="text-sm leading-4 font-bold text-indigo-700">입금 확인 인증</div>
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
           <div className="flex justify-center">
             {previewUrl ? (
-              <div className="relative h-40 w-40 overflow-hidden rounded-xl">
-                <img src={previewUrl} alt="입금 확인" className="h-full w-full object-cover" />
+              <div className="relative h-52 w-36 overflow-hidden rounded-xl">
+                <button type="button" onClick={openImage} className="h-full w-full">
+                  <img src={previewUrl} alt="입금 확인" className="h-full w-full object-cover" />
+                </button>
                 <button
                   type="button"
                   onClick={() => {
@@ -98,7 +103,7 @@ function ClubFeePage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="border-indigo-75 hover:bg-indigo-25 flex h-40 w-40 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
+                className="border-indigo-75 hover:bg-indigo-25 flex h-52 w-36 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
               >
                 <ImageIcon />
                 <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">
@@ -118,6 +123,19 @@ function ClubFeePage() {
       >
         제출하기
       </button>
+
+      {isImageOpen && previewUrl && (
+        <Portal>
+          <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80" onClick={closeImage}>
+            <img
+              src={previewUrl}
+              alt="입금 확인"
+              className="max-h-[85vh] max-w-[90vw] object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </Portal>
+      )}
     </div>
   );
 }
