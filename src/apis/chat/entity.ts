@@ -17,14 +17,17 @@ export interface ChatRoomsResponse {
 export interface ChatMessage {
   messageId: number;
   senderId: number;
+  senderName: string;
   content: string;
   createdAt: string;
   isRead: boolean;
+  unreadCount: number;
   isMine: boolean;
 }
 
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
+  type: 'DIRECT' | 'GROUP';
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {

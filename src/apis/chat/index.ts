@@ -22,18 +22,24 @@ export const postChatRooms = async (userId: number) => {
   return response;
 };
 
-export const postChatMessage = async (chatRoomId: number, content: string) => {
-  const response = await apiClient.post<ChatMessage>(`chats/rooms/${chatRoomId}/messages`, {
+export const postChatMessage = async (chatRoomId: number, type: 'DIRECT' | 'GROUP', content: string) => {
+  return apiClient.post<ChatMessage>(`chats/rooms/${chatRoomId}/messages`, {
+    params: { type },
     body: { content },
     requiresAuth: true,
   });
-  return response;
 };
 
-export const getChatMessages = async (params: ChatMessageRequestParam) => {
-  const response = await apiClient.get<ChatMessagesResponse, ChatMessageRequestParam>(
-    `chats/rooms/${params.chatRoomId}`,
-    { params, requiresAuth: true }
-  );
-  return response;
+export const getChatMessages = async ({ chatRoomId, ...query }: ChatMessageRequestParam) => {
+  return apiClient.get<ChatMessagesResponse, Omit<ChatMessageRequestParam, 'chatRoomId'>>(`chats/rooms/${chatRoomId}`, {
+    params: query,
+    requiresAuth: true,
+  });
+};
+
+export const postChatMute = async (chatRoomId: number, type: 'DIRECT' | 'GROUP') => {
+  return apiClient.post<{ isMuted: boolean }>(`chats/rooms/${chatRoomId}/mute`, {
+    params: { type },
+    requiresAuth: true,
+  });
 };

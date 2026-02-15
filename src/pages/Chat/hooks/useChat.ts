@@ -1,12 +1,13 @@
-import { useEffect, useRef } from 'react';
+import { useMemo } from 'react';
 import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { getChatMessages, getChatRooms, postChatMessage, postChatRooms } from '@/apis/chat';
-import type { ChatRoomsResponse } from '@/apis/chat/entity';
+
+type ChatType = 'DIRECT' | 'GROUP';
 
 export const chatQueryKeys = {
-  all: ['chat'],
-  rooms: () => [...chatQueryKeys.all, 'rooms'],
-  messages: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId],
+  all: ['chat'] as const,
+  rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
+  messages: (chatRoomId: number, type: ChatType) => [...chatQueryKeys.all, 'messages', chatRoomId, type] as const,
 };
 
 const useChat = (chatRoomId?: number) => {
@@ -14,9 +15,14 @@ const useChat = (chatRoomId?: number) => {
 
   const { data: chatRoomList } = useSuspenseQuery({
     queryKey: chatQueryKeys.rooms(),
-    queryFn: () => getChatRooms(),
+    queryFn: getChatRooms,
     refetchInterval: 5000,
   });
+
+  const currentRoomType: ChatType | undefined = useMemo(() => {
+    if (!chatRoomId) return undefined;
+    return chatRoomList.rooms.find((room) => room.roomId === chatRoomId)?.chatType;
+  }, [chatRoomId, chatRoomList.rooms]);
 
   const { mutateAsync: createChatRoom } = useMutation({
     mutationKey: ['createChatRoom'],
@@ -28,50 +34,58 @@ const useChat = (chatRoomId?: number) => {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
-    isSuccess,
   } = useInfiniteQuery({
-    queryKey: chatQueryKeys.messages(chatRoomId!),
+    queryKey:
+      chatRoomId && currentRoomType
+        ? chatQueryKeys.messages(chatRoomId, currentRoomType)
+        : ['chat', 'messages', 'disabled'],
+
+    enabled: !!chatRoomId && !!currentRoomType,
+
     queryFn: ({ pageParam }) =>
       getChatMessages({
         chatRoomId: chatRoomId!,
+        type: currentRoomType!,
         page: pageParam,
         limit: 20,
       }),
+
     initialPageParam: 1,
+
     getNextPageParam: (lastPage) => (lastPage.currentPage < lastPage.totalPage ? lastPage.currentPage + 1 : undefined),
-    enabled: !!chatRoomId,
+
     refetchInterval: 1000,
   });
 
   const allMessages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
 
-  const markedReadRoomRef = useRef<number | null>(null);
-
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
-  useEffect(() => {
-    if (!chatRoomId) return;
-    if (!isSuccess) return;
-
-    if (markedReadRoomRef.current === chatRoomId) return;
-    markedReadRoomRef.current = chatRoomId;
-
-    queryClient.setQueryData<ChatRoomsResponse>(chatQueryKeys.rooms(), (old) => {
-      if (!old) return old;
-
-      const nextRooms = old.rooms.map((room) => (room.roomId === chatRoomId ? { ...room, unreadCount: 0 } : room));
-
-      return { ...old, rooms: nextRooms };
-    });
-  }, [chatRoomId, isSuccess, queryClient]);
-
-  const { mutateAsync: sendMessage } = useMutation({
+  const { mutateAsync: sendMessage } = useMutation<
+    Awaited<ReturnType<typeof postChatMessage>>,
+    Error,
+    { chatRoomId: number; content: string }
+  >({
     mutationKey: ['sendMessage', chatRoomId],
-    mutationFn: ({ chatRoomId, content }: { chatRoomId: number; content: string }) =>
-      postChatMessage(chatRoomId, content),
+
+    mutationFn: async ({ chatRoomId, content }) => {
+      if (!currentRoomType) {
+        throw new Error('chatType is missing');
+      }
+
+      return postChatMessage(chatRoomId, currentRoomType, content);
+    },
+
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: chatQueryKeys.messages(chatRoomId!) });
-      queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+      if (!chatRoomId || !currentRoomType) return;
+
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.messages(chatRoomId, currentRoomType),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.rooms(),
+      });
     },
   });
 
