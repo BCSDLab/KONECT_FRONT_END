@@ -25,14 +25,14 @@ const ClubMemberCard = (clubMember: ClubMember) => {
 function ClubMemberTab() {
   const { clubId } = useParams();
   const { data: clubMembers } = useGetClubMembers(Number(clubId));
-  const totalMembers = clubMembers.clubMembers.length;
+  const totalMembers = clubMembers?.clubMembers.length;
   return (
     <>
       <div className="text-sm leading-3.5 text-indigo-300">
         총 <span className="font-bold text-black">{totalMembers}명</span>의 동아리인원
       </div>
       <div className="flex flex-col gap-1.5">
-        {clubMembers.clubMembers.map((member) => (
+        {clubMembers?.clubMembers.map((member) => (
           <ClubMemberCard key={member.studentNumber} {...member} />
         ))}
       </div>
