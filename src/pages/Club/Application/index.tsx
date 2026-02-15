@@ -8,7 +8,7 @@ import useClubApply from './hooks/useClubApply';
 function ApplicationPage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const { clubQuestions, applyToClub, isFeeRequired, isFeeLoading } = useClubApply(Number(clubId));
+  const { clubQuestions, applyToClub, isFeeRequired } = useClubApply(Number(clubId));
   const { answers: storedAnswers, clubId: storedClubId } = useClubApplicationStore();
   const setApplication = useClubApplicationStore((s) => s.setApplication);
   const [answers, setAnswers] = useState<Record<number, string>>(() =>
@@ -68,8 +68,7 @@ function ApplicationPage() {
         </div>
         <button
           type="submit"
-          disabled={isFeeLoading}
-          className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white disabled:opacity-50"
+          className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white"
         >
           제출하기
         </button>
