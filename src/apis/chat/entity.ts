@@ -32,6 +32,7 @@ export interface ChatMessageRequestParam extends PaginationParams {
 
 export interface ChatMessagesResponse extends PaginationResponse {
   messages: ChatMessage[];
+  clubId?: number;
 }
 
 export interface CreateChatRoomResponse {
