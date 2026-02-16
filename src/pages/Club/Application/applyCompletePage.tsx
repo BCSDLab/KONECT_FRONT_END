@@ -1,13 +1,17 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CheckCircleIcon from '@/assets/svg/check-circle.svg';
+import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import { useGetClubDetail } from '../ClubDetail/hooks/useGetClubDetail';
 
 function ApplyCompletePage() {
   const { clubId } = useParams();
+  const navigate = useNavigate();
   const { data: clubDetail } = useGetClubDetail(Number(clubId));
+  const clearApplication = useClubApplicationStore((s) => s.clearApplication);
 
   const handleGoToClubDetail = () => {
-    window.history.go(-3);
+    clearApplication();
+    navigate(`/clubs/${clubId}`, { replace: true });
   };
 
   return (

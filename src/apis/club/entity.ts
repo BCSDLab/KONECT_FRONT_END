@@ -27,7 +27,7 @@ export interface JoinClub {
   name: string;
   imageUrl: string;
   categoryName: string;
-  position: '일반 회원' | '운영진' | '회장';
+  position: '일반회원' | '운영진' | '회장';
   isFeePaid: boolean;
 }
 
@@ -88,6 +88,7 @@ interface Answer {
 
 export interface ClubApplyRequest {
   answers: Answer[];
+  feePaymentImageUrl?: string;
 }
 
 export interface ClubApplyResponse {
@@ -111,6 +112,7 @@ export interface ClubRecruitment {
   endDate: string;
   content: string;
   images: ClubRecruitmentImage[];
+  isFeeRequired: boolean;
   isApplied: boolean;
 }
 
@@ -152,6 +154,7 @@ export interface ClubApplicationDetailResponse {
   name: string;
   imageUrl: string;
   appliedAt: string;
+  feePaymentImageUrl?: string;
   answers: ApplicationAnswer[];
 }
 
@@ -162,6 +165,7 @@ interface RecruitmentImage {
 type BaseRecruitment = {
   content: string;
   images: RecruitmentImage[];
+  isFeeRequired: boolean;
 };
 
 export type ClubRecruitmentRequest =

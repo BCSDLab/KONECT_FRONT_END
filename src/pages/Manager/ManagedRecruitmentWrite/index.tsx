@@ -39,6 +39,7 @@ function ManagedRecruitmentWrite() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [content, setContent] = useState('');
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
+  const [isFeeRequired, setIsFeeRequired] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -46,7 +47,7 @@ function ManagedRecruitmentWrite() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage();
+  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { data: existingRecruitment } = useManagedClubRecruitmentQuery(Number(clubId));
   const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId));
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
@@ -67,6 +68,7 @@ function ManagedRecruitmentWrite() {
     }
     const isAlways = !existingRecruitment.startDate || !existingRecruitment.endDate;
     setIsAlwaysRecruiting(isAlways);
+    setIsFeeRequired(existingRecruitment.isFeeRequired);
     if (existingRecruitment.images && existingRecruitment.images.length > 0) {
       setImages(
         existingRecruitment.images.map((img) => ({
@@ -98,6 +100,7 @@ function ManagedRecruitmentWrite() {
     setEndDate(new Date());
     setContent('');
     setIsAlwaysRecruiting(false);
+    setIsFeeRequired(false);
     images.forEach((img) => {
       if (!img.isExisting) URL.revokeObjectURL(img.previewUrl);
     });
@@ -171,12 +174,13 @@ function ManagedRecruitmentWrite() {
       const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
 
       if (isAlwaysRecruiting) {
-        saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
+        saveRecruitment({ content, images: imageData, isFeeRequired, isAlwaysRecruiting: true }, { onSuccess });
       } else {
         saveRecruitment(
           {
             content,
             images: imageData,
+            isFeeRequired,
             isAlwaysRecruiting: false,
             startDate: formatDateDot(startDate),
             endDate: formatDateDot(endDate),
@@ -234,6 +238,23 @@ function ManagedRecruitmentWrite() {
               {hasDateError && <p className="text-sm text-red-500">{getDateErrorMessage()}</p>}
             </div>
           )}
+        </section>
+        <section className="flex w-full flex-col gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-h4">회비 납부</span>
+            <div className="flex items-center gap-2">
+              <label htmlFor="feeRequired" className="text-h4 cursor-pointer select-none">
+                회비 필요
+              </label>
+              <input
+                id="feeRequired"
+                type="checkbox"
+                checked={isFeeRequired}
+                onChange={(e) => setIsFeeRequired(e.target.checked)}
+                className="h-4 w-4"
+              />
+            </div>
+          </div>
         </section>
         <section className="flex w-full flex-col gap-4">
           <span className="text-h4">

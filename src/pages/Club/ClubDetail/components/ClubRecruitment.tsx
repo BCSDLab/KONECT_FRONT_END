@@ -1,6 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
+import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClubApply from '../../Application/hooks/useClubApply';
 import useGetClubRecruitment from '../hooks/useGetClubRecruitment';
@@ -10,11 +11,23 @@ interface ClubRecruitProps {
 }
 
 function ClubRecruitment({ clubId }: ClubRecruitProps) {
+  const navigate = useNavigate();
   const { data: clubRecruitment } = useGetClubRecruitment(clubId);
-  const { hasQuestions, applyDirectly } = useClubApply(clubId);
+  const { hasQuestions, applyDirectly, isFeeRequired } = useClubApply(clubId);
   const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
+
+  const setApplication = useClubApplicationStore((s) => s.setApplication);
   const isRecruitmentOpen = clubRecruitment.status === 'ONGOING';
   const canApply = isRecruitmentOpen && !clubRecruitment.isApplied;
+
+  const handleApply = () => {
+    if (isFeeRequired) {
+      setApplication(clubId, []);
+      navigate(`/clubs/${clubId}/fee`);
+    } else {
+      applyDirectly();
+    }
+  };
 
   const getButtonContent = () => {
     if (clubRecruitment.isApplied) return '가입 신청 완료';
@@ -79,7 +92,7 @@ function ClubRecruitment({ clubId }: ClubRecruitProps) {
           <div>
             <button
               type="button"
-              onClick={() => applyDirectly()}
+              onClick={handleApply}
               className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
             >
               지원하기

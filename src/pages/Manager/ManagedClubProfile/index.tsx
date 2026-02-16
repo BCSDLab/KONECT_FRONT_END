@@ -21,7 +21,7 @@ function ManagedClubInfo() {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage();
+  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { mutate: updateClubInfo, isPending, error } = useManagedClubInfo(Number(clubId));
 
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);

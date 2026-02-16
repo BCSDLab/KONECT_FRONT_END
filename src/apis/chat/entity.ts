@@ -1,33 +1,38 @@
 import type { PaginationParams, PaginationResponse } from '../common/pagination';
 
-interface ChatRoom {
-  chatRoomId: number;
-  chatPartnerName: string;
-  chatPartnerProfileImage: string;
-  lastMessage?: string;
-  lastSentTime?: string;
+export interface Room {
+  roomId: number;
+  chatType: 'DIRECT' | 'GROUP';
+  roomName: string;
+  roomImageUrl: string;
+  lastMessage: string | null;
+  lastSentAt: string | null;
   unreadCount: number;
 }
 
 export interface ChatRoomsResponse {
-  chatRooms: ChatRoom[];
+  rooms: Room[];
 }
 
 export interface ChatMessage {
   messageId: number;
   senderId: number;
+  senderName: string;
   content: string;
   createdAt: string;
   isRead: boolean;
+  unreadCount: number;
   isMine: boolean;
 }
 
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
+  type: 'DIRECT' | 'GROUP';
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {
   messages: ChatMessage[];
+  clubId?: number;
 }
 
 export interface CreateChatRoomResponse {

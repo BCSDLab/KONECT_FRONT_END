@@ -16,11 +16,11 @@ import { useLogoutMutation } from './hooks/useLogout';
 
 const menuItems = [
   { to: '/profile', icon: UserIcon, label: '내 정보' },
+  { to: 'manager', icon: UserIdCardIcon, label: '동아리 관리' },
   { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스' },
   { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
   { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침' },
   { to: '/chats', icon: ChatIcon, label: '문의하기' },
-  { to: 'manager', icon: UserIdCardIcon, label: '관리자 페이지' },
 ];
 
 function MyPage() {
@@ -33,7 +33,7 @@ function MyPage() {
       <UserInfoCard />
       <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
         {menuItems
-          .filter(({ to }) => to !== 'manager' || myInfo.isClubManager)
+          .filter(({ to }) => to !== 'manager' || myInfo.isClubManager || myInfo.role === 'ADMIN')
           .map(({ to, icon: Icon, label }) => (
             <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
               <div className="flex items-center justify-between px-3 py-2">
@@ -52,7 +52,7 @@ function MyPage() {
               <LayersIcon />
               <div className="text-sm leading-4 font-semibold">버전관리</div>
             </div>
-            <div className="text-[13px] leading-4 text-indigo-200">v1.0.0</div>
+            <div className="text-[13px] leading-4 text-indigo-200">v1.0.3</div>
           </div>
         </div>
         <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={openModal}>
