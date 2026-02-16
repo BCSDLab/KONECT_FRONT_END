@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import CalendarDaysIcon from '@/assets/svg/calendar-days.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import ClipboardListIcon from '@/assets/svg/clipboard-list.svg';
 import PeopleGroupIcon from '@/assets/svg/people-group.svg';
@@ -12,7 +11,6 @@ const menuItems = [
   { to: 'recruitment', icon: ClipboardListIcon, label: '모집 공고 및 지원서 관리' },
   { to: 'applications', icon: UserSquareIcon, label: '지원자 관리' },
   { to: 'members', icon: PeopleGroupIcon, label: '부원 관리' },
-  { to: '', icon: CalendarDaysIcon, label: '일정 관리' },
 ];
 
 function ManagedClubDetail() {
