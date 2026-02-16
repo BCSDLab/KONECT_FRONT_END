@@ -10,11 +10,13 @@ export function useSmartBack() {
   return useCallback(() => {
     let targetPath = '/home';
     let state: { from?: string } | undefined;
+    let replace = true;
 
     if (pathname.startsWith('/chats/')) {
       targetPath = '/chats';
     } else if (pathname === '/chats') {
       targetPath = '/home';
+      replace = false;
     } else if (pathname.startsWith('/clubs/')) {
       const parts = pathname.split('/');
       const clubId = parts[2];
@@ -70,6 +72,6 @@ export function useSmartBack() {
       targetPath = '/home';
     }
 
-    navigate(targetPath, { replace: true, state });
+    navigate(targetPath, { replace, state });
   }, [navigate, pathname, fromClubList]);
 }
