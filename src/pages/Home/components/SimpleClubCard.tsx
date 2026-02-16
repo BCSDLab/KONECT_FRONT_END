@@ -17,7 +17,7 @@ function SimpleClubCard({ club }: SimpleClubCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <div className="text-h3 text-indigo-700">{club.name}</div>
-            {club.position !== '일반 회원' && (
+            {club.position == '회장' && (
               <div className="text-indigo-0 text-cap2-strong flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5">
                 운영진
               </div>
