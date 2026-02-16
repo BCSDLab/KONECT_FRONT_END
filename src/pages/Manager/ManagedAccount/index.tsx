@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
 import BottomModal from '@/components/common/BottomModal';
+import type { ApiError } from '@/interface/error';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagerQuery';
 
@@ -9,7 +10,7 @@ function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
   const { managedClubFee } = useManagedClubFee(Number(clubId));
   const { banks } = useGetBanks();
-  const { mutate, isPending } = useManagedClubFeeMutation(Number(clubId));
+  const { mutate, isPending, error } = useManagedClubFeeMutation(Number(clubId));
 
   const [isFeeEnabled, setIsFeeEnabled] = useState(true);
   const [amount, setAmount] = useState(managedClubFee.amount?.toString() || '');
@@ -150,6 +151,13 @@ function ManagedAccount() {
       </div>
 
       <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
+        {error && (
+          <p className="text-sm text-red-500">
+            {(error as ApiError).apiError?.fieldErrors?.[0]?.message ??
+              error.message ??
+              '회비 정보 저장에 실패했습니다.'}
+          </p>
+        )}
         <button
           type="button"
           onClick={handleSubmit}
