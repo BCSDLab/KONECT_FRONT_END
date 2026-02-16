@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
@@ -27,6 +27,7 @@ function ChatRoom() {
   const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, chatRoomList } = useChat(
     Number(chatRoomId)
   );
+  const [value, setValue] = useState('');
 
   useKeyboardHeight();
 
@@ -136,10 +137,14 @@ function ChatRoom() {
       <form onSubmit={handleSubmit} className="bg-indigo-25 flex shrink-0 items-end gap-2 px-5 py-2">
         <textarea
           ref={textareaRef}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           className="bg-indigo-0 max-h-32 w-full resize-none rounded-sm px-3 py-2 text-sm text-indigo-700 placeholder:text-indigo-500"
           rows={1}
           placeholder="메세지 보내기"
+          maxLength={1000}
         />
+
         <button type="submit" className="bg-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-sm">
           <PaperPlaneIcon className="text-indigo-0" />
         </button>
