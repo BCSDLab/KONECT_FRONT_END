@@ -27,7 +27,7 @@ export interface JoinClub {
   name: string;
   imageUrl: string;
   categoryName: string;
-  position: '일반 회원' | '운영진' | '회장';
+  position: '일반회원' | '운영진' | '회장';
   isFeePaid: boolean;
 }
 
