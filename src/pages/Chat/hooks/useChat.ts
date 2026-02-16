@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { getChatMessages, getChatRooms, postChatMessage, postChatRooms } from '@/apis/chat';
+import { useGetClubMembers } from '@/pages/Club/ClubDetail/hooks/useGetClubMembers';
 
 type ChatType = 'DIRECT' | 'GROUP';
 
@@ -89,6 +90,10 @@ const useChat = (chatRoomId?: number) => {
     },
   });
 
+  const clubId = chatMessagesData?.pages[0]?.clubId;
+
+  const { data: clubMembersData } = useGetClubMembers(clubId);
+
   return {
     chatRoomList,
     createChatRoom,
@@ -98,6 +103,7 @@ const useChat = (chatRoomId?: number) => {
     isFetchingNextPage,
     totalUnreadCount,
     sendMessage,
+    clubMembers: clubMembersData?.clubMembers ?? [],
   };
 };
 
