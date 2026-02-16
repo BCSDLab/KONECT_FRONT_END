@@ -8,15 +8,6 @@ export function useSmartBack() {
   const fromClubList = location.state?.from === 'clubList';
 
   return useCallback(() => {
-    if (pathname.startsWith('/chats/')) {
-      navigate('/chats', { replace: true });
-      return;
-    }
-    if (window.history.length > 1) {
-      navigate(-1);
-      return;
-    }
-
     let targetPath = '/home';
     let state: { from?: string } | undefined;
 
