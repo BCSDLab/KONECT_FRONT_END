@@ -1,4 +1,5 @@
 import CalendarIcon from '@/assets/svg/calendar.svg';
+import { SCHEDULE_COLOR, SCHEDULE_LABEL } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { useScheduleList } from '../hooks/useGetSchedules';
 
@@ -6,20 +7,6 @@ type scheduleDetailProps = {
   year: number;
   month: number;
   day: number;
-};
-
-const SCHEDULE_COLOR = {
-  UNIVERSITY: '#AEDCBA',
-  CLUB: '#FDE49B',
-  COUNCIL: '#E9F2FA',
-  DORM: '#B9ADEF',
-};
-
-const SCHEDULE_LABEL: Record<string, string> = {
-  UNIVERSITY: '학사일정',
-  CLUB: '동아리',
-  COUNCIL: '총동아리',
-  DORM: '기숙사',
 };
 
 function ScheduleDetail({ year, month, day }: scheduleDetailProps) {

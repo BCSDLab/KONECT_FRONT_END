@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
+import { SCHEDULE_COLOR, SCHEDULE_LABEL } from '@/constants/schedule';
 import useScrollRestore from '@/utils/hooks/useScrollRestore';
 import { useCouncilNotice } from '../Club/ClubDetail/hooks/useCouncilNotices';
 import CouncilNoticeCard from './components/CouncilNoticeCard';
@@ -11,13 +12,6 @@ import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
-
-const SCHEDULE_COLOR = {
-  UNIVERSITY: '#AEDCBA',
-  CLUB: '#FDE49B',
-  COUNCIL: '#E9F2FA',
-  DORM: '#B9ADEF',
-};
 
 const COUNCIL_NOTICE_PARAMS = { limit: 3 } as const;
 
@@ -145,13 +139,6 @@ function MyClubsSection() {
 
 function ScheduleSection() {
   const { data: scheduleListData } = useGetUpComingScheduleList();
-
-  const SCHEDULE_LABEL: Record<string, string> = {
-    UNIVERSITY: '학사일정',
-    CLUB: '동아리',
-    COUNCIL: '총동아리',
-    DORM: '기숙사',
-  };
 
   if (scheduleListData.schedules.length === 0) {
     return (
