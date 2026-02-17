@@ -1,3 +1,5 @@
+import { SCHEDULE_COLOR } from '@/constants/schedule';
+
 type Schedule = {
   title: string;
   startedAt: string;
@@ -12,15 +14,6 @@ type DateBoxProps = {
   isSunday: boolean;
   onClick: (date: Date) => void;
   schedules?: Schedule[];
-};
-
-type ScheduleCategory = Schedule['scheduleCategory'];
-
-const SCHEDULE_COLOR: Record<ScheduleCategory, string> = {
-  UNIVERSITY: '#AEDCBA',
-  CLUB: '#FDE49B',
-  COUNCIL: '#E9F2FA',
-  DORM: '#B9ADEF',
 };
 
 function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules = [] }: DateBoxProps) {

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
 import NavigateCard from '@/components/common/NavigateCard';
+import { SCHEDULE_COLOR, SCHEDULE_LABEL } from '@/constants/schedule';
 import useScrollRestore from '@/utils/hooks/useScrollRestore';
 import { useCouncilNotice } from '../Club/ClubDetail/hooks/useCouncilNotices';
 import CouncilNoticeCard from './components/CouncilNoticeCard';
@@ -11,13 +12,6 @@ import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
-
-const SCHEDULE_COLOR = {
-  UNIVERSITY: '#AEDCBA',
-  CLUB: '#FDE49B',
-  COUNCIL: '#E9F2FA',
-  DORM: '#B9ADEF',
-};
 
 const COUNCIL_NOTICE_PARAMS = { limit: 3 } as const;
 
@@ -161,8 +155,8 @@ function ScheduleSection() {
   return (
     <>
       {scheduleListData.schedules.slice(0, 3).map((schedule) => (
-        <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2">
-          <div className="flex items-center gap-3">
+        <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2 w-full">
+          <div className="flex min-w-0 items-center gap-3">
             <div
               style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
               className="bg-indigo-25 flex h-13 w-13 flex-col items-center justify-center rounded-sm"
@@ -172,8 +166,11 @@ function ScheduleSection() {
               </div>
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
-            <div className="flex flex-1 flex-col">
-              <div className="text-h3 text-indigo-700">{schedule.title}</div>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="text-h3 overflow-hidden text-ellipsis whitespace-nowrap text-indigo-700">
+                [{SCHEDULE_LABEL[schedule.scheduleCategory]}] {schedule.title}
+              </div>
+
               <div className="text-sub2 text-indigo-300">
                 {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
               </div>
