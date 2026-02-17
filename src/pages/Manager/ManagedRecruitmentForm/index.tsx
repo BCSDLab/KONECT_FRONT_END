@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import type { ClubQuestionRequest } from '@/apis/club/entity';
 import TrashIcon from '@/assets/svg/trash-full.svg';
-import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagerQuery';
+import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
 
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;

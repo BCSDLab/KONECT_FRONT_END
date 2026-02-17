@@ -6,7 +6,7 @@ import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import DatePicker from '@/pages/Manager/components/DatePicker';
-import { useManagedClubRecruitment, useManagedClubRecruitmentQuery } from '@/pages/Manager/hooks/useManagerQuery';
+import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 
@@ -48,8 +48,8 @@ function ManagedRecruitmentWrite() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { data: existingRecruitment } = useManagedClubRecruitmentQuery(Number(clubId));
-  const { mutate: saveRecruitment, isPending, error } = useManagedClubRecruitment(Number(clubId));
+  const { data: existingRecruitment } = useGetManagedRecruitments(Number(clubId));
+  const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(Number(clubId));
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {

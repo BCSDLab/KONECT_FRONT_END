@@ -4,7 +4,7 @@ import type { ClubFeeRequest } from '@/apis/club/entity';
 import BottomModal from '@/components/common/BottomModal';
 import type { ApiError } from '@/interface/error';
 import DatePicker from '@/pages/Manager/components/DatePicker';
-import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagerQuery';
+import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
 
 function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();

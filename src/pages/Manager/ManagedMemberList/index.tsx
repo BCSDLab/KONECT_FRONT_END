@@ -7,7 +7,6 @@ import Card from '@/components/common/Card';
 import Toast from '@/components/common/Toast';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import {
   useAddPreMember,
   useChangeMemberPosition,
@@ -17,7 +16,7 @@ import {
   useManagedMembers,
   useRemoveMember,
   useTransferPresident,
-} from '../hooks/useManagerQuery';
+} from '../hooks/useManagedMembers';
 
 const POSITION_PRIORITY: Record<PositionType, number> = {
   PRESIDENT: 0,
@@ -52,29 +51,16 @@ function ManagedMemberList() {
   const params = useParams();
   const clubId = Number(params.clubId);
 
-  const { toast, showToast, hideToast } = useToast();
   const { managedMemberList } = useManagedMembers(clubId);
 
-  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId, {
-    onSuccess: () => showToast('회장이 위임되었습니다'),
-  });
-  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId, {
-    onSuccess: () => showToast('부회장이 변경되었습니다'),
-  });
-  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId, {
-    onSuccess: () => showToast('직책이 변경되었습니다'),
-  });
-  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId, {
-    onSuccess: () => showToast('부원이 추방되었습니다'),
-  });
-  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId, {
-    onSuccess: () => showToast('부원이 추가되었습니다'),
-  });
+  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId);
+  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId);
+  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId);
+  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId);
+  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId);
 
   const { preMembersList } = useGetPreMemberList(clubId);
-  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId, {
-    onSuccess: () => showToast('사전 등록 회원이 삭제되었습니다'),
-  });
+  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId);
 
   const isPending =
     isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding || isDeletingPreMember;
@@ -522,7 +508,7 @@ function ManagedMemberList() {
         </div>
       </BottomModal>
 
-      <Toast toast={toast} onClose={hideToast} />
+      <Toast toast={null} onClose={() => {}} />
     </div>
   );
 }

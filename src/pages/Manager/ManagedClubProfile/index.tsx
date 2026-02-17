@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import { useGetClubDetail } from '@/pages/Club/ClubDetail/hooks/useGetClubDetail';
-import { useManagedClubInfo } from '@/pages/Manager/hooks/useManagerQuery';
+import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 
@@ -22,7 +22,7 @@ function ManagedClubInfo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { mutate: updateClubInfo, isPending, error } = useManagedClubInfo(Number(clubId));
+  const { mutate: updateClubInfo, isPending, error } = useUpdateClubInfo(Number(clubId));
 
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);
 

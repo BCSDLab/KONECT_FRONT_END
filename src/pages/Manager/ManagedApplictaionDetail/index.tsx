@@ -5,24 +5,24 @@ import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
 import Toast from '@/components/common/Toast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
-import { useApplicationApprove, useApplicationReject, useManagedClubApplicationDetail } from '../hooks/useManagerQuery';
+import {
+  useUpdateApplicationStatus,
+  useDeleteApplication,
+  useGetManagedApplicationDetail,
+} from '../hooks/useManagedApplications';
 
 function ManagedApplicationDetail() {
   const params = useParams();
   const clubId = Number(params.clubId);
   const applicationId = Number(params.applicationId);
 
-  const { toast, showToast, hideToast } = useToast();
-  const { managedClubApplicationDetail: application } = useManagedClubApplicationDetail(clubId, applicationId);
-  const { mutate: approve, isPending: isApproving } = useApplicationApprove(clubId, {
+  const { managedClubApplicationDetail: application } = useGetManagedApplicationDetail(clubId, applicationId);
+  const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId, {
     navigateBack: true,
-    onSuccess: () => showToast('지원이 승인되었습니다'),
   });
-  const { mutate: reject, isPending: isRejecting } = useApplicationReject(clubId, {
+  const { mutate: reject, isPending: isRejecting } = useDeleteApplication(clubId, {
     navigateBack: true,
-    onSuccess: () => showToast('지원이 거절되었습니다'),
   });
 
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
@@ -186,7 +186,7 @@ function ManagedApplicationDetail() {
         </Portal>
       )}
 
-      <Toast toast={toast} onClose={hideToast} />
+      <Toast toast={null} onClose={() => {}} />
     </div>
   );
 }
