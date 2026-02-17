@@ -455,7 +455,7 @@ function ManagedMemberList() {
             <input
               type="text"
               value={newStudentNumber}
-              onChange={(e) => setNewStudentNumber(e.target.value)}
+              onChange={(e) => setNewStudentNumber(e.target.value.replace(/\D/g, ''))}
               placeholder="학번을 입력해주세요"
               className="border-indigo-25 rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
             />
