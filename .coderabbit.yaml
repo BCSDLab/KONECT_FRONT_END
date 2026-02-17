@@ -26,8 +26,6 @@ reviews:
   tools:
     eslint:
       enabled: false
-    prettier:
-      enabled: false
   finishing_touches:
     docstrings:
       enabled: false
