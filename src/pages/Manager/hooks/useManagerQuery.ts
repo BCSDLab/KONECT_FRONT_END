@@ -21,6 +21,8 @@ import {
   patchVicePresident,
   patchMemberPosition,
   deleteMember,
+  getPreMembers,
+  deletePreMember,
 } from '@/apis/club';
 import type {
   AddPreMemberRequest,
@@ -51,6 +53,7 @@ const managerQueryKeys = {
   banks: () => [...managerQueryKeys.all, 'banks'],
   managedClubFee: (clubId: number) => [...managerQueryKeys.all, 'managedClubFee', clubId],
   managedMembers: (clubId: number) => [...managerQueryKeys.all, 'managedMembers', clubId],
+  preMembersList: (clubId: number) => [...managerQueryKeys.all, 'preMembersList', clubId],
 };
 
 export const useManagerQuery = () => {
@@ -290,6 +293,28 @@ export const useAddPreMember = (clubId: number, options: MutationOptions = {}) =
     mutationFn: (data: AddPreMemberRequest) => postAddPreMember(clubId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: managerQueryKeys.managedMembers(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.preMembersList(clubId) });
+      options.onSuccess?.();
+    },
+  });
+};
+
+export const useGetPreMemberList = (clubId: number) => {
+  const { data: preMembersList } = useSuspenseQuery({
+    queryKey: managerQueryKeys.preMembersList(clubId),
+    queryFn: () => getPreMembers(clubId),
+  });
+
+  return { preMembersList };
+};
+
+export const useDeletePreMember = (clubId: number, options: MutationOptions = {}) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (preMemberId: number) => deletePreMember(clubId, preMemberId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: managerQueryKeys.preMembersList(clubId) });
       options.onSuccess?.();
     },
   });

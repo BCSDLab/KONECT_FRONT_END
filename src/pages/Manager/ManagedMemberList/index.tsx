@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import type { ClubMember, PositionType } from '@/apis/club/entity';
+import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
@@ -12,6 +12,8 @@ import {
   useAddPreMember,
   useChangeMemberPosition,
   useChangeVicePresident,
+  useDeletePreMember,
+  useGetPreMemberList,
   useManagedMembers,
   useRemoveMember,
   useTransferPresident,
@@ -69,9 +71,16 @@ function ManagedMemberList() {
     onSuccess: () => showToast('부원이 추가되었습니다'),
   });
 
-  const isPending = isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding;
+  const { preMembersList } = useGetPreMemberList(clubId);
+  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId, {
+    onSuccess: () => showToast('사전 등록 회원이 삭제되었습니다'),
+  });
+
+  const isPending =
+    isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding || isDeletingPreMember;
 
   const [selectedMember, setSelectedMember] = useState<ClubMember | null>(null);
+  const [selectedPreMember, setSelectedPreMember] = useState<PreMember | null>(null);
 
   const { value: isActionOpen, setTrue: openAction, setFalse: closeAction } = useBooleanState();
   const { value: isTransferOpen, setTrue: openTransfer, setFalse: closeTransfer } = useBooleanState();
@@ -79,6 +88,16 @@ function ManagedMemberList() {
   const { value: isPositionOpen, setTrue: openPosition, setFalse: closePosition } = useBooleanState();
   const { value: isRemoveOpen, setTrue: openRemove, setFalse: closeRemove } = useBooleanState();
   const { value: isAddOpen, setTrue: openAdd, setFalse: closeAdd } = useBooleanState();
+  const {
+    value: isPreMemberActionOpen,
+    setTrue: openPreMemberAction,
+    setFalse: closePreMemberAction,
+  } = useBooleanState();
+  const {
+    value: isPreMemberDeleteOpen,
+    setTrue: openPreMemberDelete,
+    setFalse: closePreMemberDelete,
+  } = useBooleanState();
 
   const [transferTarget, setTransferTarget] = useState<number | null>(null);
   const [vpTarget, setVPTarget] = useState<number | null>(null);
@@ -145,6 +164,23 @@ function ManagedMemberList() {
     setNewMemberName('');
   };
 
+  const handlePreMemberAction = (member: PreMember) => {
+    setSelectedPreMember(member);
+    openPreMemberAction();
+  };
+
+  const handleOpenPreMemberDelete = () => {
+    closePreMemberAction();
+    openPreMemberDelete();
+  };
+
+  const handleDeletePreMember = () => {
+    if (!selectedPreMember) return;
+    deletePreMemberMutate(selectedPreMember.preMemberId);
+    closePreMemberDelete();
+    setSelectedPreMember(null);
+  };
+
   return (
     <div className="flex h-full flex-col bg-white">
       <div className="flex flex-1 flex-col gap-2 overflow-auto p-3">
@@ -209,6 +245,35 @@ function ManagedMemberList() {
             ))}
           </div>
         ))}
+
+        {preMembersList.preMembers.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <div className="text-body2 px-1 py-1 font-semibold text-indigo-700">사전 등록 회원</div>
+            {preMembersList.preMembers.map((member) => (
+              <Card key={member.preMemberId} className="flex-row items-center gap-2">
+                <div className="flex flex-1 items-center gap-2">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                    {member.name.charAt(0)}
+                  </div>
+                  <div>
+                    <div className="text-body2 text-indigo-700">
+                      {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
+                    </div>
+                    <div className="text-cap1 text-indigo-300">사전 등록</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handlePreMemberAction(member)}
+                  disabled={isPending}
+                  className="hover:bg-indigo-5 rounded-full p-2 text-indigo-400 disabled:opacity-50"
+                >
+                  ⋯
+                </button>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Member Action Modal */}
@@ -390,7 +455,7 @@ function ManagedMemberList() {
             <input
               type="text"
               value={newStudentNumber}
-              onChange={(e) => setNewStudentNumber(e.target.value)}
+              onChange={(e) => setNewStudentNumber(e.target.value.replace(/\D/g, ''))}
               placeholder="학번을 입력해주세요"
               className="border-indigo-25 rounded-lg border px-3 py-2 text-sm outline-none focus:border-blue-500"
             />
@@ -413,6 +478,47 @@ function ManagedMemberList() {
           >
             {isAdding ? '추가 중...' : '추가'}
           </button>
+        </div>
+      </BottomModal>
+
+      {/* Pre-Member Action Modal */}
+      <BottomModal isOpen={isPreMemberActionOpen} onClose={closePreMemberAction}>
+        <div className="flex flex-col gap-2 p-5">
+          <div className="text-body2 pb-2 font-semibold text-indigo-700">{selectedPreMember?.name} 관리</div>
+          <button
+            type="button"
+            onClick={handleOpenPreMemberDelete}
+            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left text-red-500"
+          >
+            사전 등록 삭제
+          </button>
+        </div>
+      </BottomModal>
+
+      {/* Pre-Member Delete Confirm Modal */}
+      <BottomModal isOpen={isPreMemberDeleteOpen} onClose={closePreMemberDelete}>
+        <div className="flex flex-col gap-3 p-5">
+          <div className="text-body2 font-semibold text-indigo-700">사전 등록 삭제</div>
+          <div className="text-body3 text-indigo-400">
+            정말 {selectedPreMember?.name}님의 사전 등록을 삭제하시겠어요?
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={closePreMemberDelete}
+              className="border-indigo-25 flex-1 rounded-lg border py-3 text-center font-bold"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={handleDeletePreMember}
+              disabled={isPending}
+              className="flex-1 rounded-lg bg-red-500 py-3 text-center font-bold text-white disabled:opacity-50"
+            >
+              {isDeletingPreMember ? '삭제 중...' : '삭제'}
+            </button>
+          </div>
         </div>
       </BottomModal>
 
