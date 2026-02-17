@@ -7,7 +7,6 @@ import LayersIcon from '@/assets/svg/layers.svg';
 import LogoutIcon from '@/assets/svg/logout.svg';
 import UserIdCardIcon from '@/assets/svg/user-id-card.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
-import UserIcon from '@/assets/svg/user.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useMyInfo } from '../Profile/hooks/useMyInfo';
@@ -15,7 +14,6 @@ import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 
 const menuItems = [
-  { to: '/profile', icon: UserIcon, label: '내 정보' },
   { to: 'manager', icon: UserIdCardIcon, label: '동아리 관리' },
   { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스' },
   { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
