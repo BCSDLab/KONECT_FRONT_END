@@ -8,6 +8,7 @@ export interface Room {
   lastMessage: string | null;
   lastSentAt: string | null;
   unreadCount: number;
+  isMuted: boolean;
 }
 
 export interface ChatRoomsResponse {

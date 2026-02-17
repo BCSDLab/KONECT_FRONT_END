@@ -10,13 +10,15 @@ function ChatHeader() {
   const { chatRoomId } = useParams();
   const numericRoomId = Number(chatRoomId);
 
-  const { chatRoomList, clubMembers } = useChat(numericRoomId);
+  const { chatRoomList, clubMembers, toggleMute } = useChat(numericRoomId);
 
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
 
   const [open, setOpen] = useState(false);
 
   const isGroup = chatRoom?.chatType === 'GROUP';
+
+  const isMuted = chatRoom?.isMuted ?? false;
 
   return (
     <>
@@ -40,6 +42,23 @@ function ChatHeader() {
       {open && (
         <div className="fixed inset-0 z-50 bg-black/30" onClick={() => setOpen(false)}>
           <div className="absolute top-0 right-0 h-full w-72 bg-white p-4" onClick={(e) => e.stopPropagation()}>
+            <div className="mb-6 flex items-center justify-between border-b pb-4">
+              <span className="text-sm font-medium">알림</span>
+
+              <button
+                onClick={() => toggleMute()}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                  isMuted ? 'bg-gray-300' : 'bg-primary'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                    isMuted ? 'translate-x-1' : 'translate-x-6'
+                  }`}
+                />
+              </button>
+            </div>
+
             {isGroup && (
               <>
                 <div className="mb-4 text-sm font-bold">참여자 {clubMembers.length}명</div>
