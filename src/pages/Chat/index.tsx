@@ -57,7 +57,7 @@ function ChatListPage() {
                 </div>
 
                 {room.unreadCount > 0 && (
-                  <div className="text-indigo-0 shrink-0 rounded-full bg-[#3182f6] px-1 py-0.5 text-center">
+                  <div className="text-indigo-0 min-w-5 shrink-0 rounded-full bg-[#3182f6] px-1 py-0.5 text-center">
                     {room.unreadCount}
                   </div>
                 )}
