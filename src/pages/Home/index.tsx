@@ -146,6 +146,13 @@ function MyClubsSection() {
 function ScheduleSection() {
   const { data: scheduleListData } = useGetUpComingScheduleList();
 
+  const SCHEDULE_LABEL: Record<string, string> = {
+    UNIVERSITY: '학사일정',
+    CLUB: '동아리',
+    COUNCIL: '총동아리',
+    DORM: '기숙사',
+  };
+
   if (scheduleListData.schedules.length === 0) {
     return (
       <Card className="mt-2">
@@ -161,8 +168,8 @@ function ScheduleSection() {
   return (
     <>
       {scheduleListData.schedules.slice(0, 3).map((schedule) => (
-        <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2">
-          <div className="flex items-center gap-3">
+        <NavigateCard key={schedule.title} to={scheduleDateToPath(schedule.startedAt)} className="mt-2 w-full">
+          <div className="flex min-w-0 items-center gap-3">
             <div
               style={{ backgroundColor: SCHEDULE_COLOR[schedule.scheduleCategory] }}
               className="bg-indigo-25 flex h-13 w-13 flex-col items-center justify-center rounded-sm"
@@ -172,8 +179,11 @@ function ScheduleSection() {
               </div>
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
-            <div className="flex flex-1 flex-col">
-              <div className="text-h3 text-indigo-700">{schedule.title}</div>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <div className="text-h3 overflow-hidden text-ellipsis whitespace-nowrap text-indigo-700">
+                [{SCHEDULE_LABEL[schedule.scheduleCategory]}] {schedule.title}
+              </div>
+
               <div className="text-sub2 text-indigo-300">
                 {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
               </div>

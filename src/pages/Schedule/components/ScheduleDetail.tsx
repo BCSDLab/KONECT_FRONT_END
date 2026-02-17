@@ -15,6 +15,13 @@ const SCHEDULE_COLOR = {
   DORM: '#B9ADEF',
 };
 
+const SCHEDULE_LABEL: Record<string, string> = {
+  UNIVERSITY: '학사일정',
+  CLUB: '동아리',
+  COUNCIL: '총동아리',
+  DORM: '기숙사',
+};
+
 function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
   const { data: schedules } = useScheduleList({ year, month });
 
@@ -51,7 +58,11 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
             <div className="flex flex-col gap-1">
-              <div className="text-[14px] leading-4 font-bold">{title}</div>
+              <div className="flex flex-row gap-1">
+                <div className="text-[14px] leading-4 font-bold">
+                  [{SCHEDULE_LABEL[scheduleCategory]}] {title}
+                </div>
+              </div>
               <div className="text-[13px] leading-3 text-indigo-300">{formatScheduleTime({ startedAt, endedAt })}</div>
             </div>
           </div>
