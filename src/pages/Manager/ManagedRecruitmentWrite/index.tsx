@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
+import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
+import ToggleSwitch from '@/components/common/ToggleSwitch';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
 import useBooleanState from '@/utils/hooks/useBooleanState';
@@ -16,9 +18,11 @@ interface ImageItem {
   isExisting?: boolean; // 기존 이미지 여부
 }
 
-const dateButtonStyle = twMerge(
-  'rounded-lg bg-white px-4 py-2 text-indigo-700 transition-colors active:bg-indigo-25 shadow-[0_2px_4px_rgba(0,0,0,0.1)] text-h1 font-bold'
-);
+const dateButtonStyle =
+  'group flex min-h-14 w-full items-center justify-between rounded-xl border border-indigo-50 bg-white px-4 py-3.5 text-left shadow-[0_6px_16px_rgba(2,23,48,0.08)]';
+const sectionCardStyle =
+  'flex w-full flex-col gap-4 rounded-2xl border border-indigo-25 bg-white px-4 py-4 shadow-[0_4px_12px_rgba(2,23,48,0.06)]';
+const sectionTitleStyle = 'text-h3 text-indigo-700';
 
 function formatDateDot(date: Date): string {
   const year = date.getFullYear();
@@ -39,7 +43,6 @@ function ManagedRecruitmentWrite() {
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [content, setContent] = useState('');
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
-  const [isFeeRequired, setIsFeeRequired] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
@@ -68,7 +71,6 @@ function ManagedRecruitmentWrite() {
     }
     const isAlways = !existingRecruitment.startDate || !existingRecruitment.endDate;
     setIsAlwaysRecruiting(isAlways);
-    setIsFeeRequired(existingRecruitment.isFeeRequired);
     if (existingRecruitment.images && existingRecruitment.images.length > 0) {
       setImages(
         existingRecruitment.images.map((img) => ({
@@ -100,7 +102,6 @@ function ManagedRecruitmentWrite() {
     setEndDate(new Date());
     setContent('');
     setIsAlwaysRecruiting(false);
-    setIsFeeRequired(false);
     images.forEach((img) => {
       if (!img.isExisting) URL.revokeObjectURL(img.previewUrl);
     });
@@ -174,13 +175,13 @@ function ManagedRecruitmentWrite() {
       const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
 
       if (isAlwaysRecruiting) {
-        saveRecruitment({ content, images: imageData, isFeeRequired, isAlwaysRecruiting: true }, { onSuccess });
+        saveRecruitment({ content, images: imageData, isFeeRequired: false, isAlwaysRecruiting: true }, { onSuccess });
       } else {
         saveRecruitment(
           {
             content,
             images: imageData,
-            isFeeRequired,
+            isFeeRequired: false,
             isAlwaysRecruiting: false,
             startDate: formatDateDot(startDate),
             endDate: formatDateDot(endDate),
@@ -195,82 +196,97 @@ function ManagedRecruitmentWrite() {
 
   return (
     <div className="flex h-full flex-col">
-      <form id="recruitment-form" onSubmit={handleSubmit} className="flex flex-1 flex-col gap-6 overflow-auto p-3">
-        <section className="flex w-full flex-col gap-4">
+      <form
+        id="recruitment-form"
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-5 p-4"
+        style={{ paddingBottom: 'calc(20px + var(--sab) + 16px)' }}
+      >
+        <section className={twMerge(sectionCardStyle, 'gap-3')}>
           <div className="flex items-center justify-between gap-3">
-            <span className="text-h4">모집 일시</span>
-            <div className="flex items-center gap-2">
-              <label htmlFor="alwaysRecruit" className="text-h4 cursor-pointer select-none">
-                상시 모집
-              </label>
-              <input
-                id="alwaysRecruit"
-                type="checkbox"
-                checked={isAlwaysRecruiting}
-                onChange={(e) => setIsAlwaysRecruiting(e.target.checked)}
-                className="h-4 w-4"
-              />
-            </div>
+            <span className={sectionTitleStyle}>모집 일시</span>
+            <ToggleSwitch
+              label="상시 모집"
+              enabled={isAlwaysRecruiting}
+              onChange={setIsAlwaysRecruiting}
+              layout="horizontal"
+            />
           </div>
-          {!isAlwaysRecruiting && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between gap-3">
-                <DatePicker
-                  selectedDate={startDate}
-                  onChange={setStartDate}
-                  renderTrigger={(toggle) => (
-                    <button type="button" onClick={toggle} className={dateButtonStyle}>
-                      {formatDateDot(startDate)}
-                    </button>
-                  )}
-                />
-                <span className="text-indigo-400">~</span>
-                <DatePicker
-                  selectedDate={endDate}
-                  onChange={setEndDate}
-                  renderTrigger={(toggle) => (
-                    <button type="button" onClick={toggle} className={dateButtonStyle}>
-                      {formatDateDot(endDate)}
-                    </button>
-                  )}
-                />
+          <div className="h-px bg-indigo-50" />
+          {isAlwaysRecruiting ? (
+            <p className="text-body2 text-indigo-300">상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.</p>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <DatePicker
+                selectedDate={startDate}
+                onChange={setStartDate}
+                renderTrigger={(toggle) => (
+                  <button type="button" onClick={toggle} className={dateButtonStyle}>
+                    <div className="flex items-center gap-3">
+                      <span className="bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-lg text-indigo-500">
+                        <CalendarIcon aria-hidden="true" className="h-4 w-4" />
+                      </span>
+                      <span className="flex flex-col leading-none">
+                        <span className="text-cap1 text-indigo-300">시작일</span>
+                        <span className="text-h2 mt-1 text-indigo-700">{formatDateDot(startDate)}</span>
+                      </span>
+                    </div>
+                    <span className="bg-indigo-5 flex h-7 w-7 items-center justify-center rounded-full text-indigo-300">
+                      <ChevronRight
+                        aria-hidden="true"
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </button>
+                )}
+              />
+              <div className="mx-2 flex items-center gap-2">
+                <div className="h-px flex-1 bg-indigo-50" />
+                <span className="text-cap1 text-indigo-300">~</span>
+                <div className="h-px flex-1 bg-indigo-50" />
               </div>
-              {hasDateError && <p className="text-sm text-red-500">{getDateErrorMessage()}</p>}
+              <DatePicker
+                selectedDate={endDate}
+                onChange={setEndDate}
+                renderTrigger={(toggle) => (
+                  <button type="button" onClick={toggle} className={dateButtonStyle}>
+                    <div className="flex items-center gap-3">
+                      <span className="bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-lg text-indigo-500">
+                        <CalendarIcon aria-hidden="true" className="h-4 w-4" />
+                      </span>
+                      <span className="flex flex-col leading-none">
+                        <span className="text-cap1 text-indigo-300">종료일</span>
+                        <span className="text-h2 mt-1 text-indigo-700">{formatDateDot(endDate)}</span>
+                      </span>
+                    </div>
+                    <span className="bg-indigo-5 flex h-7 w-7 items-center justify-center rounded-full text-indigo-300">
+                      <ChevronRight
+                        aria-hidden="true"
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      />
+                    </span>
+                  </button>
+                )}
+              />
+              {hasDateError && <p className="text-body3 text-red-500">{getDateErrorMessage()}</p>}
             </div>
           )}
         </section>
-        <section className="flex w-full flex-col gap-4">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-h4">회비 납부</span>
-            <div className="flex items-center gap-2">
-              <label htmlFor="feeRequired" className="text-h4 cursor-pointer select-none">
-                회비 필요
-              </label>
-              <input
-                id="feeRequired"
-                type="checkbox"
-                checked={isFeeRequired}
-                onChange={(e) => setIsFeeRequired(e.target.checked)}
-                className="h-4 w-4"
-              />
-            </div>
-          </div>
-        </section>
-        <section className="flex w-full flex-col gap-4">
-          <span className="text-h4">
+        <section className={sectionCardStyle}>
+          <span className={sectionTitleStyle}>
             모집 공고 <span className="text-[#EA4335]">*</span>
           </span>
           <textarea
             ref={textareaRef}
             value={content}
             onChange={handleContentChange}
-            rows={4}
-            className="text-h5 mt-2 w-full resize-none overflow-hidden rounded-lg bg-white p-3 shadow-[0_2px_4px_rgba(0,0,0,0.1)]"
-            placeholder="모집 공고 내용을 작성해주세요."
+            rows={6}
+            className="text-body1 bg-indigo-0 mt-1 min-h-[156px] w-full resize-none overflow-hidden rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)] placeholder:text-indigo-200"
+            placeholder="모집 공고 내용을 작성해주세요…"
           />
         </section>
-        <section className="flex w-full flex-col gap-4">
-          <span className="text-h4">이미지 등록</span>
+        <section className={sectionCardStyle}>
+          <span className={sectionTitleStyle}>이미지 등록</span>
           <input
             ref={fileInputRef}
             type="file"
@@ -284,10 +300,10 @@ function ManagedRecruitmentWrite() {
               <button
                 type="button"
                 onClick={handleImageClick}
-                className="border-indigo-75 hover:bg-indigo-25 flex h-40 w-40 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
+                className="border-indigo-75 bg-indigo-0 flex h-44 w-full max-w-[260px] flex-col items-center justify-center gap-3 rounded-2xl border"
               >
-                <ImageIcon />
-                <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">
+                <ImageIcon aria-hidden="true" />
+                <p className="text-sub3 text-center whitespace-pre-line text-indigo-300">
                   이미지를 {'\n'} 추가해주세요
                 </p>
               </button>
@@ -298,9 +314,10 @@ function ManagedRecruitmentWrite() {
                     <button
                       type="button"
                       onClick={handlePrevImage}
-                      className="hover:bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition-colors"
+                      aria-label="이전 이미지"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md"
                     >
-                      <ChevronLeft className="h-5 w-5 text-indigo-700" />
+                      <ChevronLeft aria-hidden="true" className="h-5 w-5 text-indigo-700" />
                     </button>
                   )}
                   <div className="relative h-40 w-40 overflow-hidden rounded-xl">
@@ -312,7 +329,8 @@ function ManagedRecruitmentWrite() {
                     <button
                       type="button"
                       onClick={handleDeleteImage}
-                      className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
+                      aria-label="현재 이미지 삭제"
+                      className="absolute top-1 right-1 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white"
                     >
                       ✕
                     </button>
@@ -321,9 +339,10 @@ function ManagedRecruitmentWrite() {
                     <button
                       type="button"
                       onClick={handleNextImage}
-                      className="hover:bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-md transition-colors"
+                      aria-label="다음 이미지"
+                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md"
                     >
-                      <ChevronRight className="h-5 w-5 text-indigo-700" />
+                      <ChevronRight aria-hidden="true" className="h-5 w-5 text-indigo-700" />
                     </button>
                   )}
                 </div>
@@ -335,8 +354,9 @@ function ManagedRecruitmentWrite() {
                           key={index}
                           type="button"
                           onClick={() => setCurrentImageIndex(index)}
+                          aria-label={`${index + 1}번 이미지 보기`}
                           className={twMerge(
-                            'h-2 w-2 rounded-full transition-colors',
+                            'h-2.5 w-2.5 rounded-full',
                             index === currentImageIndex ? 'bg-indigo-700' : 'bg-indigo-200'
                           )}
                         />
@@ -346,7 +366,7 @@ function ManagedRecruitmentWrite() {
                   <button
                     type="button"
                     onClick={handleImageClick}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-700 text-white transition-colors hover:bg-indigo-800"
+                    className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-700 text-white"
                   >
                     +
                   </button>
@@ -355,21 +375,22 @@ function ManagedRecruitmentWrite() {
             )}
           </div>
         </section>
+        <div className="mt-1 flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
+            {uploadError && (
+              <p className="text-body3 text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+            )}
+            {error && <p className="text-body3 text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
+          </div>
+          <button
+            type="submit"
+            disabled={isPending || isUploading || !content.trim() || hasDateError}
+            className="text-h3 bg-primary w-full rounded-xl py-3.5 text-white"
+          >
+            {isUploading ? '이미지 업로드 중…' : isPending ? '수정 중…' : '모집 공고 수정'}
+          </button>
+        </div>
       </form>
-      <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
-        {uploadError && (
-          <p className="text-sm text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
-        )}
-        {error && <p className="text-sm text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
-        <button
-          type="submit"
-          form="recruitment-form"
-          disabled={isPending || isUploading || !content.trim() || hasDateError}
-          className="bg-primary w-full rounded-lg py-3 text-white transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-indigo-300"
-        >
-          {isUploading ? '이미지 업로드 중...' : isPending ? '수정 중...' : '모집 공고 수정'}
-        </button>
-      </div>
       <BottomModal isOpen={isChoiceModalOpen} onClose={closeChoiceModal}>
         <div className="flex flex-col gap-6 px-6 pt-7 pb-4">
           <div className="text-h3 text-center whitespace-pre-wrap">기존 모집 공고가 있습니다. 불러와서 수정할까요?</div>
