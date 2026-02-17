@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import BellOfIcon from '@/assets/svg/bell-off.svg';
 import useChat from './hooks/useChat';
 
 function ChatListPage() {
@@ -44,6 +45,11 @@ function ChatListPage() {
                   <div className="text-sm leading-4 font-bold text-indigo-700">{room.roomName}</div>
 
                   {isGroup && <span className="bg-primary text-cap2 rounded px-1.5 py-0.5 text-white">단체</span>}
+                  {room.isMuted && (
+                    <span className="text-xs text-gray-400">
+                      <BellOfIcon className="h-4 w-4" />
+                    </span>
+                  )}
                 </div>
 
                 <div className="shrink-0 text-xs leading-3.5 font-medium text-indigo-300">
