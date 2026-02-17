@@ -1,20 +1,20 @@
 import { Fragment } from 'react/jsx-runtime';
-import type { ClubApplyResponse } from '@/apis/club/entity';
+import type { ClubFeeResponse } from '@/apis/club/entity';
 import CopyIcon from '@/assets/svg/copy.svg';
 import Card from '@/components/common/Card';
 import Toast from '@/components/common/Toast';
 import { useToast } from '@/utils/hooks/useToast';
 
 interface AccountInfoCardProps {
-  accountInfo: ClubApplyResponse;
+  accountInfo: ClubFeeResponse;
 }
 
 function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
   const { toast, showToast, hideToast } = useToast();
   const items = [
-    { label: '은행', value: accountInfo.bank },
-    { label: '예금주', value: accountInfo.accountHolder },
-    { label: '계좌번호', value: accountInfo.accountNumber },
+    { label: '은행', value: accountInfo.bank ?? '-' },
+    { label: '예금주', value: accountInfo.accountHolder ?? '-' },
+    { label: '계좌번호', value: accountInfo.accountNumber ?? '-' },
   ];
 
   return (

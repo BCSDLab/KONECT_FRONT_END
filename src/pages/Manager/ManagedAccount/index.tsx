@@ -3,56 +3,70 @@ import { useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
 import BottomModal from '@/components/common/BottomModal';
 import type { ApiError } from '@/interface/error';
-import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
 
 function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
-  const { managedClubFee } = useManagedClubFee(Number(clubId));
+  const clubIdNumber = Number(clubId);
+  const { managedClubFee } = useManagedClubFee(clubIdNumber);
   const { banks } = useGetBanks();
-  const { mutate, isPending, error } = useManagedClubFeeMutation(Number(clubId));
+  const { mutate, isPending, error } = useManagedClubFeeMutation(clubIdNumber);
 
-  const [isFeeEnabled, setIsFeeEnabled] = useState(true);
-  const [amount, setAmount] = useState(managedClubFee.amount?.toString() || '');
-  const [selectedBankId, setSelectedBankId] = useState<number | null>(managedClubFee.bankId ?? null);
-  const [selectedBank, setSelectedBank] = useState(managedClubFee.bank || '');
-  const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder || '');
-  const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber || '');
-  const [deadLine, setDeadLine] = useState(managedClubFee.deadLine || '');
+  const initialBankId = banks.find((bank) => bank.name === managedClubFee.bank)?.id ?? null;
+
+  const [isFeeEnabled, setIsFeeEnabled] = useState(managedClubFee.isFeeRequired);
+  const [amount, setAmount] = useState(managedClubFee.amount?.toString() ?? '');
+  const [selectedBankId, setSelectedBankId] = useState<number | null>(initialBankId);
+  const [selectedBank, setSelectedBank] = useState(managedClubFee.bank ?? '');
+  const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder ?? '');
+  const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber ?? '');
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
 
+  const isFormValid =
+    !isFeeEnabled ||
+    (amount.trim() !== '' &&
+      Number(amount) > 0 &&
+      selectedBankId !== null &&
+      accountHolder.trim() !== '' &&
+      accountNumber.trim() !== '');
+
   const handleSubmit = () => {
-    const payload: ClubFeeRequest = isFeeEnabled
-      ? {
-          bankId: selectedBankId,
-          amount: Number(amount) || 0,
-          bank: selectedBank,
-          accountNumber,
-          accountHolder,
-          deadLine,
-        }
-      : {
-          bankId: null,
-          amount: 0,
-          bank: '',
-          accountNumber: '',
-          accountHolder: '',
-          deadLine: '',
-        };
+    if (isPending || !isFormValid) return;
+
+    if (isFeeEnabled) {
+      if (selectedBankId === null) return;
+
+      const payload: ClubFeeRequest = {
+        amount: Number(amount),
+        bankId: selectedBankId,
+        accountNumber: accountNumber.trim(),
+        accountHolder: accountHolder.trim(),
+        isFeeRequired: true,
+      };
+      mutate(payload);
+      return;
+    }
+
+    const payload: ClubFeeRequest = {
+      amount: null,
+      bankId: null,
+      accountNumber: null,
+      accountHolder: null,
+      isFeeRequired: null,
+    };
     mutate(payload);
   };
 
   const hasChanges = () => {
-    if (!managedClubFee) return true;
-    const currentHasFee = !!(managedClubFee.amount || managedClubFee.bank || managedClubFee.accountNumber);
-    if (currentHasFee !== isFeeEnabled) return true;
+    const initialIsFeeEnabled = managedClubFee.isFeeRequired;
+    if (initialIsFeeEnabled !== isFeeEnabled) return true;
     if (!isFeeEnabled) return false;
+
     return (
-      amount !== (managedClubFee.amount?.toString() || '') ||
-      selectedBank !== (managedClubFee.bank || '') ||
-      accountHolder !== (managedClubFee.accountHolder || '') ||
-      accountNumber !== (managedClubFee.accountNumber || '') ||
-      deadLine !== (managedClubFee.deadLine || '')
+      amount !== (managedClubFee.amount?.toString() ?? '') ||
+      selectedBank !== (managedClubFee.bank ?? '') ||
+      accountHolder !== (managedClubFee.accountHolder ?? '') ||
+      accountNumber !== (managedClubFee.accountNumber ?? '')
     );
   };
 
@@ -84,7 +98,7 @@ function ManagedAccount() {
             <div className="flex flex-col gap-1">
               <label className="text-[15px] leading-6 font-medium text-indigo-300">가입비</label>
               <input
-                type="number"
+                type="text"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="가입비를 입력해주세요"
@@ -97,7 +111,9 @@ function ManagedAccount() {
               <button
                 type="button"
                 onClick={() => setIsBankModalOpen(true)}
-                className="bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold"
+                className={`bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold ${
+                  selectedBank ? 'text-indigo-700' : 'text-indigo-100'
+                }`}
               >
                 {selectedBank || '은행을 선택해주세요'}
               </button>
@@ -124,28 +140,6 @@ function ManagedAccount() {
                 className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
               />
             </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">마감기한</label>
-              <DatePicker
-                selectedDate={deadLine ? new Date(deadLine.replace(/\./g, '-')) : new Date()}
-                onChange={(date) =>
-                  setDeadLine(
-                    `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
-                  )
-                }
-                triggerType="default"
-                renderTrigger={(toggle) => (
-                  <button
-                    type="button"
-                    onClick={toggle}
-                    className="bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold"
-                  >
-                    {deadLine || '마감기한을 선택해주세요'}
-                  </button>
-                )}
-              />
-            </div>
           </>
         )}
       </div>
@@ -161,7 +155,7 @@ function ManagedAccount() {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isPending || !hasChanges()}
+          disabled={isPending || !hasChanges() || !isFormValid}
           className="bg-primary w-full rounded-lg py-3 text-center text-lg leading-7 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-indigo-300"
         >
           {isPending ? '저장 중...' : '저장하기'}

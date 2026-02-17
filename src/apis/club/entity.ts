@@ -92,12 +92,19 @@ export interface ClubApplyRequest {
 }
 
 export interface ClubApplyResponse {
-  bankId?: number;
-  amount?: number;
-  bank?: string;
-  accountNumber?: string;
-  accountHolder?: string;
-  deadLine?: string;
+  amount: number;
+  bank: string;
+  accountNumber: string;
+  accountHolder: string;
+  isFeeRequired: boolean;
+}
+
+export interface ClubFeeResponse {
+  amount: number | null;
+  bank: string | null;
+  accountNumber: string | null;
+  accountHolder: string | null;
+  isFeeRequired: boolean;
 }
 
 export interface ClubRecruitmentImage {
@@ -212,14 +219,23 @@ export interface Bank {
   imageUrl: string;
 }
 
-export interface ClubFeeRequest {
-  bankId: number | null;
+interface ClubFeeUpsertRequest {
   amount: number;
-  bank: string;
+  bankId: number;
   accountNumber: string;
   accountHolder: string;
-  deadLine: string;
+  isFeeRequired: boolean;
 }
+
+interface ClubFeeDeleteRequest {
+  amount: null;
+  bankId: null;
+  accountNumber: null;
+  accountHolder: null;
+  isFeeRequired: null;
+}
+
+export type ClubFeeRequest = ClubFeeUpsertRequest | ClubFeeDeleteRequest;
 
 //========================== Member Management Entities =========================//
 
