@@ -268,18 +268,18 @@ export interface AddPreMemberResponse {
   name: string;
 }
 
-export interface preMember {
+export interface PreMember {
   preMemberId: number;
   studentNumber: string;
   name: string;
   clubPosition: 'MANAGER' | 'MEMBER';
 }
 
-export interface preMembersList {
-  preMembers: preMember[];
+export interface PreMembersList {
+  preMembers: PreMember[];
 }
 
-export interface preMemberDeleteRequest {
+export interface PreMemberDeleteRequest {
   clubId: number;
   preMemberId: number;
 }
