@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import Card from '@/components/common/Card';
-import { useManagedClub, useManagerQuery } from '@/pages/Manager/hooks/useManagerQuery';
+import { useManagedClub, useGetManagedClubs } from '@/pages/Manager/hooks/useManagedClubs';
 import { useMyInfo } from '../../Profile/hooks/useMyInfo';
 
 interface UserInfoCardProps {
@@ -14,7 +14,7 @@ function ManagerDetailInfoCard() {
   const clubId = Number(params.clubId);
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
-  const { managedClubList } = useManagerQuery();
+  const { managedClubList } = useGetManagedClubs();
   const { managedClub } = useManagedClub(clubId);
 
   const currentClub = managedClubList.joinedClubs.find((club) => club.id === clubId);
@@ -44,7 +44,7 @@ function ManagerDetailInfoCard() {
 function UserInfoCard({ type }: UserInfoCardProps) {
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
-  const { managedClubList } = useManagerQuery();
+  const { managedClubList } = useGetManagedClubs();
 
   if (type === 'detail') {
     return <ManagerDetailInfoCard />;
