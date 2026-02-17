@@ -27,7 +27,7 @@ import {
   type AddPreMemberRequest,
   type AddPreMemberResponse,
   type PositionType,
-  type preMembersList,
+  type PreMembersList,
 } from './entity';
 
 export type { Bank, ClubFeeRequest };
@@ -198,7 +198,7 @@ export const postAddPreMember = async (clubId: number, data: AddPreMemberRequest
 };
 
 export const getPreMembers = async (clubId: number) => {
-  const response = await apiClient.get<preMembersList>(`clubs/${clubId}/pre-members`, { requiresAuth: true });
+  const response = await apiClient.get<PreMembersList>(`clubs/${clubId}/pre-members`, { requiresAuth: true });
   return response;
 };
 

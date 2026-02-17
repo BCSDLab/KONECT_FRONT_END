@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import type { ClubMember, PositionType, preMember } from '@/apis/club/entity';
+import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
@@ -80,7 +80,7 @@ function ManagedMemberList() {
     isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding || isDeletingPreMember;
 
   const [selectedMember, setSelectedMember] = useState<ClubMember | null>(null);
-  const [selectedPreMember, setSelectedPreMember] = useState<preMember | null>(null);
+  const [selectedPreMember, setSelectedPreMember] = useState<PreMember | null>(null);
 
   const { value: isActionOpen, setTrue: openAction, setFalse: closeAction } = useBooleanState();
   const { value: isTransferOpen, setTrue: openTransfer, setFalse: closeTransfer } = useBooleanState();
@@ -164,7 +164,7 @@ function ManagedMemberList() {
     setNewMemberName('');
   };
 
-  const handlePreMemberAction = (member: preMember) => {
+  const handlePreMemberAction = (member: PreMember) => {
     setSelectedPreMember(member);
     openPreMemberAction();
   };
