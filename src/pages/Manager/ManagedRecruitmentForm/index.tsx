@@ -16,7 +16,7 @@ function ManagedRecruitmentForm() {
 
   const [questions, setQuestions] = useState<QuestionItem[]>(() => {
     if (managedClubQuestions.questions.length === 0) {
-      return [{ tempId: crypto.randomUUID(), question: '', isRequired: false }];
+      return [{ tempId: crypto.randomUUID(), question: '지원자의 전화번호를 입력해주세요.', isRequired: true }];
     }
     return managedClubQuestions.questions.map((q) => ({
       tempId: crypto.randomUUID(),

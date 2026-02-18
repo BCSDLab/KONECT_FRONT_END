@@ -93,7 +93,7 @@ export interface ClubApplyRequest {
 
 export interface ClubApplyResponse {
   amount: string;
-  bank: string;
+  bankName: string;
   accountNumber: string;
   accountHolder: string;
   isFeeRequired: boolean;
@@ -101,10 +101,9 @@ export interface ClubApplyResponse {
 
 export interface ClubFeeResponse {
   amount: string | null;
-  bank: string | null;
+  bankName: string | null;
   accountNumber: string | null;
   accountHolder: string | null;
-  isFeeRequired: boolean;
 }
 
 export interface ClubRecruitmentImage {
@@ -219,23 +218,12 @@ export interface Bank {
   imageUrl: string;
 }
 
-interface ClubFeeUpsertRequest {
+export interface ClubFeeRequest {
   amount: string;
   bankId: number;
   accountNumber: string;
   accountHolder: string;
-  isFeeRequired: boolean;
 }
-
-interface ClubFeeDeleteRequest {
-  amount: null;
-  bankId: null;
-  accountNumber: null;
-  accountHolder: null;
-  isFeeRequired: null;
-}
-
-export type ClubFeeRequest = ClubFeeUpsertRequest | ClubFeeDeleteRequest;
 
 //========================== Member Management Entities =========================//
 
@@ -298,4 +286,39 @@ export interface PreMembersList {
 export interface PreMemberDeleteRequest {
   clubId: number;
   preMemberId: number;
+}
+
+//========================== Club Settings Entities =========================//
+
+interface ClubSettingsRecruitment {
+  startDate: string;
+  endDate: string;
+  isAlwaysRecruiting: boolean;
+}
+
+interface ClubSettingsApplication {
+  questionCount: number;
+}
+
+interface ClubSettingsFee {
+  amount: string;
+  bankId: number;
+  bankName: string;
+  accountNumber: string;
+  accountHolder: string;
+}
+
+export interface ClubSettingsResponse {
+  isRecruitmentEnabled: boolean;
+  isApplicationEnabled: boolean;
+  isFeeEnabled: boolean;
+  recruitment: ClubSettingsRecruitment | null;
+  application: ClubSettingsApplication | null;
+  fee: ClubSettingsFee | null;
+}
+
+export interface ClubSettingsPatchRequest {
+  isRecruitmentEnabled?: boolean;
+  isApplicationEnabled?: boolean;
+  isFeeEnabled?: boolean;
 }

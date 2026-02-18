@@ -29,6 +29,8 @@ import {
   type AddPreMemberResponse,
   type PositionType,
   type PreMembersList,
+  type ClubSettingsResponse,
+  type ClubSettingsPatchRequest,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -203,5 +205,20 @@ export const getPreMembers = async (clubId: number) => {
 
 export const deletePreMember = async (clubId: number, preMemberId: number) => {
   const response = await apiClient.delete<void>(`clubs/${clubId}/pre-members/${preMemberId}`, { requiresAuth: true });
+  return response;
+};
+
+//========================== Club Settings APIs =========================//
+
+export const getClubSettings = async (clubId: number) => {
+  const response = await apiClient.get<ClubSettingsResponse>(`clubs/${clubId}/settings`, { requiresAuth: true });
+  return response;
+};
+
+export const patchClubSettings = async (clubId: number, data: ClubSettingsPatchRequest) => {
+  const response = await apiClient.patch<ClubSettingsResponse>(`clubs/${clubId}/settings`, {
+    body: data,
+    requiresAuth: true,
+  });
   return response;
 };

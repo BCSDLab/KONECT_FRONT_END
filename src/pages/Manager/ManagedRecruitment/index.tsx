@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import CreditCardSmIcon from '@/assets/svg/credit-card-sm.svg';
 import CreditCardIcon from '@/assets/svg/credit-card.svg';
 import FileSmIcon from '@/assets/svg/file-sm.svg';
@@ -7,22 +7,32 @@ import MegaphoneSmIcon from '@/assets/svg/megaphone-sm.svg';
 import MegaphoneIcon from '@/assets/svg/megaphone.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import ToggleSwitch from '../../../components/common/ToggleSwitch';
+import { useGetClubSettings, usePatchClubSettings } from '../hooks/useManagedSettings';
 import StatusCard from './components/StatusCard';
 
 function ManagedRecruitment() {
-  // TODO: API 연결 시 실제 데이터로 교체
-  const [recruitmentEnabled, setRecruitmentEnabled] = useState(true);
-  const [applicationEnabled, setApplicationEnabled] = useState(true);
-  const [feeEnabled, setFeeEnabled] = useState(false);
+  const { clubId } = useParams<{ clubId: string }>();
+  const { data: settings } = useGetClubSettings(Number(clubId));
+  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
 
-  // Mock 데이터 - API 연결 시 실제 데이터로 교체
-  const recruitmentContent = recruitmentEnabled
-    ? '모집 기간: 2026.02.02 ~ 2027.02.02.'
-    : '모집공고가 설정되지 않았습니다.';
+  const recruitmentContent = (() => {
+    if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
+    if (!settings.recruitment) return '모집 기간을 설정해 주세요.';
+    if (settings.recruitment.isAlwaysRecruiting) return '상시 모집';
+    return `모집 기간: ${settings.recruitment.startDate} ~ ${settings.recruitment.endDate}`;
+  })();
 
-  const applicationContent = applicationEnabled ? '문항 3개' : '지원서 양식이 설정되지 않았습니다.';
+  const applicationContent = (() => {
+    if (!settings?.isApplicationEnabled) return '지원서가 비활성화되어 있습니다.';
+    if (!settings.application) return '지원서 문항을 설정해 주세요.';
+    return `문항 ${settings.application.questionCount}개`;
+  })();
 
-  const feeContent = feeEnabled ? '20만원 / 무슨 은행' : '회비가 설정되지 않았습니다.';
+  const feeContent = (() => {
+    if (!settings?.isFeeEnabled) return '회비가 비활성화되어 있습니다.';
+    if (!settings.fee) return '회비 정보를 설정해 주세요.';
+    return `${settings.fee.amount} / ${settings.fee.bankName}`;
+  })();
 
   return (
     <div className="flex h-full flex-col gap-4 p-3">
@@ -33,18 +43,23 @@ function ManagedRecruitment() {
           <ToggleSwitch
             icon={MegaphoneSmIcon}
             label="모집공고"
-            enabled={recruitmentEnabled}
-            onChange={setRecruitmentEnabled}
+            enabled={settings?.isRecruitmentEnabled ?? false}
+            onChange={(value) => patchSettings({ isRecruitmentEnabled: value })}
           />
           <div className="h-14 w-px bg-indigo-50" />
           <ToggleSwitch
             icon={FileSmIcon}
             label="지원서"
-            enabled={applicationEnabled}
-            onChange={setApplicationEnabled}
+            enabled={settings?.isApplicationEnabled ?? false}
+            onChange={(value) => patchSettings({ isApplicationEnabled: value })}
           />
           <div className="h-14 w-px bg-indigo-50" />
-          <ToggleSwitch icon={CreditCardSmIcon} label="회비" enabled={feeEnabled} onChange={setFeeEnabled} />
+          <ToggleSwitch
+            icon={CreditCardSmIcon}
+            label="회비"
+            enabled={settings?.isFeeEnabled ?? false}
+            onChange={(value) => patchSettings({ isFeeEnabled: value })}
+          />
         </div>
       </div>
       <div className="flex flex-col gap-2">
