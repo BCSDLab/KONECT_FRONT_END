@@ -25,7 +25,7 @@ function ManagedAccount() {
     const payload: ClubFeeRequest = isFeeEnabled
       ? {
           bankId: selectedBankId,
-          amount: Number(amount) || 0,
+          amount,
           bank: selectedBank,
           accountNumber,
           accountHolder,
