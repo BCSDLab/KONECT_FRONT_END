@@ -37,7 +37,7 @@ function ManagedAccount() {
       if (selectedBankId === null) return;
 
       const payload: ClubFeeRequest = {
-        amount: Number(amount),
+        amount: amount,
         bankId: selectedBankId,
         accountNumber: accountNumber.trim(),
         accountHolder: accountHolder.trim(),

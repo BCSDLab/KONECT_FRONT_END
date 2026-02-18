@@ -92,7 +92,7 @@ export interface ClubApplyRequest {
 }
 
 export interface ClubApplyResponse {
-  amount: number;
+  amount: string;
   bank: string;
   accountNumber: string;
   accountHolder: string;
@@ -100,7 +100,7 @@ export interface ClubApplyResponse {
 }
 
 export interface ClubFeeResponse {
-  amount: number | null;
+  amount: string | null;
   bank: string | null;
   accountNumber: string | null;
   accountHolder: string | null;
@@ -220,7 +220,7 @@ export interface Bank {
 }
 
 interface ClubFeeUpsertRequest {
-  amount: number;
+  amount: string;
   bankId: number;
   accountNumber: string;
   accountHolder: string;
