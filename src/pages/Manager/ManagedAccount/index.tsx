@@ -84,7 +84,7 @@ function ManagedAccount() {
             <div className="flex flex-col gap-1">
               <label className="text-[15px] leading-6 font-medium text-indigo-300">가입비</label>
               <input
-                type="number"
+                type="text"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 placeholder="가입비를 입력해주세요"
