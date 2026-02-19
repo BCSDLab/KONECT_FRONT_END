@@ -3,6 +3,7 @@ import CheckIcon from '@/assets/svg/check.svg';
 import WarningIcon from '@/assets/svg/warning.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
+import { useToastContext } from '@/contexts/useToastContext';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
 import {
@@ -16,6 +17,7 @@ function ManagedApplicationDetail() {
   const clubId = Number(params.clubId);
   const applicationId = Number(params.applicationId);
 
+  const { showToast } = useToastContext();
   const { managedClubApplicationDetail: application } = useGetManagedApplicationDetail(clubId, applicationId);
   const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId, {
     navigateBack: true,
@@ -31,13 +33,17 @@ function ManagedApplicationDetail() {
   const isPending = isApproving || isRejecting;
 
   const handleApprove = () => {
-    approve(application.applicationId);
-    closeApprove();
+    approve(application.applicationId, {
+      onSuccess: closeApprove,
+      onError: () => showToast('요청 처리에 실패했습니다'),
+    });
   };
 
   const handleReject = () => {
-    reject(application.applicationId);
-    closeReject();
+    reject(application.applicationId, {
+      onSuccess: closeReject,
+      onError: () => showToast('요청 처리에 실패했습니다'),
+    });
   };
 
   return (
