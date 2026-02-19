@@ -99,7 +99,10 @@ function UserInfoCard({ type }: UserInfoCardProps) {
     <Card {...cardProps}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <img className="h-12 w-12 rounded-full" src={myInfo.imageUrl} alt="Member Avatar" />
+          {/* <img className="h-12 w-12 rounded-full" src={myInfo.imageUrl} alt="Member Avatar" /> */}
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+            {myInfo.name.charAt(0)}
+          </div>
           <div>
             <div className={twMerge('text-h2 font-bold text-indigo-700')}>{myInfo.name}</div>
             <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">

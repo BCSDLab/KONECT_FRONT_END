@@ -208,7 +208,10 @@ function ManagedMemberList() {
             {groupMembers.map((member) => (
               <Card key={member.userId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
-                  <img className="h-10 w-10 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                  {/* <img className="h-10 w-10 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                    {member.name.charAt(0)}
+                  </div>
                   <div>
                     <div className="text-body2 text-indigo-700">
                       {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
@@ -300,7 +303,10 @@ function ManagedMemberList() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                    {/* <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                      {member.name.charAt(0)}
+                    </div>
                     <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
@@ -349,7 +355,10 @@ function ManagedMemberList() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                    {/* <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                      {member.name.charAt(0)}
+                    </div>
                     <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
