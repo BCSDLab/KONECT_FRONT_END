@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom';
+import { useMutation } from '@tanstack/react-query';
+import { Link, useNavigate } from 'react-router-dom';
+import { postAdminChatRoom } from '@/apis/chat';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
@@ -18,13 +20,20 @@ const menuItems = [
   { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스' },
   { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
   { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침' },
-  { to: '/chats', icon: ChatIcon, label: '문의하기' },
 ];
 
 function MyPage() {
+  const navigate = useNavigate();
   const { myInfo } = useMyInfo();
   const { mutate: logout } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
+
+  const { mutate: goToAdminChat } = useMutation({
+    mutationFn: postAdminChatRoom,
+    onSuccess: ({ chatRoomId }) => {
+      navigate(`/chats/${chatRoomId}`);
+    },
+  });
 
   return (
     <div className="flex flex-col gap-2 p-3">
@@ -43,6 +52,19 @@ function MyPage() {
               </div>
             </Link>
           ))}
+
+        <button
+          onClick={() => goToAdminChat()}
+          className="bg-indigo-0 active:bg-indigo-5 w-full rounded-sm text-left transition-colors"
+        >
+          <div className="flex items-center justify-between px-3 py-2">
+            <div className="flex items-center gap-4">
+              <ChatIcon />
+              <div className="text-sub2">문의하기</div>
+            </div>
+            <RightArrowIcon />
+          </div>
+        </button>
 
         <div className="bg-indigo-0 rounded-sm">
           <div className="flex items-center justify-between px-3 py-2">
