@@ -4,6 +4,7 @@ import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 interface UseChatRoomScrollParams {
   chatRoomId?: string;
   chatMessagesLength: number;
+  latestMessageId?: number | string;
   fetchNextPage: () => void;
   hasNextPage: boolean | undefined;
   isFetchingNextPage: boolean;
@@ -18,6 +19,7 @@ const isNearBottom = (container: HTMLDivElement) => {
 const useChatRoomScroll = ({
   chatRoomId,
   chatMessagesLength,
+  latestMessageId,
   fetchNextPage,
   hasNextPage,
   isFetchingNextPage,
@@ -97,7 +99,7 @@ const useChatRoomScroll = ({
     if (isNearBottomRef.current) {
       scrollToBottom();
     }
-  }, [chatMessagesLength, scrollToBottom]);
+  }, [chatMessagesLength, latestMessageId, scrollToBottom]);
 
   return {
     scrollContainerRef,

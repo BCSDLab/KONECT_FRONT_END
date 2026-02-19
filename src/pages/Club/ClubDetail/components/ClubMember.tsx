@@ -1,7 +1,14 @@
 import { useParams } from 'react-router-dom';
-import type { ClubMember } from '@/apis/club/entity';
+import type { ClubMember, PositionType } from '@/apis/club/entity';
 import Card from '@/components/common/Card';
 import { useGetClubMembers } from '../hooks/useGetClubMembers';
+
+const POSITION_LABELS: Record<PositionType, string> = {
+  PRESIDENT: '회장',
+  VICE_PRESIDENT: '부회장',
+  MANAGER: '관리자',
+  MEMBER: '일반 회원',
+};
 
 const ClubMemberCard = (clubMember: ClubMember) => {
   return (
@@ -12,7 +19,7 @@ const ClubMemberCard = (clubMember: ClubMember) => {
           <div className="text-sm leading-4 font-medium text-indigo-700">{clubMember.name}</div>
           {clubMember.position !== 'MEMBER' && (
             <div className="text-indigo-0 flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5 text-[10px] leading-3 font-semibold">
-              {clubMember.position}
+              {POSITION_LABELS[clubMember.position]}
             </div>
           )}
         </div>
