@@ -35,6 +35,7 @@ function ChatRoom() {
   const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
     chatRoomId,
     chatMessagesLength: chatMessages.length,
+    latestMessageId: chatMessages[0]?.messageId,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
