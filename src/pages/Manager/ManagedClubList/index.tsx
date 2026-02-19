@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import { useManagerQuery } from '../hooks/useManagerQuery';
+import { useGetManagedClubs } from '../hooks/useManagedClubs';
 
 function ManagedClubList() {
-  const { managedClubList } = useManagerQuery();
+  const { managedClubList } = useGetManagedClubs();
 
   return (
     <div className="flex flex-col gap-2 p-3">

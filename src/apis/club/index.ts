@@ -18,6 +18,7 @@ import {
   type ManagedClubResponse,
   type Bank,
   type ClubFeeRequest,
+  type ClubFeeResponse,
   type TransferPresidentRequest,
   type TransferPresidentResponse,
   type ChangeVicePresidentRequest,
@@ -28,9 +29,9 @@ import {
   type AddPreMemberResponse,
   type PositionType,
   type PreMembersList,
+  type ClubSettingsResponse,
+  type ClubSettingsPatchRequest,
 } from './entity';
-
-export type { Bank, ClubFeeRequest };
 
 export const getClubs = async (params: ClubRequestParams) => {
   const response = await apiClient.get<ClubResponse, ClubRequestParams>('clubs', { params, requiresAuth: true });
@@ -69,7 +70,7 @@ export const applyClub = async (clubId: number, answers: ClubApplyRequest) => {
 };
 
 export const getClubFee = async (clubId: number) => {
-  const response = await apiClient.get<ClubApplyResponse>(`clubs/${clubId}/fee`, { requiresAuth: true });
+  const response = await apiClient.get<ClubFeeResponse>(`clubs/${clubId}/fee`, { requiresAuth: true });
   return response;
 };
 
@@ -151,7 +152,7 @@ export const getBanks = async () => {
 };
 
 export const putClubFee = async (clubId: number, data: ClubFeeRequest) => {
-  const response = await apiClient.put<void>(`clubs/${clubId}/fee`, {
+  const response = await apiClient.put<ClubFeeResponse>(`clubs/${clubId}/fee`, {
     body: data,
     requiresAuth: true,
   });
@@ -204,5 +205,20 @@ export const getPreMembers = async (clubId: number) => {
 
 export const deletePreMember = async (clubId: number, preMemberId: number) => {
   const response = await apiClient.delete<void>(`clubs/${clubId}/pre-members/${preMemberId}`, { requiresAuth: true });
+  return response;
+};
+
+//========================== Club Settings APIs =========================//
+
+export const getClubSettings = async (clubId: number) => {
+  const response = await apiClient.get<ClubSettingsResponse>(`clubs/${clubId}/settings`, { requiresAuth: true });
+  return response;
+};
+
+export const patchClubSettings = async (clubId: number, data: ClubSettingsPatchRequest) => {
+  const response = await apiClient.patch<ClubSettingsResponse>(`clubs/${clubId}/settings`, {
+    body: data,
+    requiresAuth: true,
+  });
   return response;
 };

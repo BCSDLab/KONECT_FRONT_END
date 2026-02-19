@@ -1,32 +1,71 @@
-import { Link } from 'react-router-dom';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import { useParams } from 'react-router-dom';
+import CreditCardSmIcon from '@/assets/svg/credit-card-sm.svg';
 import CreditCardIcon from '@/assets/svg/credit-card.svg';
+import FileSmIcon from '@/assets/svg/file-sm.svg';
 import FileIcon from '@/assets/svg/file.svg';
+import MegaphoneSmIcon from '@/assets/svg/megaphone-sm.svg';
 import MegaphoneIcon from '@/assets/svg/megaphone.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-
-const menuItems = [
-  { to: 'write', icon: MegaphoneIcon, label: '모집 공고 관리' },
-  { to: 'form', icon: FileIcon, label: '지원서 양식 관리' },
-  { to: 'account', icon: CreditCardIcon, label: '계좌 관리' },
-];
+import ToggleSwitch from '../../../components/common/ToggleSwitch';
+import { useGetClubSettings, usePatchClubSettings } from '../hooks/useManagedSettings';
+import StatusCard from './components/StatusCard';
 
 function ManagedRecruitment() {
+  const { clubId } = useParams<{ clubId: string }>();
+  const { data: settings } = useGetClubSettings(Number(clubId));
+  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
+
+  const recruitmentContent = (() => {
+    if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
+    if (!settings.recruitment) return '모집 기간을 설정해 주세요.';
+    if (settings.recruitment.isAlwaysRecruiting) return '상시 모집';
+    return `모집 기간: ${settings.recruitment.startDate} ~ ${settings.recruitment.endDate}`;
+  })();
+
+  const applicationContent = (() => {
+    if (!settings?.isApplicationEnabled) return '지원서가 비활성화되어 있습니다.';
+    if (!settings.application) return '지원서 문항을 설정해 주세요.';
+    return `문항 ${settings.application.questionCount}개`;
+  })();
+
+  const feeContent = (() => {
+    if (!settings?.isFeeEnabled) return '회비가 비활성화되어 있습니다.';
+    if (!settings.fee) return '회비 정보를 설정해 주세요.';
+    return `${settings.fee.amount} / ${settings.fee.bankName}`;
+  })();
+
   return (
-    <div className="flex h-full flex-col gap-2 p-3">
+    <div className="flex h-full flex-col gap-4 p-3">
       <UserInfoCard type="detail" />
-      <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
-        {menuItems.map(({ to, icon: Icon, label }) => (
-          <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
-            <div className="flex items-center justify-between px-3 py-2">
-              <div className="flex items-center gap-4">
-                <Icon />
-                <div className="text-sub2">{label}</div>
-              </div>
-              <RightArrowIcon />
-            </div>
-          </Link>
-        ))}
+      <div className="rounded-lg bg-white p-4">
+        <div className="mb-3 text-sm leading-4 font-bold text-indigo-700">설정 관리</div>
+        <div className="flex items-center justify-evenly">
+          <ToggleSwitch
+            icon={MegaphoneSmIcon}
+            label="모집공고"
+            enabled={settings?.isRecruitmentEnabled ?? false}
+            onChange={(value) => patchSettings({ isRecruitmentEnabled: value })}
+          />
+          <div className="h-14 w-px bg-indigo-50" />
+          <ToggleSwitch
+            icon={FileSmIcon}
+            label="지원서"
+            enabled={settings?.isApplicationEnabled ?? false}
+            onChange={(value) => patchSettings({ isApplicationEnabled: value })}
+          />
+          <div className="h-14 w-px bg-indigo-50" />
+          <ToggleSwitch
+            icon={CreditCardSmIcon}
+            label="회비"
+            enabled={settings?.isFeeEnabled ?? false}
+            onChange={(value) => patchSettings({ isFeeEnabled: value })}
+          />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2">
+        <StatusCard icon={MegaphoneIcon} title="모집공고" content={recruitmentContent} to="write" />
+        <StatusCard icon={FileIcon} title="지원서" content={applicationContent} to="form" />
+        <StatusCard icon={CreditCardIcon} title="회비" content={feeContent} to="account" />
       </div>
     </div>
   );

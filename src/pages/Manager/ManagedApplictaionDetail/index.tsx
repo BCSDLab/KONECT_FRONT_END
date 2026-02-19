@@ -3,26 +3,27 @@ import CheckIcon from '@/assets/svg/check.svg';
 import WarningIcon from '@/assets/svg/warning.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
-import Toast from '@/components/common/Toast';
+import { useToastContext } from '@/contexts/useToastContext';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
-import { useApplicationApprove, useApplicationReject, useManagedClubApplicationDetail } from '../hooks/useManagerQuery';
+import {
+  useUpdateApplicationStatus,
+  useDeleteApplication,
+  useGetManagedApplicationDetail,
+} from '../hooks/useManagedApplications';
 
 function ManagedApplicationDetail() {
   const params = useParams();
   const clubId = Number(params.clubId);
   const applicationId = Number(params.applicationId);
 
-  const { toast, showToast, hideToast } = useToast();
-  const { managedClubApplicationDetail: application } = useManagedClubApplicationDetail(clubId, applicationId);
-  const { mutate: approve, isPending: isApproving } = useApplicationApprove(clubId, {
+  const { showToast } = useToastContext();
+  const { managedClubApplicationDetail: application } = useGetManagedApplicationDetail(clubId, applicationId);
+  const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId, {
     navigateBack: true,
-    onSuccess: () => showToast('지원이 승인되었습니다'),
   });
-  const { mutate: reject, isPending: isRejecting } = useApplicationReject(clubId, {
+  const { mutate: reject, isPending: isRejecting } = useDeleteApplication(clubId, {
     navigateBack: true,
-    onSuccess: () => showToast('지원이 거절되었습니다'),
   });
 
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
@@ -32,13 +33,17 @@ function ManagedApplicationDetail() {
   const isPending = isApproving || isRejecting;
 
   const handleApprove = () => {
-    approve(application.applicationId);
-    closeApprove();
+    approve(application.applicationId, {
+      onSuccess: closeApprove,
+      onError: () => showToast('요청 처리에 실패했습니다'),
+    });
   };
 
   const handleReject = () => {
-    reject(application.applicationId);
-    closeReject();
+    reject(application.applicationId, {
+      onSuccess: closeReject,
+      onError: () => showToast('요청 처리에 실패했습니다'),
+    });
   };
 
   return (
@@ -185,8 +190,6 @@ function ManagedApplicationDetail() {
           </div>
         </Portal>
       )}
-
-      <Toast toast={toast} onClose={hideToast} />
     </div>
   );
 }

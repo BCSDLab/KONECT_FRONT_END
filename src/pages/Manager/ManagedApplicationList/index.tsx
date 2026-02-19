@@ -2,16 +2,20 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Card from '@/components/common/Card';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
-import { useApplicationApprove, useApplicationReject, useManagedClubApplications } from '../hooks/useManagerQuery';
+import {
+  useUpdateApplicationStatus,
+  useDeleteApplication,
+  useGetManagedApplications,
+} from '../hooks/useManagedApplications';
 
 function ManagedApplicationList() {
   const params = useParams();
   const navigate = useNavigate();
   const clubId = Number(params.clubId);
 
-  const { managedClubApplicationList } = useManagedClubApplications(clubId);
-  const { mutate: approve, isPending: isApproving } = useApplicationApprove(clubId);
-  const { mutate: reject, isPending: isRejecting } = useApplicationReject(clubId);
+  const { managedClubApplicationList } = useGetManagedApplications(clubId);
+  const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId);
+  const { mutate: reject, isPending: isRejecting } = useDeleteApplication(clubId);
 
   const total = managedClubApplicationList.applications.length;
   const isPending = isApproving || isRejecting;

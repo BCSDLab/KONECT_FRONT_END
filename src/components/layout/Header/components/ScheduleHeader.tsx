@@ -18,7 +18,7 @@ function ScheduleHeader() {
 
   return (
     <>
-      <header className="fixed z-10 flex h-11 w-full justify-between bg-white px-4 py-2">
+      <header className="fixed z-30 flex h-11 w-full justify-between bg-white px-4 py-2">
         <button type="button" aria-label="뒤로가기" onClick={handleBack}>
           <ChevronLeftIcon />
         </button>

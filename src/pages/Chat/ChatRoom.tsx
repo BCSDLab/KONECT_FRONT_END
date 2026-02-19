@@ -1,10 +1,10 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
-import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
 import useChat from './hooks/useChat';
+import useChatRoomScroll from './hooks/useChatRoomScroll';
 
 const getDateKey = (dateString: string) => {
   return dateString.split(' ')[0];
@@ -32,8 +32,13 @@ function ChatRoom() {
   useKeyboardHeight();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-  const topRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
+  const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
+    chatRoomId,
+    chatMessagesLength: chatMessages.length,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  });
 
   const currentRoom = chatRoomList.rooms.find((room) => room.roomId === Number(chatRoomId));
 
@@ -44,9 +49,7 @@ function ChatRoom() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!textareaRef.current) return;
-
-    const message = textareaRef.current.value.trim();
+    const message = value.trim();
     if (!message) return;
 
     sendMessage({
@@ -54,19 +57,20 @@ function ChatRoom() {
       content: message,
     });
 
-    textareaRef.current.value = '';
-    textareaRef.current.style.height = 'auto';
-    textareaRef.current.focus();
-    messagesEndRef.current?.scrollIntoView();
+    setValue('');
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.focus();
+    }
+    scrollToBottom();
   };
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView();
-  }, [chatMessages]);
 
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
-      <div className="bg-indigo-0 min-h-0 flex-1 overflow-y-auto overscroll-contain pb-4">
+      <div
+        ref={scrollContainerRef}
+        className="bg-indigo-0 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pb-4"
+      >
         <div ref={topRef} />
 
         {sortedMessages.map((message, index) => {
@@ -81,7 +85,7 @@ function ChatRoom() {
           return (
             <div
               key={message.messageId}
-              className={clsx('w-full px-6', showDateHeader ? 'mt-4' : isSameSender ? 'mt-1' : 'mt-3')}
+              className={clsx('w-full min-w-0 px-6', showDateHeader ? 'mt-4' : isSameSender ? 'mt-1' : 'mt-3')}
             >
               {showDateHeader && (
                 <div className="flex justify-center py-3">
@@ -91,9 +95,9 @@ function ChatRoom() {
                 </div>
               )}
 
-              <div className={clsx('flex w-full items-end', message.isMine ? 'justify-end' : 'justify-start')}>
+              <div className={clsx('flex w-full min-w-0 items-end', message.isMine ? 'justify-end' : 'justify-start')}>
                 {!message.isMine && (
-                  <div className="flex max-w-[80%] items-end gap-2">
+                  <div className="flex max-w-full min-w-0 items-end gap-2">
                     {isGroup && (
                       <div className="w-8 shrink-0">
                         {!isSameSender ? (
@@ -106,40 +110,46 @@ function ChatRoom() {
                       </div>
                     )}
 
-                    <div className="flex flex-col">
+                    <div className="flex min-w-0 flex-col">
                       {isGroup && !isSameSender && (
                         <div className="mb-1 text-xs text-indigo-400">{message.senderName}</div>
                       )}
 
-                      <div className="rounded-lg bg-[#f1f8ff] px-3 py-2 text-sm wrap-break-word">{message.content}</div>
+                      <div className="rounded-lg bg-[#f1f8ff] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
+                        {message.content}
+                      </div>
                     </div>
 
-                    <span className="mb-1 self-end text-xs text-indigo-300">{formatTime(message.createdAt)}</span>
+                    <span className="mb-1 shrink-0 self-end text-xs text-indigo-300">
+                      {formatTime(message.createdAt)}
+                    </span>
                   </div>
                 )}
 
                 {/* ===== RIGHT (내 메시지) ===== */}
                 {message.isMine && (
-                  <div className="flex max-w-[80%] flex-row-reverse items-end gap-2">
-                    <div className="rounded-lg bg-[#f5f5f5] px-3 py-2 text-sm wrap-break-word">{message.content}</div>
+                  <div className="flex max-w-full min-w-0 flex-row-reverse items-end gap-2">
+                    <div className="rounded-lg bg-[#f5f5f5] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
+                      {message.content}
+                    </div>
 
-                    <span className="mb-1 self-end text-xs text-indigo-300">{formatTime(message.createdAt)}</span>
+                    <span className="mb-1 shrink-0 self-end text-xs text-indigo-300">
+                      {formatTime(message.createdAt)}
+                    </span>
                   </div>
                 )}
               </div>
             </div>
           );
         })}
-
-        <div ref={messagesEndRef} />
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-indigo-25 flex shrink-0 items-end gap-2 px-5 py-2">
+      <form onSubmit={handleSubmit} className="bg-indigo-25 flex min-w-0 shrink-0 items-end gap-2 px-5 py-2">
         <textarea
           ref={textareaRef}
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          className="bg-indigo-0 max-h-32 w-full resize-none rounded-sm px-3 py-2 text-sm text-indigo-700 placeholder:text-indigo-500"
+          className="bg-indigo-0 max-h-32 min-w-0 flex-1 resize-none overflow-x-hidden rounded-sm px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap text-indigo-700 placeholder:text-indigo-500"
           rows={1}
           placeholder="메세지 보내기"
           maxLength={1000}

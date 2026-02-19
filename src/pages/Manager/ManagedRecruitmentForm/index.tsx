@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import type { ClubQuestionRequest } from '@/apis/club/entity';
 import TrashIcon from '@/assets/svg/trash-full.svg';
-import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagerQuery';
+import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
 
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;
@@ -16,7 +16,7 @@ function ManagedRecruitmentForm() {
 
   const [questions, setQuestions] = useState<QuestionItem[]>(() => {
     if (managedClubQuestions.questions.length === 0) {
-      return [{ tempId: crypto.randomUUID(), question: '', isRequired: false }];
+      return [{ tempId: crypto.randomUUID(), question: '지원자의 전화번호를 입력해주세요.', isRequired: true }];
     }
     return managedClubQuestions.questions.map((q) => ({
       tempId: crypto.randomUUID(),
