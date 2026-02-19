@@ -43,3 +43,10 @@ export const postChatMute = async (chatRoomId: number, type: 'DIRECT' | 'GROUP')
     requiresAuth: true,
   });
 };
+
+export const postAdminChatRoom = async () => {
+  const response = await apiClient.post<CreateChatRoomResponse>('chats/rooms/admin', {
+    requiresAuth: true,
+  });
+  return response;
+};
