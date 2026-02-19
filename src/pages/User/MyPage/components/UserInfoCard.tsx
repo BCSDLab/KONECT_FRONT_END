@@ -56,6 +56,7 @@ function ManagerStats({
         <div className="text-h3 mt-1">{managedClubList.joinedClubs.length}</div>
       </div>
       <button
+        type="button"
         onClick={(e) => onButtonClick(e, '/council?tab=notice')}
         className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
       >
