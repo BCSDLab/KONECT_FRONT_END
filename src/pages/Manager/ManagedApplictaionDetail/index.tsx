@@ -3,7 +3,6 @@ import CheckIcon from '@/assets/svg/check.svg';
 import WarningIcon from '@/assets/svg/warning.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
-import Toast from '@/components/common/Toast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
 import {
@@ -185,8 +184,6 @@ function ManagedApplicationDetail() {
           </div>
         </Portal>
       )}
-
-      <Toast toast={null} onClose={() => {}} />
     </div>
   );
 }

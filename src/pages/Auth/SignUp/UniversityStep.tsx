@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
-import Toast from '@/components/common/Toast';
+import { useToastContext } from '@/contexts/useToastContext';
 import { useSignupStore } from '@/stores/signupStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import StepLayout from './components/StepLayout';
 import { useInquiryMutation } from './hooks/useInquiry';
 import { useGetUniversityList } from './hooks/useUniversity';
@@ -23,14 +22,14 @@ function UniversityCard({ label, onClick }: { label: string; onClick: () => void
 function UniversityStep() {
   const navigate = useNavigate();
 
-  const [universityName, setUniversityName] = useState('');
+  const { showToast } = useToastContext();
+  const { data: universityList } = useGetUniversityList();
+  const { mutate: submitInquiry, isPending } = useInquiryMutation();
+  const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
 
   const update = useSignupStore((state) => state.update);
-  const { data: universityList } = useGetUniversityList();
-  const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
-  const { toast, showToast, hideToast } = useToast();
+  const [universityName, setUniversityName] = useState('');
   const [inquiryContent, setInquiryContent] = useState('');
-  const { mutate: submitInquiry, isPending } = useInquiryMutation();
 
   const trimmed = universityName.trim();
   const filteredUniversities = !trimmed
@@ -108,8 +107,6 @@ function UniversityStep() {
           </button>
         </div>
       </BottomModal>
-
-      <Toast toast={toast} onClose={hideToast} />
     </StepLayout>
   );
 }

@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomModal from '@/components/common/BottomModal';
-import Toast from '@/components/common/Toast';
+import { useToastContext } from '@/contexts/useToastContext';
 import { API_ERROR_CODES } from '@/interface/error';
 import { useSignupStore } from '@/stores/signupStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import StepLayout from './components/StepLayout';
 import { useInquiryMutation } from './hooks/useInquiry';
 import { useSignupMutation } from './hooks/useSignup';
 
 function ConfirmStep() {
   const navigate = useNavigate();
-  const { universityName, universityId, studentId, isMarketingAgreement, name, reset } = useSignupStore();
+  const { showToast } = useToastContext();
   const { mutate, isPending, error } = useSignupMutation();
-  const { toast, showToast, hideToast } = useToast();
-  const [inquiryContent, setInquiryContent] = useState('');
   const { mutate: submitInquiry, isPending: isInquiryPending } = useInquiryMutation();
+
+  const [inquiryContent, setInquiryContent] = useState('');
+  const { universityName, universityId, studentId, isMarketingAgreement, name, reset } = useSignupStore();
   const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -123,7 +123,6 @@ function ConfirmStep() {
           </button>
         </div>
       </BottomModal>
-      <Toast toast={toast} onClose={hideToast} />
     </StepLayout>
   );
 }

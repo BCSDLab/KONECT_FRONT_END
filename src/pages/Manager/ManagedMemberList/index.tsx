@@ -4,7 +4,6 @@ import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
-import Toast from '@/components/common/Toast';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import {
@@ -507,8 +506,6 @@ function ManagedMemberList() {
           </div>
         </div>
       </BottomModal>
-
-      <Toast toast={null} onClose={() => {}} />
     </div>
   );
 }

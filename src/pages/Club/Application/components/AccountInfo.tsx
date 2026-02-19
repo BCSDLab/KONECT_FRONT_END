@@ -2,15 +2,14 @@ import { Fragment } from 'react/jsx-runtime';
 import type { ClubFeeResponse } from '@/apis/club/entity';
 import CopyIcon from '@/assets/svg/copy.svg';
 import Card from '@/components/common/Card';
-import Toast from '@/components/common/Toast';
-import { useToast } from '@/utils/hooks/useToast';
+import { useToastContext } from '@/contexts/useToastContext';
 
 interface AccountInfoCardProps {
   accountInfo: ClubFeeResponse;
 }
 
 function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
-  const { toast, showToast, hideToast } = useToast();
+  const { showToast } = useToastContext();
   const items = [
     { label: '은행', value: accountInfo.bankName ?? '-' },
     { label: '예금주', value: accountInfo.accountHolder ?? '-' },
@@ -46,7 +45,6 @@ function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
           <CopyIcon /> 계좌번호 복사하기
         </button>
       </Card>
-      <Toast toast={toast} onClose={hideToast} />
     </>
   );
 }
