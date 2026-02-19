@@ -282,7 +282,7 @@ function ManagedRecruitmentWrite() {
             onChange={handleContentChange}
             rows={6}
             className="text-body1 bg-indigo-0 mt-1 min-h-[156px] w-full resize-none overflow-hidden rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)] placeholder:text-indigo-200"
-            placeholder="모집 공고 내용을 작성해주세요…"
+            placeholder="모집 공고 내용을 작성해주세요"
           />
         </section>
         <section className={sectionCardStyle}>
