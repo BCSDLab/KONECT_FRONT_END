@@ -41,10 +41,34 @@ function ManagerDetailInfoCard() {
   );
 }
 
+function ManagerStats({
+  onButtonClick,
+}: {
+  onButtonClick: (e: React.MouseEvent<HTMLButtonElement>, to: string) => void;
+}) {
+  const { managedClubList } = useGetManagedClubs();
+  const { myInfo } = useMyInfo();
+
+  return (
+    <div className="flex justify-between gap-2">
+      <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
+        <div className="text-body3">관리 동아리</div>
+        <div className="text-h3 mt-1">{managedClubList.joinedClubs.length}</div>
+      </div>
+      <button
+        onClick={(e) => onButtonClick(e, '/council?tab=notice')}
+        className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
+      >
+        <div className="text-body3">읽지 않은 공지</div>
+        <div className="text-h3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
+      </button>
+    </div>
+  );
+}
+
 function UserInfoCard({ type }: UserInfoCardProps) {
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
-  const { managedClubList } = useGetManagedClubs();
 
   if (type === 'detail') {
     return <ManagerDetailInfoCard />;
@@ -106,21 +130,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
           </button>
         </div>
       )}
-      {type === 'manager' && (
-        <div className="flex justify-between gap-2">
-          <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
-            <div className="text-body3">관리 동아리</div>
-            <div className="text-h3 mt-1">{managedClubList.joinedClubs.length}</div>
-          </div>
-          <button
-            onClick={(e) => handleButtonClick(e, '/council?tab=notice')}
-            className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
-          >
-            <div className="text-body3">읽지 않은 공지</div>
-            <div className="text-h3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
-          </button>
-        </div>
-      )}
+      {type === 'manager' && <ManagerStats onButtonClick={handleButtonClick} />}
     </Card>
   );
 }
