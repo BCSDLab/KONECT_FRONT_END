@@ -1,16 +1,20 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
 import BottomModal from '@/components/common/BottomModal';
 import type { ApiError } from '@/interface/error';
 import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
+import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 
 function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const clubIdNumber = Number(clubId);
   const { managedClubFee } = useManagedClubFee(clubIdNumber);
   const { banks } = useGetBanks();
   const { mutate, isPending, error } = useManagedClubFeeMutation(clubIdNumber);
+  const { mutate: patchSettings } = usePatchClubSettings(clubIdNumber);
 
   const initialBankId = banks.find((bank) => bank.name === managedClubFee.bankName)?.id ?? null;
 
@@ -33,7 +37,13 @@ function ManagedAccount() {
       accountNumber: accountNumber.trim(),
       accountHolder: accountHolder.trim(),
     };
-    mutate(payload);
+    mutate(payload, {
+      onSuccess: () => {
+        if (location.state?.enableAfterSave) {
+          patchSettings({ isFeeEnabled: true }, { onSuccess: () => navigate(-1) });
+        }
+      },
+    });
   };
 
   const hasChanges = () =>

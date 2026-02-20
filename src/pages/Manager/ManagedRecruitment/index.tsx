@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CreditCardSmIcon from '@/assets/svg/credit-card-sm.svg';
 import CreditCardIcon from '@/assets/svg/credit-card.svg';
 import FileSmIcon from '@/assets/svg/file-sm.svg';
@@ -12,8 +12,33 @@ import StatusCard from './components/StatusCard';
 
 function ManagedRecruitment() {
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
   const { data: settings } = useGetClubSettings(Number(clubId));
   const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
+
+  const handleRecruitmentToggle = (value: boolean) => {
+    if (value && !settings?.recruitment) {
+      navigate('write', { state: { enableAfterSave: true } });
+      return;
+    }
+    patchSettings({ isRecruitmentEnabled: value });
+  };
+
+  const handleApplicationToggle = (value: boolean) => {
+    if (value && !settings?.application) {
+      navigate('form', { state: { enableAfterSave: true } });
+      return;
+    }
+    patchSettings({ isApplicationEnabled: value });
+  };
+
+  const handleFeeToggle = (value: boolean) => {
+    if (value && !settings?.fee) {
+      navigate('account', { state: { enableAfterSave: true } });
+      return;
+    }
+    patchSettings({ isFeeEnabled: value });
+  };
 
   const recruitmentContent = (() => {
     if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
@@ -44,21 +69,21 @@ function ManagedRecruitment() {
             icon={MegaphoneSmIcon}
             label="모집공고"
             enabled={settings?.isRecruitmentEnabled ?? false}
-            onChange={(value) => patchSettings({ isRecruitmentEnabled: value })}
+            onChange={handleRecruitmentToggle}
           />
           <div className="h-14 w-px bg-indigo-50" />
           <ToggleSwitch
             icon={FileSmIcon}
             label="지원서"
             enabled={settings?.isApplicationEnabled ?? false}
-            onChange={(value) => patchSettings({ isApplicationEnabled: value })}
+            onChange={handleApplicationToggle}
           />
           <div className="h-14 w-px bg-indigo-50" />
           <ToggleSwitch
             icon={CreditCardSmIcon}
             label="회비"
             enabled={settings?.isFeeEnabled ?? false}
-            onChange={(value) => patchSettings({ isFeeEnabled: value })}
+            onChange={handleFeeToggle}
           />
         </div>
       </div>

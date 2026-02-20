@@ -13,11 +13,11 @@ function ManagedApplicationList() {
   const navigate = useNavigate();
   const clubId = Number(params.clubId);
 
-  const { managedClubApplicationList } = useGetManagedApplications(clubId);
+  const { managedClubApplicationList, hasNoRecruitment } = useGetManagedApplications(clubId);
   const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId);
   const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
 
-  const total = managedClubApplicationList.applications.length;
+  const total = managedClubApplicationList?.applications.length ?? 0;
   const isPending = isApproving || isRejecting;
 
   const handleApprove = (e: React.MouseEvent, applicationId: number) => {
@@ -34,6 +34,17 @@ function ManagedApplicationList() {
     navigate(`${applicationId}`);
   };
 
+  if (hasNoRecruitment) {
+    return (
+      <div className="flex h-full flex-col gap-2 p-3">
+        <UserInfoCard type="detail" />
+        <div className="flex flex-1 items-center justify-center">
+          <p className="text-body2 text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full flex-col gap-2 p-3">
       <UserInfoCard type="detail" />
@@ -41,7 +52,7 @@ function ManagedApplicationList() {
         <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">지원자 수 : {total}명</div>
         {/* <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">CSV 추출하기</div> */}
       </Card>
-      {managedClubApplicationList.applications.map((application) => (
+      {managedClubApplicationList!.applications.map((application) => (
         <Card key={application.id} className="flex-row items-center gap-2" onClick={() => handleDetail(application.id)}>
           <div className="flex flex-1 items-center gap-2">
             <img className="h-10 w-10 rounded-full" src={application.imageUrl} alt="Member Avatar" />

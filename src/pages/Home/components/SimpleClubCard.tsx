@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import type { JoinClub } from '@/apis/club/entity';
-import WarningIcon from '@/assets/svg/warning.svg';
+// import WarningIcon from '@/assets/svg/warning.svg';
 
 interface SimpleClubCardProps {
   club: JoinClub;
@@ -23,12 +23,12 @@ function SimpleClubCard({ club }: SimpleClubCardProps) {
               </div>
             )}
           </div>
-          {!club.isFeePaid && (
+          {/* {!club.isFeePaid && (
             <div className="text-cap2 flex items-center rounded-full bg-[#FFE5E5E5] px-3 py-1.5 font-semibold text-[#FF4E4E]">
               <WarningIcon />
               납부할 회비가 있어요
             </div>
-          )}
+          )} */}
         </div>
         <div className="text-sub2 mt-1 text-indigo-300">
           {club.position}·{club.categoryName}
