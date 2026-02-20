@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: 'ko'
+early_access: false
+reviews:
+  profile: 'chill'
+  request_changes_workflow: false
+  high_level_summary: true
+  commit_status: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+  estimate_code_review_effort: false
+  sequence_diagrams: false
+  changed_files_summary: false
+  path_filters:
+    - '**'
+    - '!dist/**'
+    - '!pnpm-lock.yaml'
+    - '!src/assets/fonts/**'
+    - '!src/assets/image/**'
+    - '!public/**'
+  auto_review:
+    enabled: true
+    base_branches: ['develop', 'main']
+    drafts: false
+  tools:
+    eslint:
+      enabled: false
+  finishing_touches:
+    docstrings:
+      enabled: false
+  pre_merge_checks:
+    docstrings:
+      mode: off
+tone_instructions: '짧고 핵심적으로 리뷰해주세요. React, TypeScript 컨벤션에 맞는 피드백을 우선적으로 해주세요.'
+knowledge_base:
+  code_guidelines:
+    enabled: true
+    filePatterns: ['**/README.md']
+chat:
+  auto_reply: true

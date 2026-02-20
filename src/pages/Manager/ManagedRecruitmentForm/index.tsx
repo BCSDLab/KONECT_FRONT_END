@@ -1,9 +1,12 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import type { ClubQuestionRequest } from '@/apis/club/entity';
 import TrashIcon from '@/assets/svg/trash-full.svg';
-import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagerQuery';
+import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
+import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+
+const DEFAULT_PHONE_QUESTION = '지원자의 전화번호를 입력해주세요.';
 
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;
@@ -11,12 +14,15 @@ interface QuestionItem extends ClubQuestionRequest {
 
 function ManagedRecruitmentForm() {
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { managedClubQuestions } = useManagedClubQuestions(Number(clubId));
   const { mutate: updateQuestions, isPending, error } = useManagedClubQuestionsMutation(Number(clubId));
+  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
 
   const [questions, setQuestions] = useState<QuestionItem[]>(() => {
     if (managedClubQuestions.questions.length === 0) {
-      return [{ tempId: crypto.randomUUID(), question: '', isRequired: false }];
+      return [{ tempId: crypto.randomUUID(), question: DEFAULT_PHONE_QUESTION, isRequired: true }];
     }
     return managedClubQuestions.questions.map((q) => ({
       tempId: crypto.randomUUID(),
@@ -60,7 +66,13 @@ function ManagedRecruitmentForm() {
       })),
     };
 
-    updateQuestions(requestData);
+    updateQuestions(requestData, {
+      onSuccess: () => {
+        if (location.state?.enableAfterSave) {
+          patchSettings({ isApplicationEnabled: true }, { onSuccess: () => navigate(-1) });
+        }
+      },
+    });
   };
 
   const hasEmptyQuestion = questions.some((q) => !q.question.trim());

@@ -58,6 +58,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           <div>편하게 문의해주세요!</div>
         </div>
         <button
+          type="button"
           onClick={handleInquireClick}
           className="bg-primary text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
         >

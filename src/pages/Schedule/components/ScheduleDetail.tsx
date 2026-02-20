@@ -1,4 +1,5 @@
 import CalendarIcon from '@/assets/svg/calendar.svg';
+import { SCHEDULE_COLOR, SCHEDULE_LABEL } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { useScheduleList } from '../hooks/useGetSchedules';
 
@@ -6,13 +7,6 @@ type scheduleDetailProps = {
   year: number;
   month: number;
   day: number;
-};
-
-const SCHEDULE_COLOR = {
-  UNIVERSITY: '#AEDCBA',
-  CLUB: '#FDE49B',
-  COUNCIL: '#E9F2FA',
-  DORM: '#B9ADEF',
 };
 
 function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
@@ -51,7 +45,11 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
             <div className="flex flex-col gap-1">
-              <div className="text-[14px] leading-4 font-bold">{title}</div>
+              <div className="flex flex-row gap-1">
+                <div className="text-[14px] leading-4 font-bold">
+                  [{SCHEDULE_LABEL[scheduleCategory]}] {title}
+                </div>
+              </div>
               <div className="text-[13px] leading-3 text-indigo-300">{formatScheduleTime({ startedAt, endedAt })}</div>
             </div>
           </div>

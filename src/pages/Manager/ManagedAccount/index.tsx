@@ -1,153 +1,107 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
 import BottomModal from '@/components/common/BottomModal';
 import type { ApiError } from '@/interface/error';
-import DatePicker from '@/pages/Manager/components/DatePicker';
-import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagerQuery';
+import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
+import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 
 function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
-  const { managedClubFee } = useManagedClubFee(Number(clubId));
+  const navigate = useNavigate();
+  const location = useLocation();
+  const clubIdNumber = Number(clubId);
+  const { managedClubFee } = useManagedClubFee(clubIdNumber);
   const { banks } = useGetBanks();
-  const { mutate, isPending, error } = useManagedClubFeeMutation(Number(clubId));
+  const { mutate, isPending, error } = useManagedClubFeeMutation(clubIdNumber);
+  const { mutate: patchSettings } = usePatchClubSettings(clubIdNumber);
 
-  const [isFeeEnabled, setIsFeeEnabled] = useState(true);
-  const [amount, setAmount] = useState(managedClubFee.amount?.toString() || '');
-  const [selectedBankId, setSelectedBankId] = useState<number | null>(managedClubFee.bankId ?? null);
-  const [selectedBank, setSelectedBank] = useState(managedClubFee.bankName || '');
-  const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder || '');
-  const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber || '');
-  const [deadLine, setDeadLine] = useState(managedClubFee.deadLine || '');
+  const initialBankId = banks.find((bank) => bank.name === managedClubFee.bankName)?.id ?? null;
+
+  const [amount, setAmount] = useState(managedClubFee.amount?.toString() ?? '');
+  const [selectedBankId, setSelectedBankId] = useState<number | null>(initialBankId);
+  const [selectedBank, setSelectedBank] = useState(managedClubFee.bankName ?? '');
+  const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder ?? '');
+  const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber ?? '');
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
 
+  const isFormValid =
+    amount.trim() !== '' && selectedBankId !== null && accountHolder.trim() !== '' && accountNumber.trim() !== '';
+
   const handleSubmit = () => {
-    const payload: ClubFeeRequest = isFeeEnabled
-      ? {
-          bankId: selectedBankId,
-          amount,
-          bankName: selectedBank,
-          accountNumber,
-          accountHolder,
-          deadLine,
+    if (isPending || !isFormValid || selectedBankId === null) return;
+
+    const payload: ClubFeeRequest = {
+      amount: amount,
+      bankId: selectedBankId,
+      accountNumber: accountNumber.trim(),
+      accountHolder: accountHolder.trim(),
+    };
+    mutate(payload, {
+      onSuccess: () => {
+        if (location.state?.enableAfterSave) {
+          patchSettings({ isFeeEnabled: true }, { onSuccess: () => navigate(-1) });
         }
-      : {
-          bankId: null,
-          amount: 0,
-          bankName: '',
-          accountNumber: '',
-          accountHolder: '',
-          deadLine: '',
-        };
-    mutate(payload);
+      },
+    });
   };
 
-  const hasChanges = () => {
-    if (!managedClubFee) return true;
-    const currentHasFee = !!(managedClubFee.amount || managedClubFee.bankName || managedClubFee.accountNumber);
-    if (currentHasFee !== isFeeEnabled) return true;
-    if (!isFeeEnabled) return false;
-    return (
-      amount !== (managedClubFee.amount?.toString() || '') ||
-      selectedBank !== (managedClubFee.bankName || '') ||
-      accountHolder !== (managedClubFee.accountHolder || '') ||
-      accountNumber !== (managedClubFee.accountNumber || '') ||
-      deadLine !== (managedClubFee.deadLine || '')
-    );
-  };
+  const hasChanges = () =>
+    amount !== (managedClubFee.amount?.toString() ?? '') ||
+    selectedBank !== (managedClubFee.bankName ?? '') ||
+    accountHolder !== (managedClubFee.accountHolder ?? '') ||
+    accountNumber !== (managedClubFee.accountNumber ?? '');
 
   return (
     <div className="flex h-full flex-col bg-white">
       <div className="flex flex-1 flex-col gap-6 overflow-auto p-5">
-        <div className="flex items-center justify-between">
-          <h2 className="text-h3 font-bold text-indigo-500">회비 정보</h2>
-          <div className="flex items-center gap-2">
-            <span className="text-[15px] leading-6 font-medium text-indigo-300">회비 유무</span>
-            <button
-              type="button"
-              onClick={() => setIsFeeEnabled(!isFeeEnabled)}
-              className={`relative h-7 w-12 rounded-full transition-colors ${
-                isFeeEnabled ? 'bg-primary' : 'bg-indigo-100'
-              }`}
-            >
-              <span
-                className={`absolute top-1 h-5 w-5 rounded-full bg-white transition-transform ${
-                  isFeeEnabled ? 'left-6' : 'left-1'
-                }`}
-              />
-            </button>
-          </div>
+        <h2 className="text-h3 text-indigo-500">회비 정보</h2>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-[15px] leading-6 font-medium text-indigo-300">가입비</label>
+          <input
+            type="text"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="가입비를 입력해주세요"
+            className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
+          />
         </div>
 
-        {isFeeEnabled && (
-          <>
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">가입비</label>
-              <input
-                type="text"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="가입비를 입력해주세요"
-                className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
-              />
-            </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-[15px] leading-6 font-medium text-indigo-300">은행</label>
+          <button
+            type="button"
+            onClick={() => setIsBankModalOpen(true)}
+            className={`bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold ${
+              selectedBank ? 'text-indigo-700' : 'text-indigo-100'
+            }`}
+          >
+            {selectedBank || '은행을 선택해주세요'}
+          </button>
+        </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">은행</label>
-              <button
-                type="button"
-                onClick={() => setIsBankModalOpen(true)}
-                className="bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold"
-              >
-                {selectedBank || '은행을 선택해주세요'}
-              </button>
-            </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-[15px] leading-6 font-medium text-indigo-300">예금주</label>
+          <input
+            type="text"
+            value={accountHolder}
+            onChange={(e) => setAccountHolder(e.target.value)}
+            placeholder="예금주를 입력해주세요"
+            className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
+          />
+        </div>
 
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">예금주</label>
-              <input
-                type="text"
-                value={accountHolder}
-                onChange={(e) => setAccountHolder(e.target.value)}
-                placeholder="예금주를 입력해주세요"
-                className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">계좌번호</label>
-              <input
-                type="text"
-                value={accountNumber}
-                onChange={(e) => setAccountNumber(e.target.value)}
-                placeholder="계좌번호를 입력해주세요"
-                className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
-              />
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-[15px] leading-6 font-medium text-indigo-300">마감기한</label>
-              <DatePicker
-                selectedDate={deadLine ? new Date(deadLine.replace(/\./g, '-')) : new Date()}
-                onChange={(date) =>
-                  setDeadLine(
-                    `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
-                  )
-                }
-                triggerType="default"
-                renderTrigger={(toggle) => (
-                  <button
-                    type="button"
-                    onClick={toggle}
-                    className="bg-indigo-5 w-full rounded-lg p-2 text-left text-[15px] leading-6 font-semibold"
-                  >
-                    {deadLine || '마감기한을 선택해주세요'}
-                  </button>
-                )}
-              />
-            </div>
-          </>
-        )}
+        <div className="flex flex-col gap-1">
+          <label className="text-[15px] leading-6 font-medium text-indigo-300">계좌번호</label>
+          <input
+            type="text"
+            value={accountNumber}
+            onChange={(e) => setAccountNumber(e.target.value)}
+            placeholder="계좌번호를 입력해주세요"
+            className="bg-indigo-5 w-full rounded-lg p-2 text-[15px] leading-6 font-semibold"
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
@@ -161,7 +115,7 @@ function ManagedAccount() {
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={isPending || !hasChanges()}
+          disabled={isPending || !hasChanges() || !isFormValid}
           className="bg-primary w-full rounded-lg py-3 text-center text-lg leading-7 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-indigo-300"
         >
           {isPending ? '저장 중...' : '저장하기'}

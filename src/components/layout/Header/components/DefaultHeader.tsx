@@ -15,7 +15,7 @@ function DefaultHeader({ title, showBackButton = true, showNotificationBell = fa
   const handleBack = onBack ?? smartBack;
 
   return (
-    <header className="fixed top-0 right-0 left-0 flex h-11 items-center justify-center bg-white px-4 py-2">
+    <header className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2">
       {showBackButton && (
         <button
           type="button"

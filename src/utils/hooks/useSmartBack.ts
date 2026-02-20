@@ -47,6 +47,8 @@ export function useSmartBack() {
 
       if (parts[4] === 'info') {
         targetPath = `/mypage/manager/${clubId}`;
+      } else if (parts[4] === 'recruitment' && parts[5]) {
+        targetPath = `/mypage/manager/${clubId}/recruitment`;
       } else if (parts[4] === 'recruitment') {
         targetPath = `/mypage/manager/${clubId}`;
       } else if (parts[4] === 'applications' && parts.length === 5) {

@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import BottomModal from '@/components/common/BottomModal';
-import Toast from '@/components/common/Toast';
+import { useToastContext } from '@/contexts/useToastContext';
 import { useInquiryMutation } from '@/pages/Auth/SignUp/hooks/useInquiry';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
 
@@ -15,7 +14,7 @@ const fields = [
 ] as const;
 
 function Profile() {
-  const { toast, showToast, hideToast } = useToast();
+  const { showToast } = useToastContext();
   const { myInfo } = useMyInfo({});
   const { mutate: withdraw } = useWithdrawMutation();
   const { mutate: submitInquiry, isPending: isInquiryPending } = useInquiryMutation();
@@ -110,8 +109,6 @@ function Profile() {
           </div>
         </div>
       </BottomModal>
-
-      <Toast toast={toast} onClose={hideToast} />
     </div>
   );
 }

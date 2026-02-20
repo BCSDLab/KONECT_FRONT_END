@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { getChatMessages, getChatRooms, postChatMessage, postChatRooms } from '@/apis/chat';
+import { getChatMessages, getChatRooms, postChatMessage, postChatRooms, postChatMute } from '@/apis/chat';
 import { useGetClubMembers } from '@/pages/Club/ClubDetail/hooks/useGetClubMembers';
 
 type ChatType = 'DIRECT' | 'GROUP';
@@ -94,6 +94,22 @@ const useChat = (chatRoomId?: number) => {
 
   const { data: clubMembersData } = useGetClubMembers(clubId);
 
+  const { mutateAsync: toggleMute } = useMutation({
+    mutationKey: ['toggleMute', chatRoomId],
+    mutationFn: async () => {
+      if (!chatRoomId || !currentRoomType) {
+        throw new Error('chatRoomId or type missing');
+      }
+
+      return postChatMute(chatRoomId, currentRoomType);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.rooms(),
+      });
+    },
+  });
+
   return {
     chatRoomList,
     createChatRoom,
@@ -104,6 +120,7 @@ const useChat = (chatRoomId?: number) => {
     totalUnreadCount,
     sendMessage,
     clubMembers: clubMembersData?.clubMembers ?? [],
+    toggleMute,
   };
 };
 

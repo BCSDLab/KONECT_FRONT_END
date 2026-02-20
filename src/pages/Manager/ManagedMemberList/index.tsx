@@ -4,20 +4,18 @@ import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
-import Toast from '@/components/common/Toast';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { useToast } from '@/utils/hooks/useToast';
 import {
   useAddPreMember,
   useChangeMemberPosition,
   useChangeVicePresident,
-  useDeletePreMember,
   useGetPreMemberList,
+  useDeletePreMember,
   useManagedMembers,
   useRemoveMember,
   useTransferPresident,
-} from '../hooks/useManagerQuery';
+} from '../hooks/useManagedMembers';
 
 const POSITION_PRIORITY: Record<PositionType, number> = {
   PRESIDENT: 0,
@@ -52,29 +50,16 @@ function ManagedMemberList() {
   const params = useParams();
   const clubId = Number(params.clubId);
 
-  const { toast, showToast, hideToast } = useToast();
   const { managedMemberList } = useManagedMembers(clubId);
 
-  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId, {
-    onSuccess: () => showToast('회장이 위임되었습니다'),
-  });
-  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId, {
-    onSuccess: () => showToast('부회장이 변경되었습니다'),
-  });
-  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId, {
-    onSuccess: () => showToast('직책이 변경되었습니다'),
-  });
-  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId, {
-    onSuccess: () => showToast('부원이 추방되었습니다'),
-  });
-  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId, {
-    onSuccess: () => showToast('부원이 추가되었습니다'),
-  });
+  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId);
+  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId);
+  const { mutate: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId);
+  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId);
+  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId);
 
   const { preMembersList } = useGetPreMemberList(clubId);
-  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId, {
-    onSuccess: () => showToast('사전 등록 회원이 삭제되었습니다'),
-  });
+  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId);
 
   const isPending =
     isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding || isDeletingPreMember;
@@ -223,7 +208,10 @@ function ManagedMemberList() {
             {groupMembers.map((member) => (
               <Card key={member.userId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
-                  <img className="h-10 w-10 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                  {/* <img className="h-10 w-10 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                    {member.name.charAt(0)}
+                  </div>
                   <div>
                     <div className="text-body2 text-indigo-700">
                       {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
@@ -315,7 +303,10 @@ function ManagedMemberList() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                    {/* <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                      {member.name.charAt(0)}
+                    </div>
                     <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
@@ -364,7 +355,10 @@ function ManagedMemberList() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} />
+                    {/* <img className="h-8 w-8 rounded-full object-cover" src={member.imageUrl} alt={member.name} /> */}
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+                      {member.name.charAt(0)}
+                    </div>
                     <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
@@ -521,8 +515,6 @@ function ManagedMemberList() {
           </div>
         </div>
       </BottomModal>
-
-      <Toast toast={toast} onClose={hideToast} />
     </div>
   );
 }
