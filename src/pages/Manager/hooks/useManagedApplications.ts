@@ -7,6 +7,7 @@ import {
   postClubApplicationReject,
 } from '@/apis/club';
 import { useToastContext } from '@/contexts/useToastContext';
+import { isApiError } from '@/interface/error';
 
 const applicationQueryKeys = {
   all: ['manager'],
@@ -26,10 +27,19 @@ interface ApplicationMutationOptions {
 export const useGetManagedApplications = (clubId: number) => {
   const { data: managedClubApplicationList } = useSuspenseQuery({
     queryKey: applicationQueryKeys.managedClubApplications(clubId),
-    queryFn: () => getManagedClubApplications(clubId),
+    queryFn: async () => {
+      try {
+        return await getManagedClubApplications(clubId);
+      } catch (error) {
+        if (isApiError(error) && error.apiError?.code === 'NOT_FOUND_CLUB_RECRUITMENT') {
+          return null;
+        }
+        throw error;
+      }
+    },
   });
 
-  return { managedClubApplicationList };
+  return { managedClubApplicationList, hasNoRecruitment: managedClubApplicationList === null };
 };
 
 export const useGetManagedApplicationDetail = (clubId: number, applicationId: number) => {
