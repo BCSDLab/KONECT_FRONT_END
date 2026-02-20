@@ -15,7 +15,7 @@ function ManagedAccount() {
   const [isFeeEnabled, setIsFeeEnabled] = useState(true);
   const [amount, setAmount] = useState(managedClubFee.amount?.toString() || '');
   const [selectedBankId, setSelectedBankId] = useState<number | null>(managedClubFee.bankId ?? null);
-  const [selectedBank, setSelectedBank] = useState(managedClubFee.bank || '');
+  const [selectedBank, setSelectedBank] = useState(managedClubFee.bankName || '');
   const [accountHolder, setAccountHolder] = useState(managedClubFee.accountHolder || '');
   const [accountNumber, setAccountNumber] = useState(managedClubFee.accountNumber || '');
   const [deadLine, setDeadLine] = useState(managedClubFee.deadLine || '');
@@ -26,7 +26,7 @@ function ManagedAccount() {
       ? {
           bankId: selectedBankId,
           amount,
-          bank: selectedBank,
+          bankName: selectedBank,
           accountNumber,
           accountHolder,
           deadLine,
@@ -34,7 +34,7 @@ function ManagedAccount() {
       : {
           bankId: null,
           amount: 0,
-          bank: '',
+          bankName: '',
           accountNumber: '',
           accountHolder: '',
           deadLine: '',
@@ -44,12 +44,12 @@ function ManagedAccount() {
 
   const hasChanges = () => {
     if (!managedClubFee) return true;
-    const currentHasFee = !!(managedClubFee.amount || managedClubFee.bank || managedClubFee.accountNumber);
+    const currentHasFee = !!(managedClubFee.amount || managedClubFee.bankName || managedClubFee.accountNumber);
     if (currentHasFee !== isFeeEnabled) return true;
     if (!isFeeEnabled) return false;
     return (
       amount !== (managedClubFee.amount?.toString() || '') ||
-      selectedBank !== (managedClubFee.bank || '') ||
+      selectedBank !== (managedClubFee.bankName || '') ||
       accountHolder !== (managedClubFee.accountHolder || '') ||
       accountNumber !== (managedClubFee.accountNumber || '') ||
       deadLine !== (managedClubFee.deadLine || '')

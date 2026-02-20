@@ -12,7 +12,7 @@ interface AccountInfoCardProps {
 function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
   const { toast, showToast, hideToast } = useToast();
   const items = [
-    { label: '은행', value: accountInfo.bank },
+    { label: '은행', value: accountInfo.bankName },
     { label: '예금주', value: accountInfo.accountHolder },
     { label: '계좌번호', value: accountInfo.accountNumber },
   ];
