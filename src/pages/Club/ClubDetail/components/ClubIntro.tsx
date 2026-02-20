@@ -24,7 +24,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
     <>
       <Card>
         <div className="text-h3 text-indigo-700">동아리 소개</div>
-        <div className="text-sub2 mt-1.5 text-indigo-300">{clubDetail.introduce}</div>
+        <div className="text-sub2 mt-1.5 whitespace-pre-line text-indigo-300">{clubDetail.introduce}</div>
       </Card>
       <Card>
         <div className="text-sm leading-4 font-bold text-indigo-700">위치 및 회원 수</div>
