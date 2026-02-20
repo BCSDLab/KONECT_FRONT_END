@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
@@ -9,6 +9,7 @@ import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
+import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 
@@ -39,6 +40,7 @@ function parseDateDot(dateStr: string): Date {
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [content, setContent] = useState('');
@@ -53,6 +55,7 @@ function ManagedRecruitmentWrite() {
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { data: existingRecruitment } = useGetManagedRecruitments(Number(clubId));
   const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(Number(clubId));
+  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -172,7 +175,13 @@ function ManagedRecruitmentWrite() {
       const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
       const imageData = [...existingImageData, ...uploadedImageData];
 
-      const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
+      const onSuccess = () => {
+        if (location.state?.enableAfterSave) {
+          patchSettings({ isRecruitmentEnabled: true }, { onSuccess: () => navigate(-1) });
+        } else {
+          navigate(`/manager/${clubId}/recruitment`);
+        }
+      };
 
       if (isAlwaysRecruiting) {
         saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
