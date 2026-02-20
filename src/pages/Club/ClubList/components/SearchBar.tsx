@@ -18,7 +18,7 @@ function SearchBar({ isButton, value, onChange, onSubmit, autoFocus }: SearchBar
       <SearchIcon />
       <input
         className="flex-1 bg-transparent font-medium outline-none placeholder:text-indigo-200"
-        placeholder="동아리 이름/태그로 검색"
+        placeholder="동아리 이름으로 검색"
         readOnly={isButton && !onChange}
         value={value}
         onChange={onChange ? (e) => onChange(e.target.value) : undefined}
