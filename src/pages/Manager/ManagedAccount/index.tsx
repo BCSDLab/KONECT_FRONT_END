@@ -22,11 +22,7 @@ function ManagedAccount() {
   const [isBankModalOpen, setIsBankModalOpen] = useState(false);
 
   const isFormValid =
-    amount.trim() !== '' &&
-    Number(amount) > 0 &&
-    selectedBankId !== null &&
-    accountHolder.trim() !== '' &&
-    accountNumber.trim() !== '';
+    amount.trim() !== '' && selectedBankId !== null && accountHolder.trim() !== '' && accountNumber.trim() !== '';
 
   const handleSubmit = () => {
     if (isPending || !isFormValid || selectedBankId === null) return;
