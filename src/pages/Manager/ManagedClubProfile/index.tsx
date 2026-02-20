@@ -7,7 +7,7 @@ import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 
-const DESCRIPTION_MAX_LENGTH = 20;
+const DESCRIPTION_MAX_LENGTH = 25;
 
 function ManagedClubInfo() {
   const { clubId } = useParams<{ clubId: string }>();
