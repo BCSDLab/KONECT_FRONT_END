@@ -64,7 +64,7 @@ export const useManagedClubQuestionsMutation = (clubId: number) => {
     mutationKey: recruitmentQueryKeys.managedClubQuestions(clubId),
     mutationFn: (questionsData: ClubQuestionsRequest) => putClubQuestions(clubId, questionsData),
     onSuccess: () => {
-      showToast('질문이 수정되었습니다');
+      showToast('질문이 수정되었습니다', 'success');
       queryClient.invalidateQueries({ queryKey: recruitmentQueryKeys.managedClubQuestions(clubId) });
       navigate(-1);
     },

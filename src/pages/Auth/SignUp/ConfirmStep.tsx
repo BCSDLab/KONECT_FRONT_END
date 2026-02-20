@@ -55,7 +55,7 @@ function ConfirmStep() {
           showToast('문의가 접수되었습니다', 'success');
         },
         onError: () => {
-          showToast('문의 전송에 실패했습니다');
+          showToast('문의 전송에 실패했습니다', 'error');
         },
       }
     );

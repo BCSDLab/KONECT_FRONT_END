@@ -175,13 +175,12 @@ function ManagedRecruitmentWrite() {
       const onSuccess = () => navigate(`/manager/${clubId}/recruitment`);
 
       if (isAlwaysRecruiting) {
-        saveRecruitment({ content, images: imageData, isFeeRequired: false, isAlwaysRecruiting: true }, { onSuccess });
+        saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
       } else {
         saveRecruitment(
           {
             content,
             images: imageData,
-            isFeeRequired: false,
             isAlwaysRecruiting: false,
             startDate: formatDateDot(startDate),
             endDate: formatDateDot(endDate),

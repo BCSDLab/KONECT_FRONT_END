@@ -7,8 +7,8 @@ import { useToastContext } from '@/contexts/useToastContext';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
 import {
-  useUpdateApplicationStatus,
-  useDeleteApplication,
+  useApproveApplication,
+  useRejectApplication,
   useGetManagedApplicationDetail,
 } from '../hooks/useManagedApplications';
 
@@ -19,10 +19,10 @@ function ManagedApplicationDetail() {
 
   const { showToast } = useToastContext();
   const { managedClubApplicationDetail: application } = useGetManagedApplicationDetail(clubId, applicationId);
-  const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId, {
+  const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId, {
     navigateBack: true,
   });
-  const { mutate: reject, isPending: isRejecting } = useDeleteApplication(clubId, {
+  const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId, {
     navigateBack: true,
   });
 

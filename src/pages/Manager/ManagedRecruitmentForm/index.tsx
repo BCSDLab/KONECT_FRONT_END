@@ -5,6 +5,8 @@ import type { ClubQuestionRequest } from '@/apis/club/entity';
 import TrashIcon from '@/assets/svg/trash-full.svg';
 import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
 
+const DEFAULT_PHONE_QUESTION = '지원자의 전화번호를 입력해주세요.';
+
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;
 }
@@ -16,7 +18,7 @@ function ManagedRecruitmentForm() {
 
   const [questions, setQuestions] = useState<QuestionItem[]>(() => {
     if (managedClubQuestions.questions.length === 0) {
-      return [{ tempId: crypto.randomUUID(), question: '지원자의 전화번호를 입력해주세요.', isRequired: true }];
+      return [{ tempId: crypto.randomUUID(), question: DEFAULT_PHONE_QUESTION, isRequired: true }];
     }
     return managedClubQuestions.questions.map((q) => ({
       tempId: crypto.randomUUID(),

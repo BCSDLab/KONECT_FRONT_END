@@ -3,8 +3,8 @@ import Card from '@/components/common/Card';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
 import {
-  useUpdateApplicationStatus,
-  useDeleteApplication,
+  useApproveApplication,
+  useRejectApplication,
   useGetManagedApplications,
 } from '../hooks/useManagedApplications';
 
@@ -14,8 +14,8 @@ function ManagedApplicationList() {
   const clubId = Number(params.clubId);
 
   const { managedClubApplicationList } = useGetManagedApplications(clubId);
-  const { mutate: approve, isPending: isApproving } = useUpdateApplicationStatus(clubId);
-  const { mutate: reject, isPending: isRejecting } = useDeleteApplication(clubId);
+  const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId);
+  const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
 
   const total = managedClubApplicationList.applications.length;
   const isPending = isApproving || isRejecting;

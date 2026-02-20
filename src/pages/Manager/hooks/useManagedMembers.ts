@@ -91,7 +91,6 @@ export const useRemoveMember = (clubId: number) => {
 };
 
 export const useAddPreMember = (clubId: number) => {
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { showToast } = useToastContext();
 
@@ -101,7 +100,6 @@ export const useAddPreMember = (clubId: number) => {
       showToast('부원이 추가되었습니다');
       queryClient.invalidateQueries({ queryKey: memberQueryKeys.managedMembers(clubId) });
       queryClient.invalidateQueries({ queryKey: memberQueryKeys.preMembersList(clubId) });
-      navigate(-1);
     },
   });
 };

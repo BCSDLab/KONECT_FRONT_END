@@ -22,7 +22,7 @@ function ManagedClubInfo() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { mutate: updateClubInfo, isPending, error } = useUpdateClubInfo(Number(clubId));
+  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateClubInfo(Number(clubId));
 
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);
 
@@ -79,7 +79,7 @@ function ManagedClubInfo() {
         finalImageUrl = result.fileUrl;
       }
 
-      updateClubInfo({
+      await updateClubInfo({
         description,
         imageUrl: finalImageUrl,
         location,

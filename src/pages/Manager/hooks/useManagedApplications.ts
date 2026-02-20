@@ -41,7 +41,7 @@ export const useGetManagedApplicationDetail = (clubId: number, applicationId: nu
   return { managedClubApplicationDetail };
 };
 
-export const useUpdateApplicationStatus = (clubId: number, options: ApplicationMutationOptions = {}) => {
+export const useApproveApplication = (clubId: number, options: ApplicationMutationOptions = {}) => {
   const { navigateBack = false } = options;
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -57,7 +57,7 @@ export const useUpdateApplicationStatus = (clubId: number, options: ApplicationM
   });
 };
 
-export const useDeleteApplication = (clubId: number, options: ApplicationMutationOptions = {}) => {
+export const useRejectApplication = (clubId: number, options: ApplicationMutationOptions = {}) => {
   const { navigateBack = false } = options;
   const navigate = useNavigate();
   const queryClient = useQueryClient();

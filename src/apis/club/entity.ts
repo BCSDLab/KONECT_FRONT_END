@@ -171,7 +171,6 @@ interface RecruitmentImage {
 type BaseRecruitment = {
   content: string;
   images: RecruitmentImage[];
-  isFeeRequired: boolean;
 };
 
 export type ClubRecruitmentRequest =

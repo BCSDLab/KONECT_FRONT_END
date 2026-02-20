@@ -41,6 +41,7 @@ export const useUpdateClubInfo = (clubId: number) => {
     onSuccess: () => {
       showToast('클럽 정보가 수정되었습니다');
       queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      queryClient.invalidateQueries({ queryKey: managerClubQueryKeys.managedClub(clubId) });
       navigate(-1);
     },
   });

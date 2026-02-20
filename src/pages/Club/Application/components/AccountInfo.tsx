@@ -31,15 +31,17 @@ function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
         ))}
       </div>
       <button
+        disabled={!accountInfo.accountNumber}
         onClick={async () => {
+          if (!accountInfo.accountNumber) return;
           try {
-            await navigator.clipboard.writeText(accountInfo.accountNumber ?? '');
+            await navigator.clipboard.writeText(accountInfo.accountNumber);
             showToast('계좌번호가 복사되었습니다');
           } catch {
             showToast('복사에 실패했습니다');
           }
         }}
-        className="bg-primary text-indigo-0 flex items-center justify-center gap-1.5 rounded-sm py-3 text-xs font-medium"
+        className="bg-primary text-indigo-0 flex items-center justify-center gap-1.5 rounded-sm py-3 text-xs font-medium disabled:opacity-50"
       >
         <CopyIcon /> 계좌번호 복사하기
       </button>
