@@ -25,7 +25,7 @@ function ManagedRecruitment() {
   };
 
   const handleApplicationToggle = (value: boolean) => {
-    if (value && !settings?.application) {
+    if (value && (!settings?.application || settings.application.questionCount === 0)) {
       navigate('form', { state: { enableAfterSave: true } });
       return;
     }
