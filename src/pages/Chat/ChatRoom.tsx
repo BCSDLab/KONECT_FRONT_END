@@ -121,9 +121,12 @@ function ChatRoom() {
                       </div>
                     </div>
 
-                    <span className="mb-1 shrink-0 self-end text-xs text-indigo-300">
-                      {formatTime(message.createdAt)}
-                    </span>
+                    <div className="flex shrink-0 flex-col items-start gap-0.5 self-end">
+                      {message.unreadCount > 0 && (
+                        <span className="text-[10px] font-medium text-[#4B9FE1]">{message.unreadCount}</span>
+                      )}
+                      <span className="text-[10px] text-indigo-300">{formatTime(message.createdAt)}</span>
+                    </div>
                   </div>
                 )}
 
@@ -134,9 +137,12 @@ function ChatRoom() {
                       {message.content}
                     </div>
 
-                    <span className="mb-1 shrink-0 self-end text-xs text-indigo-300">
-                      {formatTime(message.createdAt)}
-                    </span>
+                    <div className="flex shrink-0 flex-col items-end self-end">
+                      {message.unreadCount > 0 && (
+                        <span className="text-xs font-medium text-[#4B9FE1]">{message.unreadCount}</span>
+                      )}
+                      <span className="text-xs text-indigo-300">{formatTime(message.createdAt)}</span>
+                    </div>
                   </div>
                 )}
               </div>
