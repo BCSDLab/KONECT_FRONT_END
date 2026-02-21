@@ -22,13 +22,13 @@ const useClubApply = (clubId: number) => {
   const hasFeeData = clubFee.amount !== null && clubFee.accountNumber !== null;
   const isFeeRequired = recruitment.isFeeRequired && hasFeeData;
 
-  const { applyToClub } = useApplyToClub(clubId);
+  const { applyToClub, isPending } = useApplyToClub(clubId);
 
   const applyDirectly = () => applyToClub({ answers: [] });
 
   const hasQuestions = clubQuestions && clubQuestions.questions.length > 0;
 
-  return { clubQuestions, applyToClub, applyDirectly, hasQuestions, isFeeRequired };
+  return { clubQuestions, applyToClub, applyDirectly, hasQuestions, isFeeRequired, isPending };
 };
 
 export default useClubApply;

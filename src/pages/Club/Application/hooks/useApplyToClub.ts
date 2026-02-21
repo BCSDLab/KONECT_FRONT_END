@@ -8,7 +8,7 @@ const useApplyToClub = (clubId: number) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { mutateAsync: applyToClub } = useMutation({
+  const { mutateAsync: applyToClub, isPending } = useMutation({
     mutationKey: ['applyToClub', clubId],
     mutationFn: (body: ClubApplyRequest) => applyClub(clubId, body),
     onSuccess: () => {
@@ -17,7 +17,7 @@ const useApplyToClub = (clubId: number) => {
     },
   });
 
-  return { applyToClub };
+  return { applyToClub, isPending };
 };
 
 export default useApplyToClub;

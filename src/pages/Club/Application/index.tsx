@@ -8,7 +8,7 @@ import useClubApply from './hooks/useClubApply';
 function ApplicationPage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const { clubQuestions, applyToClub, isFeeRequired } = useClubApply(Number(clubId));
+  const { clubQuestions, applyToClub, isFeeRequired, isPending } = useClubApply(Number(clubId));
   const { answers: storedAnswers, clubId: storedClubId } = useClubApplicationStore();
   const setApplication = useClubApplicationStore((s) => s.setApplication);
   const [answers, setAnswers] = useState<Record<number, string>>(() =>
@@ -80,7 +80,8 @@ function ApplicationPage() {
             <button
               type="button"
               onClick={handleConfirm}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              disabled={isPending}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
             >
               제출하기
             </button>

@@ -14,7 +14,7 @@ interface ClubRecruitProps {
 function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
   const navigate = useNavigate();
   const { data: clubRecruitment } = useGetClubRecruitment(clubId);
-  const { hasQuestions, applyDirectly, isFeeRequired } = useClubApply(clubId);
+  const { hasQuestions, applyDirectly, isFeeRequired, isPending } = useClubApply(clubId);
   const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
 
   const setApplication = useClubApplicationStore((s) => s.setApplication);
@@ -95,7 +95,8 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
             <button
               type="button"
               onClick={handleApply}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              disabled={isPending}
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
             >
               지원하기
             </button>
