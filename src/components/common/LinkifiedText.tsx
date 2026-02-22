@@ -3,6 +3,8 @@ import { cn } from '@/utils/ts/cn';
 
 const URL_REGEX = /(?:https?:\/\/|www\.)[^\s]+/gi;
 const TRAILING_PUNCTUATION_REGEX = /[)\]}>.,!?;:'"`]+$/;
+const INSTAGRAM_HANDLE_REGEX =
+  /(^|[^A-Za-z0-9._])(@[A-Za-z0-9_](?:[A-Za-z0-9._]{0,28}[A-Za-z0-9_])?)(?=$|[^A-Za-z0-9._])/g;
 
 type LinkPart =
   | {
@@ -78,8 +80,54 @@ const parseLinkParts = (text: string): LinkPart[] => {
   return parts;
 };
 
+const parseInstagramParts = (text: string): LinkPart[] => {
+  const parts: LinkPart[] = [];
+  const matcher = new RegExp(INSTAGRAM_HANDLE_REGEX);
+  let lastIndex = 0;
+  let match = matcher.exec(text);
+
+  while (match) {
+    const prefix = match[1] ?? '';
+    const handle = match[2];
+    const startIndex = match.index;
+    const handleStartIndex = startIndex + prefix.length;
+    const handleEndIndex = handleStartIndex + handle.length;
+
+    if (startIndex > lastIndex) {
+      parts.push({ type: 'text', value: text.slice(lastIndex, startIndex) });
+    }
+
+    if (prefix) {
+      parts.push({ type: 'text', value: prefix });
+    }
+
+    parts.push({
+      type: 'link',
+      value: handle,
+      href: `https://instagram.com/${handle.slice(1)}`,
+    });
+
+    lastIndex = handleEndIndex;
+    match = matcher.exec(text);
+  }
+
+  if (lastIndex < text.length) {
+    parts.push({ type: 'text', value: text.slice(lastIndex) });
+  }
+
+  return parts;
+};
+
 function LinkifiedText({ text, className, linkClassName }: LinkifiedTextProps) {
-  const parts = useMemo(() => parseLinkParts(text), [text]);
+  const parts = useMemo(() => {
+    return parseLinkParts(text).flatMap((part) => {
+      if (part.type === 'link') {
+        return [part];
+      }
+
+      return parseInstagramParts(part.value);
+    });
+  }, [text]);
 
   const content = parts.map((part, index) => {
     if (part.type === 'text') {
