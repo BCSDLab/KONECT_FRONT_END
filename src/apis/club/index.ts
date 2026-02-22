@@ -91,10 +91,13 @@ export const getManagedClubs = async () => {
 };
 
 export const getManagedClubApplications = async (clubId: number, params?: ClubApplicationsParams) => {
-  const response = await apiClient.get<ClubApplicationsResponse, ClubApplicationsParams>(`clubs/${clubId}/applications`, {
-    params,
-    requiresAuth: true,
-  });
+  const response = await apiClient.get<ClubApplicationsResponse, ClubApplicationsParams>(
+    `clubs/${clubId}/applications`,
+    {
+      params,
+      requiresAuth: true,
+    }
+  );
   return response;
 };
 
