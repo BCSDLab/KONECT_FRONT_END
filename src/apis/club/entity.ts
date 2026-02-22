@@ -137,13 +137,25 @@ export interface AppliedClubResponse {
 //========================== Club Manager Entities =========================//
 interface Application {
   id: number;
-  studentNumber: number;
+  studentNumber: string;
   name: string;
   imageUrl: string;
   appliedAt: string;
+  feePaymentImageUrl?: string;
+}
+
+export interface ClubApplicationsParams {
+  page?: number;
+  limit?: number;
+  sortBy?: 'APPLIED_AT' | 'STUDENT_NUMBER' | 'NAME';
+  sortDirection?: 'ASC' | 'DESC';
 }
 
 export interface ClubApplicationsResponse {
+  totalCount: number;
+  currentCount: number;
+  totalPage: number;
+  currentPage: number;
   applications: Application[];
 }
 

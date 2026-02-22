@@ -31,6 +31,7 @@ import {
   type PreMembersList,
   type ClubSettingsResponse,
   type ClubSettingsPatchRequest,
+  type ClubApplicationsParams,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -89,8 +90,9 @@ export const getManagedClubs = async () => {
   return response;
 };
 
-export const getManagedClubApplications = async (clubId: number) => {
-  const response = await apiClient.get<ClubApplicationsResponse>(`clubs/${clubId}/applications`, {
+export const getManagedClubApplications = async (clubId: number, params?: ClubApplicationsParams) => {
+  const response = await apiClient.get<ClubApplicationsResponse, ClubApplicationsParams>(`clubs/${clubId}/applications`, {
+    params,
     requiresAuth: true,
   });
   return response;
