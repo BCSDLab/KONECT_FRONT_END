@@ -44,7 +44,7 @@ function ManagedRecruitment() {
     if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
     if (!settings.recruitment) return '모집 기간을 설정해 주세요.';
     if (settings.recruitment.isAlwaysRecruiting) return '상시 모집';
-    return `모집 기간: ${settings.recruitment.startDate} ~ ${settings.recruitment.endDate}`;
+    return `모집 기간: ${settings.recruitment.startAt} ~ ${settings.recruitment.endAt}`;
   })();
 
   const applicationContent = (() => {

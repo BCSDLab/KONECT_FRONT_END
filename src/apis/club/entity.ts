@@ -53,8 +53,8 @@ export interface ClubDetailResponse {
 
 interface Recruitment {
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
-  startDate?: string;
-  endDate?: string;
+  startAt?: string;
+  endAt?: string;
 }
 
 export type PositionType = 'PRESIDENT' | 'VICE_PRESIDENT' | 'MANAGER' | 'MEMBER';
@@ -114,8 +114,8 @@ export interface ClubRecruitment {
   id: number;
   clubId: number;
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
-  startDate: string;
-  endDate: string;
+  startAt: string;
+  endAt: string;
   content: string;
   images: ClubRecruitmentImage[];
   isFeeRequired: boolean;
@@ -176,13 +176,13 @@ type BaseRecruitment = {
 export type ClubRecruitmentRequest =
   | (BaseRecruitment & {
       isAlwaysRecruiting: true;
-      startDate?: never;
-      endDate?: never;
+      startAt?: never;
+      endAt?: never;
     })
   | (BaseRecruitment & {
       isAlwaysRecruiting: false;
-      startDate: string;
-      endDate: string;
+      startAt: string;
+      endAt: string;
     });
 
 export interface ClubQuestionRequest {
@@ -290,8 +290,8 @@ export interface PreMemberDeleteRequest {
 //========================== Club Settings Entities =========================//
 
 interface ClubSettingsRecruitment {
-  startDate: string;
-  endDate: string;
+  startAt: string;
+  endAt: string;
   isAlwaysRecruiting: boolean;
 }
 
