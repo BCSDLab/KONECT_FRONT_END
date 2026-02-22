@@ -289,11 +289,17 @@ export interface PreMemberDeleteRequest {
 
 //========================== Club Settings Entities =========================//
 
-interface ClubSettingsRecruitment {
-  startDate: string;
-  endDate: string;
-  isAlwaysRecruiting: boolean;
-}
+type ClubSettingsRecruitment =
+  | {
+      isAlwaysRecruiting: true;
+      startAt?: never;
+      endAt?: never;
+    }
+  | {
+      isAlwaysRecruiting: false;
+      startAt: string;
+      endAt: string;
+    };
 
 interface ClubSettingsApplication {
   questionCount: number;
