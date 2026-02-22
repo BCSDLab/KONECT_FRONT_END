@@ -29,7 +29,7 @@ export const useGetManagedApplications = (clubId: number) => {
     queryKey: applicationQueryKeys.managedClubApplications(clubId),
     queryFn: async () => {
       try {
-        return await getManagedClubApplications(clubId);
+        return await getManagedClubApplications(clubId, { sortBy: 'APPLIED_AT', sortDirection: 'ASC' });
       } catch (error) {
         if (isApiError(error) && error.apiError?.code === 'NOT_FOUND_CLUB_RECRUITMENT') {
           return null;

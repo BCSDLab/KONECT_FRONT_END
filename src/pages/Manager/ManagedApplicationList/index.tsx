@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import Card from '@/components/common/Card';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
+import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
 import {
   useApproveApplication,
   useRejectApplication,
@@ -17,7 +17,7 @@ function ManagedApplicationList() {
   const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId);
   const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
 
-  const total = managedClubApplicationList?.applications.length ?? 0;
+  const total = managedClubApplicationList?.totalCount ?? 0;
   const isPending = isApproving || isRejecting;
 
   const handleApprove = (e: React.MouseEvent, applicationId: number) => {
@@ -60,7 +60,9 @@ function ManagedApplicationList() {
               <div className="text-body2 text-indigo-700">
                 {application.name} <span className="text-body3">({application.studentNumber})</span>
               </div>
-              <div className="text-cap1 text-indigo-300">지원일 : {formatIsoDateToYYYYMMDD(application.appliedAt)}</div>
+              <div className="text-cap1 text-indigo-300">
+                지원일 : {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
+              </div>
             </div>
           </div>
           <div className="flex items-center gap-2">

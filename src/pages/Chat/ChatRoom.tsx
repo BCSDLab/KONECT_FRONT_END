@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
+import LinkifiedText from '@/components/common/LinkifiedText';
 import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
 import useChat from './hooks/useChat';
 import useChatRoomScroll from './hooks/useChatRoomScroll';
@@ -117,7 +118,7 @@ function ChatRoom() {
                       )}
 
                       <div className="rounded-lg bg-[#f1f8ff] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
-                        {message.content}
+                        <LinkifiedText text={message.content} />
                       </div>
                     </div>
 
@@ -134,7 +135,7 @@ function ChatRoom() {
                 {message.isMine && (
                   <div className="flex max-w-full min-w-0 flex-row-reverse items-end gap-2">
                     <div className="rounded-lg bg-[#f5f5f5] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
-                      {message.content}
+                      <LinkifiedText text={message.content} />
                     </div>
 
                     <div className="flex shrink-0 flex-col items-end self-end">

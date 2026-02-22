@@ -7,7 +7,8 @@ interface ClubCardProps {
 }
 
 function getDDay(dateString: string): string {
-  const [year, month, day] = dateString.split('.').map(Number);
+  const datePart = dateString.split('T')[0].split(' ')[0].replace(/-/g, '.');
+  const [year, month, day] = datePart.split('.').map(Number);
   const targetDate = new Date(year, month - 1, day);
   const today = new Date();
 

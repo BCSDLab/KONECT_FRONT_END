@@ -5,7 +5,7 @@ import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
 import { useToastContext } from '@/contexts/useToastContext';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { formatIsoDateToYYYYMMDD } from '@/utils/ts/date';
+import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
 import {
   useApproveApplication,
   useRejectApplication,
@@ -61,7 +61,9 @@ function ManagedApplicationDetail() {
                 {application.name}
                 <span className="text-sub3 ml-2 text-indigo-400">({application.studentNumber})</span>
               </div>
-              <div className="text-sub4 text-gray-500">지원일: {formatIsoDateToYYYYMMDD(application.appliedAt)}</div>
+              <div className="text-sub4 text-gray-500">
+                지원일: {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
+              </div>
             </div>
           </div>
         </section>
@@ -105,27 +107,26 @@ function ManagedApplicationDetail() {
             ))}
           </div>
         </section>
-      </div>
-
-      <div className="flex gap-3 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
-        <button
-          type="button"
-          onClick={openReject}
-          disabled={isPending}
-          className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-white py-3 text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          <WarningIcon className="h-5 w-5" />
-          <span>거절</span>
-        </button>
-        <button
-          type="button"
-          onClick={openApprove}
-          disabled={isPending}
-          className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg py-3 text-white transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-indigo-300"
-        >
-          <CheckIcon className="h-5 w-5" />
-          <span>승인</span>
-        </button>
+        <div className="flex gap-3 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
+          <button
+            type="button"
+            onClick={openReject}
+            disabled={isPending}
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-red-300 bg-white py-3 text-red-500 transition-colors hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <WarningIcon className="h-5 w-5" />
+            <span>거절</span>
+          </button>
+          <button
+            type="button"
+            onClick={openApprove}
+            disabled={isPending}
+            className="bg-primary flex flex-1 items-center justify-center gap-2 rounded-lg py-3 text-white transition-colors hover:bg-indigo-800 disabled:cursor-not-allowed disabled:bg-indigo-300"
+          >
+            <CheckIcon className="h-5 w-5" />
+            <span>승인</span>
+          </button>
+        </div>
       </div>
 
       {/* Approve Confirm Modal */}
