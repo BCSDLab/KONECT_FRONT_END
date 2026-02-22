@@ -151,11 +151,7 @@ export interface ClubApplicationsParams {
   sortDirection?: 'ASC' | 'DESC';
 }
 
-export interface ClubApplicationsResponse {
-  totalCount: number;
-  currentCount: number;
-  totalPage: number;
-  currentPage: number;
+export interface ClubApplicationsResponse extends PaginationResponse {
   applications: Application[];
 }
 

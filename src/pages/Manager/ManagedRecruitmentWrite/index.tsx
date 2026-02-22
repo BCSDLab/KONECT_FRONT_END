@@ -33,9 +33,7 @@ interface ImageItem {
 const sectionCardStyle =
   'flex w-full flex-col gap-4 rounded-2xl border border-indigo-25 bg-white px-4 py-4 shadow-[0_4px_12px_rgba(2,23,48,0.06)]';
 const sectionTitleStyle = 'text-h3 text-indigo-700';
-const compactDateButtonStyle =
-  'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
-const compactTimeButtonStyle =
+const compactButtonStyle =
   'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
 
 function ManagedRecruitmentWrite() {
@@ -253,7 +251,7 @@ function ManagedRecruitmentWrite() {
                         selectedDate={startDate}
                         onChange={setStartDate}
                         renderTrigger={(toggle) => (
-                          <button type="button" onClick={toggle} className={compactDateButtonStyle}>
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-2">
                               <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
                               <span className="text-sub2 truncate text-indigo-700">{formatDateDot(startDate)}</span>
@@ -270,7 +268,7 @@ function ManagedRecruitmentWrite() {
                         onChange={setStartTime}
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
-                          <button type="button" onClick={toggle} className={compactTimeButtonStyle}>
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex items-center gap-2">
                               <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
                               <span className="text-sub2 text-indigo-700">{startTime}</span>
@@ -296,7 +294,7 @@ function ManagedRecruitmentWrite() {
                         selectedDate={endDate}
                         onChange={setEndDate}
                         renderTrigger={(toggle) => (
-                          <button type="button" onClick={toggle} className={compactDateButtonStyle}>
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-2">
                               <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
                               <span className="text-sub2 truncate text-indigo-700">{formatDateDot(endDate)}</span>
@@ -313,7 +311,7 @@ function ManagedRecruitmentWrite() {
                         onChange={setEndTime}
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
-                          <button type="button" onClick={toggle} className={compactTimeButtonStyle}>
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex items-center gap-2">
                               <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
                               <span className="text-sub2 text-indigo-700">{endTime}</span>
