@@ -14,6 +14,15 @@ import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager
 import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { formatDateDot } from '@/utils/ts/date';
+import {
+  combineDateTime,
+  DEFAULT_END_TIME,
+  DEFAULT_START_TIME,
+  formatDateTimeDot,
+  parseDateTimeDot,
+  TIME_MINUTE_STEP,
+} from './utils';
 
 interface ImageItem {
   file?: File; // 새 이미지일 경우에만 존재
@@ -28,50 +37,6 @@ const compactDateButtonStyle =
   'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
 const compactTimeButtonStyle =
   'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
-const TIME_MINUTE_STEP = 5;
-const DEFAULT_START_TIME = '00:00';
-const DEFAULT_END_TIME = '23:55';
-
-function formatDateDot(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-}
-
-function isValidTimeFormat(value: string): boolean {
-  return /^([01]\d|2[0-3]):([0-5]\d)$/.test(value);
-}
-
-function normalizeTime(value: string, fallback: string): string {
-  const target = isValidTimeFormat(value) ? value : fallback;
-  const [hour, minute] = target.split(':').map(Number);
-  const normalizedMinute = Math.floor(minute / TIME_MINUTE_STEP) * TIME_MINUTE_STEP;
-  return `${String(hour).padStart(2, '0')}:${String(normalizedMinute).padStart(2, '0')}`;
-}
-
-function parseDateTimeDot(value: string, fallbackTime: string): { date: Date; time: string } | null {
-  const [datePart, timePart] = value.trim().split(/\s+/);
-  const [year, month, day] = datePart.split('.').map(Number);
-
-  if (![year, month, day].every(Number.isFinite)) return null;
-
-  const date = new Date(year, month - 1, day);
-  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null;
-
-  return { date, time: normalizeTime(timePart ?? '', fallbackTime) };
-}
-
-function formatDateTimeDot(date: Date, time: string, fallbackTime: string): string {
-  return `${formatDateDot(date)} ${normalizeTime(time, fallbackTime)}`;
-}
-
-function combineDateTime(date: Date, time: string): Date {
-  const [hours, minutes] = normalizeTime(time, DEFAULT_START_TIME).split(':').map(Number);
-  const next = new Date(date);
-  next.setHours(hours, minutes, 0, 0);
-  return next;
-}
 
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();

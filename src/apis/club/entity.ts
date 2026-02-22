@@ -168,7 +168,7 @@ interface ApplicationAnswer {
 
 export interface ClubApplicationDetailResponse {
   applicationId: number;
-  studentNumber: number;
+  studentNumber: string;
   name: string;
   imageUrl: string;
   appliedAt: string;
