@@ -7,10 +7,3 @@ export const registerPushToken = async (token: string) => {
   });
   return response;
 };
-
-export const getNotificationToken = async (): Promise<{ token: string }> => {
-  const response = await apiClient.get<{ token: string }>('notifications/tokens', {
-    requiresAuth: true,
-  });
-  return response;
-};
