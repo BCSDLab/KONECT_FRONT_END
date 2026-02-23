@@ -4,14 +4,25 @@ import { twMerge } from 'tailwind-merge';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
+import ClockIcon from '@/assets/svg/clock.svg';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import DatePicker from '@/pages/Manager/components/DatePicker';
+import TimePicker from '@/pages/Manager/components/TimePicker';
 import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
 import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { formatDateDot } from '@/utils/ts/date';
+import {
+  combineDateTime,
+  DEFAULT_END_TIME,
+  DEFAULT_START_TIME,
+  formatDateTimeDot,
+  parseDateTimeDot,
+  TIME_MINUTE_STEP,
+} from './utils';
 
 interface ImageItem {
   file?: File; // 새 이미지일 경우에만 존재
@@ -19,23 +30,11 @@ interface ImageItem {
   isExisting?: boolean; // 기존 이미지 여부
 }
 
-const dateButtonStyle =
-  'group flex min-h-14 w-full items-center justify-between rounded-xl border border-indigo-50 bg-white px-4 py-3.5 text-left shadow-[0_6px_16px_rgba(2,23,48,0.08)]';
 const sectionCardStyle =
   'flex w-full flex-col gap-4 rounded-2xl border border-indigo-25 bg-white px-4 py-4 shadow-[0_4px_12px_rgba(2,23,48,0.06)]';
 const sectionTitleStyle = 'text-h3 text-indigo-700';
-
-function formatDateDot(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}.${month}.${day}`;
-}
-
-function parseDateDot(dateStr: string): Date {
-  const [year, month, day] = dateStr.split('.').map(Number);
-  return new Date(year, month - 1, day);
-}
+const compactButtonStyle =
+  'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
 
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -43,6 +42,8 @@ function ManagedRecruitmentWrite() {
   const location = useLocation();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
+  const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
   const [content, setContent] = useState('');
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
@@ -68,11 +69,19 @@ function ManagedRecruitmentWrite() {
     if (!existingRecruitment) return;
 
     setContent(existingRecruitment.content);
-    if (existingRecruitment.startDate && existingRecruitment.endDate) {
-      setStartDate(parseDateDot(existingRecruitment.startDate));
-      setEndDate(parseDateDot(existingRecruitment.endDate));
+    if (existingRecruitment.startAt && existingRecruitment.endAt) {
+      const parsedStart = parseDateTimeDot(existingRecruitment.startAt, DEFAULT_START_TIME);
+      const parsedEnd = parseDateTimeDot(existingRecruitment.endAt, DEFAULT_END_TIME);
+      if (parsedStart) {
+        setStartDate(parsedStart.date);
+        setStartTime(parsedStart.time);
+      }
+      if (parsedEnd) {
+        setEndDate(parsedEnd.date);
+        setEndTime(parsedEnd.time);
+      }
     }
-    const isAlways = !existingRecruitment.startDate || !existingRecruitment.endDate;
+    const isAlways = !existingRecruitment.startAt || !existingRecruitment.endAt;
     setIsAlwaysRecruiting(isAlways);
     if (existingRecruitment.images && existingRecruitment.images.length > 0) {
       setImages(
@@ -86,23 +95,24 @@ function ManagedRecruitmentWrite() {
     closeChoiceModal();
   };
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const isStartAfterEnd = startDate > endDate;
-  const isEndBeforeToday = endDate < today;
-  const hasDateError = !isAlwaysRecruiting && (isStartAfterEnd || isEndBeforeToday);
+  const startDateTime = combineDateTime(startDate, startTime);
+  const endDateTime = combineDateTime(endDate, endTime);
+  const isStartAfterEnd = startDateTime >= endDateTime;
+  const isEndBeforeNow = endDateTime < new Date();
+  const hasDateError = !isAlwaysRecruiting && (isStartAfterEnd || isEndBeforeNow);
 
   const getDateErrorMessage = () => {
     if (isAlwaysRecruiting) return null;
-    if (isStartAfterEnd) return '시작일은 종료일보다 앞서야 합니다.';
-    if (isEndBeforeToday) return '종료일은 오늘 이후여야 합니다.';
+    if (isStartAfterEnd) return '시작 일시는 종료 일시보다 앞서야 합니다.';
+    if (isEndBeforeNow) return '종료 일시는 현재 이후여야 합니다.';
     return null;
   };
 
   const handleReset = () => {
     setStartDate(new Date());
     setEndDate(new Date());
+    setStartTime(DEFAULT_START_TIME);
+    setEndTime(DEFAULT_END_TIME);
     setContent('');
     setIsAlwaysRecruiting(false);
     images.forEach((img) => {
@@ -191,8 +201,8 @@ function ManagedRecruitmentWrite() {
             content,
             images: imageData,
             isAlwaysRecruiting: false,
-            startDate: formatDateDot(startDate),
-            endDate: formatDateDot(endDate),
+            startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
+            endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
           },
           { onSuccess }
         );
@@ -224,59 +234,104 @@ function ManagedRecruitmentWrite() {
           {isAlwaysRecruiting ? (
             <p className="text-body2 text-indigo-300">상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.</p>
           ) : (
-            <div className="flex flex-col gap-3">
-              <DatePicker
-                selectedDate={startDate}
-                onChange={setStartDate}
-                renderTrigger={(toggle) => (
-                  <button type="button" onClick={toggle} className={dateButtonStyle}>
-                    <div className="flex items-center gap-3">
-                      <span className="bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-lg text-indigo-500">
-                        <CalendarIcon aria-hidden="true" className="h-4 w-4" />
-                      </span>
-                      <span className="flex flex-col leading-none">
-                        <span className="text-cap1 text-indigo-300">시작일</span>
-                        <span className="text-h2 mt-1 text-indigo-700">{formatDateDot(startDate)}</span>
-                      </span>
-                    </div>
-                    <span className="bg-indigo-5 flex h-7 w-7 items-center justify-center rounded-full text-indigo-300">
-                      <ChevronRight
-                        aria-hidden="true"
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      />
-                    </span>
-                  </button>
+            <div className="flex flex-col gap-2">
+              <div
+                className={twMerge(
+                  'bg-indigo-0 overflow-hidden rounded-xl border',
+                  hasDateError ? 'border-red-300' : 'border-indigo-50'
                 )}
-              />
-              <div className="mx-2 flex items-center gap-2">
-                <div className="h-px flex-1 bg-indigo-50" />
-                <span className="text-cap1 text-indigo-300">~</span>
-                <div className="h-px flex-1 bg-indigo-50" />
+              >
+                <div className="px-3 py-3">
+                  <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
+                    <span className="text-cap1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
+                      시작
+                    </span>
+                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
+                      <DatePicker
+                        selectedDate={startDate}
+                        onChange={setStartDate}
+                        renderTrigger={(toggle) => (
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
+                            <span className="flex min-w-0 items-center gap-2">
+                              <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
+                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(startDate)}</span>
+                            </span>
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="h-3.5 w-3.5 shrink-0 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                            />
+                          </button>
+                        )}
+                      />
+                      <TimePicker
+                        value={startTime}
+                        onChange={setStartTime}
+                        minuteStep={TIME_MINUTE_STEP}
+                        renderTrigger={(toggle) => (
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
+                            <span className="flex items-center gap-2">
+                              <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
+                              <span className="text-sub2 text-indigo-700">{startTime}</span>
+                            </span>
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="h-3.5 w-3.5 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                            />
+                          </button>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mx-3 h-px bg-indigo-50" />
+
+                <div className="px-3 py-3">
+                  <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
+                    <span className="text-cap1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">종료</span>
+                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
+                      <DatePicker
+                        selectedDate={endDate}
+                        onChange={setEndDate}
+                        renderTrigger={(toggle) => (
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
+                            <span className="flex min-w-0 items-center gap-2">
+                              <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
+                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(endDate)}</span>
+                            </span>
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="h-3.5 w-3.5 shrink-0 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                            />
+                          </button>
+                        )}
+                      />
+                      <TimePicker
+                        value={endTime}
+                        onChange={setEndTime}
+                        minuteStep={TIME_MINUTE_STEP}
+                        renderTrigger={(toggle) => (
+                          <button type="button" onClick={toggle} className={compactButtonStyle}>
+                            <span className="flex items-center gap-2">
+                              <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
+                              <span className="text-sub2 text-indigo-700">{endTime}</span>
+                            </span>
+                            <ChevronRight
+                              aria-hidden="true"
+                              className="h-3.5 w-3.5 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                            />
+                          </button>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
               </div>
-              <DatePicker
-                selectedDate={endDate}
-                onChange={setEndDate}
-                renderTrigger={(toggle) => (
-                  <button type="button" onClick={toggle} className={dateButtonStyle}>
-                    <div className="flex items-center gap-3">
-                      <span className="bg-indigo-25 flex h-8 w-8 items-center justify-center rounded-lg text-indigo-500">
-                        <CalendarIcon aria-hidden="true" className="h-4 w-4" />
-                      </span>
-                      <span className="flex flex-col leading-none">
-                        <span className="text-cap1 text-indigo-300">종료일</span>
-                        <span className="text-h2 mt-1 text-indigo-700">{formatDateDot(endDate)}</span>
-                      </span>
-                    </div>
-                    <span className="bg-indigo-5 flex h-7 w-7 items-center justify-center rounded-full text-indigo-300">
-                      <ChevronRight
-                        aria-hidden="true"
-                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      />
-                    </span>
-                  </button>
-                )}
-              />
-              {hasDateError && <p className="text-body3 text-red-500">{getDateErrorMessage()}</p>}
+              {hasDateError && (
+                <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2">
+                  <span className="text-body3 text-red-500">{getDateErrorMessage()}</span>
+                </div>
+              )}
             </div>
           )}
         </section>

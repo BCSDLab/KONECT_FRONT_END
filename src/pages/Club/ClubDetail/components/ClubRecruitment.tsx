@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
+import LinkifiedText from '@/components/common/LinkifiedText';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClubApply from '../../Application/hooks/useClubApply';
@@ -20,6 +21,7 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
   const setApplication = useClubApplicationStore((s) => s.setApplication);
   const isRecruitmentOpen = clubRecruitment.status === 'ONGOING';
   const canApply = isRecruitmentOpen && !clubRecruitment.isApplied && !isMember;
+  const recruitmentContent = clubRecruitment.content.replace(/\\n/g, '\n');
 
   const handleApply = () => {
     if (isFeeRequired) {
@@ -44,8 +46,8 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
           <div className="text-sm leading-4 font-bold text-indigo-700">신입 회원 모집</div>
           <div className="mt-1.5 text-xs leading-3.5 text-indigo-300">
             모집 기간 :{' '}
-            {clubRecruitment.startDate && clubRecruitment.endDate
-              ? `${clubRecruitment.startDate} ~ ${clubRecruitment.endDate}`
+            {clubRecruitment.startAt && clubRecruitment.endAt
+              ? `${clubRecruitment.startAt} ~ ${clubRecruitment.endAt}`
               : '상시 모집'}
           </div>
         </div>
@@ -78,7 +80,7 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
       <Card>
         <div className="text-sm leading-4 font-bold text-indigo-700">모집 공고</div>
         <div className="text-xs leading-3.5 whitespace-pre-wrap text-indigo-300">
-          {clubRecruitment.content.replace(/\\n/g, '\n')}
+          <LinkifiedText text={recruitmentContent} />
         </div>
         {clubRecruitment.images.length > 0 && (
           <div className="mt-2 flex flex-col gap-2">

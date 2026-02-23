@@ -53,8 +53,8 @@ export interface ClubDetailResponse {
 
 interface Recruitment {
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
-  startDate?: string;
-  endDate?: string;
+  startAt?: string;
+  endAt?: string;
 }
 
 export type PositionType = 'PRESIDENT' | 'VICE_PRESIDENT' | 'MANAGER' | 'MEMBER';
@@ -114,8 +114,8 @@ export interface ClubRecruitment {
   id: number;
   clubId: number;
   status: 'BEFORE' | 'ONGOING' | 'CLOSED';
-  startDate: string;
-  endDate: string;
+  startAt: string;
+  endAt: string;
   content: string;
   images: ClubRecruitmentImage[];
   isFeeRequired: boolean;
@@ -137,13 +137,21 @@ export interface AppliedClubResponse {
 //========================== Club Manager Entities =========================//
 interface Application {
   id: number;
-  studentNumber: number;
+  studentNumber: string;
   name: string;
   imageUrl: string;
   appliedAt: string;
+  feePaymentImageUrl?: string;
 }
 
-export interface ClubApplicationsResponse {
+export interface ClubApplicationsParams {
+  page?: number;
+  limit?: number;
+  sortBy?: 'APPLIED_AT' | 'STUDENT_NUMBER' | 'NAME';
+  sortDirection?: 'ASC' | 'DESC';
+}
+
+export interface ClubApplicationsResponse extends PaginationResponse {
   applications: Application[];
 }
 
@@ -156,7 +164,7 @@ interface ApplicationAnswer {
 
 export interface ClubApplicationDetailResponse {
   applicationId: number;
-  studentNumber: number;
+  studentNumber: string;
   name: string;
   imageUrl: string;
   appliedAt: string;
@@ -176,13 +184,13 @@ type BaseRecruitment = {
 export type ClubRecruitmentRequest =
   | (BaseRecruitment & {
       isAlwaysRecruiting: true;
-      startDate?: never;
-      endDate?: never;
+      startAt?: never;
+      endAt?: never;
     })
   | (BaseRecruitment & {
       isAlwaysRecruiting: false;
-      startDate: string;
-      endDate: string;
+      startAt: string;
+      endAt: string;
     });
 
 export interface ClubQuestionRequest {
@@ -289,11 +297,17 @@ export interface PreMemberDeleteRequest {
 
 //========================== Club Settings Entities =========================//
 
-interface ClubSettingsRecruitment {
-  startDate: string;
-  endDate: string;
-  isAlwaysRecruiting: boolean;
-}
+type ClubSettingsRecruitment =
+  | {
+      isAlwaysRecruiting: true;
+      startAt?: never;
+      endAt?: never;
+    }
+  | {
+      isAlwaysRecruiting: false;
+      startAt: string;
+      endAt: string;
+    };
 
 interface ClubSettingsApplication {
   questionCount: number;
