@@ -65,6 +65,13 @@ function ManagedRecruitmentWrite() {
     }
   }, [existingRecruitment, hasHandledExisting, openChoiceModal]);
 
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
+
   const applyExistingRecruitment = () => {
     if (!existingRecruitment) return;
 
