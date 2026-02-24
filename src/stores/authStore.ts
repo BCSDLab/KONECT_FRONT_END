@@ -67,3 +67,22 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   clearAuth: () => set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false }),
 }));
+
+window.addEventListener('message', (event: MessageEvent) => {
+  try {
+    const data = JSON.parse(event.data);
+    if (data.type !== 'PUSH_TOKEN' || !data.token) return;
+
+    const lastToken = localStorage.getItem(PUSH_TOKEN_STORAGE_KEY);
+    if (lastToken === data.token) return;
+
+    const { accessToken } = useAuthStore.getState();
+    if (!accessToken) return;
+
+    registerPushToken(data.token)
+      .then(() => localStorage.setItem(PUSH_TOKEN_STORAGE_KEY, data.token))
+      .catch((error) => console.error('푸시 토큰 등록 실패:', error));
+  } catch {
+    // JSON 파싱 실패 등 무시
+  }
+});
