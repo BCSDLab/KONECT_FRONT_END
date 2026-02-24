@@ -2,20 +2,24 @@ import { create } from 'zustand';
 import { getMyInfo, refreshAccessToken } from '@/apis/auth';
 import type { MyInfoResponse } from '@/apis/auth/entity';
 import { registerPushToken } from '@/apis/notification';
-import { getCookie } from '@/utils/ts/cookie';
 
 const PUSH_TOKEN_STORAGE_KEY = 'REGISTERED_PUSH_TOKEN';
+const PENDING_PUSH_TOKEN_KEY = 'PENDING_PUSH_TOKEN';
 
 async function registerPushTokenIfNeeded() {
-  const token = getCookie('EXPO_PUSH_TOKEN');
+  const token = localStorage.getItem(PENDING_PUSH_TOKEN_KEY);
   if (!token) return;
 
   const lastRegisteredToken = localStorage.getItem(PUSH_TOKEN_STORAGE_KEY);
-  if (lastRegisteredToken === token) return;
+  if (lastRegisteredToken === token) {
+    localStorage.removeItem(PENDING_PUSH_TOKEN_KEY);
+    return;
+  }
 
   try {
     await registerPushToken(token);
     localStorage.setItem(PUSH_TOKEN_STORAGE_KEY, token);
+    localStorage.removeItem(PENDING_PUSH_TOKEN_KEY);
   } catch (error) {
     console.error('푸시 토큰 등록 실패:', error);
   }
@@ -77,7 +81,11 @@ window.addEventListener('message', (event: MessageEvent) => {
     if (lastToken === data.token) return;
 
     const { accessToken } = useAuthStore.getState();
-    if (!accessToken) return;
+    if (!accessToken) {
+      // initialize() 완료 전 도착한 경우 — pending으로 저장 후 initialize()에서 처리
+      localStorage.setItem(PENDING_PUSH_TOKEN_KEY, data.token);
+      return;
+    }
 
     registerPushToken(data.token)
       .then(() => localStorage.setItem(PUSH_TOKEN_STORAGE_KEY, data.token))
