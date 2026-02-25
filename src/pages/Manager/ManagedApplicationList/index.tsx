@@ -26,7 +26,7 @@ function ManagedApplicationList() {
 
   const total = managedClubApplicationList?.totalCount ?? 0;
   const totalPages = managedClubApplicationList?.totalPage ?? 1;
-  const currentPage = managedClubApplicationList?.currentPage ?? page;
+  const currentPage = page;
 
   const handleApprove = (e: React.MouseEvent, applicationId: number) => {
     e.stopPropagation();
