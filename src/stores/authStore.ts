@@ -34,8 +34,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       set({ user, isAuthenticated: true, isLoading: false });
 
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGIN_COMPLETE', accessToken }));
+      try {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGIN_COMPLETE', accessToken }));
+        }
+      } catch {
+        // 브릿지 전달 실패가 인증 성공 상태를 롤백시키지 않도록 무시
       }
     } catch {
       set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });

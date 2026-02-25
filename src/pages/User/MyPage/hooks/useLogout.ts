@@ -10,8 +10,12 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGOUT' }));
+      try {
+        if (window.ReactNativeWebView) {
+          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGOUT' }));
+        }
+      } catch {
+        // 브릿지 전달 실패가 로그아웃 흐름을 중단시키지 않도록 무시
       }
       clearAuth();
       navigate('/');
