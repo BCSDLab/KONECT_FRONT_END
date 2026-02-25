@@ -10,6 +10,9 @@ export const useLogoutMutation = () => {
   return useMutation({
     mutationFn: logout,
     onSuccess: () => {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGOUT' }));
+      }
       clearAuth();
       navigate('/');
     },

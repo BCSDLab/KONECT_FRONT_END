@@ -163,6 +163,10 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
     const newAccessToken = await refreshPromise;
     useAuthStore.getState().setAccessToken(newAccessToken);
 
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TOKEN_REFRESH', accessToken: newAccessToken }));
+    }
+
     return await sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
   } catch {
     useAuthStore.getState().clearAuth();
