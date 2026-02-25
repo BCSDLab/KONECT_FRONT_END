@@ -11,7 +11,13 @@ import { isApiError } from '@/interface/error';
 
 const applicationQueryKeys = {
   all: ['manager'],
-  managedClubApplications: (clubId: number) => [...applicationQueryKeys.all, 'managedClubApplications', clubId],
+  managedClubApplications: (clubId: number, page?: number, limit?: number) => [
+    ...applicationQueryKeys.all,
+    'managedClubApplications',
+    clubId,
+    page,
+    limit,
+  ],
   managedClubApplicationDetail: (clubId: number, applicationId: number) => [
     ...applicationQueryKeys.all,
     'managedClubApplicationDetail',
@@ -26,7 +32,7 @@ interface ApplicationMutationOptions {
 
 export const useGetManagedApplications = (clubId: number, page: number, limit: number) => {
   const { data: managedClubApplicationList } = useSuspenseQuery({
-    queryKey: applicationQueryKeys.managedClubApplications(clubId),
+    queryKey: applicationQueryKeys.managedClubApplications(clubId, page, limit),
     queryFn: async () => {
       try {
         return await getManagedClubApplications(clubId, { page, limit, sortBy: 'APPLIED_AT', sortDirection: 'ASC' });
@@ -61,7 +67,7 @@ export const useApproveApplication = (clubId: number, options: ApplicationMutati
     mutationFn: (applicationId: number) => postClubApplicationApprove(clubId, applicationId),
     onSuccess: () => {
       showToast('지원이 승인되었습니다');
-      queryClient.invalidateQueries({ queryKey: applicationQueryKeys.managedClubApplications(clubId) });
+      queryClient.invalidateQueries({ queryKey: [...applicationQueryKeys.all, 'managedClubApplications', clubId] });
       if (navigateBack) navigate(-1);
     },
   });
@@ -77,7 +83,7 @@ export const useRejectApplication = (clubId: number, options: ApplicationMutatio
     mutationFn: (applicationId: number) => postClubApplicationReject(clubId, applicationId),
     onSuccess: () => {
       showToast('지원이 거절되었습니다');
-      queryClient.invalidateQueries({ queryKey: applicationQueryKeys.managedClubApplications(clubId) });
+      queryClient.invalidateQueries({ queryKey: [...applicationQueryKeys.all, 'managedClubApplications', clubId] });
       if (navigateBack) navigate(-1);
     },
   });
