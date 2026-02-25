@@ -26,7 +26,7 @@ function ManagedApplicationList() {
 
   const total = managedClubApplicationList?.totalCount ?? 0;
   const totalPages = managedClubApplicationList?.totalPage ?? 1;
-  const currentPage = managedClubApplicationList?.currentPage ?? 1;
+  const currentPage = managedClubApplicationList?.currentPage ?? page;
 
   const handleApprove = (e: React.MouseEvent, applicationId: number) => {
     e.stopPropagation();
@@ -44,9 +44,9 @@ function ManagedApplicationList() {
 
   if (hasNoRecruitment) {
     return (
-      <div className="flex h-full flex-col gap-2 p-3">
+      <div className="flex flex-col gap-2 p-3">
         <UserInfoCard type="detail" />
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex items-center justify-center py-10">
           <p className="text-body2 text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
         </div>
       </div>
@@ -54,51 +54,57 @@ function ManagedApplicationList() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-2 p-3">
+    <div className="flex flex-col gap-2 p-3">
       <UserInfoCard type="detail" />
 
       <Card className="text-body3 flex-row">
         <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">지원자 수 : {total}명</div>
       </Card>
 
-      {managedClubApplicationList?.applications.map((application) => (
-        <Card key={application.id} className="flex-row items-center gap-2" onClick={() => handleDetail(application.id)}>
-          <div className="flex flex-1 items-center gap-2">
-            <img className="h-10 w-10 rounded-full" src={application.imageUrl} alt="Member Avatar" />
-            <div>
-              <div className="text-body2 text-indigo-700">
-                {application.name} <span className="text-body3">({application.studentNumber})</span>
-              </div>
-              <div className="text-cap1 text-indigo-300">
-                지원일 : {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
+      <div className="flex flex-col gap-2">
+        {managedClubApplicationList?.applications.map((application) => (
+          <Card
+            key={application.id}
+            className="flex-row items-center gap-2"
+            onClick={() => handleDetail(application.id)}
+          >
+            <div className="flex flex-1 items-center gap-2">
+              <img className="h-10 w-10 rounded-full" src={application.imageUrl} alt="Member Avatar" />
+              <div>
+                <div className="text-body2 text-indigo-700">
+                  {application.name} <span className="text-body3">({application.studentNumber})</span>
+                </div>
+                <div className="text-cap1 text-indigo-300">
+                  지원일 : {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={(e) => handleApprove(e, application.id)}
-              disabled={isPending}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-green-600 hover:bg-green-200 disabled:opacity-50"
-            >
-              O
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={(e) => handleApprove(e, application.id)}
+                disabled={isPending}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-green-600 hover:bg-green-200 disabled:opacity-50"
+              >
+                O
+              </button>
 
-            <button
-              type="button"
-              onClick={(e) => handleReject(e, application.id)}
-              disabled={isPending}
-              className="flex h-8 w-8 items-center justify-center rounded-full text-red-600 hover:bg-red-200 disabled:opacity-50"
-            >
-              X
-            </button>
-          </div>
-        </Card>
-      ))}
+              <button
+                type="button"
+                onClick={(e) => handleReject(e, application.id)}
+                disabled={isPending}
+                className="flex h-8 w-8 items-center justify-center rounded-full text-red-600 hover:bg-red-200 disabled:opacity-50"
+              >
+                X
+              </button>
+            </div>
+          </Card>
+        ))}
+      </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-4 pt-4">
+        <div className="mt-6 flex items-center justify-center gap-4">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
@@ -107,7 +113,7 @@ function ManagedApplicationList() {
             이전
           </button>
 
-          <span className="text-body3">
+          <span className="text-body3 font-semibold">
             {currentPage} / {totalPages}
           </span>
 
