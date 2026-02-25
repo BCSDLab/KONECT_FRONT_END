@@ -24,12 +24,12 @@ interface ApplicationMutationOptions {
   navigateBack?: boolean;
 }
 
-export const useGetManagedApplications = (clubId: number) => {
+export const useGetManagedApplications = (clubId: number, page: number, limit: number) => {
   const { data: managedClubApplicationList } = useSuspenseQuery({
     queryKey: applicationQueryKeys.managedClubApplications(clubId),
     queryFn: async () => {
       try {
-        return await getManagedClubApplications(clubId, { sortBy: 'APPLIED_AT', sortDirection: 'ASC' });
+        return await getManagedClubApplications(clubId, { page, limit, sortBy: 'APPLIED_AT', sortDirection: 'ASC' });
       } catch (error) {
         if (isApiError(error) && error.apiError?.code === 'NOT_FOUND_CLUB_RECRUITMENT') {
           return null;
