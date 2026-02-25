@@ -11,7 +11,6 @@ import SimpleAppliedClubCard from './components/SimpleAppliedClubCard';
 import SimpleClubCard from './components/SimpleClubCard';
 import { useGetAppliedClubs } from './hooks/useGetAppliedClubs';
 import { useGetJoinedClubs } from './hooks/useGetJoinedClubs';
-import { useGetNotificationToken } from './hooks/useGetNotificationToken';
 import { useGetUpComingScheduleList } from './hooks/useGetUpComingSchedule';
 
 const COUNCIL_NOTICE_PARAMS = { limit: 3 } as const;
@@ -213,27 +212,9 @@ function CouncilNoticeSection() {
   );
 }
 
-function NotificationTokenBanner() {
-  const { data, isLoading, error } = useGetNotificationToken();
-
-  if (isLoading) return null;
-
-  return (
-    <div className="rounded-lg bg-gray-100 px-3 py-2 font-mono text-xs break-all">
-      <span className="font-bold text-gray-500">[알림 토큰] </span>
-      {error ? (
-        <span className="text-red-500">{error instanceof Error ? error.message : '토큰 조회 실패'}</span>
-      ) : (
-        <span className="text-gray-700">{data?.token ?? '없음'}</span>
-      )}
-    </div>
-  );
-}
-
 function Home() {
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
-      <NotificationTokenBanner />
       <div className="flex flex-col gap-2">
         <Suspense fallback={<MyClubsSkeleton />}>
           <MyClubsSection />
