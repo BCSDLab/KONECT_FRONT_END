@@ -6,8 +6,6 @@ import TrashIcon from '@/assets/svg/trash-full.svg';
 import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
 import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 
-const DEFAULT_PHONE_QUESTION = '지원자의 전화번호를 입력해주세요.';
-
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;
 }
@@ -20,17 +18,14 @@ function ManagedRecruitmentForm() {
   const { mutate: updateQuestions, isPending, error } = useManagedClubQuestionsMutation(Number(clubId));
   const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
 
-  const [questions, setQuestions] = useState<QuestionItem[]>(() => {
-    if (managedClubQuestions.questions.length === 0) {
-      return [{ tempId: crypto.randomUUID(), question: DEFAULT_PHONE_QUESTION, isRequired: true }];
-    }
-    return managedClubQuestions.questions.map((q) => ({
+  const [questions, setQuestions] = useState<QuestionItem[]>(() =>
+    managedClubQuestions.questions.map((q) => ({
       tempId: crypto.randomUUID(),
       questionId: q.id,
       question: q.question,
       isRequired: q.isRequired,
-    }));
-  });
+    }))
+  );
 
   const handleAddQuestion = () => {
     setQuestions((prev) => [

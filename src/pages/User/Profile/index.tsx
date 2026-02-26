@@ -1,8 +1,6 @@
-import { useState } from 'react';
 import BottomModal from '@/components/common/BottomModal';
-import { useToastContext } from '@/contexts/useToastContext';
-import { useInquiryMutation } from '@/pages/Auth/SignUp/hooks/useInquiry';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
 import { useMyInfo } from './hooks/useMyInfo';
 
@@ -14,32 +12,11 @@ const fields = [
 ] as const;
 
 function Profile() {
-  const { showToast } = useToastContext();
   const { myInfo } = useMyInfo({});
   const { mutate: withdraw } = useWithdrawMutation();
-  const { mutate: submitInquiry, isPending: isInquiryPending } = useInquiryMutation();
 
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
-  const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
-  const [inquiryContent, setInquiryContent] = useState('');
-
-  const handleInquirySubmit = () => {
-    const trimmedContent = inquiryContent.trim();
-    if (!trimmedContent) return;
-    submitInquiry(
-      { type: 'PROFILE_MODIFY', content: trimmedContent },
-      {
-        onSuccess: () => {
-          closeInquiryModal();
-          setInquiryContent('');
-          showToast('문의가 접수되었습니다', 'success');
-        },
-        onError: () => {
-          showToast('문의 접수에 실패했습니다. 다시 시도해주세요', 'error');
-        },
-      }
-    );
-  };
+  const { mutate: goToAdminChat } = useAdminChatMutation();
 
   return (
     <div className="flex flex-1 flex-col gap-2 bg-white px-5 py-6 pb-10">
@@ -65,31 +42,11 @@ function Profile() {
       </div>
 
       <button
-        onClick={openInquiryModal}
+        onClick={() => goToAdminChat()}
         className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold"
       >
         문의하기
       </button>
-
-      <BottomModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal}>
-        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">프로필 정보 수정 문의</div>
-          <textarea
-            value={inquiryContent}
-            onChange={(e) => setInquiryContent(e.target.value)}
-            placeholder="문의 내용을 입력해주세요"
-            aria-label="문의 내용"
-            className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
-          />
-          <button
-            onClick={handleInquirySubmit}
-            disabled={isInquiryPending || !inquiryContent.trim()}
-            className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
-          >
-            {isInquiryPending ? '전송 중...' : '문의하기'}
-          </button>
-        </div>
-      </BottomModal>
 
       <BottomModal isOpen={isOpen} onClose={closeModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">

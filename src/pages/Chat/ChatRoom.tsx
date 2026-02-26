@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
@@ -33,6 +33,7 @@ function ChatRoom() {
   useKeyboardHeight();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const baseTextareaHeightRef = useRef(0);
   const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
     chatRoomId,
     chatMessagesLength: chatMessages.length,
@@ -61,11 +62,32 @@ function ChatRoom() {
 
     setValue('');
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      const baseHeight = baseTextareaHeightRef.current || textareaRef.current.scrollHeight;
+      textareaRef.current.style.height = `${baseHeight}px`;
       textareaRef.current.focus();
     }
     scrollToBottom();
   };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setValue(e.target.value);
+    e.target.style.height = 'auto';
+    const nextHeight = e.target.scrollHeight;
+
+    if (!baseTextareaHeightRef.current) {
+      baseTextareaHeightRef.current = nextHeight;
+    }
+
+    e.target.style.height = `${nextHeight}px`;
+  };
+
+  useEffect(() => {
+    if (!textareaRef.current) return;
+
+    textareaRef.current.style.height = 'auto';
+    baseTextareaHeightRef.current = textareaRef.current.scrollHeight;
+    textareaRef.current.style.height = `${baseTextareaHeightRef.current}px`;
+  }, []);
 
   return (
     <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
@@ -156,14 +178,14 @@ function ChatRoom() {
         <textarea
           ref={textareaRef}
           value={value}
-          onChange={(e) => setValue(e.target.value)}
+          onChange={handleInputChange}
           className="bg-indigo-0 max-h-32 min-w-0 flex-1 resize-none overflow-x-hidden rounded-sm px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap text-indigo-700 placeholder:text-indigo-500"
           rows={1}
           placeholder="메세지 보내기"
           maxLength={1000}
         />
 
-        <button type="submit" className="bg-primary flex h-8 w-8 shrink-0 items-center justify-center rounded-sm">
+        <button type="submit" className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-sm">
           <PaperPlaneIcon className="text-indigo-0" />
         </button>
       </form>

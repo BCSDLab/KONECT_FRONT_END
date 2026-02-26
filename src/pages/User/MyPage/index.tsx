@@ -1,6 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
-import { Link, useNavigate } from 'react-router-dom';
-import { postAdminChatRoom } from '@/apis/chat';
+import { Link } from 'react-router-dom';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
@@ -11,6 +9,7 @@ import UserIdCardIcon from '@/assets/svg/user-id-card.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
 import { useMyInfo } from '../Profile/hooks/useMyInfo';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
@@ -23,17 +22,10 @@ const menuItems = [
 ];
 
 function MyPage() {
-  const navigate = useNavigate();
   const { myInfo } = useMyInfo();
   const { mutate: logout } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
-
-  const { mutate: goToAdminChat } = useMutation({
-    mutationFn: postAdminChatRoom,
-    onSuccess: ({ chatRoomId }) => {
-      navigate(`/chats/${chatRoomId}`);
-    },
-  });
+  const { mutate: goToAdminChat } = useAdminChatMutation();
 
   return (
     <div className="flex flex-col gap-2 p-3">
