@@ -108,6 +108,17 @@ export const getManagedClubApplicationDetail = async (clubId: number, applicatio
   return response;
 };
 
+export const getManagedClubMemberApplications = async (clubId: number, params?: ClubApplicationsParams) => {
+  const response = await apiClient.get<ClubApplicationsResponse, ClubApplicationsParams>(
+    `clubs/${clubId}/member-applications`,
+    {
+      params,
+      requiresAuth: true,
+    }
+  );
+  return response;
+};
+
 export const putClubRecruitment = async (clubId: number, recruitmentData: ClubRecruitmentRequest) => {
   const response = await apiClient.put<void>(`clubs/${clubId}/recruitments`, {
     body: recruitmentData,
