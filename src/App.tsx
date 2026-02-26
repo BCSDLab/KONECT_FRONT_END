@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import AuthGuard from './components/auth/AuthGuard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
@@ -41,11 +42,13 @@ import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
 import Profile from './pages/User/Profile';
 
+const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
+
 function App() {
   return (
     <BrowserRouter>
       <AuthGuard>
-        <Routes>
+        <SentryRoutes>
           <Route element={<PublicRoute />}>
             <Route element={<Layout contentClassName="bg-indigo-0" />}>
               <Route path="/" element={<Login />} />
@@ -114,7 +117,7 @@ function App() {
               </Route>
             </Route>
           </Route>
-        </Routes>
+        </SentryRoutes>
       </AuthGuard>
     </BrowserRouter>
   );
