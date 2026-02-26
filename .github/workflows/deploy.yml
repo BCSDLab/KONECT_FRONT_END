@@ -30,17 +30,70 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Validate runtime secrets
+        run: |
+          missing=0
+
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            [ -n "${{ secrets.VITE_API_PATH }}" ] || { echo "::error::Missing secret: VITE_API_PATH"; missing=1; }
+            [ -n "${{ secrets.VITE_SENTRY_DSN }}" ] || { echo "::error::Missing secret: VITE_SENTRY_DSN"; missing=1; }
+          else
+            [ -n "${{ secrets.VITE_API_PATH_STAGE }}" ] || { echo "::error::Missing secret: VITE_API_PATH_STAGE"; missing=1; }
+            [ -n "${{ secrets.VITE_SENTRY_DSN_STAGE }}" ] || { echo "::error::Missing secret: VITE_SENTRY_DSN_STAGE"; missing=1; }
+          fi
+
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Validate production sourcemap secrets
+        if: github.ref_name == 'main'
+        run: |
+          missing=0
+          [ -n "${{ secrets.SENTRY_ORG }}" ] || { echo "::error::Missing secret: SENTRY_ORG"; missing=1; }
+          [ -n "${{ secrets.SENTRY_PROJECT }}" ] || { echo "::error::Missing secret: SENTRY_PROJECT"; missing=1; }
+          [ -n "${{ secrets.SENTRY_AUTH_TOKEN }}" ] || { echo "::error::Missing secret: SENTRY_AUTH_TOKEN"; missing=1; }
+          [ "$missing" -eq 0 ] || exit 1
+
+      - name: Resolve Sentry project
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            echo "SENTRY_PROJECT_FOR_BUILD=${{ secrets.SENTRY_PROJECT }}" >> "$GITHUB_ENV"
+          else
+            echo "SENTRY_PROJECT_FOR_BUILD=${{ secrets.SENTRY_PROJECT_STAGE }}" >> "$GITHUB_ENV"
+          fi
+
       - name: Create .env file
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
-            echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}" > .env
+            {
+              echo "VITE_API_PATH=${{ secrets.VITE_API_PATH }}"
+              echo "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN }}"
+              echo "VITE_SENTRY_ENABLED=true"
+              echo "VITE_SENTRY_ENVIRONMENT=production"
+              echo "VITE_SENTRY_RELEASE=${{ github.sha }}"
+              echo "VITE_SENTRY_TRACES_SAMPLE_RATE=0.1"
+              echo "VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE=0.0"
+              echo "VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE=1.0"
+            } > .env
           else
-            echo "VITE_API_PATH=${{ secrets.VITE_API_PATH_STAGE }}" > .env
+            {
+              echo "VITE_API_PATH=${{ secrets.VITE_API_PATH_STAGE }}"
+              echo "VITE_SENTRY_DSN=${{ secrets.VITE_SENTRY_DSN_STAGE }}"
+              echo "VITE_SENTRY_ENABLED=true"
+              echo "VITE_SENTRY_ENVIRONMENT=staging"
+              echo "VITE_SENTRY_RELEASE=${{ github.sha }}"
+              echo "VITE_SENTRY_TRACES_SAMPLE_RATE=0.1"
+              echo "VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE=0.0"
+              echo "VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE=1.0"
+            } > .env
           fi
 
       - name: Build project
         env:
           CI: true
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ env.SENTRY_PROJECT_FOR_BUILD }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_RELEASE: ${{ github.sha }}
         run: pnpm build
 
       - name: Setup SSH key
