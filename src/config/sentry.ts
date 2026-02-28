@@ -36,8 +36,8 @@ export function initSentry() {
         matchRoutes,
       }),
       Sentry.replayIntegration({
-        maskAllText: true,
-        blockAllMedia: true,
+        maskAllText: false,
+        blockAllMedia: false,
       }),
     ],
     tracePropagationTargets: ['localhost', ...(import.meta.env.VITE_API_PATH ? [import.meta.env.VITE_API_PATH] : [])],
