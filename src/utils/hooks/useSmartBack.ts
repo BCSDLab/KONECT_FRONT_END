@@ -55,6 +55,8 @@ export function useSmartBack() {
         targetPath = `/mypage/manager/${clubId}`;
       } else if (parts[4] === 'applications' && parts[5]) {
         targetPath = `/mypage/manager/${clubId}/applications`;
+      } else if (parts[4] === 'members' && parts.length > 5) {
+        targetPath = `/mypage/manager/${clubId}/members`;
       } else if (parts[4] === 'members') {
         targetPath = `/mypage/manager/${clubId}`;
       } else {

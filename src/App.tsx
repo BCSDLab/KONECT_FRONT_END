@@ -33,6 +33,7 @@ import ManagedApplicationList from './pages/Manager/ManagedApplicationList';
 import ManagedClubDetail from './pages/Manager/ManagedClubDetail';
 import ManagedClubList from './pages/Manager/ManagedClubList';
 import ManagedClubInfo from './pages/Manager/ManagedClubProfile';
+import ManagedMemberApplicationDetail from './pages/Manager/ManagedMemberApplicationDetail';
 import ManagedMemberList from './pages/Manager/ManagedMemberList';
 import ManagedRecruitment from './pages/Manager/ManagedRecruitment';
 import ManagedRecruitmentForm from './pages/Manager/ManagedRecruitmentForm';
@@ -85,6 +86,7 @@ function App() {
                   <Route index element={<ManagedClubList />} />
                   <Route path=":clubId" element={<ManagedClubDetail />} />
                   <Route path=":clubId/members" element={<ManagedMemberList />} />
+                  <Route path=":clubId/members/:userId/application" element={<ManagedMemberApplicationDetail />} />
                   <Route path=":clubId/recruitment" element={<ManagedRecruitment />} />
                   <Route path=":clubId/applications" element={<ManagedApplicationList />} />
                   <Route path=":clubId/applications/:applicationId" element={<ManagedApplicationDetail />} />

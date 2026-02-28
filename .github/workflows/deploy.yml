@@ -70,7 +70,7 @@ jobs:
               echo "VITE_SENTRY_ENABLED=true"
               echo "VITE_SENTRY_ENVIRONMENT=production"
               echo "VITE_SENTRY_RELEASE=${{ github.sha }}"
-              echo "VITE_SENTRY_TRACES_SAMPLE_RATE=0.1"
+              echo "VITE_SENTRY_TRACES_SAMPLE_RATE=0.7"
               echo "VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE=0.0"
               echo "VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE=1.0"
             } > .env

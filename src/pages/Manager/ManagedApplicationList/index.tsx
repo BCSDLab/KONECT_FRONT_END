@@ -23,10 +23,7 @@ function ManagedApplicationList() {
   const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
 
   const isPending = isApproving || isRejecting;
-
-  const total = managedClubApplicationList?.totalCount ?? 0;
   const totalPages = managedClubApplicationList?.totalPage ?? 1;
-  const currentPage = page;
 
   const handleApprove = (e: React.MouseEvent, applicationId: number) => {
     e.stopPropagation();
@@ -57,9 +54,10 @@ function ManagedApplicationList() {
     <div className="flex flex-col gap-2 p-3">
       <UserInfoCard type="detail" />
 
-      <Card className="text-body3 flex-row">
-        <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">지원자 수 : {total}명</div>
-      </Card>
+      <div className="rounded-lg bg-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
+        <span className="text-body2 font-semibold text-indigo-700">대기 중</span>
+        <span className="text-body3 ml-1 text-indigo-400">{managedClubApplicationList?.totalCount ?? 0}명</span>
+      </div>
 
       <div className="flex flex-col gap-2">
         {managedClubApplicationList?.applications.map((application) => (
@@ -107,19 +105,19 @@ function ManagedApplicationList() {
         <div className="mt-6 flex items-center justify-center gap-4">
           <button
             onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
+            disabled={page === 1}
             className="rounded bg-indigo-100 px-3 py-1 disabled:opacity-50"
           >
             이전
           </button>
 
           <span className="text-body3 font-semibold">
-            {currentPage} / {totalPages}
+            {page} / {totalPages}
           </span>
 
           <button
             onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-            disabled={currentPage === totalPages}
+            disabled={page === totalPages}
             className="rounded bg-indigo-100 px-3 py-1 disabled:opacity-50"
           >
             다음

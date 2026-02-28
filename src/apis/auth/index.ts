@@ -54,3 +54,12 @@ export const deleteMyAccount = async () => {
   });
   return response;
 };
+
+export const getSignupPrefill = async (): Promise<{ name: string } | null> => {
+  try {
+    const response = await apiClient.get<{ name: string }>('users/signup/prefill');
+    return response;
+  } catch {
+    return null;
+  }
+};
