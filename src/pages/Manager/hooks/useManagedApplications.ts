@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getManagedClubApplicationDetail,
   getManagedClubApplications,
+  getManagedClubMemberApplicationByUser,
   postClubApplicationApprove,
   postClubApplicationReject,
 } from '@/apis/club';
@@ -23,6 +24,12 @@ const applicationQueryKeys = {
     'managedClubApplicationDetail',
     clubId,
     applicationId,
+  ],
+  managedClubMemberApplicationDetailByUser: (clubId: number, userId: number) => [
+    ...applicationQueryKeys.all,
+    'managedClubMemberApplicationDetailByUser',
+    clubId,
+    userId,
   ],
 };
 
@@ -55,6 +62,27 @@ export const useGetManagedApplicationDetail = (clubId: number, applicationId: nu
   });
 
   return { managedClubApplicationDetail };
+};
+
+export const useGetManagedMemberApplicationDetailByUser = (clubId: number, userId: number) => {
+  const { data: managedClubMemberApplicationDetail } = useSuspenseQuery({
+    queryKey: applicationQueryKeys.managedClubMemberApplicationDetailByUser(clubId, userId),
+    queryFn: async () => {
+      try {
+        return await getManagedClubMemberApplicationByUser(clubId, userId);
+      } catch (error) {
+        if (isApiError(error) && error.apiError?.code === 'NOT_FOUND_CLUB_APPLY') {
+          return null;
+        }
+        throw error;
+      }
+    },
+  });
+
+  return {
+    managedClubMemberApplicationDetail,
+    hasNoMemberApplication: managedClubMemberApplicationDetail === null,
+  };
 };
 
 export const useApproveApplication = (clubId: number, options: ApplicationMutationOptions = {}) => {

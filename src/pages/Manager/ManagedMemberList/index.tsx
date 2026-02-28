@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import BottomModal from '@/components/common/BottomModal';
@@ -48,6 +48,7 @@ function groupMembers(members: ClubMember[]) {
 
 function ManagedMemberList() {
   const params = useParams();
+  const navigate = useNavigate();
   const clubId = Number(params.clubId);
 
   const { managedMemberList } = useManagedMembers(clubId);
@@ -111,6 +112,12 @@ function ManagedMemberList() {
   const handleOpenRemove = () => {
     closeAction();
     openRemove();
+  };
+
+  const handleOpenMemberApplication = () => {
+    if (!selectedMember) return;
+    closeAction();
+    navigate(`${selectedMember.userId}/application`);
   };
 
   const handleTransferPresident = () => {
@@ -268,6 +275,13 @@ function ManagedMemberList() {
       <BottomModal isOpen={isActionOpen} onClose={closeAction}>
         <div className="flex flex-col gap-2 p-5">
           <div className="text-body2 pb-2 font-semibold text-indigo-700">{selectedMember?.name} 관리</div>
+          <button
+            type="button"
+            onClick={handleOpenMemberApplication}
+            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left"
+          >
+            지원서 보기
+          </button>
           <button
             type="button"
             onClick={handleOpenPositionChange}
