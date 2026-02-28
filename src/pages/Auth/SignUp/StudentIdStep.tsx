@@ -2,16 +2,24 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
+import { useSignupPrefill } from './hooks/useSignupPrefill';
 
 function StudentIdStep() {
   const navigate = useNavigate();
   const { studentId: savedStudentId, update } = useSignupStore();
 
   const [studentId, setStudentId] = useState(savedStudentId ?? '');
+  const { data: prefill, isPending } = useSignupPrefill();
 
   const handleNext = () => {
     update({ studentId });
-    navigate('/signup/name');
+
+    if (prefill?.name) {
+      update({ name: prefill.name });
+      navigate('/signup/confirm');
+    } else {
+      navigate('/signup/name');
+    }
   };
 
   return (
@@ -19,7 +27,7 @@ function StudentIdStep() {
       title="학번을 입력해주세요"
       description={`정확한 답변을 하지 않으면\n불이익이 발생할 수 있습니다.`}
       onNext={handleNext}
-      nextDisabled={!studentId.trim()}
+      nextDisabled={!studentId.trim() || isPending}
     >
       <input
         type="text"
