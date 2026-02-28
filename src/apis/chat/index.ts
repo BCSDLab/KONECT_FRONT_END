@@ -5,6 +5,7 @@ import type {
   ChatMessagesResponse,
   ChatRoomsResponse,
   CreateChatRoomResponse,
+  SendChatMessageRequest,
 } from './entity';
 
 export const getChatRooms = async () => {
@@ -22,9 +23,8 @@ export const postChatRooms = async (userId: number) => {
   return response;
 };
 
-export const postChatMessage = async (chatRoomId: number, type: 'DIRECT' | 'GROUP', content: string) => {
+export const postChatMessage = async ({ chatRoomId, content }: SendChatMessageRequest) => {
   return apiClient.post<ChatMessage>(`chats/rooms/${chatRoomId}/messages`, {
-    params: { type },
     body: { content },
     requiresAuth: true,
   });
@@ -37,9 +37,8 @@ export const getChatMessages = async ({ chatRoomId, ...query }: ChatMessageReque
   });
 };
 
-export const postChatMute = async (chatRoomId: number, type: 'DIRECT' | 'GROUP') => {
+export const postChatMute = async (chatRoomId: number) => {
   return apiClient.post<{ isMuted: boolean }>(`chats/rooms/${chatRoomId}/mute`, {
-    params: { type },
     requiresAuth: true,
   });
 };

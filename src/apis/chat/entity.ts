@@ -26,9 +26,13 @@ export interface ChatMessage {
   isMine: boolean;
 }
 
+export interface SendChatMessageRequest {
+  chatRoomId: number;
+  content: string;
+}
+
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
-  type: 'DIRECT' | 'GROUP';
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {
