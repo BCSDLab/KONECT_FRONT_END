@@ -19,7 +19,6 @@ export const licenses = [
   { name: '@types/node', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
   { name: '@types/react', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
   { name: '@types/react-dom', url: 'https://github.com/DefinitelyTyped/DefinitelyTyped', license: 'MIT' },
-  { name: '@vite-pwa/assets-generator', url: 'https://github.com/vite-pwa/assets-generator', license: 'MIT' },
   { name: '@vitejs/plugin-react', url: 'https://github.com/vitejs/vite-plugin-react', license: 'MIT' },
   { name: 'babel-plugin-react-compiler', url: 'https://github.com/facebook/react', license: 'MIT' },
   { name: 'eslint', url: 'https://github.com/eslint/eslint', license: 'MIT' },
@@ -43,6 +42,5 @@ export const licenses = [
   { name: 'typescript', url: 'https://github.com/microsoft/TypeScript', license: 'Apache-2.0' },
   { name: 'typescript-eslint', url: 'https://github.com/typescript-eslint/typescript-eslint', license: 'MIT' },
   { name: 'vite', url: 'https://github.com/vitejs/vite', license: 'MIT' },
-  { name: 'vite-plugin-pwa', url: 'https://github.com/vite-pwa/vite-plugin-pwa', license: 'MIT' },
   { name: 'vite-plugin-svgr', url: 'https://github.com/pd4d10/vite-plugin-svgr', license: 'MIT' },
 ];

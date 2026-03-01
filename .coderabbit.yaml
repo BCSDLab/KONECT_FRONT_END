@@ -8,21 +8,87 @@ reviews:
   commit_status: true
   poem: false
   review_status: true
-  collapse_walkthrough: true
-  estimate_code_review_effort: false
+  collapse_walkthrough: false
+  estimate_code_review_effort: true
   sequence_diagrams: false
-  changed_files_summary: false
+  changed_files_summary: true
   path_filters:
     - '**'
     - '!dist/**'
     - '!pnpm-lock.yaml'
-    - '!src/assets/fonts/**'
-    - '!src/assets/image/**'
+    - '!src/assets/**'
     - '!public/**'
+  path_instructions:
+    - path: 'src/**/hooks/**'
+      instructions: |
+        TanStack Query/커스텀 훅 컨벤션을 확인해주세요:
+        - useQuery/useMutation의 queryKey는 일관된 배열 형태로 관리되는지
+        - 에러 핸들링(onError, throwOnError)이 적절히 처리되는지
+        - queryFn은 API 함수와 분리되어 있는지
+        - 캐시 전략(staleTime, gcTime)이 필요한 곳에만 설정되어 있는지
+        - use 접두사로 시작하는지
+        - 훅 내에서 사이드 이펙트 cleanup이 적절한지
+        - 훅이 단일 책임을 유지하는지
+    - path: 'src/apis/**'
+      instructions: |
+        API 레이어 컨벤션을 확인해주세요:
+        - 요청/응답 타입이 명시되어 있는지
+        - 에러가 UI 친화적인 형태로 매핑/전달되는지
+        - 비즈니스 로직이나 React 훅 의존성이 섞이지 않았는지
+        - 공통 API 클라이언트 설정과 일관된지
+    - path: 'src/stores/**'
+      instructions: |
+        Zustand 스토어 패턴을 확인해주세요:
+        - 스토어가 단일 책임 원칙을 따르는지
+        - 불필요한 전역 상태가 없는지 (서버 상태는 React Query로 관리하는지)
+        - 셀렉터를 사용해 불필요한 리렌더링을 방지하는지
+    - path: 'src/components/**'
+      instructions: |
+        React 컴포넌트 컨벤션을 확인해주세요:
+        - 동적 TailwindCSS 클래스 조합 시 cn()/clsx()를 사용하는지
+        - 접근성(aria-*, role, 키보드 탐색)이 적절히 처리되는지
+        - React Compiler 호환성을 위해 불필요한 useMemo/useCallback이 없는지
+        - Props 타입 표기 방식(type/interface)이 파일/모듈 컨벤션과 일관된지
+    - path: 'src/pages/**/components/**/*.tsx'
+      instructions: |
+        페이지 내부 로컬 컴포넌트 컨벤션을 확인해주세요:
+        - 이 경로는 라우트 엔트리가 아닌 UI 컴포넌트로 간주하고 리뷰하는지
+        - 동적 className 조합, 접근성(aria-*, role, 키보드 탐색), Props 타입 일관성을 우선 확인하는지
+        - 페이지 라우팅/오류 경계(Suspense/ErrorBoundary) 적용 여부는 지적하지 않는지
+    - path: 'src/contexts/**'
+      instructions: |
+        React Context 패턴을 확인해주세요:
+        - Context 값이 자주 바뀌는 경우 값/dispatch가 분리되어 있는지
+        - Provider가 필요 이상으로 넓은 범위를 감싸고 있지 않은지
+        - useContext 래퍼 훅이 제공되어 Context를 직접 노출하지 않는지
+    - path: 'src/pages/**/index.tsx'
+      instructions: |
+        라우트 엔트리 페이지 패턴을 확인해주세요:
+        - 비즈니스 로직은 커스텀 훅으로 분리되어 있는지
+        - 비동기/오류 경계가 필요한 경우에만 Suspense/ErrorBoundary를 적용했는지
+    - path: 'src/pages/**/*Page.tsx'
+      instructions: |
+        라우트 엔트리 페이지 패턴을 확인해주세요:
+        - 비즈니스 로직은 커스텀 훅으로 분리되어 있는지
+        - 비동기/오류 경계가 필요한 경우에만 Suspense/ErrorBoundary를 적용했는지
+    - path: 'src/pages/**/*Step.tsx'
+      instructions: |
+        라우트 엔트리 페이지 패턴을 확인해주세요:
+        - 비즈니스 로직은 커스텀 훅으로 분리되어 있는지
+        - 비동기/오류 경계가 필요한 경우에만 Suspense/ErrorBoundary를 적용했는지
+    - path: 'src/pages/Chat/ChatRoom.tsx'
+      instructions: |
+        라우트 엔트리 페이지 패턴을 확인해주세요:
+        - 비즈니스 로직은 커스텀 훅으로 분리되어 있는지
+        - 비동기/오류 경계가 필요한 경우에만 Suspense/ErrorBoundary를 적용했는지
   auto_review:
     enabled: true
     base_branches: ['develop', 'main']
     drafts: false
+    ignore_title_keywords:
+      - 'WIP'
+      - 'DO NOT MERGE'
+      - 'DRAFT'
   tools:
     eslint:
       enabled: false
@@ -30,9 +96,13 @@ reviews:
     docstrings:
       enabled: false
   pre_merge_checks:
+    description:
+      mode: warning
     docstrings:
       mode: off
-tone_instructions: '짧고 핵심적으로 리뷰해주세요. React, TypeScript 컨벤션에 맞는 피드백을 우선적으로 해주세요.'
+tone_instructions: |
+  짧고 핵심적으로 리뷰해주세요.
+  React, TypeScript 컨벤션에 맞는 피드백을 우선적으로 해주세요.
 knowledge_base:
   code_guidelines:
     enabled: true
