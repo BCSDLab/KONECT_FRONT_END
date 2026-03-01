@@ -155,30 +155,33 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
   options: FetchOptions<P>,
   timeout: number
 ): Promise<T> {
+  let newAccessToken: string;
+
   try {
     if (!refreshPromise) {
       refreshPromise = refreshAccessToken();
     }
-
-    const newAccessToken = await refreshPromise;
-    useAuthStore.getState().setAccessToken(newAccessToken);
-
-    try {
-      if (window.ReactNativeWebView) {
-        window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TOKEN_REFRESH', accessToken: newAccessToken }));
-      }
-    } catch {
-      // 브릿지 전달 실패가 인증 흐름을 중단시키지 않도록 무시
-    }
-
-    return await sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
+    newAccessToken = await refreshPromise;
   } catch {
+    // refresh 실패 → 인증 만료, 로그아웃 처리
     useAuthStore.getState().clearAuth();
-    window.location.href = '/';
     throw new Error('인증이 만료되었습니다.');
   } finally {
     refreshPromise = null;
   }
+
+  useAuthStore.getState().setAccessToken(newAccessToken);
+
+  try {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TOKEN_REFRESH', accessToken: newAccessToken }));
+    }
+  } catch {
+    // 브릿지 전달 실패가 인증 흐름을 중단시키지 않도록 무시
+  }
+
+  // retry 실패는 그대로 throw (로그아웃 처리 안 함)
+  return await sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
 }
 
 async function sendRequestWithoutRetry<T = unknown, P extends object = Record<string, QueryParamValue>>(
