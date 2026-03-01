@@ -1,14 +1,11 @@
-import { useMemo } from 'react';
 import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { getChatMessages, getChatRooms, postChatMessage, postChatRooms, postChatMute } from '@/apis/chat';
 import { useGetClubMembers } from '@/pages/Club/ClubDetail/hooks/useGetClubMembers';
 
-type ChatType = 'DIRECT' | 'GROUP';
-
 export const chatQueryKeys = {
   all: ['chat'] as const,
   rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
-  messages: (chatRoomId: number, type: ChatType) => [...chatQueryKeys.all, 'messages', chatRoomId, type] as const,
+  messages: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId] as const,
 };
 
 const useChat = (chatRoomId?: number) => {
@@ -19,11 +16,6 @@ const useChat = (chatRoomId?: number) => {
     queryFn: getChatRooms,
     refetchInterval: 5000,
   });
-
-  const currentRoomType: ChatType | undefined = useMemo(() => {
-    if (!chatRoomId) return undefined;
-    return chatRoomList.rooms.find((room) => room.roomId === chatRoomId)?.chatType;
-  }, [chatRoomId, chatRoomList.rooms]);
 
   const { mutateAsync: createChatRoom } = useMutation({
     mutationKey: ['createChatRoom'],
@@ -36,17 +28,13 @@ const useChat = (chatRoomId?: number) => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    queryKey:
-      chatRoomId && currentRoomType
-        ? chatQueryKeys.messages(chatRoomId, currentRoomType)
-        : ['chat', 'messages', 'disabled'],
+    queryKey: chatRoomId ? chatQueryKeys.messages(chatRoomId) : ['chat', 'messages', 'disabled'],
 
-    enabled: !!chatRoomId && !!currentRoomType,
+    enabled: !!chatRoomId,
 
     queryFn: ({ pageParam }) =>
       getChatMessages({
         chatRoomId: chatRoomId!,
-        type: currentRoomType!,
         page: pageParam,
         limit: 20,
       }),
@@ -62,28 +50,15 @@ const useChat = (chatRoomId?: number) => {
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
-  const { mutateAsync: sendMessage } = useMutation<
-    Awaited<ReturnType<typeof postChatMessage>>,
-    Error,
-    { chatRoomId: number; content: string }
-  >({
+  const { mutate: sendMessage } = useMutation({
     mutationKey: ['sendMessage', chatRoomId],
-
-    mutationFn: async ({ chatRoomId, content }) => {
-      if (!currentRoomType) {
-        throw new Error('chatType is missing');
-      }
-
-      return postChatMessage(chatRoomId, currentRoomType, content);
-    },
+    mutationFn: postChatMessage,
 
     onSuccess: () => {
-      if (!chatRoomId || !currentRoomType) return;
-
+      if (!chatRoomId) return;
       queryClient.invalidateQueries({
-        queryKey: chatQueryKeys.messages(chatRoomId, currentRoomType),
+        queryKey: chatQueryKeys.messages(chatRoomId),
       });
-
       queryClient.invalidateQueries({
         queryKey: chatQueryKeys.rooms(),
       });
@@ -97,11 +72,11 @@ const useChat = (chatRoomId?: number) => {
   const { mutateAsync: toggleMute } = useMutation({
     mutationKey: ['toggleMute', chatRoomId],
     mutationFn: async () => {
-      if (!chatRoomId || !currentRoomType) {
-        throw new Error('chatRoomId or type missing');
+      if (!chatRoomId) {
+        throw new Error('chatRoomId is missing');
       }
 
-      return postChatMute(chatRoomId, currentRoomType);
+      return postChatMute(chatRoomId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({

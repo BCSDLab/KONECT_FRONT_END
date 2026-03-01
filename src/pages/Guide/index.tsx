@@ -1,32 +1,15 @@
-import { useEffect, useRef } from 'react';
 import { GUIDE_ITEMS } from './guideData';
 import GuideProgressBar from './GuideProgressBar';
 import { useGuideSlider } from './hooks/useGuideSlider';
 import { useSwipe } from './hooks/useSwipe';
 
 function GuidePage() {
-  const timerRef = useRef<number | null>(null);
-
   const { index, next, prev } = useGuideSlider(GUIDE_ITEMS.length);
   const { onTouchStart, onTouchEnd } = useSwipe(next, prev);
 
   const item = GUIDE_ITEMS[index];
-
-  useEffect(() => {
-    if (timerRef.current) {
-      clearTimeout(timerRef.current);
-    }
-
-    timerRef.current = window.setTimeout(() => {
-      next();
-    }, item.duration ?? 3000);
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    };
-  }, [index, item.duration, next]);
+  if (!item) return null;
+  const duration = item.duration ?? 3000;
 
   return (
     <div
@@ -36,12 +19,7 @@ function GuidePage() {
     >
       <div className="relative flex-1 overflow-hidden">
         <div className="absolute top-0 right-0 left-0 z-30">
-          <GuideProgressBar
-            total={GUIDE_ITEMS.length}
-            current={index}
-            duration={item.duration ?? 3000}
-            onComplete={next}
-          />
+          <GuideProgressBar total={GUIDE_ITEMS.length} current={index} duration={duration} onComplete={next} />
         </div>
 
         <img
