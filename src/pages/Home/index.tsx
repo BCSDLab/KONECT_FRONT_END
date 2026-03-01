@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import * as Sentry from '@sentry/react';
 import { Link } from 'react-router-dom';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import Card from '@/components/common/Card';
@@ -34,6 +35,14 @@ function scheduleDateToPath(startedAt: string) {
   const [year, month, day] = date.split('.').map(Number);
 
   return `/schedule?year=${year}&month=${month}&day=${day}`;
+}
+
+function SectionErrorFallback() {
+  return (
+    <div className="border-indigo-5 flex w-full items-center justify-center rounded-lg border bg-white py-5">
+      <span className="text-sub2 text-gray-400">불러오는 중 오류가 발생했어요</span>
+    </div>
+  );
 }
 
 function ClubCardSkeleton() {
@@ -216,9 +225,11 @@ function Home() {
   return (
     <div className="flex flex-col gap-3 p-3 pb-6">
       <div className="flex flex-col gap-2">
-        <Suspense fallback={<MyClubsSkeleton />}>
-          <MyClubsSection />
-        </Suspense>
+        <Sentry.ErrorBoundary fallback={<SectionErrorFallback />}>
+          <Suspense fallback={<MyClubsSkeleton />}>
+            <MyClubsSection />
+          </Suspense>
+        </Sentry.ErrorBoundary>
       </div>
 
       <div>
@@ -228,9 +239,11 @@ function Home() {
             전체보기
           </Link>
         </div>
-        <Suspense fallback={<ScheduleSkeleton />}>
-          <ScheduleSection />
-        </Suspense>
+        <Sentry.ErrorBoundary fallback={<SectionErrorFallback />}>
+          <Suspense fallback={<ScheduleSkeleton />}>
+            <ScheduleSection />
+          </Suspense>
+        </Sentry.ErrorBoundary>
       </div>
 
       <div>
@@ -240,9 +253,11 @@ function Home() {
             더보기
           </Link>
         </div>
-        <Suspense fallback={<NoticeSkeleton />}>
-          <CouncilNoticeSection />
-        </Suspense>
+        <Sentry.ErrorBoundary fallback={<SectionErrorFallback />}>
+          <Suspense fallback={<NoticeSkeleton />}>
+            <CouncilNoticeSection />
+          </Suspense>
+        </Sentry.ErrorBoundary>
       </div>
     </div>
   );
