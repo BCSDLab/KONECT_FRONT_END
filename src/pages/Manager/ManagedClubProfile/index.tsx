@@ -203,10 +203,12 @@ function ManagedClubInfo() {
           <div className="text-h3 text-center whitespace-pre-wrap">동아리 정보를 수정하시겠어요?</div>
           <div>
             <button
+              type="button"
+              disabled={isPending || isUploading}
               onClick={handleSubmit}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              수정하기
+              {isUploading ? '수정 중...' : isPending ? '수정 중...' : '수정하기'}
             </button>
             <button onClick={closeSubmitModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소하기

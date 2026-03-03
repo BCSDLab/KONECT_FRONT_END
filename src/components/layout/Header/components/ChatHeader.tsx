@@ -10,7 +10,7 @@ function ChatHeader() {
   const { chatRoomId } = useParams();
   const numericRoomId = Number(chatRoomId);
 
-  const { chatRoomList, clubMembers, toggleMute } = useChat(numericRoomId);
+  const { chatRoomList, clubMembers, toggleMute, isTogglingMute } = useChat(numericRoomId);
 
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
 
@@ -55,10 +55,12 @@ function ChatHeader() {
             <span className="text-sm font-medium">알림</span>
 
             <button
-              onClick={() => toggleMute()}
+              type="button"
+              disabled={isTogglingMute}
+              onClick={() => void toggleMute()}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 isMuted ? 'bg-gray-300' : 'bg-primary'
-              }`}
+              } disabled:cursor-not-allowed disabled:opacity-60`}
             >
               <span
                 className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${

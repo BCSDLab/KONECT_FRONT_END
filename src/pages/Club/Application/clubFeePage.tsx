@@ -15,7 +15,7 @@ function ClubFeePage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
   const { data: clubFee } = useGetClubFee(Number(clubId));
-  const { applyToClub } = useApplyToClub(Number(clubId));
+  const { applyToClub, isPending: isApplyingToClub } = useApplyToClub(Number(clubId));
   const { answers, clubId: storedClubId } = useClubApplicationStore();
 
   useEffect(() => {
@@ -23,13 +23,13 @@ function ClubFeePage() {
       navigate(`/clubs/${clubId}/apply`, { replace: true });
     }
   }, [storedClubId, clubId, navigate]);
-  const { mutateAsync: uploadImage } = useUploadImage('CLUB');
+  const { mutateAsync: uploadImage, isPending: isUploadingImage } = useUploadImage('CLUB');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
+  const isSubmitting = isApplyingToClub || isUploadingImage;
 
   useEffect(() => {
     return () => {
@@ -49,14 +49,8 @@ function ClubFeePage() {
 
   const handleSubmit = async () => {
     if (!imageFile) return;
-    setIsSubmitting(true);
-
-    try {
-      const { fileUrl } = await uploadImage(imageFile);
-      await applyToClub({ answers, feePaymentImageUrl: fileUrl });
-    } finally {
-      setIsSubmitting(false);
-    }
+    const { fileUrl } = await uploadImage(imageFile);
+    await applyToClub({ answers, feePaymentImageUrl: fileUrl });
   };
 
   return (
@@ -129,7 +123,7 @@ function ClubFeePage() {
         onClick={handleSubmit}
         disabled={!imageFile || isSubmitting}
       >
-        제출하기
+        {isSubmitting ? '제출 중...' : '제출하기'}
       </button>
 
       {isImageOpen && previewUrl && (
