@@ -13,10 +13,10 @@ const fields = [
 
 function Profile() {
   const { myInfo } = useMyInfo({});
-  const { mutate: withdraw } = useWithdrawMutation();
+  const { mutate: withdraw, isPending: isWithdrawing } = useWithdrawMutation();
 
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
-  const { mutate: goToAdminChat } = useAdminChatMutation();
+  const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();
 
   return (
     <div className="flex flex-1 flex-col gap-2 bg-white px-5 py-6 pb-10">
@@ -42,10 +42,11 @@ function Profile() {
       </div>
 
       <button
+        disabled={isCreatingAdminChat}
         onClick={() => goToAdminChat()}
-        className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold"
+        className="bg-primary text-indigo-5 mt-auto w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold disabled:cursor-not-allowed disabled:opacity-50"
       >
-        문의하기
+        {isCreatingAdminChat ? '이동 중...' : '문의하기'}
       </button>
 
       <BottomModal isOpen={isOpen} onClose={closeModal}>
@@ -55,10 +56,11 @@ function Profile() {
           </div>
           <div>
             <button
+              disabled={isWithdrawing}
               onClick={() => withdraw()}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              탈퇴하기
+              {isWithdrawing ? '탈퇴 처리 중...' : '탈퇴하기'}
             </button>
             <button onClick={closeModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소

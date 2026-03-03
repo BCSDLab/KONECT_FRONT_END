@@ -1,3 +1,5 @@
+import type { ApiError } from '@/interface/error';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
 import { apiClient } from '../client';
 import type { ModifyMyInfoRequest, MyInfoResponse, RefreshTokenResponse, SignupRequest } from './entity';
 
@@ -5,13 +7,37 @@ const BASE_URL = import.meta.env.VITE_API_PATH;
 
 export const refreshAccessToken = async (): Promise<string> => {
   const url = `${BASE_URL.replace(/\/+$/, '')}/users/refresh`;
-  const response = await fetch(url, {
-    method: 'POST',
-    credentials: 'include',
-  });
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof TypeError) {
+      const networkError = new Error('네트워크 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.') as ApiError;
+      networkError.name = 'NetworkError';
+      networkError.status = 0;
+      networkError.statusText = 'NETWORK_ERROR';
+      networkError.url = url;
+      throw networkError;
+    }
+    throw err as Error;
+  }
 
   if (!response.ok) {
-    throw new Error('토큰 갱신 실패');
+    if (isServerErrorStatus(response.status)) {
+      redirectToServerErrorPage();
+      throw new Error('서버 오류가 발생했습니다.');
+    }
+
+    const error = new Error('토큰 갱신 실패') as ApiError;
+    error.name = 'TokenRefreshError';
+    error.status = response.status;
+    error.statusText = response.statusText;
+    error.url = url;
+    throw error;
   }
 
   const data: RefreshTokenResponse = await response.json();

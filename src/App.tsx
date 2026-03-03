@@ -38,7 +38,9 @@ import ManagedMemberList from './pages/Manager/ManagedMemberList';
 import ManagedRecruitment from './pages/Manager/ManagedRecruitment';
 import ManagedRecruitmentForm from './pages/Manager/ManagedRecruitmentForm';
 import ManagedRecruitmentWrite from './pages/Manager/ManagedRecruitmentWrite';
+import NotFoundPage from './pages/NotFound';
 import Schedule from './pages/Schedule';
+import ServerErrorPage from './pages/ServerError';
 import Timer from './pages/Timer';
 import MyPage from './pages/User/MyPage';
 import Profile from './pages/User/Profile';
@@ -119,6 +121,9 @@ function App() {
               </Route>
             </Route>
           </Route>
+
+          <Route path="server-error" element={<ServerErrorPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </SentryRoutes>
       </AuthGuard>
     </BrowserRouter>

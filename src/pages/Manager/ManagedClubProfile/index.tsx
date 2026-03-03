@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
+import { isApiError } from '@/interface/error';
 import { useGetClubDetail } from '@/pages/Club/ClubDetail/hooks/useGetClubDetail';
 import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
 import useBooleanState from '@/utils/hooks/useBooleanState';
@@ -181,21 +182,27 @@ function ManagedClubInfo() {
             className="bg-indigo-5 resize-none rounded-lg p-2 text-[15px] leading-6 font-semibold"
           />
         </div>
-      </div>
 
-      <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
-        {uploadError && (
-          <p className="text-sm text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
-        )}
-        {error && <p className="text-sm text-red-500">{error.message ?? '동아리 정보 수정에 실패했습니다.'}</p>}
-        <button
-          type="button"
-          onClick={openSubmitModal}
-          disabled={isPending || isUploading || !hasChanges}
-          className="bg-primary w-full rounded-lg py-3 text-center text-lg leading-7 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-indigo-300"
-        >
-          {isUploading ? '이미지 업로드 중...' : isPending ? '수정 중...' : '수정하기'}
-        </button>
+        <div className="flex flex-col gap-2 p-3" style={{ marginBottom: 'calc(20px + var(--sab))' }}>
+          {uploadError && (
+            <p className="text-sm text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+          )}
+          {error && isApiError(error) && error.apiError?.fieldErrors?.length
+            ? error.apiError.fieldErrors.map((fe) => (
+                <p key={fe.field} className="text-sm text-red-500">
+                  {fe.message}
+                </p>
+              ))
+            : error && <p className="text-sm text-red-500">{error.message ?? '동아리 정보 수정에 실패했습니다.'}</p>}
+          <button
+            type="button"
+            onClick={openSubmitModal}
+            disabled={isPending || isUploading || !hasChanges}
+            className="bg-primary w-full rounded-lg py-3 text-center text-lg leading-7 font-bold text-white transition-colors disabled:cursor-not-allowed disabled:bg-indigo-300"
+          >
+            {isUploading ? '이미지 업로드 중...' : isPending ? '수정 중...' : '수정하기'}
+          </button>
+        </div>
       </div>
 
       <BottomModal isOpen={isSubmitModalOpen} onClose={closeSubmitModal}>
@@ -203,10 +210,12 @@ function ManagedClubInfo() {
           <div className="text-h3 text-center whitespace-pre-wrap">동아리 정보를 수정하시겠어요?</div>
           <div>
             <button
+              type="button"
+              disabled={isPending || isUploading}
               onClick={handleSubmit}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              수정하기
+              {isUploading ? '수정 중...' : isPending ? '수정 중...' : '수정하기'}
             </button>
             <button onClick={closeSubmitModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소하기

@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 import { initSentry } from './config/sentry.ts';
 import ToastProvider from './contexts/ToastContext';
+import { isApiError } from './interface/error.ts';
 import { installViewportVars } from './utils/ts/viewport.ts';
 
 installViewportVars();
@@ -14,7 +15,10 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnReconnect: true,
-      retry: false,
+      retry: (failureCount, error) => {
+        const maxRetries = 2;
+        return failureCount <= maxRetries && isApiError(error) && error.status === 0;
+      },
     },
   },
 });

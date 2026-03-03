@@ -37,6 +37,7 @@ export function initSentry() {
       }),
       Sentry.replayIntegration({
         maskAllText: false,
+        maskAllInputs: false,
         blockAllMedia: false,
       }),
     ],

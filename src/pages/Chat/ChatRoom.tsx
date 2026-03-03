@@ -25,9 +25,8 @@ const formatTime = (dateString: string) => {
 
 function ChatRoom() {
   const { chatRoomId } = useParams();
-  const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, chatRoomList } = useChat(
-    Number(chatRoomId)
-  );
+  const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, chatRoomList, isSendingMessage } =
+    useChat(Number(chatRoomId));
   const [value, setValue] = useState('');
 
   useKeyboardHeight();
@@ -185,7 +184,11 @@ function ChatRoom() {
           maxLength={1000}
         />
 
-        <button type="submit" className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-sm">
+        <button
+          type="submit"
+          disabled={isSendingMessage || !value.trim()}
+          className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-sm disabled:opacity-50"
+        >
           <PaperPlaneIcon className="text-indigo-0" />
         </button>
       </form>
