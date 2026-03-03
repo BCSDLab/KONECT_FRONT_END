@@ -29,7 +29,7 @@ export const refreshAccessToken = async (): Promise<string> => {
   if (!response.ok) {
     if (isServerErrorStatus(response.status)) {
       redirectToServerErrorPage();
-      return undefined as never;
+      throw new Error('서버 오류가 발생했습니다.');
     }
 
     const error = new Error('토큰 갱신 실패') as ApiError;

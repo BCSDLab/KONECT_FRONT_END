@@ -72,14 +72,22 @@ async function throwApiError(response: Response): Promise<never> {
   throw error;
 }
 
-function rethrowFetchError(error: unknown, url: string): never {
+function rethrowFetchError(error: unknown, url: string, isTimeout = false): never {
   if (error instanceof Error && error.name === 'AbortError') {
-    const timeoutError = new Error('요청 시간이 초과되었습니다.') as ApiError;
-    timeoutError.name = 'TimeoutError';
-    timeoutError.status = 0;
-    timeoutError.statusText = 'TIMEOUT';
-    timeoutError.url = url;
-    throw timeoutError;
+    if (isTimeout) {
+      const timeoutError = new Error('요청 시간이 초과되었습니다.') as ApiError;
+      timeoutError.name = 'TimeoutError';
+      timeoutError.status = 0;
+      timeoutError.statusText = 'TIMEOUT';
+      timeoutError.url = url;
+      throw timeoutError;
+    }
+    const cancelError = new Error('요청이 취소되었습니다.') as ApiError;
+    cancelError.name = 'Canceled';
+    cancelError.status = 0;
+    cancelError.statusText = 'CANCELED';
+    cancelError.url = url;
+    throw cancelError;
   }
   if (isFetchNetworkError(error)) {
     throw createNetworkApiError(url);
@@ -137,7 +145,11 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
   }
 
   const abortController = new AbortController();
-  const timeoutId = setTimeout(() => abortController.abort(), timeout);
+  let didTimeout = false;
+  const timeoutId = setTimeout(() => {
+    didTimeout = true;
+    abortController.abort();
+  }, timeout);
 
   const isJsonBody = body !== undefined && body !== null && !(body instanceof FormData);
 
@@ -186,7 +198,7 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
 
     return parseResponse<T>(response);
   } catch (error) {
-    rethrowFetchError(error, url);
+    rethrowFetchError(error, url, didTimeout);
   } finally {
     clearTimeout(timeoutId);
   }
@@ -244,7 +256,11 @@ async function sendRequestWithoutRetry<T = unknown, P extends object = Record<st
   }
 
   const abortController = new AbortController();
-  const timeoutId = setTimeout(() => abortController.abort(), timeout);
+  let didTimeout = false;
+  const timeoutId = setTimeout(() => {
+    didTimeout = true;
+    abortController.abort();
+  }, timeout);
 
   const isJsonBody = body !== undefined && body !== null && !(body instanceof FormData);
 
@@ -284,7 +300,7 @@ async function sendRequestWithoutRetry<T = unknown, P extends object = Record<st
 
     return parseResponse<T>(response);
   } catch (error) {
-    rethrowFetchError(error, url);
+    rethrowFetchError(error, url, didTimeout);
   } finally {
     clearTimeout(timeoutId);
   }
