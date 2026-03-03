@@ -1,6 +1,7 @@
 import { refreshAccessToken } from '@/apis/auth';
 import type { ApiError, ApiErrorResponse } from '@/interface/error';
 import { useAuthStore } from '@/stores/authStore';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
 
 const BASE_URL = import.meta.env.VITE_API_PATH;
 
@@ -42,6 +43,27 @@ export const apiClient = {
     options: FetchOptions<P> = {}
   ) => sendRequest<T, P>(endPoint, { ...options, method: 'PATCH' }),
 };
+
+function isFetchNetworkError(error: unknown): error is TypeError {
+  if (!(error instanceof TypeError)) return false;
+
+  const message = error.message.toLowerCase();
+  return (
+    message.includes('failed to fetch') ||
+    message.includes('load failed') ||
+    message.includes('networkerror') ||
+    message.includes('network request failed')
+  );
+}
+
+function createNetworkApiError(requestUrl: string): ApiError {
+  const error = new Error('네트워크 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.') as ApiError;
+  error.name = 'NetworkError';
+  error.status = 0;
+  error.statusText = 'NETWORK_ERROR';
+  error.url = requestUrl;
+  return error;
+}
 
 function joinUrl(baseUrl: string, path: string) {
   const base = baseUrl.replace(/\/+$/, '');
@@ -128,6 +150,10 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     }
 
     if (!response.ok) {
+      if (isServerErrorStatus(response.status)) {
+        redirectToServerErrorPage();
+      }
+
       const errorData = await parseErrorResponse(response);
 
       const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
@@ -143,6 +169,9 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       throw new Error('요청 시간이 초과되었습니다.');
+    }
+    if (isFetchNetworkError(error)) {
+      throw createNetworkApiError(url);
     }
     throw error;
   } finally {
@@ -237,6 +266,10 @@ async function sendRequestWithoutRetry<T = unknown, P extends object = Record<st
     const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
+      if (isServerErrorStatus(response.status)) {
+        redirectToServerErrorPage();
+      }
+
       const errorData = await parseErrorResponse(response);
 
       const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
@@ -252,6 +285,9 @@ async function sendRequestWithoutRetry<T = unknown, P extends object = Record<st
   } catch (error) {
     if (error instanceof Error && error.name === 'AbortError') {
       throw new Error('요청 시간이 초과되었습니다.');
+    }
+    if (isFetchNetworkError(error)) {
+      throw createNetworkApiError(url);
     }
     throw error;
   } finally {

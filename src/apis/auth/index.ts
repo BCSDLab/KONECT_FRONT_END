@@ -1,3 +1,4 @@
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
 import { apiClient } from '../client';
 import type { ModifyMyInfoRequest, MyInfoResponse, RefreshTokenResponse, SignupRequest } from './entity';
 
@@ -11,6 +12,10 @@ export const refreshAccessToken = async (): Promise<string> => {
   });
 
   if (!response.ok) {
+    if (isServerErrorStatus(response.status)) {
+      redirectToServerErrorPage();
+    }
+
     throw new Error('토큰 갱신 실패');
   }
 
