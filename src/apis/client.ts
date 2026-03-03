@@ -56,6 +56,32 @@ function isFetchNetworkError(error: unknown): error is TypeError {
   );
 }
 
+async function throwApiError(response: Response): Promise<never> {
+  if (isServerErrorStatus(response.status)) {
+    redirectToServerErrorPage();
+  }
+
+  const errorData = await parseErrorResponse(response);
+
+  const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
+  error.status = response.status;
+  error.statusText = response.statusText;
+  error.url = response.url;
+  error.apiError = errorData ?? undefined;
+
+  throw error;
+}
+
+function rethrowFetchError(error: unknown, url: string): never {
+  if (error instanceof Error && error.name === 'AbortError') {
+    throw new Error('요청 시간이 초과되었습니다.');
+  }
+  if (isFetchNetworkError(error)) {
+    throw createNetworkApiError(url);
+  }
+  throw error as Error;
+}
+
 function createNetworkApiError(requestUrl: string): ApiError {
   const error = new Error('네트워크 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.') as ApiError;
   error.name = 'NetworkError';
@@ -150,30 +176,12 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     }
 
     if (!response.ok) {
-      if (isServerErrorStatus(response.status)) {
-        redirectToServerErrorPage();
-      }
-
-      const errorData = await parseErrorResponse(response);
-
-      const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
-      error.status = response.status;
-      error.statusText = response.statusText;
-      error.url = response.url;
-      error.apiError = errorData ?? undefined;
-
-      throw error;
+      return await throwApiError(response);
     }
 
     return parseResponse<T>(response);
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('요청 시간이 초과되었습니다.');
-    }
-    if (isFetchNetworkError(error)) {
-      throw createNetworkApiError(url);
-    }
-    throw error;
+    rethrowFetchError(error, url);
   } finally {
     clearTimeout(timeoutId);
   }
@@ -266,30 +274,12 @@ async function sendRequestWithoutRetry<T = unknown, P extends object = Record<st
     const response = await fetch(url, fetchOptions);
 
     if (!response.ok) {
-      if (isServerErrorStatus(response.status)) {
-        redirectToServerErrorPage();
-      }
-
-      const errorData = await parseErrorResponse(response);
-
-      const error = new Error(errorData?.message ?? 'API 요청 실패') as ApiError;
-      error.status = response.status;
-      error.statusText = response.statusText;
-      error.url = response.url;
-      error.apiError = errorData ?? undefined;
-
-      throw error;
+      return await throwApiError(response);
     }
 
     return parseResponse<T>(response);
   } catch (error) {
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('요청 시간이 초과되었습니다.');
-    }
-    if (isFetchNetworkError(error)) {
-      throw createNetworkApiError(url);
-    }
-    throw error;
+    rethrowFetchError(error, url);
   } finally {
     clearTimeout(timeoutId);
   }
