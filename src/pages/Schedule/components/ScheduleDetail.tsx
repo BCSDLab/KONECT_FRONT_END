@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
-import { parseDateDot } from '@/utils/ts/date';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
+import { parseDateDot } from '@/utils/ts/date';
 import { useScheduleList } from '../hooks/useGetSchedules';
 
 type scheduleDetailProps = {
@@ -30,8 +30,8 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
   };
 
   return (
-    <div className="flex flex-1 flex-col gap-2 bg-white px-6 pt-2 pb-6">
-      <span className="text-[14px] leading-4 font-semibold">{month}월 전체 일정</span>
+    <div className="flex flex-1 flex-col gap-2 bg-white px-6 pt-4 pb-6">
+      <span className="pb-1 text-[14px] leading-4 font-semibold">{month}월 전체 일정</span>
       {sortedSchedules.length ? (
         sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }) => {
           const highlighted = isOnSelectedDay(startedAt, endedAt);

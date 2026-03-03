@@ -11,7 +11,6 @@ type BarItem = {
 };
 
 function layoutBars(weekDates: Date[], schedules: Schedule[], isCurrentMonth: (date: Date) => boolean): BarItem[] {
-  // 이번 달에 해당하는 날짜만 추출
   const currentMonthDates = weekDates.filter(isCurrentMonth);
   if (currentMonthDates.length === 0) return [];
 
@@ -40,7 +39,6 @@ function layoutBars(weekDates: Date[], schedules: Schedule[], isCurrentMonth: (d
   for (const schedule of overlapping) {
     const startMs = parseDateDot(schedule.startedAt).getTime();
     const endMs = parseDateDot(schedule.endedAt).getTime();
-    // 이번 달 날짜 범위로만 클램핑 (이전/다음 달 셀에 바가 그려지지 않도록)
     const clampedStart = new Date(Math.max(startMs, wsMonth));
     const clampedEnd = new Date(Math.min(endMs, weMonth));
 
@@ -107,7 +105,6 @@ function CalendarWeekRow({
         ))}
       </div>
 
-      {/* 일정 바 행 - 항상 고정 높이 유지 */}
       <div
         className="mb-2"
         style={{
@@ -125,7 +122,7 @@ function CalendarWeekRow({
               gridRow: bar.lane + 1,
               backgroundColor: SCHEDULE_COLOR[bar.schedule.scheduleCategory],
             }}
-            className="text-cap2 h-[18px] truncate rounded-full px-1.5 leading-[18px] font-medium"
+            className="text-cap2 flex h-[18px] items-center justify-center truncate rounded-full px-1.5"
           >
             {bar.schedule.title}
           </div>

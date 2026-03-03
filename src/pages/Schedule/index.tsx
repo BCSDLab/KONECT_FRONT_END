@@ -9,6 +9,14 @@ import { useMonthSwipe } from './hooks/useMonthSwipe';
 
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+const COLOR_LEGENDS = [
+  { name: '총동아리', color: '#E9F2FA' },
+  { name: '공휴일', color: '#FFB8B8' },
+  { name: '동아리', color: '#FDE49B' },
+  { name: '학사일정', color: '#AEDCBA' },
+  { name: '기숙사', color: '#B9ADEF' },
+];
+
 function Schedule() {
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -92,6 +100,16 @@ function Schedule() {
         </div>
       </main>
 
+      <ul className="text-cap2 flex gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
+        {COLOR_LEGENDS.map(({ name, color }) => (
+          <li key={name} className="flex shrink-0 items-center gap-1">
+            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+            {name}
+          </li>
+        ))}
+      </ul>
+
+      <div className="h-[0.7px] bg-[#D6DAE0]"></div>
       <section className="flex-1 overflow-y-auto">
         <ScheduleDetail year={year} month={month} day={day} />
       </section>
