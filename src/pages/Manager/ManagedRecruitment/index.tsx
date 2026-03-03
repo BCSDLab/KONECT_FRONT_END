@@ -14,7 +14,7 @@ function ManagedRecruitment() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
   const { data: settings } = useGetClubSettings(Number(clubId));
-  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
+  const { mutate: patchSettings, isPending: isPatchingSettings } = usePatchClubSettings(Number(clubId));
 
   const handleRecruitmentToggle = (value: boolean) => {
     if (value && !settings?.recruitment) {
@@ -69,6 +69,7 @@ function ManagedRecruitment() {
             icon={MegaphoneSmIcon}
             label="모집공고"
             enabled={settings?.isRecruitmentEnabled ?? false}
+            disabled={isPatchingSettings}
             onChange={handleRecruitmentToggle}
           />
           <div className="h-14 w-px bg-indigo-50" />
@@ -76,6 +77,7 @@ function ManagedRecruitment() {
             icon={FileSmIcon}
             label="지원서"
             enabled={settings?.isApplicationEnabled ?? false}
+            disabled={isPatchingSettings}
             onChange={handleApplicationToggle}
           />
           <div className="h-14 w-px bg-indigo-50" />
@@ -83,6 +85,7 @@ function ManagedRecruitment() {
             icon={CreditCardSmIcon}
             label="회비"
             enabled={settings?.isFeeEnabled ?? false}
+            disabled={isPatchingSettings}
             onChange={handleFeeToggle}
           />
         </div>

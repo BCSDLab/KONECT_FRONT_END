@@ -17,7 +17,7 @@ const useChat = (chatRoomId?: number) => {
     refetchInterval: 5000,
   });
 
-  const { mutateAsync: createChatRoom } = useMutation({
+  const createChatRoomMutation = useMutation({
     mutationKey: ['createChatRoom'],
     mutationFn: (userId: number) => postChatRooms(userId),
   });
@@ -50,7 +50,7 @@ const useChat = (chatRoomId?: number) => {
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
-  const { mutate: sendMessage } = useMutation({
+  const sendMessageMutation = useMutation({
     mutationKey: ['sendMessage', chatRoomId],
     mutationFn: postChatMessage,
 
@@ -69,7 +69,7 @@ const useChat = (chatRoomId?: number) => {
 
   const { data: clubMembersData } = useGetClubMembers(clubId);
 
-  const { mutateAsync: toggleMute } = useMutation({
+  const toggleMuteMutation = useMutation({
     mutationKey: ['toggleMute', chatRoomId],
     mutationFn: async () => {
       if (!chatRoomId) {
@@ -87,15 +87,18 @@ const useChat = (chatRoomId?: number) => {
 
   return {
     chatRoomList,
-    createChatRoom,
+    createChatRoom: createChatRoomMutation.mutateAsync,
+    isCreatingChatRoom: createChatRoomMutation.isPending,
     chatMessages: allMessages,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     totalUnreadCount,
-    sendMessage,
+    sendMessage: sendMessageMutation.mutate,
+    isSendingMessage: sendMessageMutation.isPending,
     clubMembers: clubMembersData?.clubMembers ?? [],
-    toggleMute,
+    toggleMute: toggleMuteMutation.mutateAsync,
+    isTogglingMute: toggleMuteMutation.isPending,
   };
 };
 

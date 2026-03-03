@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { ClubDetailResponse } from '@/apis/club/entity';
 import HumanIcon from '@/assets/svg/human.svg';
@@ -14,20 +13,11 @@ interface ClubIntroProps {
 
 function ClubIntro({ clubDetail }: ClubIntroProps) {
   const navigate = useNavigate();
-  const { createChatRoom } = useChat();
-
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { createChatRoom, isCreatingChatRoom } = useChat();
 
   const handleInquireClick = async () => {
-    if (isSubmitting) return;
-
-    try {
-      setIsSubmitting(true);
-      const response = await createChatRoom(clubDetail.presidentUserId);
-      navigate(`/chats/${response.chatRoomId}`);
-    } finally {
-      setIsSubmitting(false);
-    }
+    const response = await createChatRoom(clubDetail.presidentUserId);
+    navigate(`/chats/${response.chatRoomId}`);
   };
 
   return (
@@ -70,11 +60,11 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
         <button
           type="button"
           onClick={handleInquireClick}
-          disabled={isSubmitting}
+          disabled={isCreatingChatRoom}
           className="bg-primary text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
         >
           <PaperPlaneIcon className="text-white" />
-          {isSubmitting ? '이동 중...' : '문의하기'}
+          {isCreatingChatRoom ? '이동 중...' : '문의하기'}
         </button>
       </Card>
     </>

@@ -23,9 +23,9 @@ const menuItems = [
 
 function MyPage() {
   const { myInfo } = useMyInfo();
-  const { mutate: logout } = useLogoutMutation();
+  const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
-  const { mutate: goToAdminChat } = useAdminChatMutation();
+  const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();
 
   return (
     <div className="flex flex-col gap-2 p-3">
@@ -46,13 +46,14 @@ function MyPage() {
           ))}
 
         <button
+          disabled={isCreatingAdminChat}
           onClick={() => goToAdminChat()}
-          className="bg-indigo-0 active:bg-indigo-5 w-full rounded-sm text-left transition-colors"
+          className="bg-indigo-0 active:bg-indigo-5 w-full rounded-sm text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
           <div className="flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-4">
               <ChatIcon />
-              <div className="text-sub2">문의하기</div>
+              <div className="text-sub2">{isCreatingAdminChat ? '이동 중...' : '문의하기'}</div>
             </div>
             <RightArrowIcon />
           </div>
@@ -80,10 +81,11 @@ function MyPage() {
           <div className="text-h3 text-center whitespace-pre-wrap">정말로 로그아웃 하시겠어요?</div>
           <div>
             <button
+              disabled={isLoggingOut}
               onClick={() => logout()}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              로그아웃
+              {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
             </button>
             <button onClick={closeModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소

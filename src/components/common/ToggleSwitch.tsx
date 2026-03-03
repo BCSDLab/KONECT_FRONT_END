@@ -5,11 +5,20 @@ interface ToggleSwitchProps {
   label: string;
   enabled: boolean;
   onChange: (enabled: boolean) => void;
+  disabled?: boolean;
   layout?: 'vertical' | 'horizontal';
   className?: string;
 }
 
-function ToggleSwitch({ icon: Icon, label, enabled, onChange, layout = 'vertical', className }: ToggleSwitchProps) {
+function ToggleSwitch({
+  icon: Icon,
+  label,
+  enabled,
+  onChange,
+  disabled = false,
+  layout = 'vertical',
+  className,
+}: ToggleSwitchProps) {
   const isHorizontal = layout === 'horizontal';
 
   return (
@@ -38,9 +47,10 @@ function ToggleSwitch({ icon: Icon, label, enabled, onChange, layout = 'vertical
         type="button"
         aria-label={label}
         aria-pressed={enabled}
+        disabled={disabled}
         onClick={() => onChange(!enabled)}
         className={twMerge(
-          'relative touch-manipulation rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:outline-none',
+          'relative touch-manipulation rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60',
           isHorizontal
             ? `h-7 w-12 border border-indigo-50 ${enabled ? 'bg-indigo-700' : 'bg-indigo-50'}`
             : `h-5 w-9 ${enabled ? 'bg-primary' : 'bg-indigo-100'}`
