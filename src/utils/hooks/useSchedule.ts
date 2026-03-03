@@ -21,8 +21,11 @@ export const dateUtils = (year: number, month: number, day: number) => {
       (_, index) => new Date(year, currentMonth, index + 1)
     );
 
+    const lastDayOfMonth = new Date(year, currentMonth, currentMonthLastDate);
+    const remainingDaysInWeek = lastDayOfMonth.getDay() === 6 ? 0 : 6 - lastDayOfMonth.getDay();
+
     const nextMonthDateList = Array.from(
-      { length: 42 - prevMonthDateList.length - currentMonthDateList.length },
+      { length: remainingDaysInWeek },
       (_, index) => new Date(year, month, index + 1)
     );
 

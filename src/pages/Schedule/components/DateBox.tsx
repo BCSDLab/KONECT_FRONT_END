@@ -1,86 +1,34 @@
-import { SCHEDULE_COLOR } from '@/constants/schedule';
-
-type Schedule = {
-  title: string;
-  startedAt: string;
-  endedAt: string;
-  scheduleCategory: 'UNIVERSITY' | 'CLUB' | 'COUNCIL' | 'DORM';
-};
-
 type DateBoxProps = {
   date: Date;
   isCurrentMonth: boolean;
-  isToday: boolean;
+  isSelected: boolean;
   isSunday: boolean;
   onClick: (date: Date) => void;
-  schedules?: Schedule[];
 };
 
-function DateBox({ date, isCurrentMonth, isToday, isSunday, onClick, schedules = [] }: DateBoxProps) {
-  const visibleSchedules = schedules.slice(0, 2);
-  const extraCount = schedules.length > 2 ? schedules.length - 2 : 0;
-
+function DateBox({ date, isCurrentMonth, isSelected, isSunday, onClick }: DateBoxProps) {
   return (
-    <div className="flex flex-col items-center">
-      <button
-        type="button"
-        disabled={!isCurrentMonth}
-        onClick={() => isCurrentMonth && onClick(date)}
-        className="relative flex h-10 w-full overflow-hidden"
-      >
-        {isCurrentMonth && <div className="absolute inset-0 mx-auto my-auto h-8 w-8 rounded-[3px] bg-[#F4F6F9]" />}
-
-        {isCurrentMonth && schedules.length > 0 && (
-          <div className="absolute inset-0 mx-auto my-auto flex h-8 w-8 flex-col gap-[1.5px] overflow-hidden rounded-[3px] bg-white">
-            {schedules.length === 1 && (
-              <div
-                className="flex-1"
-                style={{
-                  backgroundColor: SCHEDULE_COLOR[schedules[0].scheduleCategory],
-                }}
-              />
-            )}
-
-            {schedules.length === 2 &&
-              visibleSchedules.map((s) => (
-                <div
-                  key={s.title}
-                  className="flex-1"
-                  style={{
-                    backgroundColor: SCHEDULE_COLOR[s.scheduleCategory],
-                    borderRadius: '3px',
-                  }}
-                />
-              ))}
-
-            {schedules.length >= 3 && (
-              <>
-                {visibleSchedules.map((s) => (
-                  <div
-                    key={s.title}
-                    className="flex-1"
-                    style={{
-                      backgroundColor: SCHEDULE_COLOR[s.scheduleCategory],
-                      borderRadius: '3px',
-                    }}
-                  />
-                ))}
-
-                <div className="flex justify-end bg-white text-[8px] font-semibold text-indigo-500">
-                  +{extraCount}개
-                </div>
-              </>
-            )}
-          </div>
-        )}
-      </button>
-
+    <button
+      type="button"
+      disabled={!isCurrentMonth}
+      onClick={() => onClick(date)}
+      className="flex h-9 w-full items-center justify-center"
+    >
       <span
-        className={`mt-1 flex h-5 w-8 items-center justify-center text-[13px] font-semibold ${isSunday ? 'text-red-500' : 'text-black'} ${!isCurrentMonth ? 'text-transparent' : ''} ${isToday && isCurrentMonth ? 'rounded-[3px] bg-[#DAECFF]' : ''} `}
+        className={[
+          'flex h-7 w-7 items-center justify-center text-[13px] font-semibold',
+          !isCurrentMonth
+            ? 'text-transparent'
+            : isSelected
+              ? 'rounded-full bg-[#1B2B4B] text-white'
+              : isSunday
+                ? 'text-red-500'
+                : 'text-black',
+        ].join(' ')}
       >
         {isCurrentMonth ? date.getDate() : ''}
       </span>
-    </div>
+    </button>
   );
 }
 
