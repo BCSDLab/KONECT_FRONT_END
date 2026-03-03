@@ -20,6 +20,9 @@ const useChat = (chatRoomId?: number) => {
   const createChatRoomMutation = useMutation({
     mutationKey: ['createChatRoom'],
     mutationFn: (userId: number) => postChatRooms(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
   });
 
   const {
