@@ -21,7 +21,7 @@ function AuthGuard({ children }: AuthGuardProps) {
   if (isLoading && !shouldSkipInitialize) {
     return (
       <div role="status" className="flex h-screen items-center justify-center">
-        <span className="sr-only">Loading…</span>
+        <span className="sr-only">로딩 중…</span>
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-indigo-200 border-t-indigo-600" />
       </div>
     );
