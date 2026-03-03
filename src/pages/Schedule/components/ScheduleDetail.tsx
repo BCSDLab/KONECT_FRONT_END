@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { parseDateDot } from '@/utils/ts/date';
@@ -29,14 +29,25 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
     return start <= selectedDate && selectedDate <= end;
   };
 
+  const firstHighlightedIndex = sortedSchedules.findIndex(({ startedAt, endedAt }) =>
+    isOnSelectedDay(startedAt, endedAt)
+  );
+
+  const firstHighlightedRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    firstHighlightedRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [day]);
+
   return (
     <div className="flex flex-1 flex-col gap-2 bg-white px-6 pt-4 pb-6">
       <span className="pb-1 text-[14px] leading-4 font-semibold">{month}월 전체 일정</span>
       {sortedSchedules.length ? (
-        sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }) => {
+        sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }, index) => {
           const highlighted = isOnSelectedDay(startedAt, endedAt);
           return (
             <div
+              ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
               key={title + startedAt}
               className={`flex items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
             >
