@@ -74,7 +74,12 @@ async function throwApiError(response: Response): Promise<never> {
 
 function rethrowFetchError(error: unknown, url: string): never {
   if (error instanceof Error && error.name === 'AbortError') {
-    throw new Error('요청 시간이 초과되었습니다.');
+    const timeoutError = new Error('요청 시간이 초과되었습니다.') as ApiError;
+    timeoutError.name = 'TimeoutError';
+    timeoutError.status = 0;
+    timeoutError.statusText = 'TIMEOUT';
+    timeoutError.url = url;
+    throw timeoutError;
   }
   if (isFetchNetworkError(error)) {
     throw createNetworkApiError(url);

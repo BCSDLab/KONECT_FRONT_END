@@ -7,14 +7,29 @@ const BASE_URL = import.meta.env.VITE_API_PATH;
 
 export const refreshAccessToken = async (): Promise<string> => {
   const url = `${BASE_URL.replace(/\/+$/, '')}/users/refresh`;
-  const response = await fetch(url, {
-    method: 'POST',
-    credentials: 'include',
-  });
+
+  let response: Response;
+  try {
+    response = await fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+    });
+  } catch (err) {
+    if (err instanceof TypeError) {
+      const networkError = new Error('네트워크 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.') as ApiError;
+      networkError.name = 'NetworkError';
+      networkError.status = 0;
+      networkError.statusText = 'NETWORK_ERROR';
+      networkError.url = url;
+      throw networkError;
+    }
+    throw err as Error;
+  }
 
   if (!response.ok) {
     if (isServerErrorStatus(response.status)) {
       redirectToServerErrorPage();
+      return undefined as never;
     }
 
     const error = new Error('토큰 갱신 실패') as ApiError;
