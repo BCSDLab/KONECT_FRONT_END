@@ -1,15 +1,9 @@
-import { useNavigate } from 'react-router-dom';
 import NotFoundCatImage from '@/assets/image/not-found-cat.webp';
 import ErrorPageLayout from '@/components/common/ErrorPageLayout';
-import { useAuthStore } from '@/stores/authStore';
+import { useErrorPageHomeNavigation } from '@/utils/hooks/useErrorPageHomeNavigation';
 
 function NotFoundPage() {
-  const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  const handleGoHome = () => {
-    navigate(isAuthenticated ? '/home' : '/', { replace: true });
-  };
+  const handleGoHome = useErrorPageHomeNavigation();
 
   return (
     <ErrorPageLayout
