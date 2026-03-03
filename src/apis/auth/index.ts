@@ -33,6 +33,7 @@ export const refreshAccessToken = async (): Promise<string> => {
     }
 
     const error = new Error('토큰 갱신 실패') as ApiError;
+    error.name = 'TokenRefreshError';
     error.status = response.status;
     error.statusText = response.statusText;
     error.url = url;

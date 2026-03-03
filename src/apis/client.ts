@@ -59,6 +59,7 @@ function isFetchNetworkError(error: unknown): error is TypeError {
 async function throwApiError(response: Response): Promise<never> {
   if (isServerErrorStatus(response.status)) {
     redirectToServerErrorPage();
+    throw new Error('서버 오류가 발생했습니다.');
   }
 
   const errorData = await parseErrorResponse(response);
