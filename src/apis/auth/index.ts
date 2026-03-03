@@ -1,3 +1,4 @@
+import type { ApiError } from '@/interface/error';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
 import { apiClient } from '../client';
 import type { ModifyMyInfoRequest, MyInfoResponse, RefreshTokenResponse, SignupRequest } from './entity';
@@ -16,7 +17,11 @@ export const refreshAccessToken = async (): Promise<string> => {
       redirectToServerErrorPage();
     }
 
-    throw new Error('토큰 갱신 실패');
+    const error = new Error('토큰 갱신 실패') as ApiError;
+    error.status = response.status;
+    error.statusText = response.statusText;
+    error.url = url;
+    throw error;
   }
 
   const data: RefreshTokenResponse = await response.json();

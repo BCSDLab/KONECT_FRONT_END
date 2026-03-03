@@ -1,4 +1,4 @@
-const SERVER_ERROR_PATH = '/server-error';
+export const SERVER_ERROR_PATH = '/server-error';
 
 export function isServerErrorStatus(status: number): boolean {
   return status >= 500 && status < 600;
