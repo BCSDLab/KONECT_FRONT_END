@@ -178,7 +178,7 @@ function ManagedMemberList() {
       <div className="flex flex-1 flex-col gap-2 overflow-auto p-3">
         <UserInfoCard type="detail" />
 
-        <Card className="text-body3 flex-row">
+        <Card className="Body3 flex-row">
           <div className="bg-indigo-5 flex-1 rounded-sm p-2 text-center">총 부원 수 : {total}명</div>
         </Card>
 
@@ -211,7 +211,7 @@ function ManagedMemberList() {
 
         {groupedEntries.map(([position, groupMembers]) => (
           <div key={position} className="flex flex-col gap-1">
-            <div className="text-body2 px-1 py-1 font-semibold text-indigo-700">{POSITION_LABELS[position]}</div>
+            <div className="Body2 px-1 py-1 font-semibold text-indigo-700">{POSITION_LABELS[position]}</div>
             {groupMembers.map((member) => (
               <Card key={member.userId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
@@ -220,10 +220,10 @@ function ManagedMemberList() {
                     {member.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="text-body2 text-indigo-700">
-                      {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
+                    <div className="Body2 text-indigo-700">
+                      {member.name} <span className="Body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
-                    <div className="text-cap1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
+                    <div className="Caption1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
                   </div>
                 </div>
                 {!PROTECTED_POSITIONS.has(position) && (
@@ -243,7 +243,7 @@ function ManagedMemberList() {
 
         {preMembersList.preMembers.length > 0 && (
           <div className="flex flex-col gap-1">
-            <div className="text-body2 px-1 py-1 font-semibold text-indigo-700">사전 등록 회원</div>
+            <div className="Body2 px-1 py-1 font-semibold text-indigo-700">사전 등록 회원</div>
             {preMembersList.preMembers.map((member) => (
               <Card key={member.preMemberId} className="flex-row items-center gap-2">
                 <div className="flex flex-1 items-center gap-2">
@@ -251,10 +251,10 @@ function ManagedMemberList() {
                     {member.name.charAt(0)}
                   </div>
                   <div>
-                    <div className="text-body2 text-indigo-700">
-                      {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
+                    <div className="Body2 text-indigo-700">
+                      {member.name} <span className="Body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
-                    <div className="text-cap1 text-indigo-300">사전 등록</div>
+                    <div className="Caption1 text-indigo-300">사전 등록</div>
                   </div>
                 </div>
                 <button
@@ -274,25 +274,25 @@ function ManagedMemberList() {
       {/* Member Action Modal */}
       <BottomModal isOpen={isActionOpen} onClose={closeAction}>
         <div className="flex flex-col gap-2 p-5">
-          <div className="text-body2 pb-2 font-semibold text-indigo-700">{selectedMember?.name} 관리</div>
+          <div className="Body2 pb-2 font-semibold text-indigo-700">{selectedMember?.name} 관리</div>
           <button
             type="button"
             onClick={handleOpenMemberApplication}
-            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left"
+            className="Body3 active:bg-indigo-5 rounded-lg py-3 text-left"
           >
             지원서 보기
           </button>
           <button
             type="button"
             onClick={handleOpenPositionChange}
-            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left"
+            className="Body3 active:bg-indigo-5 rounded-lg py-3 text-left"
           >
             직책 변경
           </button>
           <button
             type="button"
             onClick={handleOpenRemove}
-            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left text-red-500"
+            className="Body3 active:bg-indigo-5 rounded-lg py-3 text-left text-red-500"
           >
             부원 추방
           </button>
@@ -302,8 +302,8 @@ function ManagedMemberList() {
       {/* Transfer President Modal */}
       <BottomModal isOpen={isTransferOpen} onClose={closeTransfer}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">회장 위임</div>
-          <div className="text-cap1 text-indigo-400">새 회장을 선택해주세요.</div>
+          <div className="Body2 font-semibold text-indigo-700">회장 위임</div>
+          <div className="Caption1 text-indigo-400">새 회장을 선택해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {nonPresidentMembers.map((member) => {
               const isSelected = transferTarget === member.userId;
@@ -321,7 +321,7 @@ function ManagedMemberList() {
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
                       {member.name.charAt(0)}
                     </div>
-                    <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
+                    <div className={`Body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
                   </div>
@@ -344,8 +344,8 @@ function ManagedMemberList() {
       {/* Change Vice President Modal */}
       <BottomModal isOpen={isVPOpen} onClose={closeVP}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">부회장 변경</div>
-          <div className="text-cap1 text-indigo-400">새 부회장을 선택하거나 해제해주세요.</div>
+          <div className="Body2 font-semibold text-indigo-700">부회장 변경</div>
+          <div className="Caption1 text-indigo-400">새 부회장을 선택하거나 해제해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             <button
               type="button"
@@ -354,7 +354,7 @@ function ManagedMemberList() {
                 vpTarget === null ? 'bg-indigo-5' : 'active:bg-indigo-5'
               }`}
             >
-              <div className={`text-body3 ${vpTarget === null ? 'text-red-500' : 'text-red-300'}`}>부회장 해제</div>
+              <div className={`Body3 ${vpTarget === null ? 'text-red-500' : 'text-red-300'}`}>부회장 해제</div>
               {vpTarget === null && <CheckIcon className="h-4 w-4 text-blue-500" />}
             </button>
             {nonPresidentMembers.map((member) => {
@@ -373,7 +373,7 @@ function ManagedMemberList() {
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
                       {member.name.charAt(0)}
                     </div>
-                    <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
+                    <div className={`Body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                       {member.name} ({member.studentNumber})
                     </div>
                   </div>
@@ -396,7 +396,7 @@ function ManagedMemberList() {
       {/* Change Position Modal */}
       <BottomModal isOpen={isPositionOpen} onClose={closePosition}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">{selectedMember?.name} 직책 변경</div>
+          <div className="Body2 font-semibold text-indigo-700">{selectedMember?.name} 직책 변경</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {(['MANAGER', 'MEMBER'] as const).map((position) => {
               const isSelected = selectedPosition === position;
@@ -409,7 +409,7 @@ function ManagedMemberList() {
                     isSelected ? 'bg-indigo-5' : 'active:bg-indigo-5'
                   }`}
                 >
-                  <div className={`text-body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
+                  <div className={`Body3 ${isSelected ? 'text-indigo-700' : 'text-indigo-400'}`}>
                     {POSITION_LABELS[position]}
                   </div>
                   {isSelected && <CheckIcon className="h-4 w-4 text-blue-500" />}
@@ -431,8 +431,8 @@ function ManagedMemberList() {
       {/* Remove Member Confirm Modal */}
       <BottomModal isOpen={isRemoveOpen} onClose={closeRemove}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">부원 추방</div>
-          <div className="text-body3 text-indigo-400">정말 {selectedMember?.name}님을 추방하시겠어요?</div>
+          <div className="Body2 font-semibold text-indigo-700">부원 추방</div>
+          <div className="Body3 text-indigo-400">정말 {selectedMember?.name}님을 추방하시겠어요?</div>
           <div className="flex gap-2">
             <button
               type="button"
@@ -456,10 +456,10 @@ function ManagedMemberList() {
       {/* Add Member Modal */}
       <BottomModal isOpen={isAddOpen} onClose={closeAdd}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">부원 추가</div>
-          <div className="text-cap1 text-indigo-400">서비스에 가입하지 않은 학생을 사전 등록합니다.</div>
+          <div className="Body2 font-semibold text-indigo-700">부원 추가</div>
+          <div className="Caption1 text-indigo-400">서비스에 가입하지 않은 학생을 사전 등록합니다.</div>
           <div className="flex flex-col gap-2">
-            <label className="text-cap1 text-indigo-400">학번</label>
+            <label className="Caption1 text-indigo-400">학번</label>
             <input
               type="text"
               value={newStudentNumber}
@@ -469,7 +469,7 @@ function ManagedMemberList() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-cap1 text-indigo-400">이름</label>
+            <label className="Caption1 text-indigo-400">이름</label>
             <input
               type="text"
               value={newMemberName}
@@ -492,11 +492,11 @@ function ManagedMemberList() {
       {/* Pre-Member Action Modal */}
       <BottomModal isOpen={isPreMemberActionOpen} onClose={closePreMemberAction}>
         <div className="flex flex-col gap-2 p-5">
-          <div className="text-body2 pb-2 font-semibold text-indigo-700">{selectedPreMember?.name} 관리</div>
+          <div className="Body2 pb-2 font-semibold text-indigo-700">{selectedPreMember?.name} 관리</div>
           <button
             type="button"
             onClick={handleOpenPreMemberDelete}
-            className="text-body3 active:bg-indigo-5 rounded-lg py-3 text-left text-red-500"
+            className="Body3 active:bg-indigo-5 rounded-lg py-3 text-left text-red-500"
           >
             사전 등록 삭제
           </button>
@@ -506,10 +506,8 @@ function ManagedMemberList() {
       {/* Pre-Member Delete Confirm Modal */}
       <BottomModal isOpen={isPreMemberDeleteOpen} onClose={closePreMemberDelete}>
         <div className="flex flex-col gap-3 p-5">
-          <div className="text-body2 font-semibold text-indigo-700">사전 등록 삭제</div>
-          <div className="text-body3 text-indigo-400">
-            정말 {selectedPreMember?.name}님의 사전 등록을 삭제하시겠어요?
-          </div>
+          <div className="Body2 font-semibold text-indigo-700">사전 등록 삭제</div>
+          <div className="Body3 text-indigo-400">정말 {selectedPreMember?.name}님의 사전 등록을 삭제하시겠어요?</div>
           <div className="flex gap-2">
             <button
               type="button"

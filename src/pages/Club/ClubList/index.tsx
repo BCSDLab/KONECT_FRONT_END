@@ -22,7 +22,7 @@ function ClubList() {
     <div className="pb-15">
       <SearchBar isButton />
       <div className="bg-background mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
-        <div className="text-sub2 text-indigo-300">
+        <div className="Sub2 text-indigo-300">
           총 <span className="text-black">{totalCount}개</span>의 동아리
         </div>
 

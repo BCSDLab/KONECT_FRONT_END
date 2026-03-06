@@ -38,7 +38,7 @@ function MyPage() {
               <div className="flex items-center justify-between px-3 py-2">
                 <div className="flex items-center gap-4">
                   <Icon />
-                  <div className="text-sub2">{label}</div>
+                  <div className="Sub2">{label}</div>
                 </div>
                 <RightArrowIcon />
               </div>
@@ -53,7 +53,7 @@ function MyPage() {
           <div className="flex items-center justify-between px-3 py-2">
             <div className="flex items-center gap-4">
               <ChatIcon />
-              <div className="text-sub2">{isCreatingAdminChat ? '이동 중...' : '문의하기'}</div>
+              <div className="Sub2">{isCreatingAdminChat ? '이동 중...' : '문의하기'}</div>
             </div>
             <RightArrowIcon />
           </div>
@@ -78,16 +78,16 @@ function MyPage() {
 
       <BottomModal isOpen={isOpen} onClose={closeModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">정말로 로그아웃 하시겠어요?</div>
+          <div className="H3 text-center whitespace-pre-wrap">정말로 로그아웃 하시겠어요?</div>
           <div>
             <button
               disabled={isLoggingOut}
               onClick={() => logout()}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isLoggingOut ? '로그아웃 중...' : '로그아웃'}
             </button>
-            <button onClick={closeModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+            <button onClick={closeModal} className="H3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소
             </button>
           </div>
