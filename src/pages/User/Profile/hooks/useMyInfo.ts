@@ -7,6 +7,7 @@ import type { ApiError } from '@/interface/error';
 export const userQueryKeys = {
   all: ['user'],
   myInfo: () => [...userQueryKeys.all, 'myInfo'],
+  oauthLinks: () => [...userQueryKeys.all, 'oauthLinks'],
 };
 
 interface UseMyInfoOptions {

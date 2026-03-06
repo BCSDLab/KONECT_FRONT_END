@@ -28,3 +28,16 @@ export interface ModifyMyInfoRequest {
 export interface RefreshTokenResponse {
   accessToken: string;
 }
+
+export const OAUTH_PROVIDERS = ['GOOGLE', 'KAKAO', 'NAVER', 'APPLE'] as const;
+
+export type OAuthProvider = (typeof OAUTH_PROVIDERS)[number];
+
+export interface OAuthLinkProvider {
+  provider: OAuthProvider;
+  linked: boolean;
+}
+
+export interface OAuthLinksResponse {
+  providers: OAuthLinkProvider[];
+}

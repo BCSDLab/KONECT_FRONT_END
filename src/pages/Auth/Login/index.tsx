@@ -2,8 +2,8 @@ import AppleIcon from '@/assets/svg/apple.svg';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
-
-const API_BASE_URL = import.meta.env.VITE_API_PATH?.replace(/\/+$/, '');
+import { cn } from '@/utils/ts/cn';
+import { getOAuthAuthorizationUrl } from '@/utils/ts/oauth';
 
 function getRedirectUri() {
   if (import.meta.env.DEV) return window.location.origin;
@@ -11,11 +11,11 @@ function getRedirectUri() {
 }
 
 const SOCIAL_LOGIN_LIST = [
-  { provider: 'google', label: 'Google로 로그인', icon: GoogleIcon, className: 'border border-gray-200 bg-white' },
-  { provider: 'kakao', label: '카카오로 로그인', icon: KakaoIcon, className: 'bg-[#FEE500]' },
-  { provider: 'naver', label: '네이버로 로그인', icon: NaverIcon, className: 'bg-[#03C75A]' },
-  { provider: 'apple', label: 'Apple로 로그인', icon: AppleIcon, className: 'bg-black' },
-];
+  { provider: 'GOOGLE', label: 'Google로 로그인', icon: GoogleIcon, className: 'border border-gray-200 bg-white' },
+  { provider: 'KAKAO', label: '카카오로 로그인', icon: KakaoIcon, className: 'bg-[#FEE500]' },
+  { provider: 'NAVER', label: '네이버로 로그인', icon: NaverIcon, className: 'bg-[#03C75A]' },
+  { provider: 'APPLE', label: 'Apple로 로그인', icon: AppleIcon, className: 'bg-black' },
+] as const;
 
 function Login() {
   return (
@@ -32,8 +32,8 @@ function Login() {
           {SOCIAL_LOGIN_LIST.map(({ provider, label, icon: Icon, className }) => (
             <a
               key={provider}
-              href={`${API_BASE_URL}/oauth2/authorization/${provider}?redirect_uri=${getRedirectUri()}`}
-              className={`flex h-11 w-11 items-center justify-center rounded-full ${className}`}
+              href={getOAuthAuthorizationUrl({ provider, redirectUri: getRedirectUri() })}
+              className={cn('flex h-11 w-11 items-center justify-center rounded-full', className)}
               aria-label={label}
             >
               <Icon />
