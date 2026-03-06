@@ -33,7 +33,7 @@ react-router-dom v7 | @tanstack/react-query (`useSuspenseQuery`) | zustand | Tai
 
 ## Directory Structure
 
-```
+```text
 src/
 ├── apis/          # 도메인별 API 함수 + 타입 (entity.ts)
 ├── pages/         # 라우트 단위 페이지 + 페이지 전용 hooks/
@@ -95,7 +95,7 @@ src/
 
 ## Environment Variables
 
-```
+```text
 VITE_API_PATH                          # required
 VITE_SENTRY_DSN, VITE_SENTRY_ENABLED  # optional (Sentry, 외 VITE_SENTRY_* 다수)
 SENTRY_ORG, SENTRY_PROJECT, SENTRY_AUTH_TOKEN, SENTRY_RELEASE  # build-time
@@ -111,8 +111,10 @@ SENTRY_ORG, SENTRY_PROJECT, SENTRY_AUTH_TOKEN, SENTRY_RELEASE  # build-time
 
 ### Commit Message
 
-`type: 한국어 설명
-타입: `feat`, `fix`, `refactor`, `chore`, `docs`, `style`, `test`
+```text
+type: 한국어 설명
+타입: feat, fix, refactor, chore, docs, style, test
+```
 
 ### Issue
 
