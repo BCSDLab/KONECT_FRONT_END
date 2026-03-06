@@ -2,6 +2,7 @@ import AppleIcon from '@/assets/svg/apple.svg';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
+import { cn } from '@/utils/ts/cn';
 import { getOAuthAuthorizationUrl } from '@/utils/ts/oauth';
 
 function getRedirectUri() {
@@ -32,7 +33,7 @@ function Login() {
             <a
               key={provider}
               href={getOAuthAuthorizationUrl({ provider, redirectUri: getRedirectUri() })}
-              className={`flex h-11 w-11 items-center justify-center rounded-full ${className}`}
+              className={cn('flex h-11 w-11 items-center justify-center rounded-full', className)}
               aria-label={label}
             >
               <Icon />
