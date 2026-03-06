@@ -29,7 +29,7 @@ function ManagerDetailInfoCard() {
         <div className="flex items-center gap-3">
           <img className="h-12 w-12 rounded-full" src={managedClub?.imageUrl} alt="Member Avatar" />
           <div>
-            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
+            <div className={twMerge('H2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
             <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
               {myInfo.studentNumber} · {myInfo.universityName} · {currentClub?.position}
             </div>
@@ -52,16 +52,16 @@ function ManagerStats({
   return (
     <div className="flex justify-between gap-2">
       <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
-        <div className="text-body3">관리 동아리</div>
-        <div className="text-h3 mt-1">{managedClubList.joinedClubs.length}</div>
+        <div className="Body3">관리 동아리</div>
+        <div className="H3 mt-1">{managedClubList.joinedClubs.length}</div>
       </div>
       <button
         type="button"
         onClick={(e) => onButtonClick(e, '/council?tab=notice')}
         className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
       >
-        <div className="text-body3">읽지 않은 공지</div>
-        <div className="text-h3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
+        <div className="Body3">읽지 않은 공지</div>
+        <div className="H3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
       </button>
     </div>
   );
@@ -104,7 +104,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             {myInfo.name.charAt(0)}
           </div>
           <div>
-            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{myInfo.name}</div>
+            <div className={twMerge('H2 font-bold text-indigo-700')}>{myInfo.name}</div>
             <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
               {myInfo.studentNumber} · {myInfo.universityName}
             </div>
@@ -115,22 +115,22 @@ function UserInfoCard({ type }: UserInfoCardProps) {
       {type === 'user' && (
         <div className="flex justify-between gap-2">
           <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
-            <div className="text-body3">가입 동아리</div>
-            <div className="text-h3 mt-1">{myInfo.joinedClubCount}</div>
+            <div className="Body3">가입 동아리</div>
+            <div className="H3 mt-1">{myInfo.joinedClubCount}</div>
           </div>
           <button
             onClick={(e) => handleButtonClick(e, '/timer')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >
-            <div className="text-body3">순공 시간</div>
-            <div className="text-h3 mt-1">{myInfo.studyTime}</div>
+            <div className="Body3">순공 시간</div>
+            <div className="H3 mt-1">{myInfo.studyTime}</div>
           </button>
           <button
             onClick={(e) => handleButtonClick(e, '/council?tab=notice')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >
-            <div className="text-body3">읽지 않은 공지</div>
-            <div className="text-h3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
+            <div className="Body3">읽지 않은 공지</div>
+            <div className="H3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
           </button>
         </div>
       )}

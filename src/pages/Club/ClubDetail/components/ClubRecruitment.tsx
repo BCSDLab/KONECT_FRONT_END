@@ -92,20 +92,20 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
       </Card>
       <BottomModal isOpen={isConfirmOpen} onClose={closeConfirm}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">동아리에 지원하시겠어요?</div>
+          <div className="H3 text-center whitespace-pre-wrap">동아리에 지원하시겠어요?</div>
           <div>
             <button
               type="button"
               onClick={handleApply}
               disabled={isPending}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+              className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
             >
               지원하기
             </button>
             <button
               type="button"
               onClick={closeConfirm}
-              className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400"
+              className="H3 w-full rounded-lg py-3.5 text-center text-indigo-400"
             >
               취소
             </button>

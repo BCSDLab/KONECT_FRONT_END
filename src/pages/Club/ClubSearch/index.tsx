@@ -50,7 +50,7 @@ function ClubSearch() {
           <div className="py-6 text-center text-xs text-indigo-300">검색어를 입력해서 동아리를 검색해보세요.</div>
         ) : (
           <>
-            <div className="text-cap2 text-indigo-300">
+            <div className="Caption2 text-indigo-300">
               총 <span className="font-bold text-black">{totalCount}개</span>의 동아리
             </div>
 

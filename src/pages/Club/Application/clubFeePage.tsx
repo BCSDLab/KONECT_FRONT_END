@@ -108,9 +108,7 @@ function ClubFeePage() {
                 className="border-indigo-75 hover:bg-indigo-25 flex h-52 w-36 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
               >
                 <ImageIcon />
-                <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">
-                  {'이미지를 \n 추가해주세요'}
-                </p>
+                <p className="Sub4 text-center whitespace-pre-line text-indigo-100">{'이미지를 \n 추가해주세요'}</p>
               </button>
             )}
           </div>

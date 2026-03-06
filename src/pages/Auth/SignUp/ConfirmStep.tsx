@@ -70,31 +70,26 @@ function ConfirmStep() {
       color="text-red-500"
     >
       <div className="flex flex-col gap-1">
-        <label className="text-sub2 text-indigo-300">학교명</label>
+        <label className="Sub2 text-indigo-300">학교명</label>
         <input
           type="text"
           value={universityName}
           disabled
-          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
+          className="bg-indigo-5 Sub1 rounded-lg p-2 disabled:text-indigo-200"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-sub2 text-indigo-300">학번</label>
+        <label className="Sub2 text-indigo-300">학번</label>
         <input
           type="text"
           value={studentId}
           disabled
-          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
+          className="bg-indigo-5 Sub1 rounded-lg p-2 disabled:text-indigo-200"
         />
       </div>
       <div className="flex flex-col gap-1">
-        <label className="text-sub2 text-indigo-300">이름</label>
-        <input
-          type="text"
-          value={name}
-          disabled
-          className="bg-indigo-5 text-sub1 rounded-lg p-2 disabled:text-indigo-200"
-        />
+        <label className="Sub2 text-indigo-300">이름</label>
+        <input type="text" value={name} disabled className="bg-indigo-5 Sub1 rounded-lg p-2 disabled:text-indigo-200" />
       </div>
       {error && (
         <div className="mt-2 text-sm text-red-500">
@@ -107,7 +102,7 @@ function ConfirmStep() {
       )}
       <BottomModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">
+          <div className="H3 text-center whitespace-pre-wrap">
             이미 등록된 학번입니다{'\n'}
             문의를 통해 문제를 해결해주세요
           </div>
@@ -115,12 +110,12 @@ function ConfirmStep() {
             value={inquiryContent}
             onChange={(e) => setInquiryContent(e.target.value)}
             placeholder="문의 내용을 입력해주세요"
-            className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
+            className="Sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
           />
           <button
             onClick={handleInquirySubmit}
             disabled={isInquiryPending || !inquiryContent.trim()}
-            className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+            className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
           >
             {isInquiryPending ? '전송 중...' : '문의하기'}
           </button>

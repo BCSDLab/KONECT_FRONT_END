@@ -138,7 +138,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
       <button
         type="button"
         onClick={handleOpenModal}
-        className="bg-indigo-0 text-h3 w-full rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)]"
+        className="bg-indigo-0 H3 w-full rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)]"
       >
         {value}
       </button>
@@ -150,8 +150,8 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
       {renderTriggerElement()}
       <BottomModal isOpen={isOpen} onClose={handleCloseModal}>
         <div className="px-5 pt-6 pb-[calc(20px+var(--sab))]">
-          <div className="text-h3 text-center text-indigo-700">시간 선택</div>
-          <p className="text-cap1 mt-1 text-center text-indigo-300">스크롤해서 시간을 선택하세요</p>
+          <div className="H3 text-center text-indigo-700">시간 선택</div>
+          <p className="Caption1 mt-1 text-center text-indigo-300">스크롤해서 시간을 선택하세요</p>
           <div className="bg-indigo-0 relative mt-4 h-[200px] overflow-hidden rounded-2xl border border-indigo-50">
             <div className="pointer-events-none absolute inset-x-0 top-0 z-2 h-20 bg-linear-to-b from-[#F8FAFF] to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-2 h-20 bg-linear-to-t from-[#F8FAFF] to-transparent" />
@@ -176,7 +176,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                         scrollToItem(hourRef, hourOptions, hour);
                       }}
                       className={twMerge(
-                        'text-body2 h-10 w-full snap-center transition-all duration-150',
+                        'Body2 h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -204,7 +204,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                         scrollToItem(minuteRef, minuteOptions, minute);
                       }}
                       className={twMerge(
-                        'text-body2 h-10 w-full snap-center transition-all duration-150',
+                        'Body2 h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -217,7 +217,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
             </div>
           </div>
           <div className="mt-3 flex justify-center">
-            <div className="bg-indigo-0 text-body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700">
+            <div className="bg-indigo-0 Body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700">
               선택 시간 {formatTime(draftHour, draftMinute)}
             </div>
           </div>
@@ -225,14 +225,14 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
             <button
               type="button"
               onClick={handleCloseModal}
-              className="bg-indigo-0 text-body2 flex-1 rounded-lg border border-indigo-50 py-3 text-indigo-400"
+              className="bg-indigo-0 Body2 flex-1 rounded-lg border border-indigo-50 py-3 text-indigo-400"
             >
               취소
             </button>
             <button
               type="button"
               onClick={handleConfirm}
-              className="bg-primary text-body2 flex-1 rounded-lg py-3 text-white"
+              className="bg-primary Body2 flex-1 rounded-lg py-3 text-white"
             >
               확인
             </button>
