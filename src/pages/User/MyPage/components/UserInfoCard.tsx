@@ -119,6 +119,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             <div className="H3 mt-1">{myInfo.joinedClubCount}</div>
           </div>
           <button
+            type="button"
             onClick={(e) => handleButtonClick(e, '/timer')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >
@@ -126,6 +127,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             <div className="H3 mt-1">{myInfo.studyTime}</div>
           </button>
           <button
+            type="button"
             onClick={(e) => handleButtonClick(e, '/council?tab=notice')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >

@@ -129,6 +129,10 @@
     line-height: var(--leading-body2);
     font-weight: var(--font-weight-regular);
   }
+  .Body2-unstyled {
+    font-size: var(--Body2);
+    line-height: var(--leading-body2);
+  }
   .Body3 {
     font-size: var(--Body3);
     line-height: var(--leading-body3);

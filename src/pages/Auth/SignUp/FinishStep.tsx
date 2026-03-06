@@ -8,6 +8,10 @@ function FinishStep() {
   const { myInfo } = useMyInfo();
   const setUser = useAuthStore((state) => state.setUser);
 
+  if (!myInfo) {
+    return null;
+  }
+
   const handleStart = () => {
     if (!myInfo) {
       return;

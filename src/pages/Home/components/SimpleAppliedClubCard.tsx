@@ -18,7 +18,7 @@ function SimpleAppliedClubCard({ club }: SimpleAppliedClubCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex w-full items-center justify-between gap-1">
             <div className="H3 text-indigo-700">{club.name}</div>
-            <div className="Caption1 flex items-center gap-0.5 rounded-full bg-[#E8EBEFE5] px-3 py-1 text-[#5A6B7F]">
+            <div className="Caption1 text-text-500 bg-text-100/90 flex items-center gap-0.5 rounded-full px-3 py-1">
               <CircleWarningIcon />
               승인 대기 중
             </div>

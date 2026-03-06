@@ -171,12 +171,13 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                     <button
                       key={hour}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => {
                         setDraftHour(hour);
                         scrollToItem(hourRef, hourOptions, hour);
                       }}
                       className={twMerge(
-                        'Body2 h-10 w-full snap-center transition-all duration-150',
+                        'Body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -199,12 +200,13 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                     <button
                       key={minute}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => {
                         setDraftMinute(minute);
                         scrollToItem(minuteRef, minuteOptions, minute);
                       }}
                       className={twMerge(
-                        'Body2 h-10 w-full snap-center transition-all duration-150',
+                        'Body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -217,7 +219,11 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
             </div>
           </div>
           <div className="mt-3 flex justify-center">
-            <div className="bg-indigo-0 Body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700">
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              className="bg-indigo-0 Body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700"
+            >
               선택 시간 {formatTime(draftHour, draftMinute)}
             </div>
           </div>

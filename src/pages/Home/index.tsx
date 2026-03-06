@@ -233,7 +233,7 @@ function Home() {
       <div>
         <div className="flex justify-between">
           <div className="H3">다가오는 일정</div>
-          <Link to="/schedule" className="Sub2 text-[#3182F6]">
+          <Link to="/schedule" className="Sub2 text-info-600">
             전체보기
           </Link>
         </div>
@@ -247,7 +247,7 @@ function Home() {
       <div>
         <div className="flex justify-between">
           <div className="H3">총동아리연합회</div>
-          <Link to="/council?tab=notice" className="Sub2 text-[#3182F6]">
+          <Link to="/council?tab=notice" className="Sub2 text-info-600">
             더보기
           </Link>
         </div>
