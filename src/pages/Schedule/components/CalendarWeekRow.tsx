@@ -122,7 +122,7 @@ function CalendarWeekRow({
               gridRow: bar.lane + 1,
               backgroundColor: SCHEDULE_COLOR[bar.schedule.scheduleCategory],
             }}
-            className="text-cap2 flex h-[18px] items-center justify-center truncate rounded-full px-1.5"
+            className="text-cap2 h-[18px] truncate rounded-full px-1.5 text-center leading-[18px] font-medium"
           >
             {bar.schedule.title}
           </div>

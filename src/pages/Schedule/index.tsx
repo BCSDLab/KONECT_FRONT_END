@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import CalendarWeekRow from './components/CalendarWeekRow';
@@ -16,6 +16,8 @@ const COLOR_LEGENDS = [
   { name: '학사일정', color: '#AEDCBA' },
   { name: '기숙사', color: '#B9ADEF' },
 ];
+
+const PEEK_HEIGHT = 150;
 
 function Schedule() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,6 +42,19 @@ function Schedule() {
     return result;
   }, [dateList]);
 
+  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+  const sheetTouchStartY = useRef(0);
+
+  const handleSheetTouchStart = (e: React.TouchEvent) => {
+    sheetTouchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleSheetTouchEnd = (e: React.TouchEvent) => {
+    const delta = sheetTouchStartY.current - e.changedTouches[0].clientY;
+    if (delta > 40) setIsSheetExpanded(true);
+    else if (delta < -40) setIsSheetExpanded(false);
+  };
+
   const handleDateClick = (date: Date) => {
     setSearchParams(
       {
@@ -60,6 +75,7 @@ function Schedule() {
       },
       { replace: true }
     );
+    setIsSheetExpanded(false);
   };
 
   const { handleTouchStart, handleTouchEnd } = useMonthSwipe({
@@ -69,7 +85,7 @@ function Schedule() {
   });
 
   return (
-    <div className="flex h-[calc(100vh-44px)] flex-col bg-white">
+    <div className="relative flex h-[calc(100vh-44px)] flex-col overflow-hidden bg-white">
       <main
         className="flex w-full shrink-0 touch-pan-y flex-col bg-white"
         onTouchStart={handleTouchStart}
@@ -100,7 +116,7 @@ function Schedule() {
         </div>
       </main>
 
-      <ul className="text-cap2 flex gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
+      <ul className="text-cap2 flex shrink-0 gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
         {COLOR_LEGENDS.map(({ name, color }) => (
           <li key={name} className="flex shrink-0 items-center gap-1">
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
@@ -109,9 +125,26 @@ function Schedule() {
         ))}
       </ul>
 
-      <div className="h-[0.7px] bg-[#D6DAE0]"></div>
-      <section className="flex-1 overflow-y-auto">
-        <ScheduleDetail year={year} month={month} day={day} />
+      {/* 바텀시트 */}
+      <section
+        className="absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
+        style={{
+          height: `calc(100% - 200px)`,
+          transform: isSheetExpanded ? 'translateY(0)' : `translateY(calc(100% - ${PEEK_HEIGHT}px))`,
+        }}
+      >
+        {/* 핸들 */}
+        <div
+          className="flex shrink-0 justify-center pt-3 pb-2"
+          onTouchStart={handleSheetTouchStart}
+          onTouchEnd={handleSheetTouchEnd}
+        >
+          <div className="h-1 w-8 rounded-full bg-[#D1D5DB]" />
+        </div>
+
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <ScheduleDetail year={year} month={month} day={day} />
+        </div>
       </section>
     </div>
   );

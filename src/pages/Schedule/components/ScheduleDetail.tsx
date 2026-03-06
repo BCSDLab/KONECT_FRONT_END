@@ -33,15 +33,22 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
     isOnSelectedDay(startedAt, endedAt)
   );
 
+  const containerRef = useRef<HTMLDivElement>(null);
   const firstHighlightedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    firstHighlightedRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (!firstHighlightedRef.current || !containerRef.current) return;
+    const el = firstHighlightedRef.current;
+    const container = containerRef.current;
+    const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scrollTo({ top, behavior: 'smooth' });
   }, [day]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 bg-white px-6 pt-4 pb-6">
-      <span className="pb-1 text-[14px] leading-4 font-semibold">{month}월 전체 일정</span>
+    <div ref={containerRef} className="flex flex-1 flex-col gap-2 overflow-y-auto bg-white px-6 pt-4 pb-6">
+      <span className="pb-1 text-[14px] leading-4 font-semibold">
+        {month}월 {day}일 일정
+      </span>
       {sortedSchedules.length ? (
         sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }, index) => {
           const highlighted = isOnSelectedDay(startedAt, endedAt);
@@ -49,7 +56,7 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
             <div
               ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
               key={title + startedAt}
-              className={`flex items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
+              className={`flex h-[70px] shrink-0 items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
             >
               <div className="w-1 shrink-0" style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }} />
               <div className="flex flex-col gap-1 p-3">
