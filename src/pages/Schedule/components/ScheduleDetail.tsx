@@ -1,6 +1,7 @@
-import CalendarIcon from '@/assets/svg/calendar.svg';
-import { SCHEDULE_COLOR, SCHEDULE_LABEL } from '@/constants/schedule';
+import { useEffect, useMemo, useRef } from 'react';
+import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
+import { parseDateDot } from '@/utils/ts/date';
 import { useScheduleList } from '../hooks/useGetSchedules';
 
 type scheduleDetailProps = {
@@ -10,50 +11,65 @@ type scheduleDetailProps = {
 };
 
 function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
-  const { data: schedules } = useScheduleList({ year, month });
+  const { data } = useScheduleList({ year, month });
 
-  const parseDateOnly = (value: string) => {
-    const [date] = value.split(' ');
-    const [year, month, day] = date.split('.').map(Number);
-    return new Date(year, month - 1, day);
+  const selectedDate = useMemo(() => new Date(year, month - 1, day), [year, month, day]);
+
+  const sortedSchedules = useMemo(
+    () =>
+      [...(data?.schedules ?? [])].sort(
+        (a, b) => parseDateDot(a.startedAt).getTime() - parseDateDot(b.startedAt).getTime()
+      ),
+    [data?.schedules]
+  );
+
+  const isOnSelectedDay = (startedAt: string, endedAt: string) => {
+    const start = parseDateDot(startedAt);
+    const end = parseDateDot(endedAt);
+    return start <= selectedDate && selectedDate <= end;
   };
 
-  const dailySchedules = schedules?.schedules?.filter(({ startedAt, endedAt }) => {
-    const target = new Date(new Date().getFullYear(), month - 1, day);
+  const firstHighlightedIndex = sortedSchedules.findIndex(({ startedAt, endedAt }) =>
+    isOnSelectedDay(startedAt, endedAt)
+  );
 
-    const start = parseDateOnly(startedAt);
-    const end = parseDateOnly(endedAt);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const firstHighlightedRef = useRef<HTMLDivElement>(null);
 
-    return start <= target && target <= end;
-  });
+  useEffect(() => {
+    if (!firstHighlightedRef.current || !containerRef.current) return;
+    const el = firstHighlightedRef.current;
+    const container = containerRef.current;
+    const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+    container.scrollTo({ top, behavior: 'smooth' });
+  }, [day, month, year, firstHighlightedIndex]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 bg-white px-6 pb-6">
-      <span className="text-[14px] leading-4 font-semibold">
-        {month}월 {day}일 일정 상세보기
+    <div ref={containerRef} className="flex flex-1 flex-col gap-2 overflow-y-auto bg-white px-6 pt-4 pb-6">
+      <span className="pb-1 text-[16px] leading-4 font-semibold">
+        {month}월 {day}일 일정
       </span>
-      {dailySchedules?.length ? (
-        dailySchedules.map(({ title, startedAt, endedAt, scheduleCategory }) => (
-          <div
-            className="flex items-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3"
-            key={title}
-          >
+      {sortedSchedules.length ? (
+        sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }, index) => {
+          const highlighted = isOnSelectedDay(startedAt, endedAt);
+          return (
             <div
-              className="flex h-10 w-10 items-center justify-center rounded-sm"
-              style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }}
+              ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
+              key={title + startedAt}
+              className={`flex h-[70px] shrink-0 items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
             >
-              <CalendarIcon style={{ color: '#fff' }} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="flex flex-row gap-1">
-                <div className="text-[14px] leading-4 font-bold">
-                  [{SCHEDULE_LABEL[scheduleCategory]}] {title}
+              <div className="w-1 shrink-0" style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }} />
+              <div className="flex flex-col gap-1 p-3">
+                <div className={`text-[16px] leading-5 font-semibold ${highlighted ? 'text-black' : 'text-gray-500'}`}>
+                  {title}
+                </div>
+                <div className={`text-[14px] leading-4 ${highlighted ? 'text-indigo-300' : 'text-gray-400'}`}>
+                  {formatScheduleTime({ startedAt, endedAt })}
                 </div>
               </div>
-              <div className="text-[13px] leading-3 text-indigo-300">{formatScheduleTime({ startedAt, endedAt })}</div>
             </div>
-          </div>
-        ))
+          );
+        })
       ) : (
         <div className="flex h-34 items-center justify-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3">
           <div className="text-[15px] leading-[17px] font-bold text-indigo-200">일정이 없습니다!</div>
