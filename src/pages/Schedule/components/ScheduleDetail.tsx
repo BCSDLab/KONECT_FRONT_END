@@ -42,7 +42,7 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
     const container = containerRef.current;
     const top = el.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
     container.scrollTo({ top, behavior: 'smooth' });
-  }, [day]);
+  }, [day, month, year, firstHighlightedIndex]);
 
   return (
     <div ref={containerRef} className="flex flex-1 flex-col gap-2 overflow-y-auto bg-white px-6 pt-4 pb-6">
