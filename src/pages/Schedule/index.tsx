@@ -2,7 +2,6 @@ import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import CalendarWeekRow from './components/CalendarWeekRow';
-import MonthPicker from './components/MonthPicker';
 import ScheduleDetail from './components/ScheduleDetail';
 import { useScheduleList } from './hooks/useGetSchedules';
 import { useMonthSwipe } from './hooks/useMonthSwipe';
@@ -87,17 +86,15 @@ function Schedule() {
   return (
     <div className="relative flex h-[calc(100vh-44px)] flex-col overflow-hidden bg-white">
       <main
-        className="flex w-full shrink-0 touch-pan-y flex-col bg-white"
+        className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-[23px]"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
-        <header className="flex items-center justify-center pb-5">
-          <MonthPicker year={year} month={month} setDate={setDate} />
-        </header>
-
         <ul className="grid grid-cols-7 justify-items-center px-6 text-indigo-600">
           {DAYS.map((day) => (
-            <li key={day}>{day}</li>
+            <li key={day} className="text-[13px] leading-5">
+              {day}
+            </li>
           ))}
         </ul>
 

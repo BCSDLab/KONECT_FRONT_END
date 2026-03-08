@@ -16,7 +16,7 @@ function DateBox({ date, isCurrentMonth, isSelected, isSunday, onClick }: DateBo
     >
       <span
         className={[
-          'flex h-7 w-7 items-center justify-center text-[13px] font-semibold',
+          'flex h-7 w-7 items-center justify-center text-[12px] leading-5 font-semibold',
           !isCurrentMonth
             ? 'text-transparent'
             : isSelected

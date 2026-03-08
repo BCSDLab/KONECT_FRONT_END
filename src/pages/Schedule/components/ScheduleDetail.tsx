@@ -46,7 +46,7 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
 
   return (
     <div ref={containerRef} className="flex flex-1 flex-col gap-2 overflow-y-auto bg-white px-6 pt-4 pb-6">
-      <span className="pb-1 text-[14px] leading-4 font-semibold">
+      <span className="pb-1 text-[16px] leading-4 font-semibold">
         {month}월 {day}일 일정
       </span>
       {sortedSchedules.length ? (
@@ -60,10 +60,10 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
             >
               <div className="w-1 shrink-0" style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }} />
               <div className="flex flex-col gap-1 p-3">
-                <div className={`text-[14px] leading-5 font-bold ${highlighted ? 'text-black' : 'text-gray-500'}`}>
+                <div className={`text-[16px] leading-5 font-semibold ${highlighted ? 'text-black' : 'text-gray-500'}`}>
                   {title}
                 </div>
-                <div className={`text-[13px] leading-4 ${highlighted ? 'text-indigo-300' : 'text-gray-400'}`}>
+                <div className={`text-[14px] leading-4 ${highlighted ? 'text-indigo-300' : 'text-gray-400'}`}>
                   {formatScheduleTime({ startedAt, endedAt })}
                 </div>
               </div>
