@@ -59,7 +59,7 @@ function ClubFeePage() {
       style={{ marginBottom: 'calc(20px + var(--sab))' }}
     >
       <div className="flex flex-col gap-2">
-        <Card className="border-sub-200 flex-row gap-1.5 rounded-lg border bg-[#fefce8] text-[#713f11]">
+        <Card className="border-sub-200 bg-sub-100 text-sub-900 flex-row gap-1.5 rounded-lg border">
           <WarningCircleIcon />
           <div>
             <div className="text-xs leading-3.5 font-medium">입금 전 입금자명을 꼭 확인해주세요.</div>

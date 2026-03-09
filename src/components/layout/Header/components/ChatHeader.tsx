@@ -4,6 +4,7 @@ import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
+import { cn } from '@/utils/ts/cn';
 
 function ChatHeader() {
   const smartBack = useSmartBack();
@@ -32,21 +33,28 @@ function ChatHeader() {
 
         <span className="text-lg">{chatRoom?.roomName ?? ''}</span>
 
-        <button type="button" onClick={openSidebar} className="absolute top-1/2 right-4 -translate-y-1/2">
+        <button
+          type="button"
+          aria-label="채팅방 정보 열기"
+          onClick={openSidebar}
+          className="absolute top-1/2 right-4 -translate-y-1/2"
+        >
           <HamburgerIcon />
         </button>
       </header>
 
       <div
-        className={`fixed inset-0 z-50 transition-colors duration-300 ${
-          open ? 'pointer-events-auto bg-black/30' : 'pointer-events-none bg-black/0'
-        }`}
+        className={cn('fixed inset-0 z-50 transition-colors duration-300', {
+          'pointer-events-auto bg-black/30': open,
+          'pointer-events-none bg-black/0': !open,
+        })}
         onClick={closeSidebar}
       >
         <div
-          className={`absolute top-0 right-0 flex h-full w-72 transform flex-col overflow-hidden bg-white p-4 transition-transform duration-300 ease-in-out ${
+          className={cn(
+            'absolute top-0 right-0 flex h-full w-72 transform flex-col overflow-hidden bg-white p-4 transition-transform duration-300 ease-in-out',
             open ? 'translate-x-0' : 'translate-x-full'
-          }`}
+          )}
           onClick={(e) => e.stopPropagation()}
         >
           <div className="mb-6 flex shrink-0 items-center justify-between border-b pb-4">
@@ -71,7 +79,7 @@ function ChatHeader() {
           {isGroup && (
             <>
               <div className="mb-4 shrink-0 text-sm font-bold">참여자 {clubMembers.length}명</div>
-              <div className="flex flex-col gap-3 overflow-y-auto">
+              <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
                 {clubMembers.map((member) => (
                   <div key={member.userId} className="flex items-center gap-3">
                     <img src={member.imageUrl} className="h-8 w-8 rounded-full" />
