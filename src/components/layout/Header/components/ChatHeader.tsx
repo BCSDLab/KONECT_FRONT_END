@@ -1,8 +1,8 @@
-import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
+import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 
 function ChatHeader() {
@@ -12,12 +12,10 @@ function ChatHeader() {
 
   const { chatRoomList, clubMembers, toggleMute, isTogglingMute } = useChat(numericRoomId);
 
+  const { value: open, setTrue: openSidebar, setFalse: closeSidebar } = useBooleanState();
+
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
-
-  const [open, setOpen] = useState(false);
-
   const isGroup = chatRoom?.chatType === 'GROUP';
-
   const isMuted = chatRoom?.isMuted ?? false;
 
   return (
@@ -34,7 +32,7 @@ function ChatHeader() {
 
         <span className="text-lg">{chatRoom?.roomName ?? ''}</span>
 
-        <button type="button" onClick={() => setOpen(true)} className="absolute top-1/2 right-4 -translate-y-1/2">
+        <button type="button" onClick={openSidebar} className="absolute top-1/2 right-4 -translate-y-1/2">
           <HamburgerIcon />
         </button>
       </header>
@@ -43,15 +41,15 @@ function ChatHeader() {
         className={`fixed inset-0 z-50 transition-colors duration-300 ${
           open ? 'pointer-events-auto bg-black/30' : 'pointer-events-none bg-black/0'
         }`}
-        onClick={() => setOpen(false)}
+        onClick={closeSidebar}
       >
         <div
-          className={`absolute top-0 right-0 h-full w-72 transform bg-white p-4 transition-transform duration-300 ease-in-out ${
+          className={`absolute top-0 right-0 flex h-full w-72 transform flex-col overflow-hidden bg-white p-4 transition-transform duration-300 ease-in-out ${
             open ? 'translate-x-0' : 'translate-x-full'
           }`}
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="mb-6 flex items-center justify-between border-b pb-4">
+          <div className="mb-6 flex shrink-0 items-center justify-between border-b pb-4">
             <span className="text-sm font-medium">알림</span>
 
             <button
@@ -72,8 +70,8 @@ function ChatHeader() {
 
           {isGroup && (
             <>
-              <div className="mb-4 text-sm font-bold">참여자 {clubMembers.length}명</div>
-              <div className="flex flex-col gap-3">
+              <div className="mb-4 shrink-0 text-sm font-bold">참여자 {clubMembers.length}명</div>
+              <div className="flex flex-col gap-3 overflow-y-auto">
                 {clubMembers.map((member) => (
                   <div key={member.userId} className="flex items-center gap-3">
                     <img src={member.imageUrl} className="h-8 w-8 rounded-full" />
