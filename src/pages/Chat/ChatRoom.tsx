@@ -120,34 +120,34 @@ function ChatRoom() {
 
               <div className={clsx('flex w-full min-w-0 items-end', message.isMine ? 'justify-end' : 'justify-start')}>
                 {!message.isMine && (
-                  <div className="flex max-w-full min-w-0 items-end gap-2">
-                    {isGroup && (
-                      <div className="w-8 shrink-0">
-                        {!isSameSender ? (
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 text-xs">
-                            {message.senderName?.[0]}
-                          </div>
-                        ) : (
-                          <div className="h-8 w-8" />
-                        )}
-                      </div>
+                  <div className="flex max-w-full min-w-0 flex-col">
+                    {isGroup && !isSameSender && (
+                      <div className="text-body3 mb-1 pl-10 text-indigo-400">{message.senderName}</div>
                     )}
 
-                    <div className="flex min-w-0 flex-col">
-                      {isGroup && !isSameSender && (
-                        <div className="mb-1 text-xs text-indigo-400">{message.senderName}</div>
+                    <div className="flex min-w-0 items-start gap-2">
+                      {isGroup && (
+                        <div className="w-8 shrink-0">
+                          {!isSameSender ? (
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 text-xs">
+                              {message.senderName?.[0]}
+                            </div>
+                          ) : (
+                            <div className="h-8 w-8" />
+                          )}
+                        </div>
                       )}
 
-                      <div className="rounded-lg bg-[#f1f8ff] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
+                      <div className="bg-info-100 text-body1 rounded-lg px-3 py-2 wrap-anywhere whitespace-pre-wrap">
                         <LinkifiedText text={message.content} />
                       </div>
-                    </div>
 
-                    <div className="flex shrink-0 flex-col items-start gap-0.5 self-end">
-                      {message.unreadCount > 0 && (
-                        <span className="text-[10px] font-medium text-[#4B9FE1]">{message.unreadCount}</span>
-                      )}
-                      <span className="text-[10px] text-indigo-300">{formatTime(message.createdAt)}</span>
+                      <div className="flex shrink-0 flex-col items-start gap-0.5 self-end">
+                        {message.unreadCount > 0 && (
+                          <span className="text-cap2 text-info-600 font-medium">{message.unreadCount}</span>
+                        )}
+                        <span className="text-cap2 text-indigo-300">{formatTime(message.createdAt)}</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -155,15 +155,15 @@ function ChatRoom() {
                 {/* ===== RIGHT (내 메시지) ===== */}
                 {message.isMine && (
                   <div className="flex max-w-full min-w-0 flex-row-reverse items-end gap-2">
-                    <div className="rounded-lg bg-[#f5f5f5] px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap">
+                    <div className="bg-indigo-5 text-body1 rounded-lg px-3 py-2 wrap-anywhere whitespace-pre-wrap">
                       <LinkifiedText text={message.content} />
                     </div>
 
                     <div className="flex shrink-0 flex-col items-end self-end">
                       {message.unreadCount > 0 && (
-                        <span className="text-[10px] font-medium text-[#4B9FE1]">{message.unreadCount}</span>
+                        <span className="text-cap2 text-info-600 font-medium">{message.unreadCount}</span>
                       )}
-                      <span className="text-[10px] text-indigo-300">{formatTime(message.createdAt)}</span>
+                      <span className="text-cap2 text-indigo-300">{formatTime(message.createdAt)}</span>
                     </div>
                   </div>
                 )}
