@@ -113,7 +113,7 @@ function Schedule() {
         </div>
       </main>
 
-      <ul className="text-caption2 flex shrink-0 gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
+      <ul className="text-cap2 flex shrink-0 gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
         {COLOR_LEGENDS.map(({ name, color }) => (
           <li key={name} className="flex shrink-0 items-center gap-1">
             <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />

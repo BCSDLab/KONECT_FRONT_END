@@ -124,7 +124,7 @@ function MyClubsSection() {
         <div>
           <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
         </div>
-        <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
+        <Link to="/clubs" className="bg-primary text-sub2 block w-full rounded-sm py-3 text-center text-white">
           동아리 둘러보기
         </Link>
       </Card>

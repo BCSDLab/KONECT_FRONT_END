@@ -44,7 +44,7 @@ function ChatListPage() {
                 <div className="flex items-center gap-2">
                   <div className="text-sm leading-4 font-bold text-indigo-700">{room.roomName}</div>
 
-                  {isGroup && <span className="bg-primary text-caption2 rounded px-1.5 py-0.5 text-white">단체</span>}
+                  {isGroup && <span className="bg-primary text-cap2 rounded px-1.5 py-0.5 text-white">단체</span>}
                   {room.isMuted && (
                     <span className="text-xs text-gray-400">
                       <BellOfIcon className="h-4 w-4" />

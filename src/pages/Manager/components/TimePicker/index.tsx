@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { cn } from '@/utils/ts/cn';
 
 interface TimePickerProps {
   value: string;
@@ -176,7 +176,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                         setDraftHour(hour);
                         scrollToItem(hourRef, hourOptions, hour);
                       }}
-                      className={twMerge(
+                      className={cn(
                         'text-body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
@@ -205,7 +205,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                         setDraftMinute(minute);
                         scrollToItem(minuteRef, minuteOptions, minute);
                       }}
-                      className={twMerge(
+                      className={cn(
                         'text-body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}

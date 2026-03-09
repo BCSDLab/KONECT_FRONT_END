@@ -162,12 +162,14 @@
   }
 
   /* Caption */
+  .text-cap1,
   .text-caption1,
   .Caption1 {
     font-size: var(--Caption1);
     line-height: var(--leading-cap1);
     font-weight: var(--font-weight-regular);
   }
+  .text-cap1-strong,
   .text-caption1-strong,
   .Caption1-strong {
     font-size: var(--Caption1);
@@ -175,12 +177,14 @@
     font-weight: var(--font-weight-semibold);
   }
 
+  .text-cap2,
   .text-caption2,
   .Caption2 {
     font-size: var(--Caption2);
     line-height: var(--leading-cap2);
     font-weight: var(--font-weight-regular);
   }
+  .text-cap2-strong,
   .text-caption2-strong,
   .Caption2-strong {
     font-size: var(--Caption2);

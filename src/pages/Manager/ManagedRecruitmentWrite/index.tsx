@@ -250,7 +250,7 @@ function ManagedRecruitmentWrite() {
               >
                 <div className="px-3 py-3">
                   <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="text-caption1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
+                    <span className="text-cap1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
                       시작
                     </span>
                     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
@@ -295,9 +295,7 @@ function ManagedRecruitmentWrite() {
 
                 <div className="px-3 py-3">
                   <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="text-caption1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">
-                      종료
-                    </span>
+                    <span className="text-cap1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">종료</span>
                     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
                       <DatePicker
                         selectedDate={endDate}
