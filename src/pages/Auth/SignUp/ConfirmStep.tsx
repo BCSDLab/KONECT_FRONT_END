@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { API_ERROR_CODES } from '@/interface/error';
 import { KAKAO_OPEN_CHAT_URL } from '@/constants/links';
+import { API_ERROR_CODES } from '@/interface/error';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
 import { useSignupMutation } from './hooks/useSignup';
