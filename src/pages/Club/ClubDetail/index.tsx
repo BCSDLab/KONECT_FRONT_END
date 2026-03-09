@@ -56,8 +56,8 @@ function ClubDetail() {
           />
           <div className="flex min-w-0 flex-col gap-1">
             <div className="text-xl leading-5.5 font-black">{clubDetail.name}</div>
-            <div className="Body3">{clubDetail.categoryName}</div>
-            <div className="Sub2 truncate">{clubDetail.description}</div>
+            <div className="text-body3">{clubDetail.categoryName}</div>
+            <div className="text-sub2 truncate">{clubDetail.description}</div>
           </div>
         </div>
         <div className="flex items-center gap-3 bg-white px-3">

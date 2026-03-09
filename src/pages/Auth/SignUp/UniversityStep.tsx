@@ -13,7 +13,7 @@ import { useGetUniversityList } from './hooks/useUniversity';
 function UniversityCard({ label, onClick }: { label: string; onClick: () => void }) {
   return (
     <Card onClick={onClick} className="border-indigo-75 flex w-full flex-row items-center justify-between">
-      <div className="Sub2">{label}</div>
+      <div className="text-sub2">{label}</div>
       <RightArrowIcon />
     </Card>
   );
@@ -65,7 +65,7 @@ function UniversityStep() {
         value={universityName}
         placeholder="학교를 입력해주세요.."
         onChange={(e) => setUniversityName(e.target.value)}
-        className="H3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300 placeholder:text-indigo-300"
+        className="text-h3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300 placeholder:text-indigo-300"
       />
       <div className="mt-7 flex flex-col gap-2">
         {filteredUniversities.map((university) => (
@@ -76,12 +76,14 @@ function UniversityStep() {
           />
         ))}
 
-        {hasNoSearchResult && <div className="Sub3 px-1 pt-2 text-indigo-300">{`'${trimmed}' 검색 결과가 없어요`}</div>}
+        {hasNoSearchResult && (
+          <div className="text-sub3 px-1 pt-2 text-indigo-300">{`'${trimmed}' 검색 결과가 없어요`}</div>
+        )}
 
         <button
           type="button"
           onClick={openInquiryModal}
-          className="Sub3 mt-2 w-fit self-end px-1 text-indigo-300 underline underline-offset-4 transition-colors hover:text-indigo-400"
+          className="text-sub3 mt-2 w-fit self-end px-1 text-indigo-300 underline underline-offset-4 transition-colors hover:text-indigo-400"
         >
           자신의 학교가 목록에 없나요?
         </button>
@@ -89,17 +91,17 @@ function UniversityStep() {
 
       <BottomModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="H3 text-center">학교 문의</div>
+          <div className="text-h3 text-center">학교 문의</div>
           <textarea
             value={inquiryContent}
             onChange={(e) => setInquiryContent(e.target.value)}
             placeholder="추가를 원하는 학교 이름을 정확히 입력해주세요"
-            className="Sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
+            className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
           />
           <button
             onClick={handleInquirySubmit}
             disabled={isPending || !inquiryContent.trim()}
-            className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+            className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
           >
             {isPending ? '전송 중...' : '문의하기'}
           </button>

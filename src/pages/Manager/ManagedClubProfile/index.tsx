@@ -108,7 +108,7 @@ function ManagedClubInfo() {
               className="border-indigo-75 hover:bg-indigo-25 flex h-40 w-40 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
             >
               <ImageIcon />
-              <p className="Sub4 text-center whitespace-pre-line text-indigo-100">{'이미지를 \n 추가해주세요'}</p>
+              <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">{'이미지를 \n 추가해주세요'}</p>
             </button>
           ) : (
             <div className="relative h-40 w-40 overflow-hidden rounded-xl">
@@ -207,17 +207,17 @@ function ManagedClubInfo() {
 
       <BottomModal isOpen={isSubmitModalOpen} onClose={closeSubmitModal}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="H3 text-center whitespace-pre-wrap">동아리 정보를 수정하시겠어요?</div>
+          <div className="text-h3 text-center whitespace-pre-wrap">동아리 정보를 수정하시겠어요?</div>
           <div>
             <button
               type="button"
               disabled={isPending || isUploading}
               onClick={handleSubmit}
-              className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isUploading ? '수정 중...' : isPending ? '수정 중...' : '수정하기'}
             </button>
-            <button onClick={closeSubmitModal} className="H3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+            <button onClick={closeSubmitModal} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               취소하기
             </button>
           </div>

@@ -77,14 +77,14 @@ function ManagedRecruitmentForm() {
       <form id="question-form" onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4 overflow-auto p-3">
         <section className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
-            <span className="H4">가입 문항 설정</span>
-            <span className="Sub4 text-gray-500">{questions.length}개의 문항</span>
+            <span className="text-h4">가입 문항 설정</span>
+            <span className="text-sub4 text-gray-500">{questions.length}개의 문항</span>
           </div>
 
           {questions.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 rounded-lg bg-white p-8 shadow-[0_2px_4px_rgba(0,0,0,0.1)]">
-              <p className="Sub3 text-gray-400">등록된 문항이 없습니다.</p>
-              <button type="button" onClick={handleAddQuestion} className="Sub3 text-indigo-600 hover:underline">
+              <p className="text-sub3 text-gray-400">등록된 문항이 없습니다.</p>
+              <button type="button" onClick={handleAddQuestion} className="text-sub3 text-indigo-600 hover:underline">
                 문항 추가하기
               </button>
             </div>
@@ -96,7 +96,7 @@ function ManagedRecruitmentForm() {
                   className="flex flex-col gap-3 rounded-lg bg-white p-4 shadow-[0_2px_4px_rgba(0,0,0,0.1)]"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="Sub2 font-semibold text-indigo-700">문항 {index + 1}</span>
+                    <span className="text-sub2 font-semibold text-indigo-700">문항 {index + 1}</span>
                     <button
                       type="button"
                       onClick={() => handleDeleteQuestion(q.tempId)}
@@ -112,7 +112,7 @@ function ManagedRecruitmentForm() {
                     placeholder="질문을 입력해주세요."
                     rows={2}
                     className={twMerge(
-                      'Sub3 w-full resize-none rounded-lg border border-gray-200 p-3 transition-colors focus:border-indigo-500 focus:outline-none',
+                      'text-sub3 w-full resize-none rounded-lg border border-gray-200 p-3 transition-colors focus:border-indigo-500 focus:outline-none',
                       !q.question.trim() && 'border-red-300'
                     )}
                   />
@@ -125,7 +125,10 @@ function ManagedRecruitmentForm() {
                       onChange={(e) => handleRequiredChange(q.tempId, e.target.checked)}
                       className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
-                    <label htmlFor={`required-${q.tempId}`} className="Sub4 cursor-pointer text-gray-600 select-none">
+                    <label
+                      htmlFor={`required-${q.tempId}`}
+                      className="text-sub4 cursor-pointer text-gray-600 select-none"
+                    >
                       필수 응답
                     </label>
                   </div>
@@ -140,7 +143,7 @@ function ManagedRecruitmentForm() {
             className="hover:bg-indigo-25 flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-indigo-200 py-3 text-indigo-600 transition-colors hover:border-indigo-400"
           >
             <span className="text-xl font-bold">+</span>
-            <span className="Sub3">문항 추가</span>
+            <span className="text-sub3">문항 추가</span>
           </button>
         </section>
       </form>

@@ -15,7 +15,7 @@ function ManagedClubList() {
             <div className="flex items-center justify-between px-3 py-2">
               <div className="flex items-center gap-4">
                 <img src={club.imageUrl} alt="Club Avatar" className="h-10 w-10" />
-                <div className="Sub2">{club.name}</div>
+                <div className="text-sub2">{club.name}</div>
               </div>
               <RightArrowIcon />
             </div>
