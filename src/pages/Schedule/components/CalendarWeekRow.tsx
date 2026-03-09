@@ -122,7 +122,7 @@ function CalendarWeekRow({
               gridRow: bar.lane + 1,
               backgroundColor: SCHEDULE_COLOR[bar.schedule.scheduleCategory],
             }}
-            className="text-cap2 h-[18px] truncate rounded-full px-1.5 text-center leading-[18px] font-medium"
+            className="text-caption2 h-[18px] truncate rounded-full px-1.5 text-center leading-[18px] font-medium"
           >
             {bar.schedule.title}
           </div>
@@ -132,7 +132,7 @@ function CalendarWeekRow({
           <div
             key={`ov-${col}`}
             style={{ gridColumn: col + 1, gridRow: 3 }}
-            className="text-cap2 pl-1 font-semibold text-indigo-500"
+            className="text-caption2 pl-1 font-semibold text-indigo-500"
           >
             +{count}개
           </div>

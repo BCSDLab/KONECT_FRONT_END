@@ -23,37 +23,37 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
   return (
     <>
       <Card>
-        <div className="H3 text-indigo-700">동아리 소개</div>
-        <div className="Sub2 mt-1.5 whitespace-pre-line text-indigo-300">{clubDetail.introduce}</div>
+        <div className="text-h3 text-indigo-700">동아리 소개</div>
+        <div className="text-sub2 mt-1.5 whitespace-pre-line text-indigo-300">{clubDetail.introduce}</div>
       </Card>
       <Card>
-        <div className="H4 text-indigo-700">위치 및 회원 수</div>
+        <div className="text-h4 text-indigo-700">위치 및 회원 수</div>
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <HumanIcon />
             <div className="flex flex-col gap-1">
-              <div className="Caption2 text-indigo-300">회원수</div>
-              <div className="H5 text-indigo-700">{clubDetail.memberCount}명</div>
+              <div className="text-caption2 text-indigo-300">회원수</div>
+              <div className="text-h5 text-indigo-700">{clubDetail.memberCount}명</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <LocationIcon />
             <div className="flex flex-col gap-1">
-              <div className="Caption2 text-indigo-300">동아리방 위치</div>
-              <div className="H5 text-indigo-700">{clubDetail.location}</div>
+              <div className="text-caption2 text-indigo-300">동아리방 위치</div>
+              <div className="text-h5 text-indigo-700">{clubDetail.location}</div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             <UserCircleIcon />
             <div className="flex flex-col gap-1">
-              <div className="Caption2 text-indigo-300">대표자</div>
-              <div className="H5 text-indigo-700">{clubDetail.presidentName}</div>
+              <div className="text-caption2 text-indigo-300">대표자</div>
+              <div className="text-h5 text-indigo-700">{clubDetail.presidentName}</div>
             </div>
           </div>
         </div>
       </Card>
       <Card>
-        <div className="Body3 flex flex-col items-center gap-1 text-indigo-300">
+        <div className="text-body3 flex flex-col items-center gap-1 text-indigo-300">
           <div>동아리에 대해 궁금한 점이 있으신가요?</div>
           <div>편하게 문의해주세요!</div>
         </div>
@@ -61,7 +61,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           type="button"
           onClick={handleInquireClick}
           disabled={isCreatingChatRoom}
-          className="bg-primary Body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
+          className="bg-primary text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
         >
           <PaperPlaneIcon className="text-white" />
           {isCreatingChatRoom ? '이동 중...' : '문의하기'}

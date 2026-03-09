@@ -55,7 +55,7 @@ function ManagedAccount() {
   return (
     <div className="flex h-full flex-col bg-white">
       <div className="flex flex-1 flex-col gap-6 overflow-auto p-5">
-        <h2 className="H3 text-indigo-500">회비 정보</h2>
+        <h2 className="text-h3 text-indigo-500">회비 정보</h2>
 
         <div className="flex flex-col gap-1">
           <label className="text-[15px] leading-6 font-medium text-indigo-300">가입비</label>
@@ -124,7 +124,7 @@ function ManagedAccount() {
 
       <BottomModal isOpen={isBankModalOpen} onClose={() => setIsBankModalOpen(false)}>
         <div className="flex flex-col gap-4 px-4 pt-6 pb-4">
-          <h3 className="H3 text-center font-bold">은행 선택</h3>
+          <h3 className="text-h3 text-center font-bold">은행 선택</h3>
           <div className="grid max-h-80 grid-cols-2 gap-2 overflow-y-auto">
             {banks?.map((bank) => (
               <button
@@ -138,7 +138,7 @@ function ManagedAccount() {
                 className="bg-indigo-5 hover:bg-indigo-10 flex items-center gap-2 rounded-lg p-3 transition-colors"
               >
                 {bank.imageUrl && <img src={bank.imageUrl} alt={bank.name} className="h-8 w-8 object-contain" />}
-                <span className="Sub2">{bank.name}</span>
+                <span className="text-sub2">{bank.name}</span>
               </button>
             ))}
           </div>

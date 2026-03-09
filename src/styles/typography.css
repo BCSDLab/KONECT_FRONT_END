@@ -55,14 +55,17 @@
 
 /* ========================================
    Semantic text utilities
+   Legacy uppercase aliases are kept temporarily for compatibility.
    ======================================== */
 @layer utilities {
   /* Display */
+  .text-d1,
   .D1 {
     font-size: var(--D1);
     line-height: var(--leading-d1);
     font-weight: var(--font-weight-extrabold);
   }
+  .text-d2,
   .D2 {
     font-size: var(--D2);
     line-height: var(--leading-d2);
@@ -70,26 +73,31 @@
   }
 
   /* Heading */
+  .text-h1,
   .H1 {
     font-size: var(--H1);
     line-height: var(--leading-h1);
     font-weight: var(--font-weight-semibold);
   }
+  .text-h2,
   .H2 {
     font-size: var(--H2);
     line-height: var(--leading-h2);
     font-weight: var(--font-weight-semibold);
   }
+  .text-h3,
   .H3 {
     font-size: var(--H3);
     line-height: var(--leading-h3);
     font-weight: var(--font-weight-semibold);
   }
+  .text-h4,
   .H4 {
     font-size: var(--H4);
     line-height: var(--leading-h4);
     font-weight: var(--font-weight-semibold);
   }
+  .text-h5,
   .H5 {
     font-size: var(--H5);
     line-height: var(--leading-h5);
@@ -97,21 +105,25 @@
   }
 
   /* Subtitle */
+  .text-sub1,
   .Sub1 {
     font-size: var(--Sub1);
     line-height: var(--leading-sub1);
     font-weight: var(--font-weight-medium);
   }
+  .text-sub2,
   .Sub2 {
     font-size: var(--Sub2);
     line-height: var(--leading-sub2);
     font-weight: var(--font-weight-medium);
   }
+  .text-sub3,
   .Sub3 {
     font-size: var(--Sub3);
     line-height: var(--leading-sub3);
     font-weight: var(--font-weight-medium);
   }
+  .text-sub4,
   .Sub4 {
     font-size: var(--Sub4);
     line-height: var(--leading-sub4);
@@ -119,25 +131,30 @@
   }
 
   /* Body */
+  .text-body1,
   .Body1 {
     font-size: var(--Body1);
     line-height: var(--leading-body1);
     font-weight: var(--font-weight-regular);
   }
+  .text-body2,
   .Body2 {
     font-size: var(--Body2);
     line-height: var(--leading-body2);
     font-weight: var(--font-weight-regular);
   }
+  .text-body2-unstyled,
   .Body2-unstyled {
     font-size: var(--Body2);
     line-height: var(--leading-body2);
   }
+  .text-body3,
   .Body3 {
     font-size: var(--Body3);
     line-height: var(--leading-body3);
     font-weight: var(--font-weight-regular);
   }
+  .text-body3-strong,
   .Body3-strong {
     font-size: var(--Body3);
     line-height: var(--leading-body3);
@@ -145,22 +162,26 @@
   }
 
   /* Caption */
+  .text-caption1,
   .Caption1 {
     font-size: var(--Caption1);
     line-height: var(--leading-cap1);
     font-weight: var(--font-weight-regular);
   }
+  .text-caption1-strong,
   .Caption1-strong {
     font-size: var(--Caption1);
     line-height: var(--leading-cap1);
     font-weight: var(--font-weight-semibold);
   }
 
+  .text-caption2,
   .Caption2 {
     font-size: var(--Caption2);
     line-height: var(--leading-cap2);
     font-weight: var(--font-weight-regular);
   }
+  .text-caption2-strong,
   .Caption2-strong {
     font-size: var(--Caption2);
     line-height: var(--leading-cap2);

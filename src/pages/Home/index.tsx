@@ -40,7 +40,7 @@ function scheduleDateToPath(startedAt: string) {
 function SectionErrorFallback() {
   return (
     <div className="border-indigo-5 flex w-full items-center justify-center rounded-lg border bg-white py-5">
-      <span className="Sub2 text-gray-400">불러오는 중 오류가 발생했어요</span>
+      <span className="text-sub2 text-gray-400">불러오는 중 오류가 발생했어요</span>
     </div>
   );
 }
@@ -122,9 +122,9 @@ function MyClubsSection() {
     return (
       <Card>
         <div>
-          <div className="H3">나에게 맞는 동아리를 찾아보세요</div>
+          <div className="text-h3">나에게 맞는 동아리를 찾아보세요</div>
         </div>
-        <Link to="/clubs" className="bg-primary Sub2 w-full rounded-sm py-3 text-center text-white">
+        <Link to="/clubs" className="bg-primary text-sub2 w-full rounded-sm py-3 text-center text-white">
           동아리 둘러보기
         </Link>
       </Card>
@@ -133,7 +133,7 @@ function MyClubsSection() {
 
   return (
     <>
-      <div className="H3">내 동아리</div>
+      <div className="text-h3">내 동아리</div>
       <div className="flex flex-col gap-2">
         {appliedClubsData.appliedClubs.map((club) => (
           <SimpleAppliedClubCard key={club.id} club={club} />
@@ -176,11 +176,13 @@ function ScheduleSection() {
               <CalendarIcon style={{ color: '#fff' }} />
             </div>
             <div className="flex min-w-0 flex-1 flex-col">
-              <div className="H3 overflow-hidden text-ellipsis whitespace-nowrap text-indigo-700">
+              <div className="text-h3 overflow-hidden text-ellipsis whitespace-nowrap text-indigo-700">
                 [{SCHEDULE_LABEL[schedule.scheduleCategory]}] {schedule.title}
               </div>
 
-              <div className="Sub2 text-indigo-300">{formatScheduleDate(schedule.startedAt, schedule.endedAt)}</div>
+              <div className="text-sub2 text-indigo-300">
+                {formatScheduleDate(schedule.startedAt, schedule.endedAt)}
+              </div>
             </div>
           </div>
         </NavigateCard>
@@ -232,8 +234,8 @@ function Home() {
 
       <div>
         <div className="flex justify-between">
-          <div className="H3">다가오는 일정</div>
-          <Link to="/schedule" className="Sub2 text-info-600">
+          <div className="text-h3">다가오는 일정</div>
+          <Link to="/schedule" className="text-sub2 text-info-600">
             전체보기
           </Link>
         </div>
@@ -246,8 +248,8 @@ function Home() {
 
       <div>
         <div className="flex justify-between">
-          <div className="H3">총동아리연합회</div>
-          <Link to="/council?tab=notice" className="Sub2 text-info-600">
+          <div className="text-h3">총동아리연합회</div>
+          <Link to="/council?tab=notice" className="text-sub2 text-info-600">
             더보기
           </Link>
         </div>

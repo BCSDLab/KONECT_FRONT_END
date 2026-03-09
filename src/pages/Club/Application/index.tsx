@@ -75,20 +75,20 @@ function ApplicationPage() {
       </form>
       <BottomModal isOpen={isConfirmOpen} onClose={closeConfirm}>
         <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="H3 text-center whitespace-pre-wrap">지원서를 제출하시겠어요?</div>
+          <div className="text-h3 text-center whitespace-pre-wrap">지원서를 제출하시겠어요?</div>
           <div>
             <button
               type="button"
               onClick={handleConfirm}
               disabled={isPending}
-              className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
             >
               제출하기
             </button>
             <button
               type="button"
               onClick={closeConfirm}
-              className="H3 w-full rounded-lg py-3.5 text-center text-indigo-400"
+              className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400"
             >
               취소
             </button>

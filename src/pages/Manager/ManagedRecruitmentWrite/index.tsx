@@ -32,7 +32,7 @@ interface ImageItem {
 
 const sectionCardStyle =
   'flex w-full flex-col gap-4 rounded-2xl border border-indigo-25 bg-white px-4 py-4 shadow-[0_4px_12px_rgba(2,23,48,0.06)]';
-const sectionTitleStyle = 'H3 text-indigo-700';
+const sectionTitleStyle = 'text-h3 text-indigo-700';
 const compactButtonStyle =
   'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
 
@@ -239,7 +239,7 @@ function ManagedRecruitmentWrite() {
           </div>
           <div className="h-px bg-indigo-50" />
           {isAlwaysRecruiting ? (
-            <p className="Body2 text-indigo-300">상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.</p>
+            <p className="text-body2 text-indigo-300">상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.</p>
           ) : (
             <div className="flex flex-col gap-2">
               <div
@@ -250,7 +250,7 @@ function ManagedRecruitmentWrite() {
               >
                 <div className="px-3 py-3">
                   <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="Caption1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
+                    <span className="text-caption1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
                       시작
                     </span>
                     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
@@ -261,7 +261,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-2">
                               <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
-                              <span className="Sub2 truncate text-indigo-700">{formatDateDot(startDate)}</span>
+                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(startDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -278,7 +278,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex items-center gap-2">
                               <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
-                              <span className="Sub2 text-indigo-700">{startTime}</span>
+                              <span className="text-sub2 text-indigo-700">{startTime}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -295,7 +295,9 @@ function ManagedRecruitmentWrite() {
 
                 <div className="px-3 py-3">
                   <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="Caption1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">종료</span>
+                    <span className="text-caption1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">
+                      종료
+                    </span>
                     <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
                       <DatePicker
                         selectedDate={endDate}
@@ -304,7 +306,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-2">
                               <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
-                              <span className="Sub2 truncate text-indigo-700">{formatDateDot(endDate)}</span>
+                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(endDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -321,7 +323,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex items-center gap-2">
                               <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
-                              <span className="Sub2 text-indigo-700">{endTime}</span>
+                              <span className="text-sub2 text-indigo-700">{endTime}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -336,7 +338,7 @@ function ManagedRecruitmentWrite() {
               </div>
               {hasDateError && (
                 <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2">
-                  <span className="Body3 text-red-500">{getDateErrorMessage()}</span>
+                  <span className="text-body3 text-red-500">{getDateErrorMessage()}</span>
                 </div>
               )}
             </div>
@@ -351,7 +353,7 @@ function ManagedRecruitmentWrite() {
             value={content}
             onChange={handleContentChange}
             rows={6}
-            className="Body1 bg-indigo-0 mt-1 min-h-[156px] w-full resize-none overflow-hidden rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)] placeholder:text-indigo-200"
+            className="text-body1 bg-indigo-0 mt-1 min-h-[156px] w-full resize-none overflow-hidden rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)] placeholder:text-indigo-200"
             placeholder="모집 공고 내용을 작성해주세요"
           />
         </section>
@@ -373,7 +375,9 @@ function ManagedRecruitmentWrite() {
                 className="border-indigo-75 bg-indigo-0 flex h-44 w-full max-w-[260px] flex-col items-center justify-center gap-3 rounded-2xl border"
               >
                 <ImageIcon aria-hidden="true" />
-                <p className="Sub3 text-center whitespace-pre-line text-indigo-300">이미지를 {'\n'} 추가해주세요</p>
+                <p className="text-sub3 text-center whitespace-pre-line text-indigo-300">
+                  이미지를 {'\n'} 추가해주세요
+                </p>
               </button>
             ) : (
               <div className="flex flex-col items-center gap-3">
@@ -446,14 +450,14 @@ function ManagedRecruitmentWrite() {
         <div className="mt-1 flex flex-col gap-2">
           <div className="flex flex-col gap-1">
             {uploadError && (
-              <p className="Body3 text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+              <p className="text-body3 text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
             )}
-            {error && <p className="Body3 text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
+            {error && <p className="text-body3 text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
           </div>
           <button
             type="submit"
             disabled={isPending || isUploading || !content.trim() || hasDateError}
-            className="H3 bg-primary w-full rounded-xl py-3.5 text-white"
+            className="text-h3 bg-primary w-full rounded-xl py-3.5 text-white"
           >
             {isUploading ? '이미지 업로드 중…' : isPending ? '수정 중…' : '모집 공고 수정'}
           </button>
@@ -461,15 +465,15 @@ function ManagedRecruitmentWrite() {
       </form>
       <BottomModal isOpen={isChoiceModalOpen} onClose={closeChoiceModal}>
         <div className="flex flex-col gap-6 px-6 pt-7 pb-4">
-          <div className="H3 text-center whitespace-pre-wrap">기존 모집 공고가 있습니다. 불러와서 수정할까요?</div>
+          <div className="text-h3 text-center whitespace-pre-wrap">기존 모집 공고가 있습니다. 불러와서 수정할까요?</div>
           <div className="flex flex-col gap-2">
             <button
               onClick={applyExistingRecruitment}
-              className="bg-primary H3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
             >
               기존 공고 불러오기
             </button>
-            <button onClick={handleReset} className="H3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+            <button onClick={handleReset} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
               처음부터 작성
             </button>
           </div>

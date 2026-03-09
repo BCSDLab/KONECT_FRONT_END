@@ -36,7 +36,7 @@ function ToggleSwitch({
         )}
         <span
           className={twMerge(
-            isHorizontal ? 'Sub2 transition-colors' : 'text-xs leading-3.5 font-medium',
+            isHorizontal ? 'text-sub2 transition-colors' : 'text-xs leading-3.5 font-medium',
             enabled ? 'text-indigo-700' : 'text-indigo-300'
           )}
         >

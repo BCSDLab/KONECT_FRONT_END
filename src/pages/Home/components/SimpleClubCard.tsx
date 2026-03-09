@@ -16,21 +16,21 @@ function SimpleClubCard({ club }: SimpleClubCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <div className="H3 text-indigo-700">{club.name}</div>
+            <div className="text-h3 text-indigo-700">{club.name}</div>
             {club.position == '회장' && (
-              <div className="text-indigo-0 Caption2-strong flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5">
+              <div className="text-indigo-0 text-caption2-strong flex items-center rounded-sm bg-[#3182F6] px-1 py-0.5">
                 운영진
               </div>
             )}
           </div>
           {/* {!club.isFeePaid && (
-            <div className="Caption2 flex items-center rounded-full bg-[#FFE5E5E5] px-3 py-1.5 font-semibold text-[#FF4E4E]">
+            <div className="text-caption2 flex items-center rounded-full bg-[#FFE5E5E5] px-3 py-1.5 font-semibold text-[#FF4E4E]">
               <WarningIcon />
               납부할 회비가 있어요
             </div>
           )} */}
         </div>
-        <div className="Sub2 mt-1 text-indigo-300">
+        <div className="text-sub2 mt-1 text-indigo-300">
           {club.position}·{club.categoryName}
         </div>
       </div>

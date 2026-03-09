@@ -29,7 +29,7 @@ function NameStep() {
           setName(value);
         }}
         placeholder="ex) 홍길동"
-        className="H3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300"
+        className="text-h3 mt-5 w-full border-b-2 border-indigo-400 py-4 text-indigo-300"
       />
     </StepLayout>
   );

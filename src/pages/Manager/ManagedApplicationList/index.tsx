@@ -44,7 +44,7 @@ function ManagedApplicationList() {
       <div className="flex flex-col gap-2 p-3">
         <UserInfoCard type="detail" />
         <div className="flex items-center justify-center py-10">
-          <p className="Body2 text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
+          <p className="text-body2 text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
         </div>
       </div>
     );
@@ -55,8 +55,8 @@ function ManagedApplicationList() {
       <UserInfoCard type="detail" />
 
       <div className="rounded-lg bg-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.08)]">
-        <span className="Body2 font-semibold text-indigo-700">대기 중</span>
-        <span className="Body3 ml-1 text-indigo-400">{managedClubApplicationList?.totalCount ?? 0}명</span>
+        <span className="text-body2 font-semibold text-indigo-700">대기 중</span>
+        <span className="text-body3 ml-1 text-indigo-400">{managedClubApplicationList?.totalCount ?? 0}명</span>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -69,10 +69,10 @@ function ManagedApplicationList() {
             <div className="flex flex-1 items-center gap-2">
               <img className="h-10 w-10 rounded-full" src={application.imageUrl} alt="Member Avatar" />
               <div>
-                <div className="Body2 text-indigo-700">
-                  {application.name} <span className="Body3">({application.studentNumber})</span>
+                <div className="text-body2 text-indigo-700">
+                  {application.name} <span className="text-body3">({application.studentNumber})</span>
                 </div>
-                <div className="Caption1 text-indigo-300">
+                <div className="text-caption1 text-indigo-300">
                   지원일 : {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
                 </div>
               </div>
@@ -111,7 +111,7 @@ function ManagedApplicationList() {
             이전
           </button>
 
-          <span className="Body3 font-semibold">
+          <span className="text-body3 font-semibold">
             {page} / {totalPages}
           </span>
 

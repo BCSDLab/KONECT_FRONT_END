@@ -68,12 +68,12 @@ function ClubCard({ club }: ClubCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <div className="H3 text-indigo-700">{club.name}</div>
-            <div className="Caption1 text-indigo-300">{club.categoryName}</div>
+            <div className="text-h3 text-indigo-700">{club.name}</div>
+            <div className="text-caption1 text-indigo-300">{club.categoryName}</div>
           </div>
           {clubTag && (
             <div
-              className="Caption1 flex items-center gap-0.5 rounded-full px-3 py-1"
+              className="text-caption1 flex items-center gap-0.5 rounded-full px-3 py-1"
               style={{
                 backgroundColor: clubTag.bgColor,
                 color: clubTag.textColor,
@@ -84,7 +84,7 @@ function ClubCard({ club }: ClubCardProps) {
             </div>
           )}
         </div>
-        <div className="Sub2 truncate text-indigo-300">{club.description}</div>
+        <div className="text-sub2 truncate text-indigo-300">{club.description}</div>
       </div>
     </Link>
   );
