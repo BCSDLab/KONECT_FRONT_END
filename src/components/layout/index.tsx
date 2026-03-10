@@ -24,7 +24,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
       <Suspense>
         <main
           className={twMerge(
-            'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain',
+            'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
             isInfoHeader ? 'pt-15' : 'pt-11',
             showBottomNav && 'pb-19',
             contentClassName
