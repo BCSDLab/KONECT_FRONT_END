@@ -56,7 +56,7 @@ function MiniSchedulePreview() {
   };
 
   return (
-    <div className="h-[193px] overflow-hidden rounded-[20px] bg-white px-3 pt-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
+    <div className="overflow-hidden rounded-[20px] bg-white px-3 pt-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
       <ul className="grid grid-cols-7 justify-items-center text-center text-[13px] leading-5 font-bold text-indigo-600">
         {SCHEDULE_DAYS.map((dayLabel) => (
           <li key={dayLabel}>{dayLabel}</li>

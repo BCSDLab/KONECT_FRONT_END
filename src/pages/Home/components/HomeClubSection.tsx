@@ -110,7 +110,7 @@ function RecruitingClubSection() {
 
   if (clubs.length === 0) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         <SectionTitle title="나에게 맞는 동아리를 찾아보세요!" to="/clubs" />
         <Card className="gap-2 rounded-[20px] border-0 py-5 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
           <div className="text-h3 text-indigo-700">현재 모집 중인 동아리가 없어요</div>
@@ -139,7 +139,7 @@ function HomeClubSection() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1">
       <SectionTitle title="내 동아리" to="/clubs" />
       <InfiniteClubCarousel clubs={clubs} />
     </div>
