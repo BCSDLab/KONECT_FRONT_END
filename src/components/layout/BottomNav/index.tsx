@@ -26,7 +26,7 @@ function BottomNavItem({ to, label, Icon, end = false }: BottomNavItemConfig) {
       {({ isActive }) => (
         <>
           <Icon className={cn('h-5 w-5', isActive ? 'text-primary-600' : 'text-indigo-100')} />
-          <span className={cn(isActive ? 'text-primary-600' : 'text-indigo-100')}>{label}</span>
+          <span className={cn('whitespace-nowrap', isActive ? 'text-primary-600' : 'text-indigo-100')}>{label}</span>
         </>
       )}
     </NavLink>
