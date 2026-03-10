@@ -3,6 +3,10 @@ import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { parseDateDot } from '@/utils/ts/date';
 import DateBox from './DateBox';
 
+const BAR_HEIGHT = 13;
+const BAR_ROW_GAP = 3;
+const MAX_VISIBLE_LANES = 2;
+
 type BarItem = {
   schedule: Schedule;
   startCol: number;
@@ -82,10 +86,10 @@ function CalendarWeekRow({
   onDateClick,
 }: CalendarWeekRowProps) {
   const bars = layoutBars(dates, schedules, isCurrentMonth);
-  const visibleBars = bars.filter((b) => b.lane < 2);
+  const visibleBars = bars.filter((b) => b.lane < MAX_VISIBLE_LANES);
   const overflowMap = new Map<number, number>();
   for (const bar of bars) {
-    if (bar.lane >= 2) {
+    if (bar.lane >= MAX_VISIBLE_LANES) {
       overflowMap.set(bar.startCol, (overflowMap.get(bar.startCol) ?? 0) + 1);
     }
   }
@@ -106,12 +110,12 @@ function CalendarWeekRow({
       </div>
 
       <div
-        className="mb-2"
+        className="mt-0.5 mb-2.5"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(7, 1fr)',
-          gridTemplateRows: '18px 18px auto',
-          rowGap: '2px',
+          gridTemplateRows: `${BAR_HEIGHT}px ${BAR_HEIGHT}px 8px`,
+          rowGap: `${BAR_ROW_GAP}px`,
         }}
       >
         {visibleBars.map((bar) => (
@@ -122,7 +126,7 @@ function CalendarWeekRow({
               gridRow: bar.lane + 1,
               backgroundColor: SCHEDULE_COLOR[bar.schedule.scheduleCategory],
             }}
-            className="text-caption2 h-[18px] truncate rounded-full px-1.5 text-center leading-[18px] font-medium"
+            className="h-[13px] truncate rounded-full px-1 text-center text-[10px] leading-[13px] font-medium text-[#25374C]"
           >
             {bar.schedule.title}
           </div>
@@ -131,8 +135,8 @@ function CalendarWeekRow({
         {[...overflowMap.entries()].map(([col, count]) => (
           <div
             key={`ov-${col}`}
-            style={{ gridColumn: col + 1, gridRow: 3 }}
-            className="text-caption2 pl-1 font-semibold text-indigo-500"
+            style={{ gridColumn: col + 1, gridRow: MAX_VISIBLE_LANES + 1 }}
+            className="pl-1 text-[8px] leading-[8px] font-semibold text-indigo-500"
           >
             +{count}개
           </div>

@@ -1,3 +1,5 @@
+import { cn } from '@/utils/ts/cn';
+
 type DateBoxProps = {
   date: Date;
   isCurrentMonth: boolean;
@@ -12,19 +14,16 @@ function DateBox({ date, isCurrentMonth, isSelected, isSunday, onClick }: DateBo
       type="button"
       disabled={!isCurrentMonth}
       onClick={() => onClick(date)}
-      className="flex h-9 w-full items-center justify-center"
+      className="flex h-[35px] w-full items-center justify-center"
     >
       <span
-        className={[
-          'flex h-7 w-7 items-center justify-center text-[12px] leading-5 font-semibold',
-          !isCurrentMonth
-            ? 'text-transparent'
-            : isSelected
-              ? 'rounded-full bg-[#1B2B4B] text-white'
-              : isSunday
-                ? 'text-red-500'
-                : 'text-black',
-        ].join(' ')}
+        className={cn(
+          'flex items-center justify-center text-[12px] leading-[1.6] font-semibold',
+          !isCurrentMonth && 'text-transparent',
+          isCurrentMonth && !isSelected && 'h-4 min-w-4 px-1',
+          isCurrentMonth && isSelected && 'size-5 rounded-full bg-[#1B2B4B] text-white',
+          isCurrentMonth && !isSelected && (isSunday ? 'text-red-500' : 'text-black')
+        )}
       >
         {isCurrentMonth ? date.getDate() : ''}
       </span>
