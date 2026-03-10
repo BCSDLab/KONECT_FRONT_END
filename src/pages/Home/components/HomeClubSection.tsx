@@ -63,6 +63,7 @@ function normalizeAppliedClub(club: AppliedClub): HomeClubCardItem {
     id: club.id,
     name: club.name,
     imageUrl: club.imageUrl,
+    subLabel: club.categoryName,
     badgeLabel: '승인 대기',
   };
 }
