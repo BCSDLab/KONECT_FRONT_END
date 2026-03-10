@@ -33,6 +33,7 @@ const buildDisplayClubs = (clubs: HomeClubCardItem[], shouldLoop: boolean) => {
 export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const restoreSnapFrameRef = useRef<number | null>(null);
+  const scrollEndTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isAdjustingLoopRef = useRef(false);
   const activeIndexRef = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -46,6 +47,13 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
     if (restoreSnapFrameRef.current !== null) {
       window.cancelAnimationFrame(restoreSnapFrameRef.current);
       restoreSnapFrameRef.current = null;
+    }
+  };
+
+  const clearScrollEndTimer = () => {
+    if (scrollEndTimerRef.current !== null) {
+      clearTimeout(scrollEndTimerRef.current);
+      scrollEndTimerRef.current = null;
     }
   };
 
@@ -173,13 +181,29 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
     if (!scrollNode) return;
 
     const handleScrollEnd = () => {
+      clearScrollEndTimer();
       if (isAdjustingLoopRef.current) return;
       syncCarouselPosition();
     };
 
+    // scrollend is not supported on iOS Safari < 26; use a debounced scroll
+    // fallback so loop correction runs reliably on all mobile browsers.
+    const handleScrollFallback = () => {
+      if (isAdjustingLoopRef.current) return;
+      clearScrollEndTimer();
+      scrollEndTimerRef.current = setTimeout(() => {
+        scrollEndTimerRef.current = null;
+        if (isAdjustingLoopRef.current) return;
+        syncCarouselPosition();
+      }, 150);
+    };
+
     scrollNode.addEventListener('scrollend', handleScrollEnd);
+    scrollNode.addEventListener('scroll', handleScrollFallback);
     return () => {
       scrollNode.removeEventListener('scrollend', handleScrollEnd);
+      scrollNode.removeEventListener('scroll', handleScrollFallback);
+      clearScrollEndTimer();
       clearRestoreSnapFrame();
     };
   }, []);

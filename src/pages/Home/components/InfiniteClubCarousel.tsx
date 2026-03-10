@@ -22,7 +22,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
   } = useInfiniteClubCarousel({ clubs });
 
   return (
-    <div className="gap-1">
+    <div>
       <div
         ref={scrollRef}
         onScroll={handleScroll}
