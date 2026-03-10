@@ -62,6 +62,7 @@ function Schedule() {
       },
       { replace: true }
     );
+    setIsSheetExpanded(true);
   };
 
   const setDate = (year?: number, month?: number) => {
@@ -84,44 +85,50 @@ function Schedule() {
 
   return (
     <div className="relative flex h-[calc(100vh-44px)] flex-col overflow-hidden bg-white">
-      <main
-        className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-[23px]"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <ul className="grid grid-cols-7 justify-items-center px-6 text-indigo-600">
-          {SCHEDULE_DAYS.map((day) => (
-            <li key={day} className="text-[13px] leading-5">
-              {day}
+      <div className="overflow-y-auto" style={{ maxHeight: `calc(100% - ${PEEK_HEIGHT}px)` }}>
+        <main
+          className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-[23px]"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
+          <ul className="grid grid-cols-7 justify-items-center px-6 text-indigo-600">
+            {SCHEDULE_DAYS.map((day) => (
+              <li key={day} className="text-[13px] leading-5">
+                {day}
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex flex-col px-6">
+            {weeks.map((weekDates) => (
+              <CalendarWeekRow
+                key={weekDates[0].toISOString()}
+                dates={weekDates}
+                schedules={schedules}
+                isCurrentMonth={isCurrentMonth}
+                isSelectedDay={isSelectedDay}
+                isSunday={isSunday}
+                onDateClick={handleDateClick}
+              />
+            ))}
+          </div>
+        </main>
+
+        <ul className="text-cap2 flex shrink-0 gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
+          {COLOR_LEGENDS.map(({ name, color }) => (
+            <li key={name} className="flex shrink-0 items-center gap-1">
+              <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
+              {name}
             </li>
           ))}
         </ul>
+      </div>
 
-        <div className="flex flex-col px-6">
-          {weeks.map((weekDates) => (
-            <CalendarWeekRow
-              key={weekDates[0].toISOString()}
-              dates={weekDates}
-              schedules={schedules}
-              isCurrentMonth={isCurrentMonth}
-              isSelectedDay={isSelectedDay}
-              isSunday={isSunday}
-              onDateClick={handleDateClick}
-            />
-          ))}
-        </div>
-      </main>
+      <div
+        className={`absolute inset-0 z-9 bg-black/40 transition-opacity duration-300 ${isSheetExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+        onClick={() => setIsSheetExpanded(false)}
+      />
 
-      <ul className="text-cap2 flex shrink-0 gap-3 overflow-x-auto px-6 py-3 font-medium text-[#4B5563]">
-        {COLOR_LEGENDS.map(({ name, color }) => (
-          <li key={name} className="flex shrink-0 items-center gap-1">
-            <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: color }} />
-            {name}
-          </li>
-        ))}
-      </ul>
-
-      {/* 바텀시트 */}
       <section
         className="absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
         style={{
@@ -129,7 +136,6 @@ function Schedule() {
           transform: isSheetExpanded ? 'translateY(0)' : `translateY(calc(100% - ${PEEK_HEIGHT}px))`,
         }}
       >
-        {/* 핸들 */}
         <div
           className="flex shrink-0 justify-center pt-3 pb-2"
           onTouchStart={handleSheetTouchStart}
