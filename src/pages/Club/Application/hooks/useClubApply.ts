@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getClubFee, getClubQuestions, getClubRecruitment } from '@/apis/club';
-import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
+import { clubQueryKeys } from '@/apis/club/queries';
 import useApplyToClub from './useApplyToClub';
 
 const useClubApply = (clubId: number) => {

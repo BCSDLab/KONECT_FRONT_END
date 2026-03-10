@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getClubMembers } from '@/apis/club';
-import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
+import { clubQueryKeys } from '@/apis/club/queries';
 
 export const useGetClubMembers = (clubId?: number) => {
   return useQuery({

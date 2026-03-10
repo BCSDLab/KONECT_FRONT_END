@@ -2,8 +2,8 @@ import { useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-q
 import { useNavigate } from 'react-router-dom';
 import { getManagedClubs, getManagedClub, putClubInfo } from '@/apis/club';
 import type { ClubInfoRequest } from '@/apis/club/entity';
+import { clubQueryKeys } from '@/apis/club/queries';
 import { useToastContext } from '@/contexts/useToastContext';
-import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
 
 const managerClubQueryKeys = {
   all: ['manager'],

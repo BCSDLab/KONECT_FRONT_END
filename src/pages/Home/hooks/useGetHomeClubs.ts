@@ -1,7 +1,7 @@
 import { useSuspenseInfiniteQuery, useSuspenseQueries } from '@tanstack/react-query';
 import { getAppliedClubs, getClubs, getJoinedClubs } from '@/apis/club';
 import type { ClubResponse } from '@/apis/club/entity';
-import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
+import { clubQueryKeys } from '@/apis/club/queries';
 
 interface UseGetHomeRecruitingClubsParams {
   limit?: number;
@@ -28,7 +28,7 @@ export const useGetHomeMyClubs = () => {
 
 export const useGetHomeRecruitingClubs = ({ limit = 10 }: UseGetHomeRecruitingClubsParams = {}) => {
   return useSuspenseInfiniteQuery({
-    queryKey: clubQueryKeys.list({ limit, isRecruiting: true }),
+    queryKey: clubQueryKeys.infinite.list({ limit, isRecruiting: true }),
     queryFn: ({ pageParam = 1 }) =>
       getClubs({
         page: pageParam,

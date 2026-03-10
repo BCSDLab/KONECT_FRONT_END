@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { applyClub } from '@/apis/club';
 import type { ClubApplyRequest } from '@/apis/club/entity';
-import { clubQueryKeys } from '@/pages/Club/ClubList/hooks/useGetClubs';
+import { clubQueryKeys } from '@/apis/club/queries';
 
 const useApplyToClub = (clubId: number) => {
   const navigate = useNavigate();
