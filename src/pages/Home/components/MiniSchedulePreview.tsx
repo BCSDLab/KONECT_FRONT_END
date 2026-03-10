@@ -46,6 +46,11 @@ function MiniSchedulePreview() {
     weeks.push(dateList.slice(index, index + 7));
   }
 
+  const todayWeekIndex = weeks.findIndex((week) =>
+    week.some((date) => date.getFullYear() === year && date.getMonth() + 1 === month && date.getDate() === day)
+  );
+  const visibleWeeks = todayWeekIndex >= 0 ? weeks.slice(todayWeekIndex, todayWeekIndex + 2) : weeks.slice(0, 2);
+
   const handleDateClick = (date: Date) => {
     navigate(`/schedule?year=${date.getFullYear()}&month=${date.getMonth() + 1}&day=${date.getDate()}`);
   };
@@ -59,7 +64,7 @@ function MiniSchedulePreview() {
       </ul>
 
       <div className="mt-1">
-        {weeks.map((weekDates) => (
+        {visibleWeeks.map((weekDates) => (
           <CalendarWeekRow
             key={weekDates[0].toISOString()}
             dates={weekDates}
