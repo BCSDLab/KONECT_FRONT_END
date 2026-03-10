@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/utils/ts/cn';
 import BottomNav from './BottomNav';
 import Header from './Header';
 import { HEADER_CONFIGS } from './Header/headerConfig';
@@ -23,7 +23,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
       <Header />
       <Suspense>
         <main
-          className={twMerge(
+          className={cn(
             'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
             isInfoHeader ? 'pt-15' : 'pt-11',
             showBottomNav && 'pb-19',
