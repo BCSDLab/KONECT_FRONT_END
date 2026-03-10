@@ -1,0 +1,149 @@
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import type { AppliedClub, Club, JoinClub } from '@/apis/club/entity';
+import Card from '@/components/common/Card';
+import InfiniteClubCarousel from '@/pages/Home/components/InfiniteClubCarousel';
+import SectionErrorFallback from '@/pages/Home/components/SectionErrorFallback';
+import SectionTitle from '@/pages/Home/components/SectionTitle';
+import { useGetHomeMyClubs, useGetHomeRecruitingClubs } from '@/pages/Home/hooks/useGetHomeClubs';
+import type { HomeClubCardItem } from '@/pages/Home/types';
+
+const CLUB_CAROUSEL_LIMIT = 20;
+
+function RecommendedClubCardSkeleton() {
+  return (
+    <div className="w-[229px] shrink-0 py-1">
+      <div className="flex h-[108px] items-center gap-5 rounded-lg bg-white px-3 py-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
+        <div className="bg-indigo-25 h-[59px] w-[67px] shrink-0 animate-pulse rounded-sm" />
+        <div className="min-w-0 flex-1">
+          <div className="bg-indigo-25 h-4 w-24 animate-pulse rounded" />
+          <div className="bg-indigo-25 mt-3 h-3 w-18 animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RecommendedClubsSkeleton() {
+  return (
+    <>
+      <div className="overflow-hidden px-[calc((100%-229px)/2)] pb-1">
+        <div className="flex gap-2">
+          <RecommendedClubCardSkeleton />
+          <RecommendedClubCardSkeleton />
+          <RecommendedClubCardSkeleton />
+        </div>
+      </div>
+      <div className="mx-auto h-[5px] w-[60px] rounded-[40px] bg-[#d9d9d9]" />
+    </>
+  );
+}
+
+function HomeClubSectionHeaderSkeleton() {
+  return (
+    <div className="flex items-center justify-between">
+      <div className="bg-indigo-25 h-5 w-40 animate-pulse rounded" />
+      <div className="bg-indigo-25 h-4 w-10 animate-pulse rounded" />
+    </div>
+  );
+}
+
+function normalizeJoinedClub(club: JoinClub): HomeClubCardItem {
+  return {
+    id: club.id,
+    name: club.name,
+    imageUrl: club.imageUrl,
+    subLabel: club.categoryName,
+    badgeLabel: club.position === '일반회원' ? undefined : '운영진',
+  };
+}
+
+function normalizeAppliedClub(club: AppliedClub): HomeClubCardItem {
+  return {
+    id: club.id,
+    name: club.name,
+    imageUrl: club.imageUrl,
+    subLabel: club.categoryName,
+    badgeLabel: '승인 대기',
+  };
+}
+
+function normalizeRecruitingClub(club: Club): HomeClubCardItem {
+  return {
+    id: club.id,
+    name: club.name,
+    imageUrl: club.imageUrl,
+    subLabel: club.categoryName,
+  };
+}
+
+export function HomeClubSectionSkeleton() {
+  return (
+    <div className="flex flex-col gap-4">
+      <HomeClubSectionHeaderSkeleton />
+      <RecommendedClubsSkeleton />
+    </div>
+  );
+}
+
+export function HomeClubSectionErrorFallback() {
+  return (
+    <div className="flex flex-col gap-4">
+      <HomeClubSectionHeaderSkeleton />
+      <SectionErrorFallback />
+    </div>
+  );
+}
+
+function RecruitingClubSection() {
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHomeRecruitingClubs({
+    limit: CLUB_CAROUSEL_LIMIT,
+  });
+
+  useEffect(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      void fetchNextPage();
+    }
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  const clubs = data.pages.flatMap((page) => page.clubs).map(normalizeRecruitingClub);
+
+  if (clubs.length === 0) {
+    return (
+      <div className="flex flex-col gap-4">
+        <SectionTitle title="나에게 맞는 동아리를 찾아보세요!" to="/clubs" />
+        <Card className="gap-2 rounded-[20px] border-0 py-5 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
+          <div className="text-h3 text-indigo-700">현재 모집 중인 동아리가 없어요</div>
+          <Link to="/clubs" className="bg-primary text-sub2 block rounded-lg py-3 text-center text-white">
+            동아리 보러가기
+          </Link>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <SectionTitle title="나에게 맞는 동아리를 찾아보세요!" to="/clubs" />
+      <InfiniteClubCarousel clubs={clubs} />
+    </div>
+  );
+}
+
+function HomeClubSection() {
+  const { appliedClubs, joinedClubs } = useGetHomeMyClubs();
+  const clubs = [...appliedClubs.map(normalizeAppliedClub), ...joinedClubs.map(normalizeJoinedClub)];
+
+  if (clubs.length === 0) {
+    return <RecruitingClubSection />;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <SectionTitle title="내 동아리" to="/clubs" />
+      <InfiniteClubCarousel clubs={clubs} />
+    </div>
+  );
+}
+
+export default HomeClubSection;

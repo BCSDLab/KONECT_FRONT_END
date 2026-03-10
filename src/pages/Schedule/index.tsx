@@ -1,12 +1,11 @@
 import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { SCHEDULE_DAYS } from '@/constants/schedule';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import CalendarWeekRow from './components/CalendarWeekRow';
 import ScheduleDetail from './components/ScheduleDetail';
 import { useScheduleList } from './hooks/useGetSchedules';
 import { useMonthSwipe } from './hooks/useMonthSwipe';
-
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const COLOR_LEGENDS = [
   { name: '총동아리', color: '#E9F2FA' },
@@ -91,7 +90,7 @@ function Schedule() {
         onTouchEnd={handleTouchEnd}
       >
         <ul className="grid grid-cols-7 justify-items-center px-6 text-indigo-600">
-          {DAYS.map((day) => (
+          {SCHEDULE_DAYS.map((day) => (
             <li key={day} className="text-[13px] leading-5">
               {day}
             </li>

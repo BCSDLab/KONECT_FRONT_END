@@ -1,3 +1,5 @@
+export const SCHEDULE_DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const;
+
 export const SCHEDULE_COLOR = {
   UNIVERSITY: '#AEDCBA',
   CLUB: '#FDE49B',
