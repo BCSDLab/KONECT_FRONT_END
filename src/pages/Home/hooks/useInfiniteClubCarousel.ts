@@ -106,12 +106,15 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
     scrollNode.style.scrollSnapType = 'none';
     scrollNode.scrollLeft = left;
 
+    // scrollLeft 변경을 즉시 레이아웃에 반영(reflow)한 뒤 snap을 동기적으로 복원한다.
+    // 기존 double-rAF 방식은 snap이 꺼진 채 2프레임이 렌더되어,
+    // 복원 시 위치가 snap point와 미세하게 어긋나면 re-snap 애니메이션이 발생했다.
+    void scrollNode.scrollLeft;
+    scrollNode.style.scrollSnapType = '';
+
     restoreSnapFrameRef.current = window.requestAnimationFrame(() => {
-      restoreSnapFrameRef.current = window.requestAnimationFrame(() => {
-        scrollNode.style.scrollSnapType = '';
-        isAdjustingLoopRef.current = false;
-        restoreSnapFrameRef.current = null;
-      });
+      isAdjustingLoopRef.current = false;
+      restoreSnapFrameRef.current = null;
     });
   };
 
@@ -131,15 +134,16 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
 
     const middleStartIndex = clubs.length;
     const middleEndIndex = clubs.length * 2 - 1;
-    const segmentWidth = getSlideOffset(clubs.length * 2) - getSlideOffset(clubs.length);
-
-    if (segmentWidth <= 0) return;
 
     // 항상 가운데 세그먼트로 되돌려서 무한 루프가 끊기지 않게 유지한다.
-    if (currentIndex < middleStartIndex) {
-      jumpToLoopPosition(scrollNode.scrollLeft + segmentWidth);
-    } else if (currentIndex > middleEndIndex) {
-      jumpToLoopPosition(scrollNode.scrollLeft - segmentWidth);
+    // 상대 offset(scrollLeft ± segmentWidth) 대신 getSlideOffset으로 정확한 snap point를
+    // 직접 계산해 부동소수점 오차로 인한 micro re-snap을 방지한다.
+    if (currentIndex < middleStartIndex || currentIndex > middleEndIndex) {
+      const middleEquivalent = middleStartIndex + (currentIndex % clubs.length);
+      const targetLeft = getSlideOffset(middleEquivalent);
+      if (Math.abs(targetLeft - scrollNode.scrollLeft) > 1) {
+        jumpToLoopPosition(targetLeft);
+      }
     }
   });
 
@@ -148,6 +152,13 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
 
     const currentIndex = getClosestSlideIndex();
     if (currentIndex === null) return;
+
+    // Edge 세그먼트(첫 번째/세 번째 복제본)에 있을 때는 activeIndex를 업데이트하지 않는다.
+    // 마지막↔첫 번째 경계를 지나는 동안 getClosestSlideIndex()가 두 snap point 사이를
+    // 빠르게 오가며 activeIndex가 토글되어 인디케이터가 플리커링하는 것을 방지한다.
+    if (shouldLoop && (currentIndex < clubs.length || currentIndex >= clubs.length * 2)) {
+      return;
+    }
 
     setCarouselIndex(currentIndex % clubs.length);
   };
