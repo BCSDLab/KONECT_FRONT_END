@@ -6,7 +6,7 @@ function NotificationBell() {
   const { totalUnreadCount } = useChat();
 
   return (
-    <Link to={'chats'} className="relative">
+    <Link to={'chats'} aria-label="채팅 열기" className="relative">
       <ChatCatIcon />
       {totalUnreadCount > 0 && (
         <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">

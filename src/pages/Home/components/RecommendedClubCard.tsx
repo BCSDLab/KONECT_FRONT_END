@@ -22,12 +22,13 @@ function RecommendedClubCard({ club, className, tabIndex, ariaHidden = false }: 
     >
       <img
         src={club.imageUrl}
-        alt={club.name}
+        alt=""
+        aria-hidden="true"
         className={cn('bg-indigo-5 h-[59px] w-[67px] shrink-0 rounded-sm object-cover')}
       />
       <div className="min-w-0 flex-1">
         <div className="flex flex-col items-end text-right">
-          <div className="max-h-9 w-full overflow-hidden text-right text-[16px] leading-[18px] font-extrabold break-keep text-indigo-700">
+          <div className="max-h-9 w-full overflow-hidden text-right leading-[18px] font-extrabold break-keep text-indigo-700">
             {club.name}
           </div>
           {club.badgeLabel && (
