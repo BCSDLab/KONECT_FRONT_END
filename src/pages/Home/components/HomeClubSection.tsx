@@ -79,7 +79,7 @@ function normalizeRecruitingClub(club: Club): HomeClubCardItem {
 
 export function HomeClubSectionSkeleton() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1">
       <HomeClubSectionHeaderSkeleton />
       <RecommendedClubsSkeleton />
     </div>
@@ -88,7 +88,7 @@ export function HomeClubSectionSkeleton() {
 
 export function HomeClubSectionErrorFallback() {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1">
       <HomeClubSectionHeaderSkeleton />
       <SectionErrorFallback />
     </div>
@@ -123,7 +123,7 @@ function RecruitingClubSection() {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-1">
       <SectionTitle title="나에게 맞는 동아리를 찾아보세요!" to="/clubs" />
       <InfiniteClubCarousel clubs={clubs} />
     </div>
