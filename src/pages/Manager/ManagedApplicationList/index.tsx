@@ -72,7 +72,7 @@ function ManagedApplicationList() {
                 <div className="text-body2 text-indigo-700">
                   {application.name} <span className="text-body3">({application.studentNumber})</span>
                 </div>
-                <div className="text-cap1 text-indigo-300">
+                <div className="text-caption1 text-indigo-300">
                   지원일 : {formatIsoDateToYYYYMMDDHHMM(application.appliedAt)}
                 </div>
               </div>

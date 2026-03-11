@@ -94,7 +94,7 @@ function ManagedApplicationDetail() {
                 <div className="flex items-center justify-between">
                   <span className="text-sub2 font-semibold text-indigo-700">문항 {index + 1}</span>
                   {answer.isRequired && (
-                    <span className="text-cap1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">필수</span>
+                    <span className="text-caption1 rounded-full bg-red-50 px-2 py-0.5 text-red-500">필수</span>
                   )}
                 </div>
 

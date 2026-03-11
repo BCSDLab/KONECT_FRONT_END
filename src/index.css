@@ -1,6 +1,8 @@
 @import 'tailwindcss';
 
 @import './styles/font.css';
+@import './styles/colors.css';
+@import './styles/typography.css';
 @import './styles/theme.css';
 
 :root {
@@ -231,4 +233,17 @@ input[type="month"]::-webkit-clear-button {
 
 .touch-pan-y {
   touch-action: pan-y;
+}
+
+.chat-tooltip-anchor {
+  anchor-name: --chat-tooltip-anchor;
+}
+
+@supports (anchor-name: --chat-tooltip-anchor) {
+  .chat-tooltip {
+    position-anchor: --chat-tooltip-anchor;
+    top: calc(anchor(bottom) + 6px);
+    left: calc(anchor(right) - 149px);
+    right: auto;
+  }
 }

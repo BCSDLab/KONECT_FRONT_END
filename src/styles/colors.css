@@ -1,0 +1,85 @@
+@theme {
+  /* ========================================
+     KONECT COLOR TOKENS (Figma: Konnect_Light)
+     ======================================== */
+
+  /* Base */
+  --color-black: #323532;
+  --color-white: #ffffff;
+
+  /* Primary */
+  --color-primary-100: #eaf6fb;
+  --color-primary-200: #cfeaf5;
+  --color-primary-400: #8ed0e6;
+  --color-primary-500: #69bfdf;
+  --color-primary-600: #55a9c7;
+  --color-primary-700: #428fa9;
+  --color-primary-800: #2f6e83;
+  --color-primary-900: #1e4a59;
+
+  /* Text */
+  --color-text-100: #e7ebef;
+  --color-text-200: #c6cfd8;
+  --color-text-300: #a5b3c1;
+  --color-text-400: #8497aa;
+  --color-text-500: #5a6b7f;
+  --color-text-600: #475769;
+  --color-text-700: #344352;
+  --color-text-800: #1e2c3f;
+  --color-text-900: #021730;
+
+  /* Sub */
+  --color-sub-100: #fef6d9;
+  --color-sub-200: #fcedb2;
+  --color-sub-300: #f6de8c;
+  --color-sub-400: #e8c867;
+  --color-sub-500: #d6af47;
+  --color-sub-600: #b89236;
+  --color-sub-700: #937228;
+  --color-sub-800: #6e531c;
+  --color-sub-900: #463413;
+
+  /* Danger */
+  --color-danger-50: #fffbfb;
+  --color-danger-100: #fef2f2;
+  --color-danger-200: #ffebee;
+  --color-danger-300: #ffccd2;
+  --color-danger-400: #f49898;
+  --color-danger-500: #eb6f70;
+  --color-danger-600: #f64c4c;
+  --color-danger-700: #ec2d30;
+  --color-danger-800: #d02a2d;
+
+  /* Warning */
+  --color-warning-50: #fffdfa;
+  --color-warning-100: #fff9ee;
+  --color-warning-200: #fff7e1;
+  --color-warning-300: #ffeab3;
+  --color-warning-400: #ffdd82;
+  --color-warning-500: #ffc62b;
+  --color-warning-600: #ffad0d;
+  --color-warning-700: #fe9b0e;
+  --color-warning-800: #e2892b;
+
+  /* Success */
+  --color-success-50: #fbfefc;
+  --color-success-100: #f2faf6;
+  --color-success-200: #e5f5ec;
+  --color-success-300: #c0e5d1;
+  --color-success-400: #97d4b4;
+  --color-success-500: #6bc497;
+  --color-success-600: #47b881;
+  --color-success-700: #0c9d61;
+  --color-success-800: #0f8759;
+
+  /* Info */
+  --color-info-50: #f8fcff;
+  --color-info-100: #f1f8ff;
+  --color-info-200: #e4f2ff;
+  --color-info-300: #bdddff;
+  --color-info-400: #93c8ff;
+  --color-info-500: #4ba1ff;
+  --color-info-600: #3b82f6;
+  --color-info-700: #3a70e2;
+  --color-info-800: #3664c0;
+}

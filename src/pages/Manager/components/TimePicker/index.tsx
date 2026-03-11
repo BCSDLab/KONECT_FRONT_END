@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
+import { cn } from '@/utils/ts/cn';
 
 interface TimePickerProps {
   value: string;
@@ -151,7 +151,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
       <BottomModal isOpen={isOpen} onClose={handleCloseModal}>
         <div className="px-5 pt-6 pb-[calc(20px+var(--sab))]">
           <div className="text-h3 text-center text-indigo-700">시간 선택</div>
-          <p className="text-cap1 mt-1 text-center text-indigo-300">스크롤해서 시간을 선택하세요</p>
+          <p className="text-caption1 mt-1 text-center text-indigo-300">스크롤해서 시간을 선택하세요</p>
           <div className="bg-indigo-0 relative mt-4 h-[200px] overflow-hidden rounded-2xl border border-indigo-50">
             <div className="pointer-events-none absolute inset-x-0 top-0 z-2 h-20 bg-linear-to-b from-[#F8FAFF] to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-2 h-20 bg-linear-to-t from-[#F8FAFF] to-transparent" />
@@ -171,12 +171,13 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                     <button
                       key={hour}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => {
                         setDraftHour(hour);
                         scrollToItem(hourRef, hourOptions, hour);
                       }}
-                      className={twMerge(
-                        'text-body2 h-10 w-full snap-center transition-all duration-150',
+                      className={cn(
+                        'text-body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -199,12 +200,13 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
                     <button
                       key={minute}
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => {
                         setDraftMinute(minute);
                         scrollToItem(minuteRef, minuteOptions, minute);
                       }}
-                      className={twMerge(
-                        'text-body2 h-10 w-full snap-center transition-all duration-150',
+                      className={cn(
+                        'text-body2-unstyled h-10 w-full snap-center transition-all duration-150',
                         isSelected ? 'font-bold tracking-tight text-indigo-700' : 'font-medium text-indigo-300'
                       )}
                     >
@@ -217,7 +219,11 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
             </div>
           </div>
           <div className="mt-3 flex justify-center">
-            <div className="bg-indigo-0 text-body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700">
+            <div
+              aria-live="polite"
+              aria-atomic="true"
+              className="bg-indigo-0 text-body2 rounded-full border border-indigo-50 px-4 py-1.5 text-indigo-700"
+            >
               선택 시간 {formatTime(draftHour, draftMinute)}
             </div>
           </div>

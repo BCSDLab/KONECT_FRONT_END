@@ -1,0 +1,194 @@
+@theme {
+  /* ========================================
+     KONECT TYPOGRAPHY TOKENS (Mobile)
+     Figma: 1268:2734 Mobile Typography Style
+     ======================================== */
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-extrabold: 800;
+
+  /* Display (150%) */
+  --D1: 32px;
+  --leading-d1: 48px;
+  --D2: 28px;
+  --leading-d2: 42px;
+
+  /* Heading (160%) */
+  --H1: 20px;
+  --leading-h1: 32px;
+  --H2: 18px;
+  --leading-h2: 28.8px;
+  --H3: 16px;
+  --leading-h3: 25.6px;
+  --H4: 14px;
+  --leading-h4: 22.4px;
+  --H5: 13px;
+  --leading-h5: 20.8px;
+
+  /* Subtitle (160%) */
+  --Sub1: 16px;
+  --leading-sub1: 25.6px;
+  --Sub2: 14px;
+  --leading-sub2: 22.4px;
+  --Sub3: 13px;
+  --leading-sub3: 20.8px;
+  --Sub4: 12px;
+  --leading-sub4: 19.2px;
+
+  /* Body (160%) */
+  --Body1: 14px;
+  --leading-body1: 22.4px;
+  --Body2: 13px;
+  --leading-body2: 20.8px;
+  --Body3: 12px;
+  --leading-body3: 19.2px;
+
+  /* Caption (160%) */
+  --Caption1: 11px;
+  --leading-cap1: 17.6px;
+  --Caption2: 10px;
+  --leading-cap2: 16px;
+}
+
+/* ========================================
+   Semantic text utilities
+   Legacy uppercase aliases are kept temporarily for compatibility.
+   ======================================== */
+@layer utilities {
+  /* Display */
+  .text-d1,
+  .D1 {
+    font-size: var(--D1);
+    line-height: var(--leading-d1);
+    font-weight: var(--font-weight-extrabold);
+  }
+  .text-d2,
+  .D2 {
+    font-size: var(--D2);
+    line-height: var(--leading-d2);
+    font-weight: var(--font-weight-extrabold);
+  }
+
+  /* Heading */
+  .text-h1,
+  .H1 {
+    font-size: var(--H1);
+    line-height: var(--leading-h1);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h2,
+  .H2 {
+    font-size: var(--H2);
+    line-height: var(--leading-h2);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h3,
+  .H3 {
+    font-size: var(--H3);
+    line-height: var(--leading-h3);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h4,
+  .H4 {
+    font-size: var(--H4);
+    line-height: var(--leading-h4);
+    font-weight: var(--font-weight-semibold);
+  }
+  .text-h5,
+  .H5 {
+    font-size: var(--H5);
+    line-height: var(--leading-h5);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  /* Subtitle */
+  .text-sub1,
+  .Sub1 {
+    font-size: var(--Sub1);
+    line-height: var(--leading-sub1);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub2,
+  .Sub2 {
+    font-size: var(--Sub2);
+    line-height: var(--leading-sub2);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub3,
+  .Sub3 {
+    font-size: var(--Sub3);
+    line-height: var(--leading-sub3);
+    font-weight: var(--font-weight-medium);
+  }
+  .text-sub4,
+  .Sub4 {
+    font-size: var(--Sub4);
+    line-height: var(--leading-sub4);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Body */
+  .text-body1,
+  .Body1 {
+    font-size: var(--Body1);
+    line-height: var(--leading-body1);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body2,
+  .Body2 {
+    font-size: var(--Body2);
+    line-height: var(--leading-body2);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body2-unstyled,
+  .Body2-unstyled {
+    font-size: var(--Body2);
+    line-height: var(--leading-body2);
+  }
+  .text-body3,
+  .Body3 {
+    font-size: var(--Body3);
+    line-height: var(--leading-body3);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-body3-strong,
+  .Body3-strong {
+    font-size: var(--Body3);
+    line-height: var(--leading-body3);
+    font-weight: var(--font-weight-medium);
+  }
+
+  /* Caption */
+  .text-cap1,
+  .text-caption1,
+  .Caption1 {
+    font-size: var(--Caption1);
+    line-height: var(--leading-cap1);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-cap1-strong,
+  .text-caption1-strong,
+  .Caption1-strong {
+    font-size: var(--Caption1);
+    line-height: var(--leading-cap1);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .text-cap2,
+  .text-caption2,
+  .Caption2 {
+    font-size: var(--Caption2);
+    line-height: var(--leading-cap2);
+    font-weight: var(--font-weight-regular);
+  }
+  .text-cap2-strong,
+  .text-caption2-strong,
+  .Caption2-strong {
+    font-size: var(--Caption2);
+    line-height: var(--leading-cap2);
+    font-weight: var(--font-weight-semibold);
+  }
+}

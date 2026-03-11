@@ -24,6 +24,13 @@ export const formatIsoDateToYYYYMMDD = (value: string): string => {
   return `${year}.${month.padStart(2, '0')}.${day.padStart(2, '0')}`;
 };
 
+// "YYYY.MM.DD HH:MM" 또는 "YYYY.MM.DD" 포맷 문자열을 Date로 파싱
+export function parseDateDot(value: string): Date {
+  const [d] = value.split(' ');
+  const [y, m, day] = d.split('.').map(Number);
+  return new Date(y, m - 1, day);
+}
+
 export function formatDateDot(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');

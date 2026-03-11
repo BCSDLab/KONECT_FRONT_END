@@ -1,12 +1,17 @@
 import type { ApiError } from '@/interface/error';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 import { apiClient } from '../client';
-import type { ModifyMyInfoRequest, MyInfoResponse, RefreshTokenResponse, SignupRequest } from './entity';
-
-const BASE_URL = import.meta.env.VITE_API_PATH;
+import type {
+  ModifyMyInfoRequest,
+  MyInfoResponse,
+  OAuthLinksResponse,
+  RefreshTokenResponse,
+  SignupRequest,
+} from './entity';
 
 export const refreshAccessToken = async (): Promise<string> => {
-  const url = `${BASE_URL.replace(/\/+$/, '')}/users/refresh`;
+  const url = `${NORMALIZED_API_BASE_URL}/users/refresh`;
 
   let response: Response;
   try {
@@ -54,6 +59,13 @@ export const signup = async (data: SignupRequest) => {
 
 export const getMyInfo = async () => {
   const response = await apiClient.get<MyInfoResponse>('users/me', {
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const getMyOAuthLinks = async () => {
+  const response = await apiClient.get<OAuthLinksResponse>('users/me/oauth/links', {
     requiresAuth: true,
   });
   return response;

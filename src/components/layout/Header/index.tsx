@@ -19,6 +19,7 @@ function Header() {
     profile: () => <ProfileHeader />,
     info: () => <InfoHeader />,
     chat: () => <ChatHeader />,
+    none: () => null,
     schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,

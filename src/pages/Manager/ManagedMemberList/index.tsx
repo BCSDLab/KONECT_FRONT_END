@@ -223,7 +223,7 @@ function ManagedMemberList() {
                     <div className="text-body2 text-indigo-700">
                       {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
-                    <div className="text-cap1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
+                    <div className="text-caption1 text-indigo-300">{POSITION_LABELS[member.position]}</div>
                   </div>
                 </div>
                 {!PROTECTED_POSITIONS.has(position) && (
@@ -254,7 +254,7 @@ function ManagedMemberList() {
                     <div className="text-body2 text-indigo-700">
                       {member.name} <span className="text-body3 text-indigo-400">({member.studentNumber})</span>
                     </div>
-                    <div className="text-cap1 text-indigo-300">사전 등록</div>
+                    <div className="text-caption1 text-indigo-300">사전 등록</div>
                   </div>
                 </div>
                 <button
@@ -303,7 +303,7 @@ function ManagedMemberList() {
       <BottomModal isOpen={isTransferOpen} onClose={closeTransfer}>
         <div className="flex flex-col gap-3 p-5">
           <div className="text-body2 font-semibold text-indigo-700">회장 위임</div>
-          <div className="text-cap1 text-indigo-400">새 회장을 선택해주세요.</div>
+          <div className="text-caption1 text-indigo-400">새 회장을 선택해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             {nonPresidentMembers.map((member) => {
               const isSelected = transferTarget === member.userId;
@@ -345,7 +345,7 @@ function ManagedMemberList() {
       <BottomModal isOpen={isVPOpen} onClose={closeVP}>
         <div className="flex flex-col gap-3 p-5">
           <div className="text-body2 font-semibold text-indigo-700">부회장 변경</div>
-          <div className="text-cap1 text-indigo-400">새 부회장을 선택하거나 해제해주세요.</div>
+          <div className="text-caption1 text-indigo-400">새 부회장을 선택하거나 해제해주세요.</div>
           <div className="flex max-h-60 flex-col gap-1 overflow-auto">
             <button
               type="button"
@@ -457,9 +457,9 @@ function ManagedMemberList() {
       <BottomModal isOpen={isAddOpen} onClose={closeAdd}>
         <div className="flex flex-col gap-3 p-5">
           <div className="text-body2 font-semibold text-indigo-700">부원 추가</div>
-          <div className="text-cap1 text-indigo-400">서비스에 가입하지 않은 학생을 사전 등록합니다.</div>
+          <div className="text-caption1 text-indigo-400">서비스에 가입하지 않은 학생을 사전 등록합니다.</div>
           <div className="flex flex-col gap-2">
-            <label className="text-cap1 text-indigo-400">학번</label>
+            <label className="text-caption1 text-indigo-400">학번</label>
             <input
               type="text"
               value={newStudentNumber}
@@ -469,7 +469,7 @@ function ManagedMemberList() {
             />
           </div>
           <div className="flex flex-col gap-2">
-            <label className="text-cap1 text-indigo-400">이름</label>
+            <label className="text-caption1 text-indigo-400">이름</label>
             <input
               type="text"
               value={newMemberName}

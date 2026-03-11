@@ -1,29 +1,17 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import BottomModal from '@/components/common/BottomModal';
-import { useToastContext } from '@/contexts/useToastContext';
+import { KAKAO_OPEN_CHAT_URL } from '@/constants/links';
 import { API_ERROR_CODES } from '@/interface/error';
 import { useSignupStore } from '@/stores/signupStore';
-import useBooleanState from '@/utils/hooks/useBooleanState';
 import StepLayout from './components/StepLayout';
-import { useInquiryMutation } from './hooks/useInquiry';
 import { useSignupMutation } from './hooks/useSignup';
 
 function ConfirmStep() {
   const navigate = useNavigate();
-  const { showToast } = useToastContext();
   const { mutate, isPending, error } = useSignupMutation();
-  const { mutate: submitInquiry, isPending: isInquiryPending } = useInquiryMutation();
 
-  const [inquiryContent, setInquiryContent] = useState('');
   const { universityName, universityId, studentId, isMarketingAgreement, name, reset } = useSignupStore();
-  const { value: isInquiryModalOpen, setTrue: openInquiryModal, setFalse: closeInquiryModal } = useBooleanState(false);
 
-  useEffect(() => {
-    if (error?.apiError?.code === API_ERROR_CODES.DUPLICATE_STUDENT_NUMBER) {
-      openInquiryModal();
-    }
-  }, [error, openInquiryModal]);
+  const isDuplicateStudentNumber = error?.apiError?.code === API_ERROR_CODES.DUPLICATE_STUDENT_NUMBER;
 
   const handleNext = () => {
     mutate(
@@ -42,23 +30,8 @@ function ConfirmStep() {
     );
   };
 
-  const handleInquirySubmit = () => {
-    const trimmedContent = inquiryContent.trim();
-    if (!trimmedContent) return;
-    const fullContent = trimmedContent;
-    submitInquiry(
-      { type: 'DUPLICATE_STUDENT', content: fullContent },
-      {
-        onSuccess: () => {
-          closeInquiryModal();
-          setInquiryContent('');
-          showToast('문의가 접수되었습니다', 'success');
-        },
-        onError: () => {
-          showToast('문의 전송에 실패했습니다', 'error');
-        },
-      }
-    );
+  const handleInquiryClick = () => {
+    window.open(KAKAO_OPEN_CHAT_URL, '_blank');
   };
 
   return (
@@ -105,27 +78,15 @@ function ConfirmStep() {
           )}
         </div>
       )}
-      <BottomModal isOpen={isInquiryModalOpen} onClose={closeInquiryModal}>
-        <div className="flex flex-col gap-10 px-8 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">
-            이미 등록된 학번입니다{'\n'}
-            문의를 통해 문제를 해결해주세요
-          </div>
-          <textarea
-            value={inquiryContent}
-            onChange={(e) => setInquiryContent(e.target.value)}
-            placeholder="문의 내용을 입력해주세요"
-            className="text-sub2 min-h-32 w-full resize-none rounded-lg border-2 border-indigo-200 p-4 placeholder:text-indigo-300"
-          />
-          <button
-            onClick={handleInquirySubmit}
-            disabled={isInquiryPending || !inquiryContent.trim()}
-            className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
-          >
-            {isInquiryPending ? '전송 중...' : '문의하기'}
-          </button>
-        </div>
-      </BottomModal>
+      {isDuplicateStudentNumber && (
+        <button
+          type="button"
+          onClick={handleInquiryClick}
+          className="text-sub3 mt-2 w-fit self-end px-1 text-indigo-300 underline underline-offset-4 transition-colors hover:text-indigo-400"
+        >
+          이미 등록된 학번입니다. 문의하기
+        </button>
+      )}
     </StepLayout>
   );
 }

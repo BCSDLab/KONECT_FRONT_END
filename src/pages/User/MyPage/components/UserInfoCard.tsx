@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import Card from '@/components/common/Card';
 import { useManagedClub, useGetManagedClubs } from '@/pages/Manager/hooks/useManagedClubs';
+import { cn } from '@/utils/ts/cn';
 import { useMyInfo } from '../../Profile/hooks/useMyInfo';
 
 interface UserInfoCardProps {
@@ -29,7 +29,7 @@ function ManagerDetailInfoCard() {
         <div className="flex items-center gap-3">
           <img className="h-12 w-12 rounded-full" src={managedClub?.imageUrl} alt="Member Avatar" />
           <div>
-            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
+            <div className={cn('text-h2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
             <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
               {myInfo.studentNumber} · {myInfo.universityName} · {currentClub?.position}
             </div>
@@ -104,7 +104,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             {myInfo.name.charAt(0)}
           </div>
           <div>
-            <div className={twMerge('text-h2 font-bold text-indigo-700')}>{myInfo.name}</div>
+            <div className={cn('text-h2 font-bold text-indigo-700')}>{myInfo.name}</div>
             <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
               {myInfo.studentNumber} · {myInfo.universityName}
             </div>
@@ -119,6 +119,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             <div className="text-h3 mt-1">{myInfo.joinedClubCount}</div>
           </div>
           <button
+            type="button"
             onClick={(e) => handleButtonClick(e, '/timer')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >
@@ -126,6 +127,7 @@ function UserInfoCard({ type }: UserInfoCardProps) {
             <div className="text-h3 mt-1">{myInfo.studyTime}</div>
           </button>
           <button
+            type="button"
             onClick={(e) => handleButtonClick(e, '/council?tab=notice')}
             className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
           >
