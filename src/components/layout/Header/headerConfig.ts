@@ -2,7 +2,7 @@ import type { HeaderConfig } from './types';
 
 export const HEADER_CONFIGS: HeaderConfig[] = [
   {
-    type: 'login',
+    type: 'none',
     match: (pathname) => pathname === '/',
   },
   {

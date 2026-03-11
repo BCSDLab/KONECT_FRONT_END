@@ -46,7 +46,7 @@ const LOGIN_HERO_LINES = ['모든 동아리 활동을', '한 곳에서'] as cons
 
 function Login() {
   return (
-    <div className="bg-primary-500 flex min-h-full flex-1 flex-col px-8 pt-6 pb-[calc(72px+var(--sab))] text-white">
+    <div className="bg-primary-500 flex min-h-full flex-1 flex-col px-8 pt-[68px] pb-[calc(72px+var(--sab))] text-white">
       <div className="flex w-[239px] flex-col gap-2">
         <div className="flex flex-col">
           {LOGIN_HERO_LINES.map((line) => (
