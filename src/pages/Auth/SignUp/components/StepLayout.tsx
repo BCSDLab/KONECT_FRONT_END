@@ -26,7 +26,7 @@ function StepLayout({
         <button
           onClick={onNext}
           disabled={nextDisabled}
-          className="bg-primary text-indigo-0 h-12 w-full items-center rounded-lg font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
+          className="bg-primary-500 text-indigo-0 h-12 w-full items-center rounded-lg font-extrabold disabled:cursor-not-allowed disabled:opacity-50"
         >
           다음
         </button>

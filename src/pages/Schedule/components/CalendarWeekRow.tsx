@@ -136,7 +136,7 @@ function CalendarWeekRow({
           <div
             key={`ov-${col}`}
             style={{ gridColumn: col + 1, gridRow: MAX_VISIBLE_LANES + 1 }}
-            className="pl-1 text-[8px] leading-[8px] font-semibold text-indigo-500"
+            className="pl-1 text-[8px] leading-2 font-semibold text-indigo-500"
           >
             +{count}개
           </div>

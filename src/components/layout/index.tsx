@@ -13,19 +13,21 @@ interface LayoutProps {
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   const { pathname } = useLocation();
   const headerConfig = HEADER_CONFIGS.find((config) => config.match(pathname));
-  const isInfoHeader = headerConfig?.type === 'info';
+  const headerType = headerConfig?.type;
+  const isInfoHeader = headerType === 'info';
+  const hasHeader = headerType !== 'none';
 
   return (
     <div
       className="fixed inset-0 flex flex-col overflow-hidden"
       style={{ height: 'var(--viewport-height)', transform: 'translateY(var(--viewport-offset))' }}
     >
-      <Header />
+      {hasHeader && <Header />}
       <Suspense>
         <main
           className={cn(
             'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-            isInfoHeader ? 'pt-15' : 'pt-11',
+            hasHeader && (isInfoHeader ? 'pt-15' : 'pt-11'),
             showBottomNav && 'pb-19',
             contentClassName
           )}
