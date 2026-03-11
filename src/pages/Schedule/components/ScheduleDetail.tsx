@@ -8,9 +8,10 @@ type scheduleDetailProps = {
   year: number;
   month: number;
   day: number;
+  onItemClick?: () => void;
 };
 
-function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
+function ScheduleDetail({ year, month, day, onItemClick }: scheduleDetailProps) {
   const { data } = useScheduleList({ year, month });
 
   const selectedDate = useMemo(() => new Date(year, month - 1, day), [year, month, day]);
@@ -56,7 +57,8 @@ function ScheduleDetail({ year, month, day }: scheduleDetailProps) {
             <div
               ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
               key={title + startedAt}
-              className={`flex h-[70px] shrink-0 items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
+              className={`flex h-[70px] shrink-0 cursor-pointer items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
+              onClick={onItemClick}
             >
               <div className="w-1 shrink-0" style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }} />
               <div className="flex flex-col gap-1 p-3">

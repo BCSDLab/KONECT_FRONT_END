@@ -40,7 +40,7 @@ function Schedule() {
     return result;
   }, [dateList]);
 
-  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+  const [isSheetExpanded, setIsSheetExpanded] = useState(searchParams.get('sheet') === '1');
   const sheetTouchStartY = useRef(0);
 
   const handleSheetTouchStart = (e: React.TouchEvent) => {
@@ -145,7 +145,7 @@ function Schedule() {
         </div>
 
         <div className="flex flex-1 flex-col overflow-hidden">
-          <ScheduleDetail year={year} month={month} day={day} />
+          <ScheduleDetail year={year} month={month} day={day} onItemClick={() => setIsSheetExpanded(true)} />
         </div>
       </section>
     </div>

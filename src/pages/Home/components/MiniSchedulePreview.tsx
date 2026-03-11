@@ -52,7 +52,7 @@ function MiniSchedulePreview() {
   const visibleWeeks = todayWeekIndex >= 0 ? weeks.slice(todayWeekIndex, todayWeekIndex + 2) : weeks.slice(0, 2);
 
   const handleDateClick = (date: Date) => {
-    navigate(`/schedule?year=${date.getFullYear()}&month=${date.getMonth() + 1}&day=${date.getDate()}`);
+    navigate(`/schedule?year=${date.getFullYear()}&month=${date.getMonth() + 1}&day=${date.getDate()}&sheet=1`);
   };
 
   return (
