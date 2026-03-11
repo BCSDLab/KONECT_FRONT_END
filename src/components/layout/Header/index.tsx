@@ -19,6 +19,7 @@ function Header() {
     profile: () => <ProfileHeader />,
     info: () => <InfoHeader />,
     chat: () => <ChatHeader />,
+    login: () => <DefaultHeader title={''} showBackButton={false} className="bg-primary-500" />,
     schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,

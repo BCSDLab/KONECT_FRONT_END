@@ -1,5 +1,6 @@
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
+import { cn } from '@/utils/ts/cn';
 import NotificationBell from './NotificationBell';
 
 interface DefaultHeaderProps {
@@ -7,15 +8,27 @@ interface DefaultHeaderProps {
   showBackButton?: boolean;
   showNotificationBell?: boolean;
   onBack?: () => void;
+  className?: string;
 }
 
-function DefaultHeader({ title, showBackButton = true, showNotificationBell = false, onBack }: DefaultHeaderProps) {
+function DefaultHeader({
+  title,
+  showBackButton = true,
+  showNotificationBell = false,
+  onBack,
+  className,
+}: DefaultHeaderProps) {
   const smartBack = useSmartBack();
 
   const handleBack = onBack ?? smartBack;
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2">
+    <header
+      className={cn(
+        'fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2',
+        className
+      )}
+    >
       {showBackButton && (
         <button
           type="button"
