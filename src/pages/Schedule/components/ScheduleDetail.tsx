@@ -47,9 +47,6 @@ function ScheduleDetail({ year, month, day, onItemClick }: scheduleDetailProps) 
 
   return (
     <div ref={containerRef} className="flex flex-1 flex-col gap-2 overflow-y-auto bg-white px-6 pt-4 pb-6">
-      <span className="pb-1 text-[16px] leading-4 font-semibold">
-        {month}월 {day}일 일정
-      </span>
       {sortedSchedules.length ? (
         sortedSchedules.map(({ title, startedAt, endedAt, scheduleCategory }, index) => {
           const highlighted = isOnSelectedDay(startedAt, endedAt);
