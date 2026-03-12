@@ -60,12 +60,12 @@ function NotificationBell({ showTooltip = false }: NotificationBellProps) {
       </Link>
 
       {shouldShowTooltip ? (
-        <div className="chat-tooltip pointer-events-none absolute top-[calc(100%+6px)] right-0 z-10 w-[149px]">
+        <div className="chat-tooltip pointer-events-none absolute top-[calc(100%+2px)] right-0 z-10 w-[149px]">
           <span
-            className="chat-tooltip-arrow absolute -top-1 right-[15px] h-3 w-3.5 bg-black/40 [clip-path:polygon(50%_0,0_100%,100%_100%)]"
+            className="chat-tooltip-arrow absolute -top-1.5 right-[15px] h-3 w-3.5 bg-black/40 [clip-path:polygon(50%_0,0_100%,100%_100%)]"
             aria-hidden
           />
-          <div className="mt-2 flex items-center gap-1 rounded-[20px] bg-black/40 px-2.5 py-1 text-white">
+          <div className="mt-1.5 flex items-center gap-1 rounded-[20px] bg-black/40 px-2.5 py-1 text-white">
             <MegaphoneSmIcon className="text-warning-600 size-[13px] shrink-0" />
             <span className="text-cap2-strong whitespace-nowrap">채팅방 기능을 사용해보세요!</span>
           </div>
