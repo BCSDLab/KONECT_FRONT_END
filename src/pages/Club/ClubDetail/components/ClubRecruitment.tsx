@@ -10,9 +10,10 @@ import useGetClubRecruitment from '../hooks/useGetClubRecruitment';
 interface ClubRecruitProps {
   clubId: number;
   isMember: boolean;
+  presidentUserId: number;
 }
 
-function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
+function ClubRecruitment({ clubId, isMember, presidentUserId }: ClubRecruitProps) {
   const navigate = useNavigate();
   const { data: clubRecruitment } = useGetClubRecruitment(clubId);
   const { hasQuestions, applyDirectly, isFeeRequired, isPending } = useClubApply(clubId);
@@ -20,7 +21,8 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
 
   const setApplication = useClubApplicationStore((s) => s.setApplication);
   const isRecruitmentOpen = clubRecruitment.status === 'ONGOING';
-  const canApply = isRecruitmentOpen && !clubRecruitment.isApplied && !isMember;
+  const isRecruitmentDisabled = presidentUserId === 1;
+  const canApply = isRecruitmentOpen && !clubRecruitment.isApplied && !isMember && !isRecruitmentDisabled;
   const recruitmentContent = clubRecruitment.content.replace(/\\n/g, '\n');
 
   const handleApply = () => {
@@ -36,6 +38,7 @@ function ClubRecruitment({ clubId, isMember }: ClubRecruitProps) {
     if (isMember) return '가입 완료';
     if (clubRecruitment.isApplied) return '가입 신청 완료';
     if (!isRecruitmentOpen) return '모집 기간이 아닙니다';
+    if (isRecruitmentDisabled) return '지원하기';
     return '지원서 작성하기';
   };
 

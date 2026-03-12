@@ -80,7 +80,11 @@ function ClubDetail() {
       <div className="mt-35 flex flex-col gap-2 p-3">
         {clubDetail.recruitment.status !== 'CLOSED' && (
           <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
-            <ClubRecruit clubId={Number(clubId)} isMember={clubDetail.isMember} />
+            <ClubRecruit
+              clubId={Number(clubId)}
+              isMember={clubDetail.isMember}
+              presidentUserId={clubDetail.presidentUserId}
+            />
           </Activity>
         )}
         <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
