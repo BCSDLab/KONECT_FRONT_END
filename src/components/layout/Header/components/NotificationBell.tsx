@@ -51,7 +51,7 @@ function NotificationBell({ showTooltip = false }: NotificationBellProps) {
         onClick={handleChatButtonClick}
         className={cn('relative inline-flex', shouldShowTooltip && 'chat-tooltip-anchor')}
       >
-        <ChatCatIcon />
+        <ChatCatIcon className="drop-shadow-[0_4px_4px_rgba(0,0,0,0.20)]" />
         {totalUnreadCount > 0 ? (
           <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
             {totalUnreadCount > 99 ? '99+' : totalUnreadCount}

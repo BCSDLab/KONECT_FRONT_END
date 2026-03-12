@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import Portal from '@/components/common/Portal';
 import { SCHEDULE_DAYS } from '@/constants/schedule';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import CalendarWeekRow from './components/CalendarWeekRow';
@@ -15,7 +16,9 @@ const COLOR_LEGENDS = [
   { name: '기숙사', color: '#B9ADEF' },
 ];
 
+const HEADER_HEIGHT = 44;
 const PEEK_HEIGHT = 150;
+const SHEET_TOP_OFFSET = HEADER_HEIGHT + 200;
 
 function Schedule() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -84,7 +87,7 @@ function Schedule() {
   });
 
   return (
-    <div className="relative flex h-[calc(100vh-44px)] flex-col overflow-hidden bg-white">
+    <div className="relative flex h-[calc(var(--viewport-height)-44px)] flex-col overflow-hidden bg-white">
       <div className="overflow-y-auto" style={{ maxHeight: `calc(100% - ${PEEK_HEIGHT}px)` }}>
         <main
           className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-[23px]"
@@ -124,30 +127,34 @@ function Schedule() {
         </ul>
       </div>
 
-      <div
-        className={`absolute inset-0 z-9 bg-black/40 transition-opacity duration-300 ${isSheetExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
-        onClick={() => setIsSheetExpanded(false)}
-      />
+      <Portal>
+        <>
+          <div
+            className={`fixed inset-0 z-[31] bg-black/40 transition-opacity duration-300 ${isSheetExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+            onClick={() => setIsSheetExpanded(false)}
+          />
 
-      <section
-        className="absolute inset-x-0 bottom-0 z-10 flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
-        style={{
-          height: `calc(100% - 200px)`,
-          transform: isSheetExpanded ? 'translateY(0)' : `translateY(calc(100% - ${PEEK_HEIGHT}px))`,
-        }}
-      >
-        <div
-          className="flex shrink-0 justify-center pt-3 pb-2"
-          onTouchStart={handleSheetTouchStart}
-          onTouchEnd={handleSheetTouchEnd}
-        >
-          <div className="h-1 w-8 rounded-full bg-[#D1D5DB]" />
-        </div>
+          <section
+            className="fixed inset-x-0 bottom-0 z-[32] flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
+            style={{
+              height: `calc(var(--viewport-height) - ${SHEET_TOP_OFFSET}px)`,
+              transform: isSheetExpanded ? 'translateY(0)' : `translateY(calc(100% - ${PEEK_HEIGHT}px))`,
+            }}
+          >
+            <div
+              className="flex shrink-0 justify-center pt-3 pb-2"
+              onTouchStart={handleSheetTouchStart}
+              onTouchEnd={handleSheetTouchEnd}
+            >
+              <div className="h-1 w-8 rounded-full bg-[#D1D5DB]" />
+            </div>
 
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <ScheduleDetail year={year} month={month} day={day} onItemClick={() => setIsSheetExpanded(true)} />
-        </div>
-      </section>
+            <div className="flex flex-1 flex-col overflow-hidden">
+              <ScheduleDetail year={year} month={month} day={day} onItemClick={() => setIsSheetExpanded(true)} />
+            </div>
+          </section>
+        </>
+      </Portal>
     </div>
   );
 }
