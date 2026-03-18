@@ -24,9 +24,9 @@ function ManagedClubList() {
                   alt="Club Avatar"
                   className="border-indigo-5 h-12 w-12 rounded-sm border object-cover"
                 />
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sub2 text-indigo-700">{club.name}</span>
-                  <span className="text-cap1 text-indigo-300">{club.categoryName}</span>
+                <div className="flex min-w-0 items-center gap-1.5">
+                  <span className="text-sub2 truncate text-indigo-700">{club.name}</span>
+                  <span className="text-cap1 truncate text-indigo-300">{club.categoryName}</span>
                 </div>
               </div>
               <RightArrowIcon />

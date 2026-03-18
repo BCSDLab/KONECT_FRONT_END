@@ -21,6 +21,10 @@ export const ROUTE_TITLES: RouteTitle[] = [
     title: '정보 수정하기',
   },
   {
+    match: (pathname) => /^\/mypage\/manager\/\d+\/applications$/.test(pathname),
+    title: '지원자 관리',
+  },
+  {
     match: (pathname) => /^\/mypage\/manager\/\d+\/applications\/\d+$/.test(pathname),
     title: '지원서 보기',
   },

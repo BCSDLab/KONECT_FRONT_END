@@ -15,9 +15,16 @@ const fieldLabelClassName = 'text-body3-strong text-text-700';
 const fieldControlClassName =
   'w-full rounded-lg border border-text-200 bg-white px-3 text-[13px] leading-[20.8px] font-medium text-black outline-none placeholder:text-text-300 focus:border-primary-500';
 const fieldInputClassName = `${fieldControlClassName} h-[31px]`;
-const fieldTextAreaClassName = `${fieldControlClassName} min-h-[128px] resize-none py-2.5`;
+const disabledFieldInputClassName =
+  'h-[31px] w-full rounded-lg border border-transparent bg-background px-3 text-[13px] leading-[20.8px] font-medium text-text-500 outline-none disabled:cursor-not-allowed disabled:opacity-100 disabled:[-webkit-text-fill-color:#5A6B7F]';
+const fieldTextAreaClassName = `${fieldControlClassName} min-h-[512px] resize-none py-2.5`;
 const imageActionButtonClassName =
   'absolute flex size-[25px] items-center justify-center rounded-full bg-[#9f9f9f] text-[18px] leading-none text-white shadow-[0_1px_2px_rgba(0,0,0,0.16)]';
+const clubNameFieldId = 'managed-club-name';
+const categoryFieldId = 'managed-club-category';
+const descriptionFieldId = 'managed-club-description';
+const locationFieldId = 'managed-club-location';
+const introduceFieldId = 'managed-club-introduce';
 
 function clearLocalPreviewUrl(localPreviewUrlRef: MutableRefObject<string | null>) {
   if (!localPreviewUrlRef.current) return;
@@ -128,8 +135,8 @@ function ManagedClubInfo() {
   };
 
   const readOnlyFields = [
-    { label: '동아리명', value: clubDetail.name },
-    { label: '분과', value: clubDetail.categoryName },
+    { id: clubNameFieldId, label: '동아리명', value: clubDetail.name },
+    { id: categoryFieldId, label: '분과', value: clubDetail.categoryName },
   ];
 
   return (
@@ -182,21 +189,26 @@ function ManagedClubInfo() {
               <div className="h-[22px] w-0" aria-hidden="true" />
             </div>
 
-            {readOnlyFields.map(({ label, value }) => (
-              <div key={label} className="flex flex-col gap-1">
-                <label className={fieldLabelClassName}>{label}</label>
-                <input value={value ?? ''} readOnly className={fieldInputClassName} />
+            {readOnlyFields.map(({ id, label, value }) => (
+              <div key={id} className="flex flex-col gap-1">
+                <label htmlFor={id} className={fieldLabelClassName}>
+                  {label}
+                </label>
+                <input id={id} value={value ?? ''} readOnly disabled className={disabledFieldInputClassName} />
               </div>
             ))}
 
             <div className="flex flex-col gap-1">
               <div className="flex items-end justify-between gap-3">
-                <label className={fieldLabelClassName}>한 줄 소개</label>
+                <label htmlFor={descriptionFieldId} className={fieldLabelClassName}>
+                  한 줄 소개
+                </label>
                 <span className="text-cap1 text-text-300">
                   {description.length}/{DESCRIPTION_MAX_LENGTH}
                 </span>
               </div>
               <input
+                id={descriptionFieldId}
                 value={description}
                 onChange={handleDescriptionChange}
                 placeholder="한 줄 소개를 입력해주세요"
@@ -206,8 +218,11 @@ function ManagedClubInfo() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className={fieldLabelClassName}>동아리방 위치</label>
+              <label htmlFor={locationFieldId} className={fieldLabelClassName}>
+                동아리방 위치
+              </label>
               <input
+                id={locationFieldId}
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
                 placeholder="동아리방 위치를 입력해주세요"
@@ -216,8 +231,11 @@ function ManagedClubInfo() {
             </div>
 
             <div className="flex flex-col gap-1">
-              <label className={fieldLabelClassName}>상세 소개</label>
+              <label htmlFor={introduceFieldId} className={fieldLabelClassName}>
+                상세 소개
+              </label>
               <textarea
+                id={introduceFieldId}
                 value={introduce}
                 onChange={(e) => setIntroduce(e.target.value)}
                 placeholder="동아리 상세 소개를 입력해주세요"

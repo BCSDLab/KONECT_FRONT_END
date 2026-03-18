@@ -48,11 +48,13 @@ function ManagedRecruitmentWrite() {
   const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
   const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
   const [content, setContent] = useState('');
+  const [isRecruitmentEnabled, setIsRecruitmentEnabled] = useState(false);
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [hasHandledExisting, setHasHandledExisting] = useState(false);
+  const [hasInitializedRecruitmentEnabled, setHasInitializedRecruitmentEnabled] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,6 +77,15 @@ function ManagedRecruitmentWrite() {
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
   }, [content]);
+
+  useEffect(() => {
+    if (!clubSettings || hasInitializedRecruitmentEnabled) {
+      return;
+    }
+
+    setIsRecruitmentEnabled(clubSettings.isRecruitmentEnabled);
+    setHasInitializedRecruitmentEnabled(true);
+  }, [clubSettings, hasInitializedRecruitmentEnabled]);
 
   const applyExistingRecruitment = () => {
     if (!existingRecruitment) return;
@@ -189,7 +200,7 @@ function ManagedRecruitmentWrite() {
   };
 
   const handleRecruitmentEnabledChange = (enabled: boolean) => {
-    patchSettings({ isRecruitmentEnabled: enabled });
+    setIsRecruitmentEnabled(enabled);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -207,11 +218,17 @@ function ManagedRecruitmentWrite() {
       const imageData = [...existingImageData, ...uploadedImageData];
 
       const onSuccess = () => {
-        if (location.state?.enableAfterSave) {
-          patchSettings({ isRecruitmentEnabled: true }, { onSuccess: () => navigate(-1) });
-        } else {
-          navigate(`/mypage/manager/${clubId}/recruitment`);
+        const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+        const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
+        const navigateAfterSave = () =>
+          shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
+
+        if (clubSettings?.isRecruitmentEnabled === nextRecruitmentEnabled) {
+          navigateAfterSave();
+          return;
         }
+
+        patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled }, { onSuccess: navigateAfterSave });
       };
 
       if (isAlwaysRecruiting) {
@@ -233,7 +250,6 @@ function ManagedRecruitmentWrite() {
     }
   };
 
-  const isRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
 
   return (

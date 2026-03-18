@@ -2,6 +2,7 @@ import { useRef, type HTMLAttributes, type ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
 import useScrollLock from '@/utils/hooks/useScrollLock';
+import { cn } from '@/utils/ts/cn';
 import Portal from './Portal';
 
 interface BottomModalProps extends HTMLAttributes<HTMLDivElement> {
@@ -22,7 +23,7 @@ function BottomModal({ isOpen, onClose, children, className, overlayClassName }:
   return (
     <Portal>
       <div
-        className={twMerge('fixed inset-0 z-100 bg-black/60', overlayClassName)}
+        className={cn('fixed inset-0 z-100 bg-black/60', overlayClassName)}
         onClick={(e) => {
           e.stopPropagation();
           onClose();

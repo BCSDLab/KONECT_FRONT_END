@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import ApplicationDetailContent from '@/pages/Manager/components/ApplicationDetailContent';
-import { useGetManagedMemberApplicationDetailByUser } from '../hooks/useManagedApplications';
+import { useGetManagedMemberApplicationDetailByUser } from '@/pages/Manager/hooks/useManagedApplications';
 
 function ManagedMemberApplicationDetail() {
   const params = useParams();

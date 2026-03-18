@@ -18,7 +18,7 @@ import type {
 } from '@/apis/club/entity';
 import { useToastContext } from '@/contexts/useToastContext';
 
-const memberQueryKeys = {
+export const memberQueryKeys = {
   all: ['manager'],
   managedMembers: (clubId: number) => [...memberQueryKeys.all, 'managedMembers', clubId],
   managedClub: (clubId: number) => [...memberQueryKeys.all, 'managedClub', clubId],

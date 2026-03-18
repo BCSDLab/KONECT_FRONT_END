@@ -12,6 +12,7 @@ import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
 import {
+  memberQueryKeys,
   useAddPreMember,
   useChangeMemberPosition,
   useChangeVicePresident,
@@ -411,15 +412,11 @@ function ManagedMemberList() {
       return;
     }
 
-    for (const userId of promoteUserIds) {
-      await changeMemberPosition({ userId, data: { position: 'MANAGER' } });
-    }
+    await Promise.all(promoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MANAGER' } })));
 
-    for (const userId of demoteUserIds) {
-      await changeMemberPosition({ userId, data: { position: 'MEMBER' } });
-    }
+    await Promise.all(demoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MEMBER' } })));
 
-    await queryClient.invalidateQueries({ queryKey: ['manager', 'managedMembers', clubId] });
+    await queryClient.invalidateQueries({ queryKey: memberQueryKeys.managedMembers(clubId) });
     showToast('직책이 변경되었습니다');
     closeRoleManage();
   };

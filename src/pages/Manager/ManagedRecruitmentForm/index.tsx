@@ -59,7 +59,14 @@ function ManagedRecruitmentForm() {
     setQuestions((prev) => prev.map((q) => (q.tempId === tempId ? { ...q, isRequired: checked } : q)));
   };
 
+  const hasEmptyQuestion = questions.some((q) => !q.question.trim());
+  const isApplicationToggleDisabled = hasEmptyQuestion || isPending || isPatchPending;
+
   const handleApplicationEnabledChange = (enabled: boolean) => {
+    if (isApplicationToggleDisabled) {
+      return;
+    }
+
     patchSettings({ isApplicationEnabled: enabled });
   };
 
@@ -83,7 +90,6 @@ function ManagedRecruitmentForm() {
     });
   };
 
-  const hasEmptyQuestion = questions.some((q) => !q.question.trim());
   const isApplicationEnabled = clubSettings?.isApplicationEnabled ?? false;
   const applicationStatusLabel = isApplicationEnabled ? '활성화' : '비활성화';
 
@@ -103,7 +109,7 @@ function ManagedRecruitmentForm() {
                 ariaLabel="지원서 활성화 설정"
                 enabled={isApplicationEnabled}
                 onChange={handleApplicationEnabledChange}
-                disabled={isPatchPending}
+                disabled={isApplicationToggleDisabled}
               />
             </div>
 

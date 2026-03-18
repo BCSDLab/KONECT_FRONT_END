@@ -150,7 +150,7 @@ function ManagedApplicationList() {
         )}
 
         {hasNextPage && (
-          <div ref={observerRef} className="text-caption1 flex h-12 items-center justify-center text-indigo-300">
+          <div ref={observerRef} className="text-cap1 flex h-12 items-center justify-center text-indigo-300">
             {isFetchingNextPage ? '지원자를 불러오는 중입니다.' : ''}
           </div>
         )}

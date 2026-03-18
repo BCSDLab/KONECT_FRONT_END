@@ -2,8 +2,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import Card from '@/components/common/Card';
 import { useManagedClub, useGetManagedClubs } from '@/pages/Manager/hooks/useManagedClubs';
+import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 import { cn } from '@/utils/ts/cn';
-import { useMyInfo } from '../../Profile/hooks/useMyInfo';
 
 interface UserInfoCardProps {
   type?: 'user' | 'manager' | 'detail';

@@ -42,7 +42,7 @@ function ManagedRecruitment() {
       <Card className="gap-5 rounded-2xl px-4 py-3">
         {rows.map(({ icon, title, content, to }) => (
           <Link key={to} to={to} className="flex items-center gap-3 transition-opacity active:opacity-70">
-            <img src={icon} alt={title} className="size-7 shrink-0 object-contain" />
+            <img src={icon} alt="" aria-hidden="true" className="size-7 shrink-0 object-contain" />
             <div className="min-w-0 flex-1">
               <div className="text-sm leading-[1.6] font-semibold text-indigo-700">{title}</div>
               <div className="text-xs leading-[1.6] text-indigo-300">{content}</div>
