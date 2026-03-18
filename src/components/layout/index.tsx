@@ -15,6 +15,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
   const headerConfig = HEADER_CONFIGS.find((config) => config.match(pathname));
   const headerType = headerConfig?.type;
   const isInfoHeader = headerType === 'info';
+  const isManagerHeader = headerType === 'manager';
   const hasHeader = headerType !== 'none';
 
   return (
@@ -27,7 +28,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
         <main
           className={cn(
             'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-            hasHeader && (isInfoHeader ? 'pt-15' : 'pt-11'),
+            hasHeader && (isInfoHeader ? 'pt-15' : isManagerHeader ? 'pt-[63px]' : 'pt-11'),
             showBottomNav && 'pb-19',
             contentClassName
           )}

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { useGetManagedClubs } from '../hooks/useManagedClubs';
 
@@ -7,20 +7,32 @@ function ManagedClubList() {
   const { managedClubList } = useGetManagedClubs();
 
   return (
-    <div className="flex flex-col gap-2 p-3">
+    <div className="flex flex-col gap-7 p-[19px]">
       <UserInfoCard type="manager" />
-      <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
-        {managedClubList.joinedClubs.map((club) => (
-          <Link to={`${club.id}`} key={club.id} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
-            <div className="flex items-center justify-between px-3 py-2">
-              <div className="flex items-center gap-4">
-                <img src={club.imageUrl} alt="Club Avatar" className="h-10 w-10" />
-                <div className="text-sub2">{club.name}</div>
+      <div className="flex flex-col gap-3">
+        <p className="text-sub1 text-indigo-700">동아리 목록</p>
+        <div className="flex flex-col gap-2">
+          {managedClubList.joinedClubs.map((club) => (
+            <Link
+              to={`${club.id}`}
+              key={club.id}
+              className="border-indigo-5 active:bg-indigo-5 flex items-center justify-between rounded-2xl border bg-white p-3 transition-colors"
+            >
+              <div className="flex min-w-0 flex-1 items-center gap-3">
+                <img
+                  src={club.imageUrl}
+                  alt="Club Avatar"
+                  className="border-indigo-5 h-12 w-12 rounded-sm border object-cover"
+                />
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sub2 text-indigo-700">{club.name}</span>
+                  <span className="text-cap1 text-indigo-300">{club.categoryName}</span>
+                </div>
               </div>
               <RightArrowIcon />
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );

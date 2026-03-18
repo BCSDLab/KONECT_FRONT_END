@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import Card from '@/components/common/Card';
 import { useManagedClub, useGetManagedClubs } from '@/pages/Manager/hooks/useManagedClubs';
 import { cn } from '@/utils/ts/cn';
@@ -24,14 +24,17 @@ function ManagerDetailInfoCard() {
   };
 
   return (
-    <Card onClick={handleClick} className="active:bg-indigo-5/50 cursor-pointer">
-      <div className="flex items-center justify-between gap-3">
+    <Card
+      onClick={handleClick}
+      className="active:bg-indigo-5/50 cursor-pointer rounded-2xl border-0 px-3 py-[21px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.15)]"
+    >
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <img className="h-12 w-12 rounded-full" src={managedClub?.imageUrl} alt="Member Avatar" />
+          <img className="h-12 w-12 rounded" src={managedClub?.imageUrl} alt={`${currentClub?.name} 동아리 사진`} />
           <div>
-            <div className={cn('text-h2 font-bold text-indigo-700')}>{currentClub?.name} 관리자</div>
-            <div className="mt-1.5 text-xs leading-3.5 font-medium text-indigo-300">
-              {myInfo.studentNumber} · {myInfo.universityName} · {currentClub?.position}
+            <div className="text-[16px] leading-[1.6] font-bold text-indigo-700">{currentClub?.name} 정보</div>
+            <div className="text-[11px] leading-[15px] font-medium text-indigo-300">
+              {myInfo.studentNumber} / {myInfo.universityName} / {currentClub?.position}
             </div>
           </div>
         </div>
@@ -51,17 +54,17 @@ function ManagerStats({
 
   return (
     <div className="flex justify-between gap-2">
-      <div className="bg-indigo-5 flex-1 rounded-sm p-3 text-center">
-        <div className="text-body3">관리 동아리</div>
-        <div className="text-h3 mt-1">{managedClubList.joinedClubs.length}</div>
+      <div className="border-indigo-5 flex flex-1 flex-col items-center justify-center gap-2.5 rounded-xl border bg-white p-2 text-center">
+        <div className="text-body3 text-indigo-400">관리동아리</div>
+        <div className="text-h3">{managedClubList.joinedClubs.length}</div>
       </div>
       <button
         type="button"
         onClick={(e) => onButtonClick(e, '/council?tab=notice')}
-        className="bg-indigo-5 flex-1 rounded-sm p-3 text-center"
+        className="border-indigo-5 flex flex-1 flex-col items-center justify-center gap-2.5 rounded-xl border bg-white p-2 text-center"
       >
-        <div className="text-body3">읽지 않은 공지</div>
-        <div className="text-h3 mt-1">{myInfo.unreadCouncilNoticeCount}</div>
+        <div className="text-body3 text-indigo-400">읽지 않은 공지</div>
+        <div className="text-h3">{myInfo.unreadCouncilNoticeCount}</div>
       </button>
     </div>
   );
@@ -88,19 +91,17 @@ function UserInfoCard({ type }: UserInfoCardProps) {
     navigate(to);
   };
 
-  const cardProps = isClickable
-    ? {
-        onClick: handleCardClick,
-        className: 'cursor-pointer active:bg-indigo-5/50',
-      }
-    : {};
+  const cardClassName = cn(
+    'rounded-2xl bg-white p-4 shadow-[0_0_3px_0_rgba(0,0,0,0.2)]',
+    isClickable && 'cursor-pointer active:bg-indigo-5/50'
+  );
 
   return (
-    <Card {...cardProps}>
+    <div className={cardClassName} onClick={isClickable ? handleCardClick : undefined}>
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           {/* <img className="h-12 w-12 rounded-full" src={myInfo.imageUrl} alt="Member Avatar" /> */}
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-100 text-indigo-400">
+          <div className="bg-primary-200 text-primary-800 flex h-12 w-12 items-center justify-center rounded-full">
             {myInfo.name.charAt(0)}
           </div>
           <div>
@@ -136,8 +137,12 @@ function UserInfoCard({ type }: UserInfoCardProps) {
           </button>
         </div>
       )}
-      {type === 'manager' && <ManagerStats onButtonClick={handleButtonClick} />}
-    </Card>
+      {type === 'manager' && (
+        <div className="mt-4">
+          <ManagerStats onButtonClick={handleButtonClick} />
+        </div>
+      )}
+    </div>
   );
 }
 

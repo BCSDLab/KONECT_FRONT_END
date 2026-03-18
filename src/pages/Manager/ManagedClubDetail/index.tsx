@@ -1,30 +1,28 @@
 import { Link } from 'react-router-dom';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
-import ClipboardListIcon from '@/assets/svg/clipboard-list.svg';
-import PeopleGroupIcon from '@/assets/svg/people-group.svg';
-import UserSquareIcon from '@/assets/svg/user-square.svg';
+import BoyIcon from '@/assets/image/boy.png';
+import ChatIcon from '@/assets/image/chat.png';
+import FloderIcon from '@/assets/image/folder.png';
+import ChevronRightDarkIcon from '@/assets/svg/Chevron-left-dark.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 
 const menuItems = [
-  { to: 'recruitment', icon: ClipboardListIcon, label: '모집 공고 및 지원서 관리' },
-  { to: 'applications', icon: UserSquareIcon, label: '지원자 관리' },
-  { to: 'members', icon: PeopleGroupIcon, label: '부원 관리' },
+  { to: 'recruitment', icon: FloderIcon, size: 24, label: '모집 공고 및 지원서 관리' },
+  { to: 'applications', icon: ChatIcon, size: 28, label: '지원자 관리' },
+  { to: 'members', icon: BoyIcon, size: 28, label: '부원 관리' },
 ];
 
 function ManagedClubDetail() {
   return (
-    <div className="flex flex-col gap-2 p-3">
+    <div className="flex flex-col gap-9 px-[19px] py-[17px]">
       <UserInfoCard type="detail" />
-      <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
-        {menuItems.map(({ to, icon: Icon, label }) => (
-          <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
-            <div className="flex items-center justify-between px-3 py-2">
-              <div className="flex items-center gap-4">
-                <Icon />
-                <div className="text-sub2">{label}</div>
-              </div>
-              <RightArrowIcon />
+      <div className="border-background flex flex-col gap-5 rounded-2xl border bg-white px-4 py-3">
+        {menuItems.map(({ to, icon, size, label }) => (
+          <Link key={to} to={to} className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <img src={icon} alt="" width={size} height={size} />
+              <span className="text-sub1 font-semibold text-indigo-700">{label}</span>
             </div>
+            <ChevronRightDarkIcon />
           </Link>
         ))}
       </div>
