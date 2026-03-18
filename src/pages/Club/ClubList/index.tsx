@@ -19,12 +19,12 @@ function ClubList() {
   const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];
 
   return (
-    <div className="pb-15">
+    <>
       <SearchBar isButton />
-      <div className="bg-background mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
-        <div className="text-sub2 text-indigo-300">
-          총 <span className="text-black">{totalCount}개</span>의 동아리
-        </div>
+      <div className="h-16 shrink-0" />
+
+      <div className="flex flex-col gap-2 px-5 pt-2 pb-4">
+        <div className="text-sub2 px-3 text-indigo-300">총 {totalCount}개의 동아리</div>
 
         <div className="flex flex-col gap-2">
           {allClubs.map((club) => (
@@ -34,7 +34,7 @@ function ClubList() {
 
         {hasNextPage && <div ref={observerRef} className="flex h-20 items-center justify-center" />}
       </div>
-    </div>
+    </>
   );
 }
 

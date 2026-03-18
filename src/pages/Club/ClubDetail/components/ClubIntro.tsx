@@ -61,7 +61,7 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
           type="button"
           onClick={handleInquireClick}
           disabled={isCreatingChatRoom}
-          className="bg-primary text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
+          className="bg-primary-500 text-body3 flex items-center justify-center gap-1 rounded-sm py-3 text-white"
         >
           <PaperPlaneIcon className="text-white" />
           {isCreatingChatRoom ? '이동 중...' : '문의하기'}
