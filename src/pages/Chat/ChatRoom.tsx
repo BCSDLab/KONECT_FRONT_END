@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
-import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
-import PaperPlaneIcon from '@/assets/svg/paper-plane.svg';
+import type { ChatMessage } from '@/apis/chat/entity';
+import SendArrowIcon from '@/assets/svg/chat-send-arrow.svg';
 import LinkifiedText from '@/components/common/LinkifiedText';
 import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
+import { cn } from '@/utils/ts/cn';
 import useChat from './hooks/useChat';
 import useChatRoomScroll from './hooks/useChatRoomScroll';
 
@@ -22,6 +23,58 @@ const formatTime = (dateString: string) => {
   const [hour, minute] = timePart.split(':');
   return `${hour}:${minute}`;
 };
+
+interface ChatMessageRowProps {
+  isGroup: boolean;
+  isSameSender: boolean;
+  message: ChatMessage;
+}
+
+function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps) {
+  const showSenderName = isGroup && !message.isMine && !isSameSender;
+  const formattedTime = formatTime(message.createdAt);
+  const formattedUnreadCount = message.unreadCount > 0 ? String(message.unreadCount) : null;
+
+  if (message.isMine) {
+    return (
+      <div className="flex justify-end px-6 py-2">
+        <div className="flex max-w-full items-end gap-2">
+          {formattedUnreadCount && (
+            <span className="text-primary-500 text-[10px] leading-[1.6] font-medium">{formattedUnreadCount}</span>
+          )}
+          <span className="text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
+
+          <div className="bg-primary-500/80 text-sub4 max-w-[78%] rounded-2xl px-3 py-2 text-white shadow-[0_0_3px_rgba(0,0,0,0.15)]">
+            <LinkifiedText
+              text={message.content}
+              className="wrap-anywhere whitespace-pre-wrap"
+              linkClassName="text-white underline"
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="px-6 py-2">
+      <div className="max-w-full">
+        {showSenderName && <div className="text-sub4 text-text-400 mb-1 px-3">{message.senderName}</div>}
+
+        <div className="flex items-end gap-2">
+          <div className="bg-indigo-5 text-sub4 max-w-[78%] rounded-2xl px-3 py-2 text-black">
+            <LinkifiedText
+              text={message.content}
+              className="wrap-anywhere whitespace-pre-wrap"
+              linkClassName="text-primary-500 underline"
+            />
+          </div>
+          <span className="shrink-0 text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ChatRoom() {
   const { chatRoomId } = useParams();
@@ -47,6 +100,16 @@ function ChatRoom() {
   const isGroup = currentRoom?.chatType === 'GROUP';
 
   const sortedMessages = [...chatMessages].reverse();
+  const isSubmitDisabled = isSendingMessage || !value.trim();
+
+  const resetTextareaHeight = () => {
+    if (!textareaRef.current) return;
+
+    textareaRef.current.style.height = 'auto';
+    const baseHeight = baseTextareaHeightRef.current || textareaRef.current.scrollHeight;
+    baseTextareaHeightRef.current = baseHeight;
+    textareaRef.current.style.height = `${baseHeight}px`;
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,8 +124,6 @@ function ChatRoom() {
 
     setValue('');
     if (textareaRef.current) {
-      const baseHeight = baseTextareaHeightRef.current || textareaRef.current.scrollHeight;
-      textareaRef.current.style.height = `${baseHeight}px`;
       textareaRef.current.focus();
     }
     scrollToBottom();
@@ -81,18 +142,20 @@ function ChatRoom() {
   };
 
   useEffect(() => {
-    if (!textareaRef.current) return;
-
-    textareaRef.current.style.height = 'auto';
-    baseTextareaHeightRef.current = textareaRef.current.scrollHeight;
-    textareaRef.current.style.height = `${baseTextareaHeightRef.current}px`;
+    resetTextareaHeight();
   }, []);
 
+  useEffect(() => {
+    if (!value) {
+      resetTextareaHeight();
+    }
+  }, [value]);
+
   return (
-    <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col">
+    <div className="flex min-h-0 flex-1 flex-col bg-white">
       <div
         ref={scrollContainerRef}
-        className="bg-indigo-0 min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain pb-4"
+        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain py-3"
       >
         <div ref={topRef} />
 
@@ -106,91 +169,42 @@ function ChatRoom() {
           const isSameSender = prevMessage?.senderId === message.senderId && !showDateHeader;
 
           return (
-            <div
-              key={message.messageId}
-              className={clsx('w-full min-w-0 px-6', showDateHeader ? 'mt-4' : isSameSender ? 'mt-1' : 'mt-3')}
-            >
+            <div key={message.messageId} className="w-full min-w-0">
               {showDateHeader && (
-                <div className="flex justify-center py-3">
-                  <span className="bg-indigo-25 text-primary rounded-full px-3 py-1 text-xs">
+                <div className={cn('flex justify-center px-6', index === 0 ? 'pb-2' : 'pt-4 pb-2')}>
+                  <span className="text-text-400 text-sub4 rounded-2xl bg-white px-3 py-1">
                     {formatDate(message.createdAt)}
                   </span>
                 </div>
               )}
 
-              <div className={clsx('flex w-full min-w-0 items-end', message.isMine ? 'justify-end' : 'justify-start')}>
-                {!message.isMine && (
-                  <div className="flex max-w-full min-w-0 flex-col">
-                    {isGroup && !isSameSender && (
-                      <div className="text-body3 mb-1 pl-10 text-indigo-400">{message.senderName}</div>
-                    )}
-
-                    <div className="flex min-w-0 items-start gap-2">
-                      {isGroup && (
-                        <div className="w-8 shrink-0">
-                          {!isSameSender ? (
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-300 text-xs">
-                              {message.senderName?.[0]}
-                            </div>
-                          ) : (
-                            <div className="h-8 w-8" />
-                          )}
-                        </div>
-                      )}
-
-                      <div className="bg-info-100 text-body1 rounded-lg px-3 py-2 wrap-anywhere whitespace-pre-wrap">
-                        <LinkifiedText text={message.content} />
-                      </div>
-
-                      <div className="flex shrink-0 flex-col items-start gap-0.5 self-end">
-                        {message.unreadCount > 0 && (
-                          <span className="text-cap2 text-info-600 font-medium">{message.unreadCount}</span>
-                        )}
-                        <span className="text-cap2 text-indigo-300">{formatTime(message.createdAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* ===== RIGHT (내 메시지) ===== */}
-                {message.isMine && (
-                  <div className="flex max-w-full min-w-0 flex-row-reverse items-end gap-2">
-                    <div className="bg-indigo-5 text-body1 rounded-lg px-3 py-2 wrap-anywhere whitespace-pre-wrap">
-                      <LinkifiedText text={message.content} />
-                    </div>
-
-                    <div className="flex shrink-0 flex-col items-end self-end">
-                      {message.unreadCount > 0 && (
-                        <span className="text-cap2 text-info-600 font-medium">{message.unreadCount}</span>
-                      )}
-                      <span className="text-cap2 text-indigo-300">{formatTime(message.createdAt)}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <ChatMessageRow isGroup={isGroup} isSameSender={isSameSender} message={message} />
             </div>
           );
         })}
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-indigo-25 flex min-w-0 shrink-0 items-end gap-2 px-5 py-2">
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={handleInputChange}
-          className="bg-indigo-0 max-h-32 min-w-0 flex-1 resize-none overflow-x-hidden rounded-sm px-3 py-2 text-sm wrap-anywhere whitespace-pre-wrap text-indigo-700 placeholder:text-indigo-500"
-          rows={1}
-          placeholder="메세지 보내기"
-          maxLength={1000}
-        />
+      <form onSubmit={handleSubmit} className="shrink-0 bg-white px-5 pt-3 pb-[calc(22px+var(--sab))]">
+        <div className="bg-text-100 flex min-w-0 items-end gap-3 rounded-[30px] px-4 py-3">
+          <textarea
+            ref={textareaRef}
+            value={value}
+            onChange={handleInputChange}
+            aria-label="메시지 입력"
+            className="text-text-600 text-sub4 placeholder:text-text-300 max-h-32 min-h-6 min-w-0 flex-1 resize-none overflow-x-hidden bg-transparent py-1 wrap-anywhere whitespace-pre-wrap outline-none"
+            rows={1}
+            maxLength={1000}
+          />
 
-        <button
-          type="submit"
-          disabled={isSendingMessage || !value.trim()}
-          className="bg-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-sm disabled:opacity-50"
-        >
-          <PaperPlaneIcon className="text-indigo-0" />
-        </button>
+          <button
+            type="submit"
+            aria-label="메시지 전송"
+            disabled={isSubmitDisabled}
+            className="text-text-600 disabled:text-text-300 flex size-6 shrink-0 items-center justify-center"
+          >
+            <SendArrowIcon className="size-6" />
+          </button>
+        </div>
       </form>
     </div>
   );
