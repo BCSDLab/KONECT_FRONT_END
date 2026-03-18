@@ -1,44 +1,15 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import CreditCardSmIcon from '@/assets/svg/credit-card-sm.svg';
-import CreditCardIcon from '@/assets/svg/credit-card.svg';
-import FileSmIcon from '@/assets/svg/file-sm.svg';
-import FileIcon from '@/assets/svg/file.svg';
-import MegaphoneSmIcon from '@/assets/svg/megaphone-sm.svg';
-import MegaphoneIcon from '@/assets/svg/megaphone.svg';
+import { Link, useParams } from 'react-router-dom';
+import cardIcon from '@/assets/image/3d-card.png';
+import fileIcon from '@/assets/image/3d-file.png';
+import flagIcon from '@/assets/image/3d-flag.png';
+import ChevronRightIcon from '@/assets/svg/chevron-right.svg';
+import Card from '@/components/common/Card';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import ToggleSwitch from '../../../components/common/ToggleSwitch';
-import { useGetClubSettings, usePatchClubSettings } from '../hooks/useManagedSettings';
-import StatusCard from './components/StatusCard';
+import { useGetClubSettings } from '../hooks/useManagedSettings';
 
 function ManagedRecruitment() {
   const { clubId } = useParams<{ clubId: string }>();
-  const navigate = useNavigate();
   const { data: settings } = useGetClubSettings(Number(clubId));
-  const { mutate: patchSettings, isPending: isPatchingSettings } = usePatchClubSettings(Number(clubId));
-
-  const handleRecruitmentToggle = (value: boolean) => {
-    if (value && !settings?.recruitment) {
-      navigate('write', { state: { enableAfterSave: true } });
-      return;
-    }
-    patchSettings({ isRecruitmentEnabled: value });
-  };
-
-  const handleApplicationToggle = (value: boolean) => {
-    if (value && (!settings?.application || settings.application.questionCount === 0)) {
-      navigate('form', { state: { enableAfterSave: true } });
-      return;
-    }
-    patchSettings({ isApplicationEnabled: value });
-  };
-
-  const handleFeeToggle = (value: boolean) => {
-    if (value && !settings?.fee) {
-      navigate('account', { state: { enableAfterSave: true } });
-      return;
-    }
-    patchSettings({ isFeeEnabled: value });
-  };
 
   const recruitmentContent = (() => {
     if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
@@ -59,42 +30,27 @@ function ManagedRecruitment() {
     return `${settings.fee.amount} / ${settings.fee.bankName}`;
   })();
 
+  const rows = [
+    { icon: flagIcon, title: '모집 공고', content: recruitmentContent, to: 'write' },
+    { icon: fileIcon, title: '지원서', content: applicationContent, to: 'form' },
+    { icon: cardIcon, title: '회비', content: feeContent, to: 'account' },
+  ];
+
   return (
-    <div className="flex h-full flex-col gap-4 p-3">
+    <div className="flex h-full flex-col gap-9 px-[19px] py-[17px]">
       <UserInfoCard type="detail" />
-      <div className="rounded-lg bg-white p-4">
-        <div className="mb-3 text-sm leading-4 font-bold text-indigo-700">설정 관리</div>
-        <div className="flex items-center justify-evenly">
-          <ToggleSwitch
-            icon={MegaphoneSmIcon}
-            label="모집공고"
-            enabled={settings?.isRecruitmentEnabled ?? false}
-            disabled={isPatchingSettings}
-            onChange={handleRecruitmentToggle}
-          />
-          <div className="h-14 w-px bg-indigo-50" />
-          <ToggleSwitch
-            icon={FileSmIcon}
-            label="지원서"
-            enabled={settings?.isApplicationEnabled ?? false}
-            disabled={isPatchingSettings}
-            onChange={handleApplicationToggle}
-          />
-          <div className="h-14 w-px bg-indigo-50" />
-          <ToggleSwitch
-            icon={CreditCardSmIcon}
-            label="회비"
-            enabled={settings?.isFeeEnabled ?? false}
-            disabled={isPatchingSettings}
-            onChange={handleFeeToggle}
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <StatusCard icon={MegaphoneIcon} title="모집공고" content={recruitmentContent} to="write" />
-        <StatusCard icon={FileIcon} title="지원서" content={applicationContent} to="form" />
-        <StatusCard icon={CreditCardIcon} title="회비" content={feeContent} to="account" />
-      </div>
+      <Card className="gap-5 rounded-2xl px-4 py-3">
+        {rows.map(({ icon, title, content, to }) => (
+          <Link key={to} to={to} className="flex items-center gap-3 transition-opacity active:opacity-70">
+            <img src={icon} alt="" aria-hidden="true" className="size-7 shrink-0 object-contain" />
+            <div className="min-w-0 flex-1">
+              <div className="text-sm leading-[1.6] font-semibold text-indigo-700">{title}</div>
+              <div className="text-xs leading-[1.6] text-indigo-300">{content}</div>
+            </div>
+            <ChevronRightIcon className="shrink-0 text-indigo-100" />
+          </Link>
+        ))}
+      </Card>
     </div>
   );
 }

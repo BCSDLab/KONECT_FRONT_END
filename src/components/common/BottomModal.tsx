@@ -2,15 +2,17 @@ import { useRef, type HTMLAttributes, type ReactNode } from 'react';
 import { twMerge } from 'tailwind-merge';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
 import useScrollLock from '@/utils/hooks/useScrollLock';
+import { cn } from '@/utils/ts/cn';
 import Portal from './Portal';
 
 interface BottomModalProps extends HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
+  overlayClassName?: string;
 }
 
-function BottomModal({ isOpen, onClose, children, className }: BottomModalProps) {
+function BottomModal({ isOpen, onClose, children, className, overlayClassName }: BottomModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useClickTouchOutside(modalRef, onClose);
@@ -21,7 +23,7 @@ function BottomModal({ isOpen, onClose, children, className }: BottomModalProps)
   return (
     <Portal>
       <div
-        className="fixed inset-0 z-100 bg-black/60"
+        className={cn('fixed inset-0 z-100 bg-black/60', overlayClassName)}
         onClick={(e) => {
           e.stopPropagation();
           onClose();

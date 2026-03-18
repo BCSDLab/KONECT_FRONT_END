@@ -18,7 +18,7 @@ import type {
 } from '@/apis/club/entity';
 import { useToastContext } from '@/contexts/useToastContext';
 
-const memberQueryKeys = {
+export const memberQueryKeys = {
   all: ['manager'],
   managedMembers: (clubId: number) => [...memberQueryKeys.all, 'managedMembers', clubId],
   managedClub: (clubId: number) => [...memberQueryKeys.all, 'managedClub', clubId],
@@ -63,16 +63,24 @@ export const useChangeVicePresident = (clubId: number) => {
   });
 };
 
-export const useChangeMemberPosition = (clubId: number) => {
+export const useChangeMemberPosition = (
+  clubId: number,
+  options: { invalidateOnSuccess?: boolean; showToastOnSuccess?: boolean } = {}
+) => {
   const queryClient = useQueryClient();
   const { showToast } = useToastContext();
+  const { invalidateOnSuccess = true, showToastOnSuccess = true } = options;
 
   return useMutation({
     mutationFn: ({ userId, data }: { userId: number; data: ChangeMemberPositionRequest }) =>
       patchMemberPosition(clubId, userId, data),
     onSuccess: () => {
-      showToast('직책이 변경되었습니다');
-      queryClient.invalidateQueries({ queryKey: memberQueryKeys.managedMembers(clubId) });
+      if (showToastOnSuccess) {
+        showToast('직책이 변경되었습니다');
+      }
+      if (invalidateOnSuccess) {
+        queryClient.invalidateQueries({ queryKey: memberQueryKeys.managedMembers(clubId) });
+      }
     },
   });
 };

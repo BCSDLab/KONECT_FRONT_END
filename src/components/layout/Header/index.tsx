@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ChatHeader from './components/ChatHeader';
 import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
+import ManagerHeader from './components/ManagerHeader';
 import ProfileHeader from './components/ProfileHeader';
 import ScheduleHeader from './components/ScheduleHeader';
 import { HEADER_CONFIGS, DEFAULT_HEADER_TYPE } from './headerConfig';
@@ -26,6 +27,7 @@ function Header() {
     signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
     council: ({ title }) => <DefaultHeader title={title} />,
     default: ({ title }) => <DefaultHeader title={title} />,
+    manager: ({ title }) => <ManagerHeader fallbackTitle={title} />,
   };
 
   const onBack = headerType === 'signup' ? () => navigate('/') : undefined;

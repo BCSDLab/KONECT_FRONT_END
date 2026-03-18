@@ -26,8 +26,8 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/signup/finish' || /^\/clubs\/\d+\/complete$/.test(pathname),
   },
   {
-    type: 'full',
-    match: (pathname) => /^\/mypage\/manager(?:\/[^/]+)?$/.test(pathname),
+    type: 'manager',
+    match: (pathname) => pathname.startsWith('/mypage/manager'),
   },
   {
     type: 'signup',
