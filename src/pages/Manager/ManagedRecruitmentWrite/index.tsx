@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
+import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ClockIcon from '@/assets/svg/clock.svg';
-import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import TimePicker from '@/pages/Manager/components/TimePicker';
 import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
-import { usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { formatDateDot } from '@/utils/ts/date';
@@ -30,14 +30,17 @@ interface ImageItem {
   isExisting?: boolean; // 기존 이미지 여부
 }
 
-const sectionCardStyle =
-  'flex w-full flex-col gap-4 rounded-2xl border border-indigo-25 bg-white px-4 py-4 shadow-[0_4px_12px_rgba(2,23,48,0.06)]';
-const sectionTitleStyle = 'text-h3 text-indigo-700';
+const sectionCardStyle = 'flex w-full flex-col rounded-2xl bg-white px-5 py-5';
+const sectionTitleStyle = 'text-[16px] leading-[1.6] font-semibold text-indigo-700';
+const sectionDividerStyle = 'h-px bg-[#e7ebef]';
+const dateFieldContainerStyle = 'rounded-[20px] border-[0.7px] border-[#c6cfd8] bg-white px-3 py-[19px]';
 const compactButtonStyle =
-  'group flex h-10 min-w-0 w-full items-center justify-between rounded-lg border border-indigo-50 bg-white px-3 text-left shadow-[0_2px_6px_rgba(2,23,48,0.06)]';
+  'group flex h-[34px] min-w-0 w-full items-center justify-between rounded-[4px] border-[0.7px] border-[#c6cfd8] bg-white px-1.5 text-left shadow-[0_0_3px_rgba(0,0,0,0.15)]';
+const compactButtonTextStyle = 'text-[11px] leading-[1.6] font-medium text-[#344352]';
 
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();
+  const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
   const [startDate, setStartDate] = useState<Date>(new Date());
@@ -54,9 +57,10 @@ function ManagedRecruitmentWrite() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { data: existingRecruitment } = useGetManagedRecruitments(Number(clubId));
-  const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(Number(clubId));
-  const { mutate: patchSettings } = usePatchClubSettings(Number(clubId));
+  const { data: existingRecruitment } = useGetManagedRecruitments(clubIdNumber);
+  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
+  const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(clubIdNumber);
+  const { mutate: patchSettings, isPending: isSettingsPending } = usePatchClubSettings(clubIdNumber);
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -164,7 +168,13 @@ function ManagedRecruitmentWrite() {
   };
 
   const handleDeleteImage = () => {
-    URL.revokeObjectURL(images[currentImageIndex].previewUrl);
+    const targetImage = images[currentImageIndex];
+
+    if (!targetImage) return;
+    if (!targetImage.isExisting) {
+      URL.revokeObjectURL(targetImage.previewUrl);
+    }
+
     const newImages = images.filter((_, index) => index !== currentImageIndex);
     setImages(newImages);
     if (currentImageIndex >= newImages.length && newImages.length > 0) {
@@ -176,6 +186,10 @@ function ManagedRecruitmentWrite() {
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleRecruitmentEnabledChange = (enabled: boolean) => {
+    patchSettings({ isRecruitmentEnabled: enabled });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -196,7 +210,7 @@ function ManagedRecruitmentWrite() {
         if (location.state?.enableAfterSave) {
           patchSettings({ isRecruitmentEnabled: true }, { onSuccess: () => navigate(-1) });
         } else {
-          navigate(`/manager/${clubId}/recruitment`);
+          navigate(`/mypage/manager/${clubId}/recruitment`);
         }
       };
 
@@ -219,53 +233,66 @@ function ManagedRecruitmentWrite() {
     }
   };
 
+  const isRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
+  const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
+
   return (
     <div className="flex h-full flex-col">
-      <form
-        id="recruitment-form"
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-5 p-4"
-        style={{ paddingBottom: 'calc(20px + var(--sab) + 16px)' }}
-      >
-        <section className={twMerge(sectionCardStyle, 'gap-3')}>
-          <div className="flex items-center justify-between gap-3">
-            <span className={sectionTitleStyle}>모집 일시</span>
+      <form id="recruitment-form" onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-y-auto px-4 pt-4">
+        <div className="flex flex-col gap-4 pb-6">
+          <div className="flex justify-end">
             <ToggleSwitch
-              label="상시 모집"
-              enabled={isAlwaysRecruiting}
-              onChange={setIsAlwaysRecruiting}
-              layout="horizontal"
+              variant="manager"
+              label={recruitmentStatusLabel}
+              ariaLabel="모집 공고 활성화 설정"
+              enabled={isRecruitmentEnabled}
+              onChange={handleRecruitmentEnabledChange}
+              disabled={isSettingsPending}
             />
           </div>
-          <div className="h-px bg-indigo-50" />
-          {isAlwaysRecruiting ? (
-            <p className="text-body2 text-indigo-300">상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.</p>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <div
-                className={twMerge(
-                  'bg-indigo-0 overflow-hidden rounded-xl border',
-                  hasDateError ? 'border-red-300' : 'border-indigo-50'
-                )}
-              >
-                <div className="px-3 py-3">
-                  <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="text-cap1 bg-indigo-5 rounded-full px-2 py-1 text-center text-indigo-600">
+
+          <section className={sectionCardStyle}>
+            <div className="flex items-center justify-between gap-3">
+              <span className={sectionTitleStyle}>모집 일시</span>
+              <ToggleSwitch
+                variant="manager"
+                label="상시 모집"
+                enabled={isAlwaysRecruiting}
+                onChange={setIsAlwaysRecruiting}
+              />
+            </div>
+            <div className="mt-5 mb-4">
+              <div className={sectionDividerStyle} />
+            </div>
+
+            {isAlwaysRecruiting ? (
+              <div className={dateFieldContainerStyle}>
+                <p className="text-[14px] leading-[1.6] font-medium text-[#5a6b7f]">
+                  상시 모집이 설정되어 있어 모집 기간 제한이 없습니다.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                <div className={twMerge(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
+                  <div className="flex items-center gap-4">
+                    <span className="bg-primary-100 text-primary-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
                       시작
                     </span>
-                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
+                    <div className="ml-auto flex w-full max-w-[180px] flex-col gap-[11px]">
                       <DatePicker
                         selectedDate={startDate}
                         onChange={setStartDate}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex min-w-0 items-center gap-2">
-                              <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
-                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(startDate)}</span>
+                            <span className="flex min-w-0 items-center gap-[5px]">
+                              <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
+                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
+                                {formatDateDot(startDate)}
+                              </span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
-                              className="h-3.5 w-3.5 shrink-0 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                              className="h-2.5 w-2.5 shrink-0 text-indigo-100 transition-transform group-hover:translate-x-0.5"
                             />
                           </button>
                         )}
@@ -276,39 +303,43 @@ function ManagedRecruitmentWrite() {
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex items-center gap-2">
-                              <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
-                              <span className="text-sub2 text-indigo-700">{startTime}</span>
+                            <span className="flex items-center gap-[5px]">
+                              <ClockIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
+                              <span className={compactButtonTextStyle}>{startTime}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
-                              className="h-3.5 w-3.5 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                              className="h-2.5 w-2.5 shrink-0 text-indigo-100 transition-transform group-hover:translate-x-0.5"
                             />
                           </button>
                         )}
                       />
                     </div>
                   </div>
-                </div>
 
-                <div className="mx-3 h-px bg-indigo-50" />
+                  <div className="my-[15px]">
+                    <div className={sectionDividerStyle} />
+                  </div>
 
-                <div className="px-3 py-3">
-                  <div className="grid grid-cols-[42px_minmax(0,1fr)] items-center gap-x-2">
-                    <span className="text-cap1 rounded-full bg-red-50 px-2 py-1 text-center text-red-500">종료</span>
-                    <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_104px] gap-2 max-[390px]:grid-cols-1">
+                  <div className="flex items-center gap-4">
+                    <span className="bg-sub-100 text-sub-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
+                      종료
+                    </span>
+                    <div className="ml-auto flex w-full max-w-[180px] flex-col gap-[11px]">
                       <DatePicker
                         selectedDate={endDate}
                         onChange={setEndDate}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex min-w-0 items-center gap-2">
-                              <CalendarIcon aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-indigo-500" />
-                              <span className="text-sub2 truncate text-indigo-700">{formatDateDot(endDate)}</span>
+                            <span className="flex min-w-0 items-center gap-[5px]">
+                              <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
+                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
+                                {formatDateDot(endDate)}
+                              </span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
-                              className="h-3.5 w-3.5 shrink-0 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                              className="h-2.5 w-2.5 shrink-0 text-indigo-100 transition-transform group-hover:translate-x-0.5"
                             />
                           </button>
                         )}
@@ -319,13 +350,13 @@ function ManagedRecruitmentWrite() {
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex items-center gap-2">
-                              <ClockIcon aria-hidden="true" className="h-3.5 w-3.5 text-indigo-500" />
-                              <span className="text-sub2 text-indigo-700">{endTime}</span>
+                            <span className="flex items-center gap-[5px]">
+                              <ClockIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
+                              <span className={compactButtonTextStyle}>{endTime}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
-                              className="h-3.5 w-3.5 text-indigo-300 transition-transform group-hover:translate-x-0.5"
+                              className="h-2.5 w-2.5 shrink-0 text-indigo-100 transition-transform group-hover:translate-x-0.5"
                             />
                           </button>
                         )}
@@ -333,145 +364,165 @@ function ManagedRecruitmentWrite() {
                     </div>
                   </div>
                 </div>
+
+                {hasDateError && (
+                  <div className="rounded-xl bg-red-50 px-3 py-2">
+                    <span className="text-[13px] leading-[1.6] font-medium text-red-500">{getDateErrorMessage()}</span>
+                  </div>
+                )}
               </div>
-              {hasDateError && (
-                <div className="flex items-center gap-2 rounded-lg bg-red-50 px-3 py-2">
-                  <span className="text-body3 text-red-500">{getDateErrorMessage()}</span>
-                </div>
-              )}
-            </div>
-          )}
-        </section>
-        <section className={sectionCardStyle}>
-          <span className={sectionTitleStyle}>
-            모집 공고 <span className="text-[#EA4335]">*</span>
-          </span>
-          <textarea
-            ref={textareaRef}
-            value={content}
-            onChange={handleContentChange}
-            rows={6}
-            className="text-body1 bg-indigo-0 mt-1 min-h-[156px] w-full resize-none overflow-hidden rounded-xl border border-indigo-50 px-4 py-3.5 text-indigo-700 shadow-[0_2px_6px_rgba(2,23,48,0.08)] placeholder:text-indigo-200"
-            placeholder="모집 공고 내용을 작성해주세요"
-          />
-        </section>
-        <section className={sectionCardStyle}>
-          <span className={sectionTitleStyle}>이미지 등록</span>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleImageSelect}
-            className="hidden"
-          />
-          <div className="flex justify-center">
+            )}
+          </section>
+
+          <section className={sectionCardStyle}>
+            <span className={sectionTitleStyle}>
+              모집 공고 <span className="text-[#EA4335]">*</span>
+            </span>
+            <textarea
+              ref={textareaRef}
+              value={content}
+              onChange={handleContentChange}
+              rows={6}
+              className="border-text-200 placeholder:text-text-300 text-text-700 mt-3 min-h-[226px] w-full resize-none overflow-hidden rounded-[20px] border-[0.7px] bg-white px-4 py-4 text-[15px] leading-[1.6] font-medium focus:outline-none"
+              placeholder="모집 공고 내용을 작성해주세요"
+            />
+          </section>
+
+          <section className={sectionCardStyle}>
+            <span className={sectionTitleStyle}>이미지 등록</span>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleImageSelect}
+              className="hidden"
+            />
+
             {images.length === 0 ? (
               <button
                 type="button"
                 onClick={handleImageClick}
-                className="border-indigo-75 bg-indigo-0 flex h-44 w-full max-w-[260px] flex-col items-center justify-center gap-3 rounded-2xl border"
+                className="border-text-200 mt-3 flex h-[226px] w-full flex-col items-center justify-center gap-2 rounded-[20px] border-[0.7px] bg-white text-[#5a6b7f]"
               >
-                <ImageIcon aria-hidden="true" />
-                <p className="text-sub3 text-center whitespace-pre-line text-indigo-300">
-                  이미지를 {'\n'} 추가해주세요
-                </p>
+                <AddPhotoAlternateIcon aria-hidden="true" className="h-[60px] w-[60px]" />
+                <p className="text-center text-[16px] leading-[1.6] font-semibold">이미지를 추가해주세요</p>
               </button>
             ) : (
-              <div className="flex flex-col items-center gap-3">
-                <div className="relative flex items-center gap-2">
+              <div className="mt-3 flex flex-col gap-3">
+                <div className="border-text-200 relative h-[226px] overflow-hidden rounded-[20px] border-[0.7px] bg-white">
+                  <img
+                    src={images[currentImageIndex].previewUrl}
+                    alt={`업로드 이미지 ${currentImageIndex + 1}`}
+                    className="h-full w-full object-cover"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={handleDeleteImage}
+                    aria-label="현재 이미지 삭제"
+                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-sm font-semibold text-white"
+                  >
+                    ×
+                  </button>
+
                   {images.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={handlePrevImage}
-                      aria-label="이전 이미지"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md"
-                    >
-                      <ChevronLeft aria-hidden="true" className="h-5 w-5 text-indigo-700" />
-                    </button>
-                  )}
-                  <div className="relative h-40 w-40 overflow-hidden rounded-xl">
-                    <img
-                      src={images[currentImageIndex].previewUrl}
-                      alt={`업로드 이미지 ${currentImageIndex + 1}`}
-                      className="h-full w-full object-cover"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleDeleteImage}
-                      aria-label="현재 이미지 삭제"
-                      className="absolute top-1 right-1 flex h-7 w-7 items-center justify-center rounded-full bg-black/50 text-white"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  {images.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={handleNextImage}
-                      aria-label="다음 이미지"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-white shadow-md"
-                    >
-                      <ChevronRight aria-hidden="true" className="h-5 w-5 text-indigo-700" />
-                    </button>
+                    <>
+                      <button
+                        type="button"
+                        onClick={handlePrevImage}
+                        aria-label="이전 이미지"
+                        className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)]"
+                      >
+                        <ChevronLeft aria-hidden="true" className="h-4 w-4 text-indigo-700" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleNextImage}
+                        aria-label="다음 이미지"
+                        className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)]"
+                      >
+                        <ChevronRight aria-hidden="true" className="h-4 w-4 text-indigo-700" />
+                      </button>
+                    </>
                   )}
                 </div>
-                <div className="flex items-center gap-2">
-                  {images.length > 1 && (
-                    <div className="flex gap-1">
-                      {images.map((_, index) => (
-                        <button
-                          key={index}
-                          type="button"
-                          onClick={() => setCurrentImageIndex(index)}
-                          aria-label={`${index + 1}번 이미지 보기`}
-                          className={twMerge(
-                            'h-2.5 w-2.5 rounded-full',
-                            index === currentImageIndex ? 'bg-indigo-700' : 'bg-indigo-200'
-                          )}
-                        />
-                      ))}
-                    </div>
-                  )}
+
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5">
+                    {images.map((_, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => setCurrentImageIndex(index)}
+                        aria-label={`${index + 1}번 이미지 보기`}
+                        className={twMerge(
+                          'h-2 w-2 rounded-full transition-colors',
+                          index === currentImageIndex ? 'bg-primary-500' : 'bg-text-200'
+                        )}
+                      />
+                    ))}
+                  </div>
+
                   <button
                     type="button"
                     onClick={handleImageClick}
-                    className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-700 text-white"
+                    className="bg-primary-500 rounded-full px-4 py-2 text-[13px] leading-[1.6] font-semibold text-white"
                   >
-                    +
+                    이미지 추가
                   </button>
                 </div>
               </div>
             )}
+          </section>
+
+          <div className="flex flex-col gap-2 pb-[calc(12px+var(--sab))]">
+            <div className="flex flex-col gap-1">
+              {uploadError && (
+                <p className="text-[13px] leading-[1.6] font-medium text-red-500">
+                  {uploadError.message ?? '이미지 업로드에 실패했습니다.'}
+                </p>
+              )}
+              {error && (
+                <p className="text-[13px] leading-[1.6] font-medium text-red-500">
+                  {error.message ?? '모집 공고 수정에 실패했습니다.'}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-[18px] leading-[1.6] font-semibold text-white disabled:cursor-not-allowed"
+              disabled={isPending || isUploading || !content.trim() || hasDateError}
+            >
+              {isUploading ? '이미지 업로드 중…' : isPending ? '수정 중…' : '모집공고 수정'}
+            </button>
           </div>
-        </section>
-        <div className="mt-1 flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            {uploadError && (
-              <p className="text-body3 text-red-500">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
-            )}
-            {error && <p className="text-body3 text-red-500">{error.message ?? '모집 공고 수정에 실패했습니다.'}</p>}
-          </div>
-          <button
-            type="submit"
-            disabled={isPending || isUploading || !content.trim() || hasDateError}
-            className="text-h3 bg-primary w-full rounded-xl py-3.5 text-white"
-          >
-            {isUploading ? '이미지 업로드 중…' : isPending ? '수정 중…' : '모집 공고 수정'}
-          </button>
         </div>
       </form>
-      <BottomModal isOpen={isChoiceModalOpen} onClose={closeChoiceModal}>
-        <div className="flex flex-col gap-6 px-6 pt-7 pb-4">
-          <div className="text-h3 text-center whitespace-pre-wrap">기존 모집 공고가 있습니다. 불러와서 수정할까요?</div>
-          <div className="flex flex-col gap-2">
+      <BottomModal
+        isOpen={isChoiceModalOpen}
+        onClose={closeChoiceModal}
+        className="overflow-hidden rounded-t-[30px]"
+        overlayClassName="bg-black/30"
+      >
+        <div className="px-[19px] pt-3.5 pb-[calc(14px+var(--sab))]">
+          <div className="flex flex-col items-center gap-[13px] px-3 py-2">
+            <div className="text-text-700 text-center text-[20px] leading-[1.6] font-semibold whitespace-pre-line">
+              {'임시저장된 모집 공고가 있습니다.\n불러와서 수정할까요?'}
+            </div>
             <button
+              type="button"
               onClick={applyExistingRecruitment}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white"
+              className="bg-primary-500 h-12 w-full rounded-2xl text-center text-[18px] leading-[1.6] font-semibold text-white"
             >
               기존 공고 불러오기
             </button>
-            <button onClick={handleReset} className="text-h3 w-full rounded-lg py-3.5 text-center text-indigo-400">
+            <button
+              type="button"
+              onClick={handleReset}
+              className="text-primary-500 h-12 w-full rounded-2xl border border-[#e6e6e6] bg-white text-center text-[18px] leading-[1.6] font-semibold"
+            >
               처음부터 작성
             </button>
           </div>
