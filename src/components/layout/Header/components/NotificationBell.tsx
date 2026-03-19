@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import ChatCatIcon from '@/assets/svg/chat-cat.svg';
 import MegaphoneSmIcon from '@/assets/svg/megaphone-sm.svg';
-import useChat from '@/pages/Chat/hooks/useChat';
+import useUnreadChatCount from '@/pages/Chat/hooks/useUnreadChatCount';
 import { cn } from '@/utils/ts/cn';
 
 const CHAT_TOOLTIP_DISMISSED_STORAGE_KEY = 'chat-tooltip-dismissed:v1';
@@ -24,7 +24,7 @@ interface NotificationBellProps {
 }
 
 function NotificationBell({ showTooltip = false }: NotificationBellProps) {
-  const { totalUnreadCount } = useChat();
+  const { totalUnreadCount } = useUnreadChatCount();
   const [isTooltipDismissed, setIsTooltipDismissed] = useState(readChatTooltipDismissed);
 
   const shouldShowTooltip = showTooltip && !isTooltipDismissed;
