@@ -1,8 +1,8 @@
 import Card from '@/components/common/Card';
-import { useCouncilNotice } from '@/pages/Club/ClubDetail/hooks/useCouncilNotices';
 import CouncilNoticeCard from '@/pages/Home/components/CouncilNoticeCard';
 import SectionErrorFallback from '@/pages/Home/components/SectionErrorFallback';
 import SectionTitle from '@/pages/Home/components/SectionTitle';
+import { useGetHomeCouncilNotices } from '@/pages/Home/hooks/useGetHomeCouncilNotices';
 
 const COUNCIL_NOTICE_PARAMS = { limit: 3 } as const;
 
@@ -38,8 +38,8 @@ export function CouncilNoticeSectionErrorFallback() {
 }
 
 function CouncilNoticeSection() {
-  const { data: councilNoticeData } = useCouncilNotice(COUNCIL_NOTICE_PARAMS);
-  const allNotices = councilNoticeData.pages.flatMap((page) => page.councilNotices);
+  const { data: councilNoticeData } = useGetHomeCouncilNotices(COUNCIL_NOTICE_PARAMS);
+  const allNotices = councilNoticeData.councilNotices;
 
   return (
     <div className="flex flex-col gap-2">
