@@ -30,11 +30,9 @@ function ChatHeader() {
           <span className="truncate text-[18px] leading-5 font-normal text-indigo-700">{chatRoom?.roomName ?? ''}</span>
         </div>
 
-        {isGroup && (
-          <button type="button" aria-label="채팅방 정보 열기" onClick={openSidebar} className="ml-3 shrink-0">
-            <HamburgerIcon />
-          </button>
-        )}
+        <button type="button" aria-label="채팅방 정보 열기" onClick={openSidebar} className="ml-3 shrink-0">
+          <HamburgerIcon />
+        </button>
       </header>
 
       <div
