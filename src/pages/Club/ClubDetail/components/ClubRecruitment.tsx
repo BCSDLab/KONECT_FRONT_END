@@ -58,7 +58,7 @@ function ClubRecruitment({ clubId, isMember, presidentUserId }: ClubRecruitProps
           hasQuestions ? (
             <Link
               to="applications"
-              className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
+              className="bg-primary-500 w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
             >
               지원하기
             </Link>
@@ -66,7 +66,7 @@ function ClubRecruitment({ clubId, isMember, presidentUserId }: ClubRecruitProps
             <button
               type="button"
               onClick={openConfirm}
-              className="bg-primary w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
+              className="bg-primary-500 w-full rounded-sm py-3 text-center text-xs leading-3 font-medium text-white"
             >
               지원하기
             </button>
@@ -101,7 +101,7 @@ function ClubRecruitment({ clubId, isMember, presidentUserId }: ClubRecruitProps
               type="button"
               onClick={handleApply}
               disabled={isPending}
-              className="bg-primary text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
+              className="bg-primary-500 text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:opacity-50"
             >
               지원하기
             </button>

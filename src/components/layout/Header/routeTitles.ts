@@ -49,10 +49,6 @@ export const ROUTE_TITLES: RouteTitle[] = [
     title: '동아리 검색',
   },
   {
-    match: (pathname) => pathname === '/chats',
-    title: '채팅방',
-  },
-  {
     match: (pathname) => pathname === '/council',
     title: '총동아리연합회',
   },

@@ -98,10 +98,10 @@ function App() {
               <Route path="clubs">
                 <Route index element={<ClubList />} />
                 <Route path="search" element={<ClubSearch />} />
-                <Route path=":clubId" element={<ClubDetail />} />
               </Route>
             </Route>
             <Route element={<Layout />}>
+              <Route path="clubs/:clubId" element={<ClubDetail />} />
               <Route path="clubs/:clubId/applications" element={<ApplicationPage />} />
               <Route path="clubs/:clubId/fee" element={<ClubFeePage />} />
               <Route path="clubs/:clubId/complete" element={<ApplyCompletePage />} />

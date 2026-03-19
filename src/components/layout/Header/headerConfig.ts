@@ -6,6 +6,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/',
   },
   {
+    type: 'default',
+    match: (pathname) => /^\/clubs\/\d+$/.test(pathname),
+  },
+  {
     type: 'profile',
     match: (pathname) => pathname === '/mypage',
   },

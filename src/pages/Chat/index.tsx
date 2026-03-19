@@ -1,77 +1,112 @@
 import { Link } from 'react-router-dom';
-import BellOfIcon from '@/assets/svg/bell-off.svg';
+import type { Room } from '@/apis/chat/entity';
+import BellOffIcon from '@/assets/svg/bell-off.svg';
+import PersonIcon from '@/assets/svg/person.svg';
 import useChat from './hooks/useChat';
+
+const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
+
+const formatTime = (timeString: string) => {
+  const timeMatch = timeString.match(/(\d{1,2}):(\d{2})/);
+
+  if (!timeMatch) {
+    return '';
+  }
+
+  const hour = Number(timeMatch[1]);
+  const minute = Number(timeMatch[2]);
+  const period = hour < 12 ? '오전' : '오후';
+  const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+
+  return `${period} ${displayHour}:${String(minute).padStart(2, '0')}`;
+};
+
+function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
+  if (roomImageUrl) {
+    return (
+      <img
+        src={roomImageUrl}
+        alt=""
+        aria-hidden="true"
+        className="border-indigo-5 size-12 shrink-0 rounded-full border object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="bg-indigo-5 flex size-12 shrink-0 items-center justify-center rounded-full" aria-hidden="true">
+      <PersonIcon className="size-6 text-white" />
+    </div>
+  );
+}
+
+function ChatRoomListItem({ room }: { room: Room }) {
+  const isGroup = room.chatType === 'GROUP';
+  const hasUnreadMessage = room.unreadCount > 0;
+  const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
+
+  return (
+    <Link
+      to={`${room.roomId}`}
+      className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
+    >
+      <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-1">
+            <span className="text-text-700 truncate text-[16px] leading-[1.6] font-semibold">{room.roomName}</span>
+
+            {isGroup && (
+              <span className="bg-primary-500 inline-flex shrink-0 items-center justify-center rounded-[50px] px-1 py-0.5 text-[12px] leading-3 font-medium text-white">
+                단체
+              </span>
+            )}
+
+            {room.isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
+          </div>
+
+          {room.lastSentAt && (
+            <span className="text-text-500 shrink-0 text-[12px] leading-[1.6] font-normal">
+              {formatTime(room.lastSentAt)}
+            </span>
+          )}
+        </div>
+
+        <div className="mt-0.5 flex items-center gap-3">
+          <p className="text-text-500 min-w-0 flex-1 truncate text-[12px] leading-[1.6] font-normal">
+            {previewMessage}
+          </p>
+
+          {hasUnreadMessage && (
+            <span className="shrink-0">
+              <span aria-hidden="true" className="bg-primary-500 block size-2 rounded-full" />
+              <span className="sr-only">{`읽지 않은 메시지 ${room.unreadCount}개`}</span>
+            </span>
+          )}
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 function ChatListPage() {
   const { chatRoomList } = useChat();
 
-  const formatTime = (timeString: string) => {
-    const timePart = timeString.split(' ')[1];
-    const [hour, minute] = timePart.split(':').map(Number);
-    const period = hour < 12 ? '오전' : '오후';
-    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
-    return `${period} ${displayHour}:${String(minute).padStart(2, '0')}`;
-  };
-
   if (chatRoomList.rooms.length === 0) {
     return (
-      <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col items-center justify-center py-3">
-        <div className="text-sm text-gray-500">채팅방이 없어요</div>
-        <div className="mt-1 text-xs text-gray-400">동아리에 문의하면 채팅이 시작돼요</div>
+      <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-3 text-center">
+        <div className="text-sub2 text-text-700">채팅방이 없어요</div>
+        <div className="text-body3 text-text-500 mt-1">동아리에 문의하면 채팅이 시작돼요</div>
       </div>
     );
   }
 
   return (
-    <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col py-3">
-      {chatRoomList.rooms.map((room) => {
-        const isGroup = room.chatType === 'GROUP';
-
-        return (
-          <Link
-            to={`${room.roomId}`}
-            key={room.roomId}
-            className="active:bg-indigo-5 bg-indigo-0 flex items-center gap-3 px-5 py-4"
-          >
-            <img
-              src={room.roomImageUrl}
-              alt={room.roomName}
-              className={`h-11 w-11 shrink-0 rounded-full border ${isGroup ? 'border-primary' : 'border-indigo-5'}`}
-            />
-
-            <div className="flex min-w-0 flex-1 flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="text-sm leading-4 font-bold text-indigo-700">{room.roomName}</div>
-
-                  {isGroup && <span className="bg-primary text-cap2 rounded px-1.5 py-0.5 text-white">단체</span>}
-                  {room.isMuted && (
-                    <span className="text-xs text-gray-400">
-                      <BellOfIcon className="h-4 w-4" />
-                    </span>
-                  )}
-                </div>
-
-                <div className="shrink-0 text-xs leading-3.5 font-medium text-indigo-300">
-                  {room.lastSentAt ? formatTime(room.lastSentAt) : ''}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between gap-2">
-                <div className="max-w-[80%] min-w-0 truncate text-xs leading-3.5 font-medium text-indigo-300">
-                  {room.lastMessage ?? '동아리에 궁금한 점을 물어보세요'}
-                </div>
-
-                {room.unreadCount > 0 && (
-                  <div className="text-indigo-0 min-w-5 shrink-0 rounded-full bg-[#3182f6] px-1 py-0.5 text-center">
-                    {room.unreadCount}
-                  </div>
-                )}
-              </div>
-            </div>
-          </Link>
-        );
-      })}
+    <div className="flex min-h-0 flex-1 flex-col bg-white py-3">
+      {chatRoomList.rooms.map((room) => (
+        <ChatRoomListItem key={room.roomId} room={room} />
+      ))}
     </div>
   );
 }
