@@ -21,24 +21,16 @@ function ChatHeader() {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2">
-        <button
-          type="button"
-          aria-label="뒤로가기"
-          onClick={smartBack}
-          className="absolute top-1/2 left-4 -translate-y-1/2"
-        >
-          <ChevronLeftIcon />
-        </button>
+      <header className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center bg-white px-4 py-2">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
+          <button type="button" aria-label="뒤로가기" onClick={smartBack} className="shrink-0">
+            <ChevronLeftIcon />
+          </button>
 
-        <span className="text-lg">{chatRoom?.roomName ?? ''}</span>
+          <span className="truncate text-[18px] leading-5 font-normal text-indigo-700">{chatRoom?.roomName ?? ''}</span>
+        </div>
 
-        <button
-          type="button"
-          aria-label="채팅방 정보 열기"
-          onClick={openSidebar}
-          className="absolute top-1/2 right-4 -translate-y-1/2"
-        >
+        <button type="button" aria-label="채팅방 정보 열기" onClick={openSidebar} className="ml-3 shrink-0">
           <HamburgerIcon />
         </button>
       </header>

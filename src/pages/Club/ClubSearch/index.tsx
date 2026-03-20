@@ -44,15 +44,14 @@ function ClubSearch() {
   return (
     <>
       <SearchBar value={keyword} onChange={handleChange} autoFocus />
+      <div className="h-16 shrink-0" />
 
-      <div className="mt-13 flex flex-col gap-2 px-3 pt-2 pb-4">
+      <div className="flex flex-col gap-2 px-5 pt-2 pb-4">
         {!debouncedQuery ? (
           <div className="py-6 text-center text-xs text-indigo-300">검색어를 입력해서 동아리를 검색해보세요.</div>
         ) : (
           <>
-            <div className="text-caption2 text-indigo-300">
-              총 <span className="font-bold text-black">{totalCount}개</span>의 동아리
-            </div>
+            <div className="text-sub2 px-3 text-indigo-300">총 {totalCount}개의 동아리</div>
 
             <div className="flex flex-col gap-2">
               {allClubs.map((club) => (

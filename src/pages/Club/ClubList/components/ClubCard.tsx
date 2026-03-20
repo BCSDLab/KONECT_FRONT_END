@@ -33,7 +33,7 @@ function ClubCard({ club }: ClubCardProps) {
   const clubTag: ClubTag | null = (() => {
     if (club.isPendingApproval) {
       return {
-        label: '승인대기중',
+        label: '승인 대기중',
         bgColor: '#FEF3C7',
         textColor: '#B45309',
       };
@@ -62,24 +62,24 @@ function ClubCard({ club }: ClubCardProps) {
     <Link
       to={`/clubs/${club.id}${club.status === 'ONGOING' ? '?tab=recruitment' : ''}`}
       state={{ from: 'clubList' }}
-      className="border-indigo-5 flex w-full items-start gap-3 rounded-lg border bg-white p-3"
+      className="border-indigo-5 flex w-full items-start gap-3 rounded-2xl border bg-white p-4"
     >
-      <img src={club.imageUrl} className="border-indigo-5 h-12 w-12 rounded-sm border" alt={club.name} />
+      <img src={club.imageUrl} className="border-indigo-5 h-12 w-12 rounded-sm border object-cover" alt={club.name} />
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <div className="text-h3 text-indigo-700">{club.name}</div>
-            <div className="text-caption1 text-indigo-300">{club.categoryName}</div>
+          <div className="flex min-w-0 items-center gap-1.5">
+            <div className="text-h3 truncate text-indigo-700">{club.name}</div>
+            <div className="shrink-0 text-[11px] leading-[15px] text-indigo-300">{club.categoryName}</div>
           </div>
           {clubTag && (
             <div
-              className="text-caption1 flex items-center gap-0.5 rounded-full px-3 py-1"
+              className="flex shrink-0 items-center gap-0.5 rounded-full px-3 py-1.5 text-[10px] leading-3 font-semibold"
               style={{
                 backgroundColor: clubTag.bgColor,
                 color: clubTag.textColor,
               }}
             >
-              <CircleWarningIcon style={{ color: clubTag.textColor }} />
+              <CircleWarningIcon className="size-3 shrink-0" style={{ color: clubTag.textColor }} />
               {clubTag.label}
             </div>
           )}

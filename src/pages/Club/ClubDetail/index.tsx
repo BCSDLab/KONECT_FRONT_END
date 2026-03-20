@@ -1,6 +1,6 @@
 import { Activity, useEffect } from 'react';
 import clsx from 'clsx';
-import { useParams, useSearchParams, useLocation } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router-dom';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubAccount from './components/ClubAccount';
 import ClubIntro from './components/ClubIntro';
@@ -24,9 +24,10 @@ function ClubDetail() {
   }, [location.state]);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const currentTab = searchParams.get('tab') || 'intro';
+  const requestedTab = searchParams.get('tab');
+  const clubIdNumber = Number(clubId);
 
-  const { data: clubDetail } = useGetClubDetail(Number(clubId));
+  const { data: clubDetail } = useGetClubDetail(clubIdNumber);
 
   const handleTabClick = (tab: TabType) => {
     setSearchParams({ tab }, { replace: true });
@@ -44,32 +45,34 @@ function ClubDetail() {
   ];
 
   const visibleTabs = tabs.filter((tab) => tab.show);
+  const currentTab = visibleTabs.some((tab) => tab.key === requestedTab)
+    ? (requestedTab as TabType)
+    : (visibleTabs.find((tab) => tab.key === 'intro')?.key ?? visibleTabs[0]?.key ?? 'intro');
 
   return (
-    <>
-      <div className="fixed right-0 left-0 bg-white shadow-[0_1px_2px_0_rgba(0,0,0,0.04)]">
-        <div className="flex items-start gap-4 p-4">
+    <div className="bg-indigo-5 min-h-full">
+      <div className="overflow-hidden rounded-b-[20px] bg-white shadow-[0_0_20px_rgba(0,0,0,0.03)]">
+        <div className="flex items-start gap-3 px-4 pb-4">
           <img
-            className="border-indigo-5 h-17.5 w-17.5 rounded-sm border"
+            className="border-indigo-5 size-16 rounded-sm border object-cover"
             src={clubDetail.imageUrl}
             alt={clubDetail.name}
           />
-          <div className="flex min-w-0 flex-col gap-1">
-            <div className="text-xl leading-5.5 font-black">{clubDetail.name}</div>
-            <div className="text-body3">{clubDetail.categoryName}</div>
-            <div className="text-sub2 truncate">{clubDetail.description}</div>
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <div className="truncate text-[20px] leading-[22px] font-extrabold text-black">{clubDetail.name}</div>
+            <div className="text-body3 text-black">{clubDetail.categoryName}</div>
+            <div className="text-sub2 truncate text-black">{clubDetail.description}</div>
           </div>
         </div>
-        <div className="flex items-center gap-3 bg-white px-3">
+        <div className="flex items-center gap-3 bg-white px-4">
           {visibleTabs.map((tab) => (
             <button
               key={tab.key}
+              type="button"
               onClick={() => handleTabClick(tab.key)}
               className={clsx(
-                'relative h-[38px] px-3 py-1 text-sm leading-5 font-medium transition-colors',
-                currentTab === tab.key
-                  ? 'text-indigo-700 after:absolute after:bottom-0 after:left-0 after:h-[1.6px] after:w-full after:bg-indigo-300'
-                  : 'text-indigo-300'
+                'text-sub2 h-[38px] border-b-[1.6px] px-3 transition-colors',
+                currentTab === tab.key ? 'border-[#69BFDF] text-[#69BFDF]' : 'border-transparent text-indigo-300'
               )}
             >
               {tab.label}
@@ -77,11 +80,11 @@ function ClubDetail() {
           ))}
         </div>
       </div>
-      <div className="mt-35 flex flex-col gap-2 p-3">
+      <div className="flex flex-col gap-2 px-5 pt-3 pb-[calc(var(--sab)+20px)]">
         {clubDetail.recruitment.status !== 'CLOSED' && (
           <Activity mode={currentTab === 'recruitment' ? 'visible' : 'hidden'}>
             <ClubRecruit
-              clubId={Number(clubId)}
+              clubId={clubIdNumber}
               isMember={clubDetail.isMember}
               presidentUserId={clubDetail.presidentUserId}
             />
@@ -92,7 +95,7 @@ function ClubDetail() {
         </Activity>
         {clubDetail.isMember && (
           <Activity mode={currentTab === 'members' ? 'visible' : 'hidden'}>
-            <ClubMemberTab />
+            <ClubMemberTab memberCount={clubDetail.memberCount} />
           </Activity>
         )}
         {(clubDetail.isMember || clubDetail.isApplied) && (
@@ -101,7 +104,7 @@ function ClubDetail() {
           </Activity>
         )}
       </div>
-    </>
+    </div>
   );
 }
 

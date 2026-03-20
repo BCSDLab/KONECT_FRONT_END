@@ -1,4 +1,4 @@
-import { useMutation, useSuspenseQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import {
   getManagedClubApplicationDetail,
@@ -12,11 +12,10 @@ import { isApiError } from '@/interface/error';
 
 const applicationQueryKeys = {
   all: ['manager'],
-  managedClubApplications: (clubId: number, page?: number, limit?: number) => [
-    ...applicationQueryKeys.all,
-    'managedClubApplications',
-    clubId,
-    page,
+  managedClubApplications: (clubId: number) => [...applicationQueryKeys.all, 'managedClubApplications', clubId],
+  managedClubApplicationsInfinite: (clubId: number, limit: number) => [
+    ...applicationQueryKeys.managedClubApplications(clubId),
+    'infinite',
     limit,
   ],
   managedClubApplicationDetail: (clubId: number, applicationId: number) => [
@@ -37,12 +36,21 @@ interface ApplicationMutationOptions {
   navigateBack?: boolean;
 }
 
-export const useGetManagedApplications = (clubId: number, page: number, limit: number) => {
-  const { data: managedClubApplicationList } = useSuspenseQuery({
-    queryKey: applicationQueryKeys.managedClubApplications(clubId, page, limit),
-    queryFn: async () => {
+interface UseGetManagedApplicationsParams {
+  limit?: number;
+}
+
+export const useGetManagedApplications = (clubId: number, { limit = 10 }: UseGetManagedApplicationsParams = {}) => {
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery({
+    queryKey: applicationQueryKeys.managedClubApplicationsInfinite(clubId, limit),
+    queryFn: async ({ pageParam = 1 }) => {
       try {
-        return await getManagedClubApplications(clubId, { page, limit, sortBy: 'APPLIED_AT', sortDirection: 'ASC' });
+        return await getManagedClubApplications(clubId, {
+          page: pageParam,
+          limit,
+          sortBy: 'APPLIED_AT',
+          sortDirection: 'ASC',
+        });
       } catch (error) {
         if (isApiError(error) && error.apiError?.code === 'NOT_FOUND_CLUB_RECRUITMENT') {
           return null;
@@ -50,9 +58,27 @@ export const useGetManagedApplications = (clubId: number, page: number, limit: n
         throw error;
       }
     },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage || lastPage.currentPage >= lastPage.totalPage) {
+        return undefined;
+      }
+
+      return lastPage.currentPage + 1;
+    },
   });
 
-  return { managedClubApplicationList, hasNoRecruitment: managedClubApplicationList === null };
+  const managedClubApplicationList = data.pages[0] ?? null;
+  const applications = data.pages.flatMap((page) => page?.applications ?? []);
+
+  return {
+    managedClubApplicationList,
+    applications,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    hasNoRecruitment: managedClubApplicationList === null,
+  };
 };
 
 export const useGetManagedApplicationDetail = (clubId: number, applicationId: number) => {
@@ -95,7 +121,7 @@ export const useApproveApplication = (clubId: number, options: ApplicationMutati
     mutationFn: (applicationId: number) => postClubApplicationApprove(clubId, applicationId),
     onSuccess: () => {
       showToast('지원이 승인되었습니다');
-      queryClient.invalidateQueries({ queryKey: [...applicationQueryKeys.all, 'managedClubApplications', clubId] });
+      queryClient.invalidateQueries({ queryKey: applicationQueryKeys.managedClubApplications(clubId) });
       if (navigateBack) navigate(-1);
     },
   });
@@ -111,7 +137,7 @@ export const useRejectApplication = (clubId: number, options: ApplicationMutatio
     mutationFn: (applicationId: number) => postClubApplicationReject(clubId, applicationId),
     onSuccess: () => {
       showToast('지원이 거절되었습니다');
-      queryClient.invalidateQueries({ queryKey: [...applicationQueryKeys.all, 'managedClubApplications', clubId] });
+      queryClient.invalidateQueries({ queryKey: applicationQueryKeys.managedClubApplications(clubId) });
       if (navigateBack) navigate(-1);
     },
   });

@@ -1,10 +1,15 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
 import { useAuthStore } from '@/stores/authStore';
 
 function ProtectedRoute() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const authStatus = useAuthStore((state) => state.authStatus);
 
-  if (!isAuthenticated) {
+  if (authStatus === 'unknown') {
+    return <RouteLoadingFallback fullScreen />;
+  }
+
+  if (authStatus === 'anonymous') {
     return <Navigate to="/" replace />;
   }
 

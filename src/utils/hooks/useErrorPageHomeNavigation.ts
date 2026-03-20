@@ -3,9 +3,9 @@ import { useAuthStore } from '@/stores/authStore';
 
 export function useErrorPageHomeNavigation() {
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const authStatus = useAuthStore((state) => state.authStatus);
 
   return () => {
-    navigate(isAuthenticated ? '/home' : '/', { replace: true });
+    navigate(authStatus === 'authenticated' ? '/home' : '/', { replace: true });
   };
 }

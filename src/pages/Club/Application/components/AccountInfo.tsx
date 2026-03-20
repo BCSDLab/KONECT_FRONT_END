@@ -41,7 +41,7 @@ function AccountInfoCard({ accountInfo }: AccountInfoCardProps) {
             showToast('복사에 실패했습니다');
           }
         }}
-        className="bg-primary text-indigo-0 flex items-center justify-center gap-1.5 rounded-sm py-3 text-xs font-medium disabled:opacity-50"
+        className="bg-primary-500 text-indigo-0 flex items-center justify-center gap-1.5 rounded-sm py-3 text-xs font-medium disabled:opacity-50"
       >
         <CopyIcon /> 계좌번호 복사하기
       </button>

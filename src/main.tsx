@@ -2,6 +2,8 @@ import { StrictMode } from 'react';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
+import { useAuthStore } from '@/stores/authStore';
+import { SERVER_ERROR_PATH } from '@/utils/ts/errorRedirect';
 import './index.css';
 import { initSentry } from './config/sentry.ts';
 import ToastProvider from './contexts/ToastContext';
@@ -10,6 +12,16 @@ import { installViewportVars } from './utils/ts/viewport.ts';
 
 installViewportVars();
 initSentry();
+
+const appImportPromise = import('./App.tsx');
+
+function startSessionRestore() {
+  void useAuthStore.getState().initialize();
+}
+
+if (window.location.pathname !== SERVER_ERROR_PATH) {
+  startSessionRestore();
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,7 +36,7 @@ const queryClient = new QueryClient({
 });
 
 async function bootstrap() {
-  const { default: App } = await import('./App.tsx');
+  const { default: App } = await appImportPromise;
 
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
