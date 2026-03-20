@@ -1,5 +1,5 @@
+import chatCatLoginImage from '@/assets/image/chat-cat-login.png';
 import AppleFigmaIcon from '@/assets/svg/apple-figma.svg';
-import ChatCatIcon from '@/assets/svg/chat-cat.svg';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
@@ -66,7 +66,16 @@ function Login() {
       <div className="flex flex-1 items-center justify-center px-4 pb-8">
         <div className="relative h-[151px] w-[181px]">
           <div className="absolute inset-x-4 bottom-3 h-6 rounded-full bg-[#4F9CB7]/40 blur-[10px]" aria-hidden />
-          <ChatCatIcon aria-hidden className="relative size-full drop-shadow-[0_10px_14px_rgba(15,74,99,0.18)]" />
+          <img
+            src={chatCatLoginImage}
+            alt=""
+            aria-hidden="true"
+            width={362}
+            height={302}
+            loading="eager"
+            fetchPriority="high"
+            className="relative h-full w-full object-contain drop-shadow-[0_10px_14px_rgba(15,74,99,0.18)]"
+          />
         </div>
       </div>
 
