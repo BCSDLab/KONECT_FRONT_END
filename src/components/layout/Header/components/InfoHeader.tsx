@@ -20,7 +20,7 @@ function InfoHeader() {
         ) : (
           <>
             <div className="bg-indigo-25 mb-1 h-6 w-28 animate-pulse rounded" />
-            <div className="bg-indigo-10 h-4 w-36 animate-pulse rounded" />
+            <div className="bg-indigo-25 h-4 w-36 animate-pulse rounded" />
           </>
         )}
       </div>
