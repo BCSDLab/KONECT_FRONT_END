@@ -7,9 +7,18 @@ interface RecommendedClubCardProps {
   className?: string;
   tabIndex?: number;
   ariaHidden?: boolean;
+  imageLoading?: 'eager' | 'lazy';
+  imageFetchPriority?: 'auto' | 'high' | 'low';
 }
 
-function RecommendedClubCard({ club, className, tabIndex, ariaHidden = false }: RecommendedClubCardProps) {
+function RecommendedClubCard({
+  club,
+  className,
+  tabIndex,
+  ariaHidden = false,
+  imageLoading = 'lazy',
+  imageFetchPriority = 'low',
+}: RecommendedClubCardProps) {
   return (
     <Link
       to={`/clubs/${club.id}`}
@@ -24,6 +33,11 @@ function RecommendedClubCard({ club, className, tabIndex, ariaHidden = false }: 
         src={club.imageUrl}
         alt=""
         aria-hidden="true"
+        width={67}
+        height={59}
+        loading={imageLoading}
+        decoding="async"
+        fetchPriority={imageFetchPriority}
         className={cn('bg-indigo-5 h-[59px] w-[67px] shrink-0 rounded-sm object-cover')}
       />
       <div className="min-w-0 flex-1">
