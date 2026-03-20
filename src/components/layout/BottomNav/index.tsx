@@ -1,4 +1,4 @@
-import { type ComponentType, type SVGProps } from 'react';
+import { type ComponentType, type Ref, type SVGProps } from 'react';
 import { NavLink } from 'react-router-dom';
 import HouseIcon from '@/assets/svg/house.svg';
 import PeopleIcon from '@/assets/svg/people.svg';
@@ -33,9 +33,13 @@ function BottomNavItem({ to, label, Icon, end = false }: BottomNavItemConfig) {
   );
 }
 
-function BottomNav() {
+interface BottomNavProps {
+  navRef?: Ref<HTMLElement>;
+}
+
+function BottomNav({ navRef }: BottomNavProps) {
   return (
-    <nav className="fixed right-0 bottom-0 left-0 z-20 rounded-[20px] border-t border-[#e0e0e0] bg-white">
+    <nav ref={navRef} className="fixed right-0 bottom-0 left-0 z-20 rounded-[20px] border-t border-[#e0e0e0] bg-white">
       <div className="mx-auto flex min-h-[75px] max-w-md items-center justify-center gap-13 px-7 py-2 text-xs font-semibold">
         {BOTTOM_NAV_ITEMS.map((item) => (
           <BottomNavItem key={item.to} {...item} />
