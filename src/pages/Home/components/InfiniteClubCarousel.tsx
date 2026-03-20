@@ -9,6 +9,16 @@ interface InfiniteClubCarouselProps {
   clubs: HomeClubCardItem[];
 }
 
+function isPriorityImage(index: number, clubsLength: number, shouldLoop: boolean) {
+  if (!shouldLoop) {
+    return index < 2;
+  }
+
+  const middleSegmentStartIndex = clubsLength;
+
+  return index >= middleSegmentStartIndex - 1 && index <= middleSegmentStartIndex + 1;
+}
+
 function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
   const {
     displayClubs,
@@ -45,6 +55,8 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
                   club={club}
                   className="w-full"
                   ariaHidden={isDuplicate}
+                  imageFetchPriority={isPriorityImage(index, clubs.length, shouldLoop) ? 'auto' : 'low'}
+                  imageLoading={isPriorityImage(index, clubs.length, shouldLoop) ? 'eager' : 'lazy'}
                   tabIndex={isDuplicate ? -1 : 0}
                 />
               </div>
