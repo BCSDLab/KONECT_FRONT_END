@@ -9,6 +9,23 @@ interface InfiniteClubCarouselProps {
   clubs: HomeClubCardItem[];
 }
 
+function isPriorityImage(index: number, clubsLength: number, shouldLoop: boolean) {
+  const visibleCount = 2;
+
+  if (!shouldLoop) {
+    return index < visibleCount;
+  }
+
+  const middleSegmentStartIndex = clubsLength;
+  const middleSegmentVisibleRadius = 1;
+  const isInInitialVisibleRange = index < visibleCount;
+  const isInMiddleVisibleRange =
+    index >= middleSegmentStartIndex - middleSegmentVisibleRadius &&
+    index <= middleSegmentStartIndex + middleSegmentVisibleRadius;
+
+  return isInInitialVisibleRange || isInMiddleVisibleRange;
+}
+
 function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
   const {
     displayClubs,
@@ -34,6 +51,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
         <div className="flex gap-2">
           {displayClubs.map(({ club, key }, index) => {
             const isDuplicate = shouldLoop && (index < clubs.length || index >= clubs.length * 2);
+            const isPriority = isPriorityImage(index, clubs.length, shouldLoop);
 
             return (
               <div
@@ -45,6 +63,8 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
                   club={club}
                   className="w-full"
                   ariaHidden={isDuplicate}
+                  imageFetchPriority={isPriority ? 'auto' : 'low'}
+                  imageLoading={isPriority ? 'eager' : 'lazy'}
                   tabIndex={isDuplicate ? -1 : 0}
                 />
               </div>
