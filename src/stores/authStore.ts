@@ -5,6 +5,8 @@ import type { MyInfoResponse } from '@/apis/auth/entity';
 let initializePromise: Promise<void> | null = null;
 let hydrateUserPromise: Promise<void> | null = null;
 
+export type AuthStatus = 'unknown' | 'authenticated' | 'anonymous';
+
 const isAccessTokenExpired = (accessToken: string | null) => {
   if (!accessToken) return true;
 
@@ -45,7 +47,8 @@ const hydrateUser = async (nextAccessToken: string) => {
     } catch {
       if (useAuthStore.getState().accessToken !== nextAccessToken) return;
 
-      useAuthStore.setState({ user: null, accessToken: null, isAuthenticated: false });
+      // Profile hydration can fail independently of session recovery.
+      useAuthStore.setState({ user: null });
     } finally {
       hydrateUserPromise = null;
     }
@@ -57,8 +60,7 @@ const hydrateUser = async (nextAccessToken: string) => {
 interface AuthState {
   user: MyInfoResponse | null;
   accessToken: string | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
+  authStatus: AuthStatus;
   initialize: () => Promise<void>;
   setUser: (user: MyInfoResponse | null) => void;
   setAccessToken: (token: string | null) => void;
@@ -69,23 +71,31 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   accessToken: null,
-  isAuthenticated: false,
-  isLoading: true,
+  authStatus: 'unknown',
 
   initialize: async () => {
-    const { accessToken, isAuthenticated, user } = get();
+    const { accessToken, authStatus, user } = get();
     const hasValidAccessToken = !isAccessTokenExpired(accessToken);
 
     if (user) {
       if (hasValidAccessToken) {
-        set({ isAuthenticated: true, isLoading: false });
+        set({ authStatus: 'authenticated' });
         return;
       }
     }
 
-    if (isAuthenticated && accessToken && hasValidAccessToken) {
-      set({ isLoading: false });
+    if (authStatus === 'authenticated' && accessToken && hasValidAccessToken) {
       void hydrateUser(accessToken);
+      return;
+    }
+
+    if (accessToken && hasValidAccessToken) {
+      set({ authStatus: 'authenticated' });
+      void hydrateUser(accessToken);
+      return;
+    }
+
+    if (authStatus === 'anonymous') {
       return;
     }
 
@@ -98,10 +108,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         const nextAccessToken = await refreshAccessToken();
 
         // Open protected routes as soon as the access token is restored.
-        set({ accessToken: nextAccessToken, isAuthenticated: true, isLoading: false });
+        set({ accessToken: nextAccessToken, authStatus: 'authenticated' });
         void hydrateUser(nextAccessToken);
       } catch {
-        set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
+        set({ user: null, accessToken: null, authStatus: 'anonymous' });
       } finally {
         initializePromise = null;
       }
@@ -110,15 +120,23 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     return initializePromise;
   },
 
-  setUser: (user) => set({ user, isAuthenticated: !!user, isLoading: false }),
+  setUser: (user) =>
+    set((state) => ({
+      user,
+      authStatus: user || state.accessToken ? 'authenticated' : 'anonymous',
+    })),
 
-  setAccessToken: (token) => set({ accessToken: token }),
+  setAccessToken: (token) =>
+    set((state) => ({
+      accessToken: token,
+      authStatus: token || state.user ? 'authenticated' : 'anonymous',
+    })),
 
   getAccessToken: () => get().accessToken,
 
   clearAuth: () => {
     initializePromise = null;
     hydrateUserPromise = null;
-    set({ user: null, accessToken: null, isAuthenticated: false, isLoading: false });
+    set({ user: null, accessToken: null, authStatus: 'anonymous' });
   },
 }));

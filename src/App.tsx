@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import * as Sentry from '@sentry/react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
-import AuthGuard from './components/auth/AuthGuard';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PublicRoute from './components/auth/PublicRoute';
 import Layout from './components/layout';
@@ -53,84 +52,82 @@ const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
 function App() {
   return (
     <BrowserRouter>
-      <AuthGuard>
-        <Suspense fallback={<RouteLoadingFallback fullScreen />}>
-          <SentryRoutes>
-            <Route element={<PublicRoute />}>
-              <Route element={<Layout contentClassName="bg-indigo-0" />}>
-                <Route path="/" element={<Login />} />
-                <Route path="signup">
-                  <Route index element={<TermStep />} />
-                  <Route path="university" element={<UniversityStep />} />
-                  <Route path="studentid" element={<StudentIdStep />} />
-                  <Route path="name" element={<NameStep />} />
-                  <Route path="confirm" element={<ConfirmStep />} />
-                </Route>
-              </Route>
-            </Route>
-
+      <Suspense fallback={<RouteLoadingFallback fullScreen />}>
+        <SentryRoutes>
+          <Route element={<PublicRoute />}>
             <Route element={<Layout contentClassName="bg-indigo-0" />}>
-              <Route path="/signup/finish" element={<FinishStep />} />
+              <Route path="/" element={<Login />} />
+              <Route path="signup">
+                <Route index element={<TermStep />} />
+                <Route path="university" element={<UniversityStep />} />
+                <Route path="studentid" element={<StudentIdStep />} />
+                <Route path="name" element={<NameStep />} />
+                <Route path="confirm" element={<ConfirmStep />} />
+              </Route>
             </Route>
-            <Route path="/guide" element={<GuidePage />} />
+          </Route>
 
+          <Route element={<Layout contentClassName="bg-indigo-0" />}>
+            <Route path="/signup/finish" element={<FinishStep />} />
+          </Route>
+          <Route path="/guide" element={<GuidePage />} />
+
+          <Route element={<Layout />}>
+            <Route path="legal">
+              <Route path="oss" element={<LicensePage />} />
+              <Route path="terms" element={<TermsPage />} />
+              <Route path="privacy" element={<PrivacyPolicyPage />} />
+              <Route path="marketing" element={<MarketingPolicyPage />} />
+            </Route>
+          </Route>
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<Layout showBottomNav />}>
+              <Route path="home" element={<Home />} />
+              <Route path="mypage">
+                <Route index element={<MyPage />} />
+                <Route path="manager">
+                  <Route index element={<ManagedClubList />} />
+                  <Route path=":clubId" element={<ManagedClubDetail />} />
+                  <Route path=":clubId/members" element={<ManagedMemberList />} />
+                  <Route path=":clubId/members/:userId/application" element={<ManagedMemberApplicationDetail />} />
+                  <Route path=":clubId/recruitment" element={<ManagedRecruitment />} />
+                  <Route path=":clubId/applications" element={<ManagedApplicationList />} />
+                  <Route path=":clubId/applications/:applicationId" element={<ManagedApplicationDetail />} />
+                </Route>
+              </Route>
+              <Route path="timer" element={<Timer />} />
+              <Route path="clubs">
+                <Route index element={<ClubList />} />
+                <Route path="search" element={<ClubSearch />} />
+              </Route>
+            </Route>
             <Route element={<Layout />}>
-              <Route path="legal">
-                <Route path="oss" element={<LicensePage />} />
-                <Route path="terms" element={<TermsPage />} />
-                <Route path="privacy" element={<PrivacyPolicyPage />} />
-                <Route path="marketing" element={<MarketingPolicyPage />} />
+              <Route path="clubs/:clubId" element={<ClubDetail />} />
+              <Route path="clubs/:clubId/applications" element={<ApplicationPage />} />
+              <Route path="clubs/:clubId/fee" element={<ClubFeePage />} />
+              <Route path="clubs/:clubId/complete" element={<ApplyCompletePage />} />
+              <Route path="schedule" element={<Schedule />} />
+              <Route path="mypage/manager/:clubId/info" element={<ManagedClubInfo />} />
+              <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
+              <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
+              <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="council">
+                <Route index element={<CouncilDetail />} />
+                <Route path="notice/:noticeId" element={<CouncilNotice />} />
+              </Route>
+              <Route path="chats">
+                <Route index element={<ChatListPage />} />
+                <Route path=":chatRoomId" element={<ChatRoom />} />
               </Route>
             </Route>
+          </Route>
 
-            <Route element={<ProtectedRoute />}>
-              <Route element={<Layout showBottomNav />}>
-                <Route path="home" element={<Home />} />
-                <Route path="mypage">
-                  <Route index element={<MyPage />} />
-                  <Route path="manager">
-                    <Route index element={<ManagedClubList />} />
-                    <Route path=":clubId" element={<ManagedClubDetail />} />
-                    <Route path=":clubId/members" element={<ManagedMemberList />} />
-                    <Route path=":clubId/members/:userId/application" element={<ManagedMemberApplicationDetail />} />
-                    <Route path=":clubId/recruitment" element={<ManagedRecruitment />} />
-                    <Route path=":clubId/applications" element={<ManagedApplicationList />} />
-                    <Route path=":clubId/applications/:applicationId" element={<ManagedApplicationDetail />} />
-                  </Route>
-                </Route>
-                <Route path="timer" element={<Timer />} />
-                <Route path="clubs">
-                  <Route index element={<ClubList />} />
-                  <Route path="search" element={<ClubSearch />} />
-                </Route>
-              </Route>
-              <Route element={<Layout />}>
-                <Route path="clubs/:clubId" element={<ClubDetail />} />
-                <Route path="clubs/:clubId/applications" element={<ApplicationPage />} />
-                <Route path="clubs/:clubId/fee" element={<ClubFeePage />} />
-                <Route path="clubs/:clubId/complete" element={<ApplyCompletePage />} />
-                <Route path="schedule" element={<Schedule />} />
-                <Route path="mypage/manager/:clubId/info" element={<ManagedClubInfo />} />
-                <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
-                <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
-                <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="council">
-                  <Route index element={<CouncilDetail />} />
-                  <Route path="notice/:noticeId" element={<CouncilNotice />} />
-                </Route>
-                <Route path="chats">
-                  <Route index element={<ChatListPage />} />
-                  <Route path=":chatRoomId" element={<ChatRoom />} />
-                </Route>
-              </Route>
-            </Route>
-
-            <Route path="server-error" element={<ServerErrorPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </SentryRoutes>
-        </Suspense>
-      </AuthGuard>
+          <Route path="server-error" element={<ServerErrorPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </SentryRoutes>
+      </Suspense>
     </BrowserRouter>
   );
 }
