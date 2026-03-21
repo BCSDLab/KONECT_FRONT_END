@@ -7,6 +7,7 @@ import { useGetClubDetail } from '@/pages/Club/ClubDetail/hooks/useGetClubDetail
 import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
 
 const DESCRIPTION_MAX_LENGTH = 25;
 
@@ -48,6 +49,7 @@ function ManagedClubInfo() {
   const [introduce, setIntroduce] = useState(initialIntroduce);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState(initialImageUrl);
+  const [isPreparingImage, setIsPreparingImage] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -86,22 +88,31 @@ function ManagedClubInfo() {
     }
   };
 
-  const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    if (!file) return;
+    if (!file || isPreparingImage) return;
 
-    clearLocalPreviewUrl(localPreviewUrlRef);
+    setIsPreparingImage(true);
 
-    const previewUrl = URL.createObjectURL(file);
-    localPreviewUrlRef.current = previewUrl;
+    try {
+      const preparedFile = await prepareImageFile(file);
 
-    setImageFile(file);
-    setImagePreview(previewUrl);
-    e.target.value = '';
+      clearLocalPreviewUrl(localPreviewUrlRef);
+
+      const previewUrl = URL.createObjectURL(preparedFile);
+      localPreviewUrlRef.current = previewUrl;
+
+      setImageFile(preparedFile);
+      setImagePreview(previewUrl);
+      e.target.value = '';
+    } finally {
+      setIsPreparingImage(false);
+    }
   };
 
   const handleImageClick = () => {
+    if (isPreparingImage) return;
     fileInputRef.current?.click();
   };
 
@@ -262,10 +273,16 @@ function ManagedClubInfo() {
           <button
             type="button"
             onClick={openSubmitModal}
-            disabled={isPending || isUploading || !hasChanges}
+            disabled={isPending || isPreparingImage || isUploading || !hasChanges}
             className="text-h2 bg-primary-500 disabled:bg-text-300 w-full rounded-2xl py-[9.5px] text-center text-white transition-colors disabled:cursor-not-allowed"
           >
-            {isUploading ? '이미지 업로드 중...' : isPending ? '수정 중...' : '수정하기'}
+            {isPreparingImage
+              ? '이미지 준비 중...'
+              : isUploading
+                ? '이미지 업로드 중...'
+                : isPending
+                  ? '수정 중...'
+                  : '수정하기'}
           </button>
         </div>
       </div>
@@ -276,11 +293,17 @@ function ManagedClubInfo() {
           <div>
             <button
               type="button"
-              disabled={isPending || isUploading}
+              disabled={isPending || isPreparingImage || isUploading}
               onClick={handleSubmit}
               className="bg-primary-500 text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {isUploading ? '수정 중...' : isPending ? '수정 중...' : '수정하기'}
+              {isPreparingImage
+                ? '이미지 준비 중...'
+                : isUploading
+                  ? '수정 중...'
+                  : isPending
+                    ? '수정 중...'
+                    : '수정하기'}
             </button>
             <button
               type="button"

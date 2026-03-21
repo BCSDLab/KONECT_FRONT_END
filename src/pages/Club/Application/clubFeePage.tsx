@@ -7,6 +7,7 @@ import Portal from '@/components/common/Portal';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
 import AccountInfoCard from './components/AccountInfo';
 import useApplyToClub from './hooks/useApplyToClub';
 import { useGetClubFee } from './hooks/useGetClubFee';
@@ -28,8 +29,9 @@ function ClubFeePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [isPreparingImage, setIsPreparingImage] = useState(false);
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
-  const isSubmitting = isApplyingToClub || isUploadingImage;
+  const isSubmitting = isApplyingToClub || isPreparingImage || isUploadingImage;
 
   useEffect(() => {
     return () => {
@@ -38,17 +40,26 @@ function ClubFeePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || isPreparingImage) return;
 
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setImageFile(file);
-    setPreviewUrl(URL.createObjectURL(file));
+    setIsPreparingImage(true);
+
+    try {
+      const preparedFile = await prepareImageFile(file);
+
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      setImageFile(preparedFile);
+      setPreviewUrl(URL.createObjectURL(preparedFile));
+    } finally {
+      setIsPreparingImage(false);
+    }
   };
 
   const handleSubmit = async () => {
     if (!imageFile) return;
+
     const { fileUrl } = await uploadImage(imageFile);
     await applyToClub({ answers, feePaymentImageUrl: fileUrl });
   };
@@ -123,7 +134,7 @@ function ClubFeePage() {
         onClick={handleSubmit}
         disabled={!imageFile || isSubmitting}
       >
-        {isSubmitting ? '제출 중...' : '제출하기'}
+        {isPreparingImage ? '이미지 준비 중...' : isSubmitting ? '제출 중...' : '제출하기'}
       </button>
 
       {isImageOpen && previewUrl && (
