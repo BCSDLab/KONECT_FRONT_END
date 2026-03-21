@@ -53,6 +53,7 @@ function ManagedClubInfo() {
   const [isUploading, setIsUploading] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const imageDeletedRef = useRef(false);
   const localPreviewUrlRef = useRef<string | null>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
@@ -93,10 +94,16 @@ function ManagedClubInfo() {
 
     if (!file || isPreparingImage) return;
 
+    imageDeletedRef.current = false;
     setIsPreparingImage(true);
 
     try {
       const preparedFile = await prepareImageFile(file);
+
+      if (imageDeletedRef.current) {
+        e.target.value = '';
+        return;
+      }
 
       clearLocalPreviewUrl(localPreviewUrlRef);
 
@@ -117,6 +124,7 @@ function ManagedClubInfo() {
   };
 
   const handleDeleteImage = () => {
+    imageDeletedRef.current = true;
     clearLocalPreviewUrl(localPreviewUrlRef);
     setImageFile(null);
     setImagePreview('');

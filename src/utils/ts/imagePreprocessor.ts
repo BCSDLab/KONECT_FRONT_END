@@ -29,7 +29,7 @@ interface PrepareImageFileOptions {
 
 interface PendingRequestHandlers {
   reject: (error: unknown) => void;
-  resolve: (value: ImagePreprocessResponse) => void;
+  resolve: (value: ImagePreprocessResponse | null) => void;
 }
 
 let imagePreprocessWorker: Worker | null = null;
@@ -62,46 +62,65 @@ function getTargetDimensions(width: number, height: number, maxDimension: number
   };
 }
 
+function resetImagePreprocessWorker() {
+  imagePreprocessWorker?.terminate();
+  imagePreprocessWorker = null;
+}
+
 function getWorker() {
   if (typeof Worker === 'undefined') {
     return null;
   }
 
   if (!imagePreprocessWorker) {
-    imagePreprocessWorker = new Worker(new URL('./imagePreprocessor.worker.ts', import.meta.url), {
-      type: 'module',
-    });
-    imagePreprocessWorker.onmessage = (event: MessageEvent<ImagePreprocessResponse | ImagePreprocessErrorResponse>) => {
-      const currentRequest = pendingImagePreprocessRequests.get(event.data.id);
-
-      if (!currentRequest) {
-        return;
-      }
-
-      pendingImagePreprocessRequests.delete(event.data.id);
-
-      if ('errorMessage' in event.data) {
-        currentRequest.reject(new Error(event.data.errorMessage));
-        return;
-      }
-
-      currentRequest.resolve(event.data);
-    };
-    imagePreprocessWorker.onerror = (event) => {
-      pendingImagePreprocessRequests.forEach(({ reject }) => {
-        reject(new Error(event.message || '이미지 전처리 worker에서 오류가 발생했습니다.'));
+    try {
+      const worker = new Worker(new URL('./imagePreprocessor.worker.ts', import.meta.url), {
+        type: 'module',
       });
-      pendingImagePreprocessRequests.clear();
-      imagePreprocessWorker?.terminate();
-      imagePreprocessWorker = null;
-    };
+
+      worker.onmessage = (event: MessageEvent<ImagePreprocessResponse | ImagePreprocessErrorResponse>) => {
+        const currentRequest = pendingImagePreprocessRequests.get(event.data.id);
+
+        if (!currentRequest) {
+          return;
+        }
+
+        pendingImagePreprocessRequests.delete(event.data.id);
+
+        if ('errorMessage' in event.data) {
+          currentRequest.reject(new Error(event.data.errorMessage));
+          return;
+        }
+
+        currentRequest.resolve(event.data);
+      };
+      worker.onerror = (event) => {
+        pendingImagePreprocessRequests.forEach(({ reject }) => {
+          reject(new Error(event.message || '이미지 전처리 worker에서 오류가 발생했습니다.'));
+        });
+        pendingImagePreprocessRequests.clear();
+        resetImagePreprocessWorker();
+      };
+
+      imagePreprocessWorker = worker;
+    } catch {
+      resetImagePreprocessWorker();
+      return null;
+    }
   }
 
   return imagePreprocessWorker;
 }
 
 async function runWorkerPreprocess(file: File, options: PrepareImageFileOptions) {
-  const worker = getWorker();
+  let worker: Worker | null;
+
+  try {
+    worker = getWorker();
+  } catch {
+    resetImagePreprocessWorker();
+    return null;
+  }
 
   if (!worker || typeof OffscreenCanvas === 'undefined' || typeof createImageBitmap === 'undefined') {
     return null;
@@ -115,9 +134,15 @@ async function runWorkerPreprocess(file: File, options: PrepareImageFileOptions)
     quality: options.quality ?? DEFAULT_QUALITY,
   };
 
-  return new Promise<ImagePreprocessResponse>((resolve, reject) => {
-    pendingImagePreprocessRequests.set(id, { reject, resolve });
-    worker.postMessage(requestPayload);
+  return new Promise<ImagePreprocessResponse | null>((resolve, reject) => {
+    try {
+      pendingImagePreprocessRequests.set(id, { reject, resolve });
+      worker.postMessage(requestPayload);
+    } catch {
+      pendingImagePreprocessRequests.delete(id);
+      resetImagePreprocessWorker();
+      resolve(null);
+    }
   });
 }
 
@@ -199,7 +224,13 @@ export async function prepareImageFile(file: File, options: PrepareImageFileOpti
   }
 
   try {
-    const workerResponse = await runWorkerPreprocess(file, options);
+    let workerResponse: ImagePreprocessResponse | null = null;
+
+    try {
+      workerResponse = await runWorkerPreprocess(file, options);
+    } catch {
+      resetImagePreprocessWorker();
+    }
 
     if (workerResponse) {
       return workerResponse.file;

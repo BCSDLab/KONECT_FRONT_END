@@ -163,24 +163,38 @@ function ManagedRecruitmentWrite() {
 
     const selectedFiles = Array.from(files);
     const previousImageCount = images.length;
-    let completedCount = 0;
+    let visiblePreparedCount = 0;
+    const preparedItems: Array<ImageItem | null> = new Array(selectedFiles.length).fill(null);
     setIsPreparingImages(true);
 
     mapWithConcurrencyLimit(
       selectedFiles,
       IMAGE_PREPARATION_CONCURRENCY,
       (file) => prepareImageFile(file),
-      (preparedFile) => {
-        completedCount += 1;
-
-        const newItem = {
+      (preparedFile, index) => {
+        preparedItems[index] = {
           file: preparedFile,
           previewUrl: URL.createObjectURL(preparedFile),
         };
 
+        let nextVisiblePreparedCount = visiblePreparedCount;
+
+        while (nextVisiblePreparedCount < preparedItems.length && preparedItems[nextVisiblePreparedCount]) {
+          nextVisiblePreparedCount += 1;
+        }
+
+        if (nextVisiblePreparedCount === visiblePreparedCount) {
+          return;
+        }
+
+        const shouldFocusFirstPreparedImage = visiblePreparedCount === 0 && nextVisiblePreparedCount > 0;
+        visiblePreparedCount = nextVisiblePreparedCount;
+        const orderedPreparedItems = preparedItems.slice(0, visiblePreparedCount).filter(Boolean) as ImageItem[];
+
         startTransition(() => {
-          setImages((prev) => [...prev, newItem]);
-          if (completedCount === 1) {
+          setImages((prev) => [...prev.slice(0, previousImageCount), ...orderedPreparedItems]);
+
+          if (shouldFocusFirstPreparedImage) {
             setCurrentImageIndex(previousImageCount);
           }
         });
