@@ -36,7 +36,7 @@ function BottomNavItem({ to, label, Icon, end = false }: BottomNavItemConfig) {
 function BottomNav() {
   return (
     <nav className="fixed right-0 bottom-0 left-0 z-20 rounded-[20px] border-t border-[#e0e0e0] bg-white">
-      <div className="flex min-h-[75px] w-full items-center justify-center gap-13 px-7 py-2 text-xs font-semibold">
+      <div className="flex min-h-[75px] w-full items-center justify-around px-7 py-2 text-xs font-semibold">
         {BOTTOM_NAV_ITEMS.map((item) => (
           <BottomNavItem key={item.to} {...item} />
         ))}
