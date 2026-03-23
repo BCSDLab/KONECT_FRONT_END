@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
@@ -15,6 +15,8 @@ import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { formatDateDot } from '@/utils/ts/date';
+import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
+import { mapWithConcurrencyLimit } from '@/utils/ts/promise';
 import {
   combineDateTime,
   DEFAULT_END_TIME,
@@ -37,6 +39,7 @@ const dateFieldContainerStyle = 'rounded-[20px] border-[0.7px] border-[#c6cfd8] 
 const compactButtonStyle =
   'group flex h-[34px] min-w-0 w-full items-center justify-between rounded-[4px] border-[0.7px] border-[#c6cfd8] bg-white px-1.5 text-left shadow-[0_0_3px_rgba(0,0,0,0.15)]';
 const compactButtonTextStyle = 'text-[11px] leading-[1.6] font-medium text-[#344352]';
+const IMAGE_PREPARATION_CONCURRENCY = 2;
 
 function ManagedRecruitmentWrite() {
   const { clubId } = useParams<{ clubId: string }>();
@@ -52,12 +55,12 @@ function ManagedRecruitmentWrite() {
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
   const [images, setImages] = useState<ImageItem[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isPreparingImages, setIsPreparingImages] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [hasHandledExisting, setHasHandledExisting] = useState(false);
   const [hasInitializedRecruitmentEnabled, setHasInitializedRecruitmentEnabled] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { data: existingRecruitment } = useGetManagedRecruitments(clubIdNumber);
   const { data: clubSettings } = useGetClubSettings(clubIdNumber);
@@ -156,25 +159,63 @@ function ManagedRecruitmentWrite() {
 
   const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0) return;
+    if (!files || files.length === 0 || isPreparingImages) return;
 
-    const newItems = Array.from(files).map((file) => ({
-      file,
-      previewUrl: URL.createObjectURL(file),
-    }));
-    setImages((prev) => {
-      const newImages = [...prev, ...newItems];
-      setCurrentImageIndex(newImages.length - 1);
-      return newImages;
-    });
-    e.target.value = '';
+    const selectedFiles = Array.from(files);
+    const previousImageCount = images.length;
+    let visiblePreparedCount = 0;
+    const preparedItems: Array<ImageItem | null> = new Array(selectedFiles.length).fill(null);
+    setIsPreparingImages(true);
+
+    mapWithConcurrencyLimit(
+      selectedFiles,
+      IMAGE_PREPARATION_CONCURRENCY,
+      (file) => prepareImageFile(file),
+      (preparedFile, index) => {
+        preparedItems[index] = {
+          file: preparedFile,
+          previewUrl: URL.createObjectURL(preparedFile),
+        };
+
+        let nextVisiblePreparedCount = visiblePreparedCount;
+
+        while (nextVisiblePreparedCount < preparedItems.length && preparedItems[nextVisiblePreparedCount]) {
+          nextVisiblePreparedCount += 1;
+        }
+
+        if (nextVisiblePreparedCount === visiblePreparedCount) {
+          return;
+        }
+
+        const shouldFocusFirstPreparedImage = visiblePreparedCount === 0 && nextVisiblePreparedCount > 0;
+        visiblePreparedCount = nextVisiblePreparedCount;
+        const orderedPreparedItems = preparedItems.slice(0, visiblePreparedCount).filter(Boolean) as ImageItem[];
+
+        startTransition(() => {
+          setImages((prev) => [...prev.slice(0, previousImageCount), ...orderedPreparedItems]);
+
+          if (shouldFocusFirstPreparedImage) {
+            setCurrentImageIndex(previousImageCount);
+          }
+        });
+      }
+    )
+      .catch(() => {})
+      .finally(() => {
+        setIsPreparingImages(false);
+        e.target.value = '';
+      });
   };
 
   const handlePrevImage = () => {
+    if (images.length <= 1) return;
+
     setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
   const handleNextImage = () => {
+    if (images.length <= 1) return;
+
     setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
@@ -196,6 +237,7 @@ function ManagedRecruitmentWrite() {
   };
 
   const handleImageClick = () => {
+    if (isPreparingImages) return;
     fileInputRef.current?.click();
   };
 
@@ -208,11 +250,10 @@ function ManagedRecruitmentWrite() {
 
     setIsUploading(true);
     try {
-      // 새 이미지만 업로드 (file이 있는 것만)
       const newImages = images.filter((img) => img.file);
       const existingImages = images.filter((img) => img.isExisting);
 
-      const uploadResults = await Promise.all(newImages.map((img) => uploadImage(img.file!)));
+      const uploadResults = await Promise.all(newImages.map((image) => uploadImage(image.file!)));
       const uploadedImageData = uploadResults.map((res) => ({ url: res.fileUrl }));
       const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
       const imageData = [...existingImageData, ...uploadedImageData];
@@ -228,7 +269,12 @@ function ManagedRecruitmentWrite() {
           return;
         }
 
-        patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled }, { onSuccess: navigateAfterSave });
+        patchSettings(
+          { isRecruitmentEnabled: nextRecruitmentEnabled },
+          {
+            onSuccess: navigateAfterSave,
+          }
+        );
       };
 
       if (isAlwaysRecruiting) {
@@ -419,15 +465,19 @@ function ManagedRecruitmentWrite() {
               <button
                 type="button"
                 onClick={handleImageClick}
+                disabled={isPreparingImages}
                 className="border-text-200 mt-3 flex h-[226px] w-full flex-col items-center justify-center gap-2 rounded-[20px] border-[0.7px] bg-white text-[#5a6b7f]"
               >
                 <AddPhotoAlternateIcon aria-hidden="true" className="h-[60px] w-[60px]" />
-                <p className="text-center text-[16px] leading-[1.6] font-semibold">이미지를 추가해주세요</p>
+                <p className="text-center text-[16px] leading-[1.6] font-semibold">
+                  {isPreparingImages ? '이미지를 준비하고 있어요' : '이미지를 추가해주세요'}
+                </p>
               </button>
             ) : (
               <div className="mt-3 flex flex-col gap-3">
                 <div className="border-text-200 relative h-[226px] overflow-hidden rounded-[20px] border-[0.7px] bg-white">
                   <img
+                    key={images[currentImageIndex].previewUrl}
                     src={images[currentImageIndex].previewUrl}
                     alt={`업로드 이미지 ${currentImageIndex + 1}`}
                     className="h-full w-full object-cover"
@@ -436,8 +486,9 @@ function ManagedRecruitmentWrite() {
                   <button
                     type="button"
                     onClick={handleDeleteImage}
+                    disabled={isPreparingImages}
                     aria-label="현재 이미지 삭제"
-                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-sm font-semibold text-white"
+                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     ×
                   </button>
@@ -447,16 +498,18 @@ function ManagedRecruitmentWrite() {
                       <button
                         type="button"
                         onClick={handlePrevImage}
+                        disabled={isPreparingImages}
                         aria-label="이전 이미지"
-                        className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)]"
+                        className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <ChevronLeft aria-hidden="true" className="h-4 w-4 text-indigo-700" />
                       </button>
                       <button
                         type="button"
                         onClick={handleNextImage}
+                        disabled={isPreparingImages}
                         aria-label="다음 이미지"
-                        className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)]"
+                        className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         <ChevronRight aria-hidden="true" className="h-4 w-4 text-indigo-700" />
                       </button>
@@ -509,9 +562,15 @@ function ManagedRecruitmentWrite() {
             <button
               type="submit"
               className="bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-[18px] leading-[1.6] font-semibold text-white disabled:cursor-not-allowed"
-              disabled={isPending || isUploading || !content.trim() || hasDateError}
+              disabled={isPending || isPreparingImages || isUploading || !content.trim() || hasDateError}
             >
-              {isUploading ? '이미지 업로드 중…' : isPending ? '수정 중…' : '모집공고 수정'}
+              {isPreparingImages
+                ? '이미지 준비 중…'
+                : isUploading
+                  ? '이미지 업로드 중…'
+                  : isPending
+                    ? '수정 중…'
+                    : '모집공고 수정'}
             </button>
           </div>
         </div>
