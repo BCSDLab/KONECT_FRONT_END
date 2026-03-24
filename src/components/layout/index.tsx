@@ -44,7 +44,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
           className={cn(
             'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
             hasHeader && (isInfoHeader ? 'pt-15' : isManagerHeader ? 'pt-(--manager-header-height)' : 'pt-11'),
-            showBottomNav && 'pb-19',
+            showBottomNav && 'pb-[calc(80px+var(--sab))]',
             contentClassName
           )}
         >

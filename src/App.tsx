@@ -97,6 +97,7 @@ function App() {
                 </Route>
               </Route>
               <Route path="timer" element={<Timer />} />
+              <Route path="chats" element={<ChatListPage />} />
               <Route path="clubs">
                 <Route index element={<ClubList />} />
                 <Route path="search" element={<ClubSearch />} />
@@ -117,10 +118,7 @@ function App() {
                 <Route index element={<CouncilDetail />} />
                 <Route path="notice/:noticeId" element={<CouncilNotice />} />
               </Route>
-              <Route path="chats">
-                <Route index element={<ChatListPage />} />
-                <Route path=":chatRoomId" element={<ChatRoom />} />
-              </Route>
+              <Route path="chats/:chatRoomId" element={<ChatRoom />} />
             </Route>
           </Route>
 
