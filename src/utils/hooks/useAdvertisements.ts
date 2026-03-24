@@ -29,9 +29,11 @@ export const useAdvertisements = ({ advertisementCount, scope }: UseAdvertisemen
   const advertisements: Advertisement[] = advertisementQueries
     .flatMap((query) => query.data?.advertisements ?? [])
     .slice(0, advertisementCount);
+  const isLoadingAdvertisements = advertisementQueries.some((query) => query.isPending);
 
   return {
     advertisements,
+    isLoadingAdvertisements,
     trackAdvertisementClick,
   };
 };
