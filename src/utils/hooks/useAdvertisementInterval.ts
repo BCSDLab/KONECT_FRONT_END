@@ -1,4 +1,4 @@
-import { startTransition, useEffectEvent, useLayoutEffect, useState, type RefObject } from 'react';
+import { useEffectEvent, useLayoutEffect, useState, type RefObject } from 'react';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 
 const DEFAULT_ITEMS_PER_ADVERTISEMENT = 4;
@@ -26,7 +26,10 @@ export const useAdvertisementInterval = ({
   enabled,
 }: UseAdvertisementIntervalParams) => {
   const { mainRef, bottomNavRef } = useLayoutElementsContext();
-  const [itemsPerAdvertisement, setItemsPerAdvertisement] = useState<number>(DEFAULT_ITEMS_PER_ADVERTISEMENT);
+  const [itemsPerAdvertisement, setItemsPerAdvertisement] = useState<number | null>(null);
+  const resetAdvertisementInterval = useEffectEvent(() => {
+    setItemsPerAdvertisement((previous) => (previous === null ? previous : null));
+  });
 
   const measureAdvertisementInterval = useEffectEvent(() => {
     const scrollContainer = mainRef.current;
@@ -44,28 +47,21 @@ export const useAdvertisementInterval = ({
       ? Math.max(0, secondItemRect.top - firstItemRect.top - firstItemRect.height)
       : DEFAULT_ITEM_GAP;
     const slotHeight = firstItemRect.height + gap;
+    const nextItemsPerAdvertisement =
+      availableHeight <= 0 || slotHeight <= 0
+        ? DEFAULT_ITEMS_PER_ADVERTISEMENT
+        : Math.max(1, Math.max(2, Math.floor((availableHeight + gap) / slotHeight)) - 1);
 
-    if (availableHeight <= 0 || slotHeight <= 0) {
-      startTransition(() => {
-        setItemsPerAdvertisement((previous) =>
-          previous === DEFAULT_ITEMS_PER_ADVERTISEMENT ? previous : DEFAULT_ITEMS_PER_ADVERTISEMENT
-        );
-      });
-      return;
-    }
-
-    const visibleSlotCount = Math.max(2, Math.floor((availableHeight + gap) / slotHeight));
-    const nextItemsPerAdvertisement = Math.max(1, visibleSlotCount - 1);
-
-    startTransition(() => {
-      setItemsPerAdvertisement((previous) =>
-        previous === nextItemsPerAdvertisement ? previous : nextItemsPerAdvertisement
-      );
-    });
+    setItemsPerAdvertisement((previous) =>
+      previous === nextItemsPerAdvertisement ? previous : nextItemsPerAdvertisement
+    );
   });
 
   useLayoutEffect(() => {
-    if (!enabled) return;
+    if (!enabled) {
+      resetAdvertisementInterval();
+      return;
+    }
 
     let frameId = 0;
     const scheduleMeasurement = () => {
@@ -73,7 +69,7 @@ export const useAdvertisementInterval = ({
       frameId = window.requestAnimationFrame(measureAdvertisementInterval);
     };
 
-    scheduleMeasurement();
+    measureAdvertisementInterval();
 
     const visualViewport = window.visualViewport;
     const resizeObserver =

@@ -34,4 +34,19 @@ function AdvertisementCard({ advertisement, onClick }: AdvertisementCardProps) {
   );
 }
 
+export function AdvertisementCardSkeleton() {
+  return (
+    <div aria-hidden="true" className="border-indigo-5 flex w-full items-start gap-3 rounded-2xl border bg-white p-4">
+      <div className="bg-indigo-25 h-12 w-12 shrink-0 animate-pulse rounded-[10px]" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center justify-between gap-3">
+          <div className="bg-indigo-25 h-6 w-32 max-w-full animate-pulse rounded" />
+          <div className="bg-indigo-25 h-6 w-14 shrink-0 animate-pulse rounded-full" />
+        </div>
+        <div className="bg-indigo-25 mt-2 h-5 w-40 max-w-full animate-pulse rounded" />
+      </div>
+    </div>
+  );
+}
+
 export default AdvertisementCard;

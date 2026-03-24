@@ -3,7 +3,7 @@ import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import useScrollRestore from '@/utils/hooks/useScrollRestore';
-import AdvertisementCard from './components/AdvertisementCard';
+import AdvertisementCard, { AdvertisementCardSkeleton } from './components/AdvertisementCard';
 import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
 import { useGetClubs } from './hooks/useGetClubs';
@@ -29,8 +29,8 @@ function ClubList() {
     itemCount: allClubs.length,
     enabled: allClubs.length > 0,
   });
-  const advertisementCount = Math.floor(allClubs.length / clubSlotsPerAdvertisement);
-  const { advertisements, trackAdvertisementClick } = useAdvertisements({
+  const advertisementCount = clubSlotsPerAdvertisement ? Math.floor(allClubs.length / clubSlotsPerAdvertisement) : 0;
+  const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'club-list',
   });
@@ -45,7 +45,8 @@ function ClubList() {
 
         <div className="flex flex-col gap-2">
           {allClubs.map((club, index) => {
-            const shouldRenderAdvertisement = (index + 1) % clubSlotsPerAdvertisement === 0;
+            const shouldRenderAdvertisement =
+              clubSlotsPerAdvertisement !== null && (index + 1) % clubSlotsPerAdvertisement === 0;
             const advertisement = shouldRenderAdvertisement
               ? advertisements[Math.floor(index / clubSlotsPerAdvertisement)]
               : undefined;
@@ -57,6 +58,9 @@ function ClubList() {
                   itemRef={index === 0 ? firstClubCardRef : index === 1 ? secondClubCardRef : undefined}
                 />
                 {advertisement && <AdvertisementCard advertisement={advertisement} onClick={trackAdvertisementClick} />}
+                {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+                  <AdvertisementCardSkeleton />
+                )}
               </Fragment>
             );
           })}

@@ -142,6 +142,27 @@ function ChatAdvertisementListItem({ advertisement, onClick }: ChatAdvertisement
   );
 }
 
+function ChatAdvertisementListItemSkeleton() {
+  return (
+    <div aria-hidden="true" className="flex items-center gap-3 bg-white px-5 py-3">
+      <div className="bg-indigo-25 h-12 w-12 shrink-0 animate-pulse rounded-sm" />
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            <div className="bg-indigo-25 h-6 w-32 max-w-full animate-pulse rounded" />
+            <div className="bg-indigo-25 h-5 w-10 shrink-0 animate-pulse rounded-full" />
+          </div>
+        </div>
+
+        <div className="mt-0.5 flex items-center gap-3">
+          <div className="bg-indigo-25 h-5 w-40 max-w-full animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ChatListPage() {
   const { chatRoomList } = useChat();
   const rooms = chatRoomList.rooms;
@@ -153,8 +174,10 @@ function ChatListPage() {
     itemCount: rooms.length,
     enabled: rooms.length > 0,
   });
-  const advertisementCount = Math.floor(rooms.length / chatRoomSlotsPerAdvertisement);
-  const { advertisements, trackAdvertisementClick } = useAdvertisements({
+  const advertisementCount = chatRoomSlotsPerAdvertisement
+    ? Math.floor(rooms.length / chatRoomSlotsPerAdvertisement)
+    : 0;
+  const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'chat-list',
   });
@@ -171,7 +194,8 @@ function ChatListPage() {
   return (
     <div className="flex min-h-0 flex-1 flex-col bg-white py-3">
       {rooms.map((room, index) => {
-        const shouldRenderAdvertisement = (index + 1) % chatRoomSlotsPerAdvertisement === 0;
+        const shouldRenderAdvertisement =
+          chatRoomSlotsPerAdvertisement !== null && (index + 1) % chatRoomSlotsPerAdvertisement === 0;
         const advertisement = shouldRenderAdvertisement
           ? advertisements[Math.floor(index / chatRoomSlotsPerAdvertisement)]
           : undefined;
@@ -184,6 +208,9 @@ function ChatListPage() {
             />
             {advertisement && (
               <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
+            )}
+            {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+              <ChatAdvertisementListItemSkeleton />
             )}
           </Fragment>
         );
