@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getChatRooms } from '@/apis/chat';
-import { chatQueryKeys } from '@/pages/Chat/hooks/useChat';
+import { chatQueries } from '@/apis/chat/queries';
 
 const UNREAD_CHAT_COUNT_REFETCH_INTERVAL = 5_000;
 
@@ -35,8 +34,7 @@ function useUnreadChatCount() {
   }, []);
 
   const { data } = useQuery({
-    queryKey: chatQueryKeys.rooms(),
-    queryFn: getChatRooms,
+    ...chatQueries.rooms(),
     enabled: isEnabled,
     staleTime: UNREAD_CHAT_COUNT_REFETCH_INTERVAL,
     refetchInterval: isEnabled ? UNREAD_CHAT_COUNT_REFETCH_INTERVAL : false,
