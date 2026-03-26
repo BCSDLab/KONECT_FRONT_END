@@ -1,6 +1,8 @@
 import type { ComponentType, SVGProps } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import type { InboxNotification } from '@/apis/notification/entity';
+import { notificationQueryKeys } from '@/apis/notification/queries';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import ChatIcon from '@/assets/svg/chat-icon.svg';
 import PersonIcon from '@/assets/svg/person-icon.svg';
@@ -82,6 +84,7 @@ function NotificationRow({ notification, disabled = false, onClick }: Notificati
 
 function NotificationsPage() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { bottomOverlayInset } = useLayoutElementsContext();
   const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInboxNotifications();
   const { mutateAsync: markAsRead, isPending: isMarkingAsRead } = useMarkInboxNotificationAsRead();
@@ -102,7 +105,7 @@ function NotificationsPage() {
         await markAsRead(notification.id);
       }
     } catch {
-      return;
+      void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
     }
 
     if (destinationPath) {
