@@ -13,10 +13,6 @@ function FinishStep() {
   }
 
   const handleStart = () => {
-    if (!myInfo) {
-      return;
-    }
-
     setUser(myInfo);
     navigate('/guide');
   };

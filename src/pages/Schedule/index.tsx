@@ -154,7 +154,13 @@ function Schedule() {
             </div>
 
             <div className="flex flex-1 flex-col overflow-hidden">
-              <ScheduleDetail year={year} month={month} day={day} onItemClick={() => setIsSheetExpanded(true)} />
+              <ScheduleDetail
+                year={year}
+                month={month}
+                day={day}
+                schedules={schedules}
+                onItemClick={() => setIsSheetExpanded(true)}
+              />
             </div>
           </section>
         </>
