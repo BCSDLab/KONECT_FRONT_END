@@ -1,12 +1,12 @@
 import { type ChangeEvent, type MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useUpdateManagedClubInfoMutation } from '@/apis/club/managedHooks';
 import { clubQueries } from '@/apis/club/queries';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import { useToastContext } from '@/contexts/useToastContext';
 import { isApiError } from '@/interface/error';
+import { useUpdateManagedClubInfoMutation } from '@/pages/Manager/hooks/useManagedClubMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { prepareImageFile } from '@/utils/ts/imagePreprocessor';

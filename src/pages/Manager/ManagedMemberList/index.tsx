@@ -2,14 +2,6 @@ import { type MouseEvent, type ReactNode, useMemo, useRef, useState } from 'reac
 import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
-import {
-  useAddManagedPreMemberMutation,
-  useChangeManagedMemberPositionMutation,
-  useChangeManagedVicePresidentMutation,
-  useDeleteManagedPreMemberMutation,
-  useRemoveManagedMemberMutation,
-  useTransferManagedPresidentMutation,
-} from '@/apis/club/managedHooks';
 import { managedClubQueries, managedClubQueryKeys } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import MoreHorizontalIcon from '@/assets/svg/more-horizontal.svg';
@@ -17,6 +9,14 @@ import RoleSelectorArrowDownIcon from '@/assets/svg/role-selector-arrow-down.svg
 import BottomModal from '@/components/common/BottomModal';
 import Portal from '@/components/common/Portal';
 import { useToastContext } from '@/contexts/useToastContext';
+import {
+  useAddManagedPreMemberMutation,
+  useChangeManagedMemberPositionMutation,
+  useChangeManagedVicePresidentMutation,
+  useDeleteManagedPreMemberMutation,
+  useRemoveManagedMemberMutation,
+  useTransferManagedPresidentMutation,
+} from '@/pages/Manager/hooks/useManagedMemberMutations';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';

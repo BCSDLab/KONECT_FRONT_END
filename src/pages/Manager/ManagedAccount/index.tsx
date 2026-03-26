@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
-import { usePatchManagedClubSettingsMutation, useUpdateManagedClubFeeMutation } from '@/apis/club/managedHooks';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { useToastContext } from '@/contexts/useToastContext';
 import { isApiError } from '@/interface/error';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpdateManagedClubFeeMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
 import { cn } from '@/utils/ts/cn';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';

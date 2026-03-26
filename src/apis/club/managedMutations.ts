@@ -1,4 +1,6 @@
-import { mutationOptions } from '@tanstack/react-query';
+import { mutationOptions, type QueryClient } from '@tanstack/react-query';
+import { managedClubQueryKeys } from './managedQueries';
+import { clubQueryKeys } from './queries';
 import type {
   AddPreMemberRequest,
   ChangeMemberPositionRequest,
@@ -43,70 +45,143 @@ export const managedClubMutationKeys = {
 };
 
 export const managedClubMutations = {
-  updateInfo: (clubId: number) =>
+  updateInfo: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.updateInfo(clubId),
       mutationFn: (data: ClubInfoRequest) => putClubInfo(clubId, data),
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.club(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.clubs() }),
+        ]);
+      },
     }),
-  updateFee: (clubId: number) =>
+  updateFee: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.updateFee(clubId),
       mutationFn: (data: ClubFeeRequest) => putClubFee(clubId, data),
+      onSuccess: async (updatedFee) => {
+        queryClient.setQueryData(managedClubQueryKeys.fee(clubId), updatedFee);
+        queryClient.setQueryData(clubQueryKeys.fee(clubId), updatedFee);
+
+        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.settings(clubId) });
+      },
     }),
-  upsertRecruitment: (clubId: number) =>
+  upsertRecruitment: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.upsertRecruitment(clubId),
       mutationFn: (data: ClubRecruitmentRequest) => putClubRecruitment(clubId, data),
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) }),
+          queryClient.invalidateQueries({ queryKey: clubQueryKeys.recruitment(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.recruitment(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.settings(clubId) }),
+        ]);
+      },
     }),
-  updateQuestions: (clubId: number) =>
+  updateQuestions: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.updateQuestions(clubId),
       mutationFn: (data: ClubQuestionsRequest) => putClubQuestions(clubId, data),
+      onSuccess: async (updatedQuestions) => {
+        queryClient.setQueryData(managedClubQueryKeys.questions(clubId), updatedQuestions);
+        queryClient.setQueryData(clubQueryKeys.questions(clubId), updatedQuestions);
+
+        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.settings(clubId) });
+      },
     }),
-  patchSettings: (clubId: number) =>
+  patchSettings: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.patchSettings(clubId),
       mutationFn: (data: ClubSettingsPatchRequest) => patchClubSettings(clubId, data),
+      onSuccess: (updatedSettings) => {
+        queryClient.setQueryData(managedClubQueryKeys.settings(clubId), updatedSettings);
+      },
     }),
-  approveApplication: (clubId: number) =>
+  approveApplication: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.approveApplication(clubId),
       mutationFn: (applicationId: number) => postClubApplicationApprove(clubId, applicationId),
+      onSuccess: async (_, applicationId) => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.applications(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.applicationDetail(clubId, applicationId) }),
+        ]);
+      },
     }),
-  rejectApplication: (clubId: number) =>
+  rejectApplication: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.rejectApplication(clubId),
       mutationFn: (applicationId: number) => postClubApplicationReject(clubId, applicationId),
+      onSuccess: async (_, applicationId) => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.applications(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.applicationDetail(clubId, applicationId) }),
+        ]);
+      },
     }),
-  transferPresident: (clubId: number) =>
+  transferPresident: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.transferPresident(clubId),
       mutationFn: (data: TransferPresidentRequest) => postTransferPresident(clubId, data),
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.club(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.clubs() }),
+        ]);
+      },
     }),
-  changeVicePresident: (clubId: number) =>
+  changeVicePresident: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.changeVicePresident(clubId),
       mutationFn: (data: ChangeVicePresidentRequest) => patchVicePresident(clubId, data),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
+      },
     }),
-  changeMemberPosition: (clubId: number) =>
+  changeMemberPosition: (
+    queryClient: QueryClient,
+    clubId: number,
+    { invalidateOnSuccess = true }: { invalidateOnSuccess?: boolean } = {}
+  ) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.changeMemberPosition(clubId),
       mutationFn: ({ userId, data }: { data: ChangeMemberPositionRequest; userId: number }) =>
         patchMemberPosition(clubId, userId, data),
+      onSuccess: async () => {
+        if (invalidateOnSuccess) {
+          await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
+        }
+      },
     }),
-  removeMember: (clubId: number) =>
+  removeMember: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.removeMember(clubId),
       mutationFn: (userId: number) => deleteMember(clubId, userId),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
+      },
     }),
-  addPreMember: (clubId: number) =>
+  addPreMember: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.addPreMember(clubId),
       mutationFn: (data: AddPreMemberRequest) => postAddPreMember(clubId, data),
+      onSuccess: async () => {
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) }),
+          queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) }),
+        ]);
+      },
     }),
-  deletePreMember: (clubId: number) =>
+  deletePreMember: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: managedClubMutationKeys.deletePreMember(clubId),
       mutationFn: (preMemberId: number) => deletePreMember(clubId, preMemberId),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) });
+      },
     }),
 };

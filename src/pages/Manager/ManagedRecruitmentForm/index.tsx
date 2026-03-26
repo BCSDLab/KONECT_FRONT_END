@@ -3,11 +3,14 @@ import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import type { ClubQuestion, ClubQuestionRequest } from '@/apis/club/entity';
-import { usePatchManagedClubSettingsMutation, useUpdateManagedClubQuestionsMutation } from '@/apis/club/managedHooks';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { useToastContext } from '@/contexts/useToastContext';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpdateManagedClubQuestionsMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
 import { cn } from '@/utils/ts/cn';
 
 interface QuestionItem extends ClubQuestionRequest {
