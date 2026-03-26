@@ -1,17 +1,15 @@
 import type { MouseEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { ClubApplicationsResponse } from '@/apis/club/entity';
+import { useApproveManagedApplicationMutation, useRejectManagedApplicationMutation } from '@/apis/club/managedHooks';
 import CheckIcon from '@/assets/svg/check.svg';
 import CloseIcon from '@/assets/svg/close.svg';
 import PersonIcon from '@/assets/svg/person.svg';
+import { useToastContext } from '@/contexts/useToastContext';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
-import {
-  useApproveApplication,
-  useGetManagedApplications,
-  useRejectApplication,
-} from '../hooks/useManagedApplications';
+import { useGetManagedApplications } from '../hooks/useManagedApplications';
 
 type ManagedApplication = ClubApplicationsResponse['applications'][number];
 
@@ -82,14 +80,15 @@ function ManagedApplicationList() {
   const params = useParams();
   const navigate = useNavigate();
   const clubId = Number(params.clubId);
+  const { showToast } = useToastContext();
 
   const limit = 10;
 
   const { managedClubApplicationList, applications, fetchNextPage, hasNextPage, isFetchingNextPage, hasNoRecruitment } =
     useGetManagedApplications(clubId, { limit });
 
-  const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId);
-  const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
+  const { mutate: approve, isPending: isApproving } = useApproveManagedApplicationMutation(clubId);
+  const { mutate: reject, isPending: isRejecting } = useRejectManagedApplicationMutation(clubId);
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
     enabled: !hasNoRecruitment,
   });
@@ -98,12 +97,16 @@ function ManagedApplicationList() {
 
   const handleApprove = (e: MouseEvent<HTMLButtonElement>, applicationId: number) => {
     e.stopPropagation();
-    approve(applicationId);
+    approve(applicationId, {
+      onSuccess: () => showToast('지원이 승인되었습니다'),
+    });
   };
 
   const handleReject = (e: MouseEvent<HTMLButtonElement>, applicationId: number) => {
     e.stopPropagation();
-    reject(applicationId);
+    reject(applicationId, {
+      onSuccess: () => showToast('지원이 거절되었습니다'),
+    });
   };
 
   const handleDetail = (applicationId: number) => {

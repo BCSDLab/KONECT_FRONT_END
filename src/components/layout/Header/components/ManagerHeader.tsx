@@ -1,5 +1,6 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
-import { useManagedClub } from '@/pages/Manager/hooks/useManagedClubs';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import NotificationBell from './NotificationBell';
 import SubpageHeader from './SubpageHeader';
 
@@ -14,7 +15,7 @@ function ManagerHeaderBase({ title }: { title: string }) {
 }
 
 function ManagerHeaderWithClub({ clubId }: { clubId: number }) {
-  const { managedClub } = useManagedClub(clubId);
+  const { data: managedClub } = useSuspenseQuery(managedClubQueries.club(clubId));
   return <ManagerHeaderBase title={managedClub.clubName} />;
 }
 

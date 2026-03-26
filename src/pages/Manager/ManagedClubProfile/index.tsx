@@ -1,10 +1,12 @@
 import { type ChangeEvent, type MutableRefObject, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useUpdateManagedClubInfoMutation } from '@/apis/club/managedHooks';
+import { clubQueries } from '@/apis/club/queries';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
+import { useToastContext } from '@/contexts/useToastContext';
 import { isApiError } from '@/interface/error';
-import { useGetClubDetail } from '@/pages/Club/ClubDetail/hooks/useGetClubDetail';
-import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
@@ -36,8 +38,10 @@ function clearLocalPreviewUrl(localPreviewUrlRef: MutableRefObject<string | null
 
 function ManagedClubInfo() {
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
   const numericClubId = Number(clubId);
-  const { data: clubDetail } = useGetClubDetail(numericClubId);
+  const { showToast } = useToastContext();
+  const { data: clubDetail } = useSuspenseQuery(clubQueries.detail(numericClubId));
 
   const initialDescription = clubDetail.description ?? '';
   const initialLocation = clubDetail.location ?? '';
@@ -57,7 +61,7 @@ function ManagedClubInfo() {
   const localPreviewUrlRef = useRef<string | null>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateClubInfo(numericClubId);
+  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateManagedClubInfoMutation(numericClubId);
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -148,6 +152,9 @@ function ManagedClubInfo() {
         location,
         introduce,
       });
+
+      showToast('클럽 정보가 수정되었습니다');
+      navigate(-1);
     } finally {
       setIsUploading(false);
     }
