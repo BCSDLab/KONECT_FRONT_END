@@ -7,6 +7,10 @@ import BellOffIcon from '@/assets/svg/bell-off.svg';
 import ChatIcon from '@/assets/svg/chat-icon.svg';
 import PersonIcon from '@/assets/svg/person-icon.svg';
 import { getBottomOverlayOffset, NOTIFICATION_LIST_BOTTOM_GAP } from '@/components/layout/layoutMetrics';
+import {
+  useInboxNotifications,
+  useMarkInboxNotificationAsRead,
+} from '@/components/notification/hooks/useInboxNotificationQueries';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import {
@@ -14,7 +18,6 @@ import {
   getInboxNotificationMessage,
   normalizeInboxNotificationPath,
 } from '@/utils/ts/notification';
-import { useInboxNotifications, useMarkInboxNotificationAsRead } from './hooks/useInboxNotifications';
 
 interface NotificationRowIconProps {
   Icon: ComponentType<SVGProps<SVGSVGElement>>;

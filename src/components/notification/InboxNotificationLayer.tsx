@@ -8,9 +8,9 @@ import type {
   InboxNotificationUnreadCountResponse,
 } from '@/apis/notification/entity';
 import { notificationQueryKeys } from '@/apis/notification/queries';
-import { useMarkInboxNotificationAsRead } from '@/pages/Notifications/hooks/useInboxNotifications';
 import { useAuthStore } from '@/stores/authStore';
 import { normalizeInboxNotificationPath } from '@/utils/ts/notification';
+import { useMarkInboxNotificationAsRead } from './hooks/useInboxNotificationQueries';
 import { useInboxNotificationStream } from './hooks/useInboxNotificationStream';
 import InAppNotificationToast from './InAppNotificationToast';
 

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import NotificationsIcon from '@/assets/svg/notifications.svg';
 import UnreadNotificationIcon from '@/assets/svg/unread-notification.svg';
-import { useUnreadInboxNotificationCount } from '@/pages/Notifications/hooks/useInboxNotifications';
+import { useUnreadInboxNotificationCount } from '@/components/notification/hooks/useInboxNotificationQueries';
 
 function NotificationBell() {
   const { unreadCount } = useUnreadInboxNotificationCount();
