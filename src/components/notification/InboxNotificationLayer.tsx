@@ -119,7 +119,7 @@ function InboxNotificationLayer() {
 
     if (!activeNotification.isRead) {
       try {
-        await markAsRead(activeNotification.id);
+        await markAsRead({ notificationId: activeNotification.id, isRead: activeNotification.isRead });
       } catch {
         void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
       }

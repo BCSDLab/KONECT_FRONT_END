@@ -5,6 +5,11 @@ import type { InboxNotificationListResponse, InboxNotificationUnreadCountRespons
 import { notificationQueryKeys } from '@/apis/notification/queries';
 import { useAuthStore } from '@/stores/authStore';
 
+interface MarkInboxNotificationAsReadParams {
+  notificationId: number;
+  isRead: boolean;
+}
+
 export function useUnreadInboxNotificationCount() {
   const authStatus = useAuthStore((state) => state.authStatus);
 
@@ -34,12 +39,16 @@ export function useMarkInboxNotificationAsRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: markInboxNotificationAsRead,
-    onSuccess: (_, notificationId) => {
+    mutationFn: ({ notificationId }: MarkInboxNotificationAsReadParams) => markInboxNotificationAsRead(notificationId),
+    onSuccess: (_, { notificationId, isRead }) => {
       queryClient.setQueryData<InfiniteData<InboxNotificationListResponse>>(
         notificationQueryKeys.inbox.infinite(),
         (previousData) => setInboxNotificationReadState(previousData, notificationId)
       );
+
+      if (isRead) {
+        return;
+      }
 
       queryClient.setQueryData<InboxNotificationUnreadCountResponse>(
         notificationQueryKeys.inbox.unreadCount(),
