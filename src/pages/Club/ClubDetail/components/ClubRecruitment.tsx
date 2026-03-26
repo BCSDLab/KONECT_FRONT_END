@@ -1,11 +1,12 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
+import { clubQueries } from '@/apis/club/queries';
 import BottomModal from '@/components/common/BottomModal';
 import Card from '@/components/common/Card';
 import LinkifiedText from '@/components/common/LinkifiedText';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClubApply from '../../Application/hooks/useClubApply';
-import useGetClubRecruitment from '../hooks/useGetClubRecruitment';
 
 interface ClubRecruitProps {
   clubId: number;
@@ -15,7 +16,7 @@ interface ClubRecruitProps {
 
 function ClubRecruitment({ clubId, isMember, presidentUserId }: ClubRecruitProps) {
   const navigate = useNavigate();
-  const { data: clubRecruitment } = useGetClubRecruitment(clubId);
+  const { data: clubRecruitment } = useSuspenseQuery(clubQueries.recruitment(clubId));
   const { hasQuestions, applyDirectly, isFeeRequired, isPending } = useClubApply(clubId);
   const { value: isConfirmOpen, setTrue: openConfirm, setFalse: closeConfirm } = useBooleanState();
 
