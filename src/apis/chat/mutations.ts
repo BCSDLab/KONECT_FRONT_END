@@ -1,6 +1,4 @@
-import { mutationOptions, type QueryClient } from '@tanstack/react-query';
-import { chatQueryKeys } from './queries';
-import type { SendChatMessageRequest } from './entity';
+import { mutationOptions } from '@tanstack/react-query';
 import { postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '.';
 
 export const chatMutationKeys = {
@@ -11,35 +9,22 @@ export const chatMutationKeys = {
 };
 
 export const chatMutations = {
-  createRoom: (queryClient: QueryClient) =>
+  createRoom: () =>
     mutationOptions({
       mutationKey: chatMutationKeys.createRoom(),
       mutationFn: postChatRooms,
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
-      },
     }),
   createAdminRoom: () =>
     mutationOptions({
       mutationKey: chatMutationKeys.createAdminRoom(),
       mutationFn: postAdminChatRoom,
     }),
-  sendMessage: (queryClient: QueryClient) =>
+  sendMessage: () =>
     mutationOptions({
       mutationKey: chatMutationKeys.sendMessage(),
       mutationFn: postChatMessage,
-      onSuccess: async (_, variables: SendChatMessageRequest) => {
-        await Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: chatQueryKeys.messages(variables.chatRoomId),
-          }),
-          queryClient.invalidateQueries({
-            queryKey: chatQueryKeys.rooms(),
-          }),
-        ]);
-      },
     }),
-  toggleMute: (queryClient: QueryClient, chatRoomId?: number) =>
+  toggleMute: (chatRoomId?: number) =>
     mutationOptions({
       mutationKey: chatMutationKeys.toggleMute(chatRoomId),
       mutationFn: async () => {
@@ -48,11 +33,6 @@ export const chatMutations = {
         }
 
         return postChatMute(chatRoomId);
-      },
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: chatQueryKeys.rooms(),
-        });
       },
     }),
 };
