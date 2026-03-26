@@ -74,7 +74,7 @@ async function openInboxNotificationStream(
   signal: AbortSignal,
   onNotification: (notification: InboxNotification) => void
 ) {
-  let hasRetriedAfterUnauthorized = false;
+  let lastUnauthorizedAccessToken: string | null = null;
 
   while (!signal.aborted) {
     const accessToken = useAuthStore.getState().getAccessToken();
@@ -94,8 +94,13 @@ async function openInboxNotificationStream(
       signal,
     });
 
-    if (response.status === 401 && !hasRetriedAfterUnauthorized) {
-      hasRetriedAfterUnauthorized = true;
+    if (response.status === 401) {
+      if (lastUnauthorizedAccessToken === accessToken) {
+        useAuthStore.getState().clearAuth();
+        throw new Error('인증이 만료되었습니다.');
+      }
+
+      lastUnauthorizedAccessToken = accessToken;
 
       try {
         const nextAccessToken = await refreshAccessToken();
@@ -108,6 +113,8 @@ async function openInboxNotificationStream(
 
       continue;
     }
+
+    lastUnauthorizedAccessToken = null;
 
     if (isServerErrorStatus(response.status)) {
       redirectToServerErrorPage();
