@@ -1,15 +1,16 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import { authQueries } from '@/apis/auth/queries';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
-import { useSignupPrefill } from './hooks/useSignupPrefill';
 
 function StudentIdStep() {
   const navigate = useNavigate();
   const { studentId: savedStudentId, update } = useSignupStore();
 
   const [studentId, setStudentId] = useState(savedStudentId ?? '');
-  const { data: prefill, isPending } = useSignupPrefill();
+  const { data: prefill, isPending } = useQuery(authQueries.signupPrefill());
 
   const handleNext = () => {
     update({ studentId });
