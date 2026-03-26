@@ -1,28 +1,12 @@
 import { create } from 'zustand';
 import { getMyInfo, refreshAccessToken } from '@/apis/auth';
 import type { MyInfoResponse } from '@/apis/auth/entity';
+import { isAccessTokenExpired } from '@/utils/ts/accessToken';
 
 let initializePromise: Promise<void> | null = null;
 let hydrateUserPromise: Promise<void> | null = null;
 
 export type AuthStatus = 'unknown' | 'authenticated' | 'anonymous';
-
-const isAccessTokenExpired = (accessToken: string | null) => {
-  if (!accessToken) return true;
-
-  const [, payload] = accessToken.split('.');
-  if (!payload) return true;
-
-  try {
-    const normalizedPayload = payload.replace(/-/g, '+').replace(/_/g, '/');
-    const padding = '='.repeat((4 - (normalizedPayload.length % 4)) % 4);
-    const parsedPayload = JSON.parse(atob(`${normalizedPayload}${padding}`)) as { exp?: number };
-
-    return typeof parsedPayload.exp !== 'number' || parsedPayload.exp * 1000 <= Date.now();
-  } catch {
-    return true;
-  }
-};
 
 const hydrateUser = async (nextAccessToken: string) => {
   if (hydrateUserPromise) return hydrateUserPromise;

@@ -42,6 +42,7 @@ const ManagedMemberList = lazy(() => import('./pages/Manager/ManagedMemberList')
 const ManagedRecruitment = lazy(() => import('./pages/Manager/ManagedRecruitment'));
 const ManagedRecruitmentForm = lazy(() => import('./pages/Manager/ManagedRecruitmentForm'));
 const ManagedRecruitmentWrite = lazy(() => import('./pages/Manager/ManagedRecruitmentWrite'));
+const NotificationsPage = lazy(() => import('./pages/Notifications'));
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Timer = lazy(() => import('./pages/Timer'));
 const MyPage = lazy(() => import('./pages/User/MyPage'));
@@ -84,6 +85,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout showBottomNav />}>
               <Route path="home" element={<Home />} />
+              <Route path="notifications" element={<NotificationsPage />} />
               <Route path="mypage">
                 <Route index element={<MyPage />} />
                 <Route path="manager">

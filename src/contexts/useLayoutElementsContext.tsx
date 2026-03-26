@@ -1,8 +1,10 @@
 import { createContext, useContext, type RefObject } from 'react';
 
-interface LayoutElementsContextType {
+export interface LayoutElementsContextType {
+  layoutElement: HTMLDivElement | null;
   mainRef: RefObject<HTMLElement | null>;
   bottomNavRef: RefObject<HTMLElement | null>;
+  bottomOverlayInset: string;
 }
 
 export const LayoutElementsContext = createContext<LayoutElementsContextType | undefined>(undefined);

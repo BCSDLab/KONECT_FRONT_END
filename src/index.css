@@ -224,10 +224,25 @@
   .animate-fade-in-up {
     animation: fade-in-up 0.2s ease-out;
   }
+
+  @keyframes fade-in-down {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-down {
+    animation: fade-in-down 0.2s ease-out;
+  }
 }
 
 /* MonthPicker clear button 제거 */
-input[type="month"]::-webkit-clear-button {
+input[type='month']::-webkit-clear-button {
   display: none;
 }
 
@@ -237,13 +252,4 @@ input[type="month"]::-webkit-clear-button {
 
 .chat-tooltip-anchor {
   anchor-name: --chat-tooltip-anchor;
-}
-
-@supports (anchor-name: --chat-tooltip-anchor) {
-  .chat-tooltip {
-    position-anchor: --chat-tooltip-anchor;
-    top: calc(anchor(bottom) + 6px);
-    left: calc(anchor(right) - 149px);
-    right: auto;
-  }
 }
