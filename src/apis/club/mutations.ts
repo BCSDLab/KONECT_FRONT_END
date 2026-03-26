@@ -1,4 +1,5 @@
-import { mutationOptions } from '@tanstack/react-query';
+import { mutationOptions, type QueryClient } from '@tanstack/react-query';
+import { clubQueryKeys } from './queries';
 import type { ClubApplyRequest } from './entity';
 import { applyClub } from '.';
 
@@ -7,9 +8,12 @@ export const clubMutationKeys = {
 };
 
 export const clubMutations = {
-  apply: (clubId: number) =>
+  apply: (queryClient: QueryClient, clubId: number) =>
     mutationOptions({
       mutationKey: clubMutationKeys.apply(clubId),
       mutationFn: (body: ClubApplyRequest) => applyClub(clubId, body),
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) });
+      },
     }),
 };
