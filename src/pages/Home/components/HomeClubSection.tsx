@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { AppliedClub, Club, JoinClub } from '@/apis/club/entity';
+import { clubQueries } from '@/apis/club/queries';
 import Card from '@/components/common/Card';
 import InfiniteClubCarousel from '@/pages/Home/components/InfiniteClubCarousel';
 import SectionErrorFallback from '@/pages/Home/components/SectionErrorFallback';
 import SectionTitle from '@/pages/Home/components/SectionTitle';
-import { useGetHomeMyClubs, useGetHomeRecruitingClubs } from '@/pages/Home/hooks/useGetHomeClubs';
+import { useGetHomeMyClubs } from '@/pages/Home/hooks/useGetHomeClubs';
 import type { HomeClubCardItem } from '@/pages/Home/types';
 
 const CLUB_CAROUSEL_LIMIT = 20;
@@ -96,9 +98,9 @@ export function HomeClubSectionErrorFallback() {
 }
 
 function RecruitingClubSection() {
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHomeRecruitingClubs({
-    limit: CLUB_CAROUSEL_LIMIT,
-  });
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
+    clubQueries.infiniteList({ limit: CLUB_CAROUSEL_LIMIT, isRecruiting: true })
+  );
 
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage) {

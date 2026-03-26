@@ -1,11 +1,14 @@
 import type { MouseEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { ClubApplicationsResponse } from '@/apis/club/entity';
-import { useApproveManagedApplicationMutation, useRejectManagedApplicationMutation } from '@/apis/club/managedHooks';
 import CheckIcon from '@/assets/svg/check.svg';
 import CloseIcon from '@/assets/svg/close.svg';
 import PersonIcon from '@/assets/svg/person.svg';
 import { useToastContext } from '@/contexts/useToastContext';
+import {
+  useApproveManagedApplicationMutation,
+  useRejectManagedApplicationMutation,
+} from '@/pages/Manager/hooks/useManagedApplicationMutations';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';

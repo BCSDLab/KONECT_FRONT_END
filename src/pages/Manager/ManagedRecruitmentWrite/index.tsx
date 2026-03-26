@@ -2,7 +2,6 @@ import { startTransition, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
-import { usePatchManagedClubSettingsMutation, useUpsertManagedClubRecruitmentMutation } from '@/apis/club/managedHooks';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
@@ -14,6 +13,10 @@ import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { useToastContext } from '@/contexts/useToastContext';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import TimePicker from '@/pages/Manager/components/TimePicker';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpsertManagedClubRecruitmentMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { formatDateDot } from '@/utils/ts/date';

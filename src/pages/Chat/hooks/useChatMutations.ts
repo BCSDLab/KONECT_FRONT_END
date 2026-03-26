@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { chatMutations } from './mutations';
-import { chatQueryKeys } from './queries';
-import type { SendChatMessageRequest } from './entity';
+import { chatMutations } from '@/apis/chat/mutations';
+import { chatQueryKeys } from '@/apis/chat/queries';
 
 export const useCreateChatRoomMutation = () => {
   const queryClient = useQueryClient();
@@ -14,19 +13,15 @@ export const useCreateChatRoomMutation = () => {
   });
 };
 
-export const useSendChatMessageMutation = (chatRoomId?: number) => {
+export const useSendChatMessageMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...chatMutations.sendMessage(chatRoomId),
-    onSuccess: async (_, variables: SendChatMessageRequest) => {
+    ...chatMutations.sendMessage(),
+    onSuccess: async (_, variables) => {
       await Promise.all([
-        queryClient.invalidateQueries({
-          queryKey: chatQueryKeys.messages(variables.chatRoomId),
-        }),
-        queryClient.invalidateQueries({
-          queryKey: chatQueryKeys.rooms(),
-        }),
+        queryClient.invalidateQueries({ queryKey: chatQueryKeys.messages(variables.chatRoomId) }),
+        queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() }),
       ]);
     },
   });
@@ -38,9 +33,7 @@ export const useToggleChatMuteMutation = (chatRoomId?: number) => {
   return useMutation({
     ...chatMutations.toggleMute(chatRoomId),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: chatQueryKeys.rooms(),
-      });
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
     },
   });
 };

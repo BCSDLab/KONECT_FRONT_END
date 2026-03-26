@@ -1,4 +1,6 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { authQueries } from '@/apis/auth/queries';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
@@ -10,7 +12,6 @@ import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
-import { useMyInfo } from '../Profile/hooks/useMyInfo';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 
@@ -22,7 +23,7 @@ const menuItems = [
 ];
 
 function MyPage() {
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
   const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();

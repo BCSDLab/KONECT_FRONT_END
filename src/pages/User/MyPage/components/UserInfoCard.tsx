@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
+import { authQueries } from '@/apis/auth/queries';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import Card from '@/components/common/Card';
-import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 import { cn } from '@/utils/ts/cn';
 
 interface UserInfoCardProps {
@@ -14,7 +14,7 @@ function ManagerDetailInfoCard() {
   const params = useParams();
   const clubId = Number(params.clubId);
   const navigate = useNavigate();
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
   const { data: managedClub } = useSuspenseQuery(managedClubQueries.club(clubId));
 
@@ -51,7 +51,7 @@ function ManagerStats({
   onButtonClick: (e: React.MouseEvent<HTMLButtonElement>, to: string) => void;
 }) {
   const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
 
   return (
     <div className="flex justify-between gap-2">
@@ -73,7 +73,7 @@ function ManagerStats({
 
 function UserInfoCard({ type }: UserInfoCardProps) {
   const navigate = useNavigate();
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
 
   if (type === 'detail') {
     return <ManagerDetailInfoCard />;

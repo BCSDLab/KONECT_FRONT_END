@@ -1,27 +1,23 @@
 import { useEffect, useMemo, useRef } from 'react';
+import type { Schedule } from '@/apis/schedule/entity';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { parseDateDot } from '@/utils/ts/date';
-import { useScheduleList } from '../hooks/useGetSchedules';
 
-type scheduleDetailProps = {
+type ScheduleDetailProps = {
   year: number;
   month: number;
   day: number;
+  schedules: Schedule[];
   onItemClick?: () => void;
 };
 
-function ScheduleDetail({ year, month, day, onItemClick }: scheduleDetailProps) {
-  const { data } = useScheduleList({ year, month });
-
+function ScheduleDetail({ year, month, day, schedules, onItemClick }: ScheduleDetailProps) {
   const selectedDate = useMemo(() => new Date(year, month - 1, day), [year, month, day]);
 
   const sortedSchedules = useMemo(
-    () =>
-      [...(data?.schedules ?? [])].sort(
-        (a, b) => parseDateDot(a.startedAt).getTime() - parseDateDot(b.startedAt).getTime()
-      ),
-    [data?.schedules]
+    () => [...schedules].sort((a, b) => parseDateDot(a.startedAt).getTime() - parseDateDot(b.startedAt).getTime()),
+    [schedules]
   );
 
   const isOnSelectedDay = (startedAt: string, endedAt: string) => {

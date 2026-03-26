@@ -10,7 +10,7 @@ import type {
 import { notificationQueryKeys } from '@/apis/notification/queries';
 import { useAuthStore } from '@/stores/authStore';
 import { normalizeInboxNotificationPath } from '@/utils/ts/notification';
-import { useMarkInboxNotificationAsRead } from './hooks/useInboxNotificationQueries';
+import { useMarkInboxNotificationAsReadMutation } from './hooks/useInboxNotificationMutations';
 import { useInboxNotificationStream } from './hooks/useInboxNotificationStream';
 import InAppNotificationToast from './InAppNotificationToast';
 
@@ -27,7 +27,7 @@ function InboxNotificationLayer() {
   const lastReconnectResyncAtRef = useRef(0);
   const seenNotificationIdsRef = useRef<number[]>([]);
   const [notificationQueue, setNotificationQueue] = useState<InboxNotification[]>([]);
-  const { mutateAsync: markAsRead } = useMarkInboxNotificationAsRead();
+  const { mutateAsync: markAsRead } = useMarkInboxNotificationAsReadMutation();
   const activeNotification = notificationQueue[0] ?? null;
 
   const enqueueNotification = (notification: InboxNotification) => {
@@ -119,7 +119,7 @@ function InboxNotificationLayer() {
 
     if (!activeNotification.isRead) {
       try {
-        await markAsRead({ notificationId: activeNotification.id, isRead: activeNotification.isRead });
+        await markAsRead({ notificationId: activeNotification.id });
       } catch {
         void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
       }

@@ -1,10 +1,10 @@
 import { mutationOptions } from '@tanstack/react-query';
-import { postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '.';
+import { postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '@/apis/chat';
 
 export const chatMutationKeys = {
   createRoom: () => ['chat', 'createRoom'] as const,
   createAdminRoom: () => ['chat', 'createAdminRoom'] as const,
-  sendMessage: (chatRoomId?: number) => ['chat', 'sendMessage', chatRoomId ?? 'unknown'] as const,
+  sendMessage: () => ['chat', 'sendMessage'] as const,
   toggleMute: (chatRoomId?: number) => ['chat', 'toggleMute', chatRoomId ?? 'unknown'] as const,
 };
 
@@ -19,9 +19,9 @@ export const chatMutations = {
       mutationKey: chatMutationKeys.createAdminRoom(),
       mutationFn: postAdminChatRoom,
     }),
-  sendMessage: (chatRoomId?: number) =>
+  sendMessage: () =>
     mutationOptions({
-      mutationKey: chatMutationKeys.sendMessage(chatRoomId),
+      mutationKey: chatMutationKeys.sendMessage(),
       mutationFn: postChatMessage,
     }),
   toggleMute: (chatRoomId?: number) =>

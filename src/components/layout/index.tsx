@@ -18,6 +18,7 @@ interface LayoutProps {
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   const { pathname } = useLocation();
   const { contentPaddingClassName, hasHeader } = getHeaderPresentation(pathname);
+  const mainBackgroundClassName = pathname === '/chats' ? 'bg-white' : 'bg-background';
   const { bottomNavRef, bottomOverlayInset, handleLayoutElement, layoutElement, mainRef } =
     useLayoutElements(showBottomNav);
   const layoutElements = useMemo(
@@ -47,7 +48,8 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
           ref={mainRef}
           style={mainStyle}
           className={cn(
-            'bg-background box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            'box-border flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            mainBackgroundClassName,
             hasHeader && contentPaddingClassName,
             contentClassName
           )}

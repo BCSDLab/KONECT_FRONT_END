@@ -1,10 +1,18 @@
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { notificationQueries } from '@/apis/notification/queries';
 import NotificationsIcon from '@/assets/svg/notifications.svg';
 import UnreadNotificationIcon from '@/assets/svg/unread-notification.svg';
-import { useUnreadInboxNotificationCount } from '@/components/notification/hooks/useInboxNotificationQueries';
+import { useAuthStore } from '@/stores/authStore';
 
 function NotificationBell() {
-  const { unreadCount } = useUnreadInboxNotificationCount();
+  const authStatus = useAuthStore((state) => state.authStatus);
+  const { data } = useQuery({
+    ...notificationQueries.inboxUnreadCount(),
+    enabled: authStatus === 'authenticated',
+    staleTime: 30_000,
+  });
+  const unreadCount = data?.unreadCount ?? 0;
 
   return (
     <Link

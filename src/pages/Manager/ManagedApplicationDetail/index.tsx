@@ -1,10 +1,13 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useApproveManagedApplicationMutation, useRejectManagedApplicationMutation } from '@/apis/club/managedHooks';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import BottomModal from '@/components/common/BottomModal';
 import { useToastContext } from '@/contexts/useToastContext';
 import ApplicationDetailContent from '@/pages/Manager/components/ApplicationDetailContent';
+import {
+  useApproveManagedApplicationMutation,
+  useRejectManagedApplicationMutation,
+} from '@/pages/Manager/hooks/useManagedApplicationMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { cn } from '@/utils/ts/cn';
 

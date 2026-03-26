@@ -1,9 +1,8 @@
 import { mutationOptions } from '@tanstack/react-query';
 import { markInboxNotificationAsRead } from '.';
 
-interface MarkInboxNotificationAsReadVariables {
+export interface MarkInboxNotificationAsReadVariables {
   notificationId: number;
-  isRead: boolean;
 }
 
 export const notificationMutationKeys = {
