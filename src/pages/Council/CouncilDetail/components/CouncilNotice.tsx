@@ -1,10 +1,13 @@
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { councilQueries } from '@/apis/council/queries';
 import MegaphoneIcon from '@/assets/svg/megaphone.svg';
-import { useCouncilNotice } from '@/pages/Club/ClubDetail/hooks/useCouncilNotices';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 
 function CouncilNotice() {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useCouncilNotice({ limit: 10 });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
+    councilQueries.infiniteNotices(10)
+  );
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   const allNotices = data?.pages.flatMap((page) => page.councilNotices) ?? [];

@@ -1,9 +1,5 @@
-import { useSuspenseInfiniteQuery, useSuspenseQueries } from '@tanstack/react-query';
+import { useSuspenseQueries } from '@tanstack/react-query';
 import { clubQueries } from '@/apis/club/queries';
-
-interface UseGetHomeRecruitingClubsParams {
-  limit?: number;
-}
 
 export const useGetHomeMyClubs = () => {
   return useSuspenseQueries({
@@ -13,8 +9,4 @@ export const useGetHomeMyClubs = () => {
       joinedClubs: joinedClubsQuery.data.joinedClubs,
     }),
   });
-};
-
-export const useGetHomeRecruitingClubs = ({ limit = 10 }: UseGetHomeRecruitingClubsParams = {}) => {
-  return useSuspenseInfiniteQuery(clubQueries.infiniteList({ limit, isRecruiting: true }));
 };

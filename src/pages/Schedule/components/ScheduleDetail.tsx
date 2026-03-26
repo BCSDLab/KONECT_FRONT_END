@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { scheduleQueries } from '@/apis/schedule/queries';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
 import { parseDateDot } from '@/utils/ts/date';
-import { useScheduleList } from '../hooks/useGetSchedules';
 
 type scheduleDetailProps = {
   year: number;
@@ -12,7 +13,10 @@ type scheduleDetailProps = {
 };
 
 function ScheduleDetail({ year, month, day, onItemClick }: scheduleDetailProps) {
-  const { data } = useScheduleList({ year, month });
+  const { data } = useQuery({
+    ...scheduleQueries.monthly({ year, month }),
+    enabled: Boolean(year && month),
+  });
 
   const selectedDate = useMemo(() => new Date(year, month - 1, day), [year, month, day]);
 

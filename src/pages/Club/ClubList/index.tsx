@@ -1,4 +1,6 @@
 import { Fragment, useRef } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { clubQueries } from '@/apis/club/queries';
 import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
@@ -6,7 +8,6 @@ import useScrollRestore from '@/utils/hooks/useScrollRestore';
 import AdvertisementCard, { AdvertisementCardSkeleton } from './components/AdvertisementCard';
 import ClubCard from './components/ClubCard';
 import SearchBar from './components/SearchBar';
-import { useGetClubs } from './hooks/useGetClubs';
 
 const SCROLL_RESTORE_KEY = 'clubList_shouldRestore';
 
@@ -14,7 +15,9 @@ function ClubList() {
   const shouldRestoreScroll = sessionStorage.getItem(SCROLL_RESTORE_KEY) === 'true';
   sessionStorage.removeItem(SCROLL_RESTORE_KEY);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({ limit: 10 });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    clubQueries.infiniteList({ limit: 10, isRecruiting: false })
+  );
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage);
 
   useScrollRestore('clubList', !!data, shouldRestoreScroll);

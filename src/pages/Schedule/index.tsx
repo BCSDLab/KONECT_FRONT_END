@@ -1,11 +1,12 @@
 import { useMemo, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
+import { scheduleQueries } from '@/apis/schedule/queries';
 import Portal from '@/components/common/Portal';
 import { SCHEDULE_DAYS } from '@/constants/schedule';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 import CalendarWeekRow from './components/CalendarWeekRow';
 import ScheduleDetail from './components/ScheduleDetail';
-import { useScheduleList } from './hooks/useGetSchedules';
 import { useMonthSwipe } from './hooks/useMonthSwipe';
 
 const COLOR_LEGENDS = [
@@ -27,7 +28,10 @@ function Schedule() {
   const month = Number(searchParams.get('month') || new Date().getMonth() + 1);
   const day = Number(searchParams.get('day') || new Date().getDate());
 
-  const { data } = useScheduleList({ year, month });
+  const { data } = useQuery({
+    ...scheduleQueries.monthly({ year, month }),
+    enabled: Boolean(year && month),
+  });
 
   const { isCurrentMonth, isSelectedDay, isSunday, getMonthDateList } = dateUtils(year, month, day);
 
@@ -130,12 +134,12 @@ function Schedule() {
       <Portal>
         <>
           <div
-            className={`fixed inset-0 z-[31] bg-black/40 transition-opacity duration-300 ${isSheetExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
+            className={`fixed inset-0 z-31 bg-black/40 transition-opacity duration-300 ${isSheetExpanded ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'}`}
             onClick={() => setIsSheetExpanded(false)}
           />
 
           <section
-            className="fixed inset-x-0 bottom-0 z-[32] flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
+            className="fixed inset-x-0 bottom-0 z-32 flex flex-col rounded-t-3xl bg-white shadow-[0_-4px_12px_rgba(0,0,0,0.06)] transition-transform duration-300 ease-out"
             style={{
               height: `calc(var(--viewport-height) - ${SHEET_TOP_OFFSET}px)`,
               transform: isSheetExpanded ? 'translateY(0)' : `translateY(calc(100% - ${PEEK_HEIGHT}px))`,
