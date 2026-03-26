@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { useCreateChatRoomMutation, useSendChatMessageMutation, useToggleChatMuteMutation } from '@/apis/chat/hooks';
 import { chatQueries } from '@/apis/chat/queries';
 import { clubQueries } from '@/apis/club/queries';
+import { useCreateChatRoomMutation, useSendChatMessageMutation, useToggleChatMuteMutation } from './useChatMutations';
 
 const useChat = (chatRoomId?: number) => {
   const { data: chatRoomList } = useSuspenseQuery({
@@ -25,7 +25,7 @@ const useChat = (chatRoomId?: number) => {
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
-  const sendMessageMutation = useSendChatMessageMutation(chatRoomId);
+  const sendMessageMutation = useSendChatMessageMutation();
 
   const clubId = chatMessagesData?.pages[0]?.clubId;
 

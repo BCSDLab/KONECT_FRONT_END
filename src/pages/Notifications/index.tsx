@@ -1,16 +1,13 @@
 import type { ComponentType, SVGProps } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import type { InboxNotification } from '@/apis/notification/entity';
-import { notificationQueryKeys } from '@/apis/notification/queries';
+import { notificationQueries, notificationQueryKeys } from '@/apis/notification/queries';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import ChatIcon from '@/assets/svg/chat-icon.svg';
 import PersonIcon from '@/assets/svg/person-icon.svg';
 import { getBottomOverlayOffset, NOTIFICATION_LIST_BOTTOM_GAP } from '@/components/layout/layoutMetrics';
-import {
-  useInboxNotifications,
-  useMarkInboxNotificationAsRead,
-} from '@/components/notification/hooks/useInboxNotificationQueries';
+import { useMarkInboxNotificationAsReadMutation } from '@/components/notification/hooks/useInboxNotificationMutations';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import {
@@ -89,8 +86,10 @@ function NotificationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { bottomOverlayInset } = useLayoutElementsContext();
-  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInboxNotifications();
-  const { mutateAsync: markAsRead, isPending: isMarkingAsRead } = useMarkInboxNotificationAsRead();
+  const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
+    notificationQueries.inboxInfinite()
+  );
+  const { mutateAsync: markAsRead, isPending: isMarkingAsRead } = useMarkInboxNotificationAsReadMutation();
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.3 });
 
   if (error) {
