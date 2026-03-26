@@ -1,7 +1,11 @@
 import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { chatQueries } from '@/apis/chat/queries';
 import { clubQueries } from '@/apis/club/queries';
-import { useCreateChatRoomMutation, useSendChatMessageMutation, useToggleChatMuteMutation } from './useChatMutations';
+import {
+  useCreateChatRoomMutation,
+  useSendChatMessageMutation,
+  useToggleChatMuteMutation,
+} from '@/pages/Chat/hooks/useChatMutations.ts';
 
 const useChat = (chatRoomId?: number) => {
   const { data: chatRoomList } = useSuspenseQuery({

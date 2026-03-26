@@ -1,5 +1,5 @@
 import { mutationOptions } from '@tanstack/react-query';
-import { postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '.';
+import { postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '@/apis/chat';
 
 export const chatMutationKeys = {
   createRoom: () => ['chat', 'createRoom'] as const,

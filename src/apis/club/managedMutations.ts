@@ -1,15 +1,4 @@
 import { mutationOptions } from '@tanstack/react-query';
-import type {
-  AddPreMemberRequest,
-  ChangeMemberPositionRequest,
-  ChangeVicePresidentRequest,
-  ClubFeeRequest,
-  ClubInfoRequest,
-  ClubQuestionsRequest,
-  ClubRecruitmentRequest,
-  ClubSettingsPatchRequest,
-  TransferPresidentRequest,
-} from './entity';
 import {
   deleteMember,
   deletePreMember,
@@ -24,7 +13,18 @@ import {
   putClubInfo,
   putClubQuestions,
   putClubRecruitment,
-} from '.';
+} from '@/apis/club';
+import type {
+  AddPreMemberRequest,
+  ChangeMemberPositionRequest,
+  ChangeVicePresidentRequest,
+  ClubFeeRequest,
+  ClubInfoRequest,
+  ClubQuestionsRequest,
+  ClubRecruitmentRequest,
+  ClubSettingsPatchRequest,
+  TransferPresidentRequest,
+} from '@/apis/club/entity';
 
 export const managedClubMutationKeys = {
   updateInfo: (clubId: number) => ['clubs', 'managed', 'updateInfo', clubId] as const,
