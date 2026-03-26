@@ -3,7 +3,6 @@ import { markInboxNotificationAsRead } from '.';
 
 export interface MarkInboxNotificationAsReadVariables {
   notificationId: number;
-  isRead: boolean;
 }
 
 export const notificationMutationKeys = {

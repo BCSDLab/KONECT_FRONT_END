@@ -9,13 +9,22 @@ export const useMarkInboxNotificationAsReadMutation = () => {
 
   return useMutation({
     ...notificationMutations.markInboxAsRead(),
-    onSuccess: (_, { notificationId, isRead }) => {
+    onSuccess: (_, { notificationId }) => {
+      let shouldDecrementUnreadCount = false;
+
       queryClient.setQueryData<InfiniteData<InboxNotificationListResponse>>(
         notificationQueryKeys.inbox.infinite(),
-        (previousData) => setInboxNotificationReadState(previousData, notificationId)
+        (previousData) => {
+          shouldDecrementUnreadCount =
+            previousData?.pages.some((page) =>
+              page.notifications.some((notification) => notification.id === notificationId && !notification.isRead)
+            ) ?? false;
+
+          return setInboxNotificationReadState(previousData, notificationId);
+        }
       );
 
-      if (isRead) {
+      if (!shouldDecrementUnreadCount) {
         return;
       }
 

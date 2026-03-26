@@ -104,7 +104,7 @@ function NotificationsPage() {
 
     try {
       if (!notification.isRead) {
-        await markAsRead({ notificationId: notification.id, isRead: notification.isRead });
+        await markAsRead({ notificationId: notification.id });
       }
     } catch {
       void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
