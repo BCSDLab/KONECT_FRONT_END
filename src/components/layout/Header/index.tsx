@@ -5,22 +5,21 @@ import InfoHeader from './components/InfoHeader';
 import ManagerHeader from './components/ManagerHeader';
 import ProfileHeader from './components/ProfileHeader';
 import ScheduleHeader from './components/ScheduleHeader';
-import { HEADER_CONFIGS, DEFAULT_HEADER_TYPE } from './headerConfig';
-import { ROUTE_TITLES } from './routeTitles';
+import SubpageHeader from './components/SubpageHeader';
+import { getHeaderPresentation } from './presentation';
 import type { HeaderType, HeaderRenderer } from './types';
 
 function Header() {
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const title = ROUTE_TITLES.find((route) => route.match(pathname))?.title ?? '';
-  const headerConfig = HEADER_CONFIGS.find((config) => config.match(pathname));
-  const headerType = headerConfig?.type ?? DEFAULT_HEADER_TYPE;
+  const { title, type: headerType } = getHeaderPresentation(pathname);
 
   const HEADER_RENDERERS: Record<HeaderType, HeaderRenderer> = {
     profile: () => <ProfileHeader />,
     info: () => <InfoHeader />,
     chat: () => <ChatHeader />,
     none: () => null,
+    notification: ({ title }) => <SubpageHeader title={title} />,
     schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,

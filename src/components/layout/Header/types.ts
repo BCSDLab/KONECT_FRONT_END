@@ -5,6 +5,7 @@ export type HeaderType =
   | 'profile'
   | 'chat'
   | 'none'
+  | 'notification'
   | 'default'
   | 'normal'
   | 'full'
