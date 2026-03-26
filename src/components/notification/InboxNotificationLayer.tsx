@@ -16,12 +16,14 @@ import InAppNotificationToast from './InAppNotificationToast';
 
 const IN_APP_NOTIFICATION_TOAST_DURATION = 4_500;
 const MAX_SEEN_NOTIFICATION_COUNT = 50;
+const INBOX_RECONNECT_RESYNC_THROTTLE_MS = 10_000;
 
 function InboxNotificationLayer() {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const authStatus = useAuthStore((state) => state.authStatus);
+  const lastReconnectResyncAtRef = useRef(0);
   const seenNotificationIdsRef = useRef<number[]>([]);
   const [notificationQueue, setNotificationQueue] = useState<InboxNotification[]>([]);
   const { mutateAsync: markAsRead } = useMarkInboxNotificationAsRead();
@@ -57,6 +59,7 @@ function InboxNotificationLayer() {
       return;
     }
 
+    lastReconnectResyncAtRef.current = 0;
     seenNotificationIdsRef.current = [];
 
     startTransition(() => {
@@ -77,7 +80,19 @@ function InboxNotificationLayer() {
       window.clearTimeout(timeoutId);
     };
   }, [activeNotification]);
-  useInboxNotificationStream(enqueueNotification);
+
+  const handleStreamReconnect = () => {
+    const now = Date.now();
+
+    if (now - lastReconnectResyncAtRef.current < INBOX_RECONNECT_RESYNC_THROTTLE_MS) {
+      return;
+    }
+
+    lastReconnectResyncAtRef.current = now;
+    void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+  };
+
+  useInboxNotificationStream(enqueueNotification, { onReconnect: handleStreamReconnect });
 
   const handleNotificationAction = async () => {
     if (!activeNotification) {

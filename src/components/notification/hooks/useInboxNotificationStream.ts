@@ -1,4 +1,4 @@
-import { useEffect, useEffectEvent } from 'react';
+import { useEffect, useEffectEvent, useRef } from 'react';
 import { refreshAccessToken } from '@/apis/auth';
 import type { InboxNotification } from '@/apis/notification/entity';
 import { useAuthStore } from '@/stores/authStore';
@@ -72,6 +72,7 @@ function syncAccessTokenToNative(accessToken: string) {
 
 async function openInboxNotificationStream(
   signal: AbortSignal,
+  onConnected: () => void,
   onNotification: (notification: InboxNotification) => void
 ) {
   let lastUnauthorizedAccessToken: string | null = null;
@@ -131,6 +132,8 @@ async function openInboxNotificationStream(
       return;
     }
 
+    onConnected();
+
     const decoder = new TextDecoder();
     let buffer = '';
 
@@ -172,10 +175,27 @@ async function openInboxNotificationStream(
   }
 }
 
-export function useInboxNotificationStream(onNotification: (notification: InboxNotification) => void) {
+interface UseInboxNotificationStreamOptions {
+  onReconnect?: () => void;
+}
+
+export function useInboxNotificationStream(
+  onNotification: (notification: InboxNotification) => void,
+  options: UseInboxNotificationStreamOptions = {}
+) {
   const authStatus = useAuthStore((state) => state.authStatus);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const hasEstablishedConnectionRef = useRef(false);
   const handleNotification = useEffectEvent(onNotification);
+  const handleReconnect = useEffectEvent(options.onReconnect ?? (() => {}));
+
+  useEffect(() => {
+    if (authStatus === 'authenticated') {
+      return;
+    }
+
+    hasEstablishedConnectionRef.current = false;
+  }, [authStatus]);
 
   useEffect(() => {
     if (authStatus !== 'authenticated' || !accessToken) {
@@ -232,9 +252,18 @@ export function useInboxNotificationStream(onNotification: (notification: InboxN
     let reconnectTimeoutId: number | null = null;
     const abortController = new AbortController();
 
+    const handleConnected = () => {
+      if (hasEstablishedConnectionRef.current) {
+        handleReconnect();
+        return;
+      }
+
+      hasEstablishedConnectionRef.current = true;
+    };
+
     const connect = async () => {
       try {
-        await openInboxNotificationStream(abortController.signal, handleNotification);
+        await openInboxNotificationStream(abortController.signal, handleConnected, handleNotification);
       } catch {
         if (abortController.signal.aborted) {
           return;
