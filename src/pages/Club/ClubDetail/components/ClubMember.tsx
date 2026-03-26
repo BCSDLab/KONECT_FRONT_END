@@ -1,8 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useParams } from 'react-router-dom';
 import type { ClubMember, PositionType } from '@/apis/club/entity';
-import { clubQueries } from '@/apis/club/queries';
+import { useGetClubMembers } from '../hooks/useGetClubMembers';
 
 const POSITION_LABELS: Record<PositionType, string> = {
   PRESIDENT: '회장',
@@ -61,7 +60,7 @@ interface ClubMemberTabProps {
 
 function ClubMemberTab({ memberCount }: ClubMemberTabProps) {
   const { clubId } = useParams();
-  const { data: clubMembers } = useQuery(clubQueries.members(Number(clubId)));
+  const { data: clubMembers } = useGetClubMembers(Number(clubId));
   const members = clubMembers?.clubMembers ?? [];
   const totalMembers = clubMembers?.clubMembers.length ?? memberCount;
 

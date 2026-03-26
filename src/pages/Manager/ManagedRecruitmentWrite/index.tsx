@@ -1,9 +1,6 @@
 import { startTransition, useEffect, useRef, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
-import { usePatchManagedClubSettingsMutation, useUpsertManagedClubRecruitmentMutation } from '@/apis/club/managedHooks';
-import { managedClubQueries } from '@/apis/club/managedQueries';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
@@ -11,9 +8,10 @@ import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ClockIcon from '@/assets/svg/clock.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
-import { useToastContext } from '@/contexts/useToastContext';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import TimePicker from '@/pages/Manager/components/TimePicker';
+import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
+import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
 import { formatDateDot } from '@/utils/ts/date';
@@ -48,7 +46,6 @@ function ManagedRecruitmentWrite() {
   const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
-  const { showToast } = useToastContext();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
@@ -65,10 +62,10 @@ function ManagedRecruitmentWrite() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { data: existingRecruitment } = useQuery(managedClubQueries.recruitment(clubIdNumber));
-  const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
-  const { mutate: saveRecruitment, isPending, error } = useUpsertManagedClubRecruitmentMutation(clubIdNumber);
-  const { mutate: patchSettings, isPending: isSettingsPending } = usePatchManagedClubSettingsMutation(clubIdNumber);
+  const { data: existingRecruitment } = useGetManagedRecruitments(clubIdNumber);
+  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
+  const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(clubIdNumber);
+  const { mutate: patchSettings, isPending: isSettingsPending } = usePatchClubSettings(clubIdNumber);
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -262,8 +259,6 @@ function ManagedRecruitmentWrite() {
       const imageData = [...existingImageData, ...uploadedImageData];
 
       const onSuccess = () => {
-        showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
-
         const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
         const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
         const navigateAfterSave = () =>

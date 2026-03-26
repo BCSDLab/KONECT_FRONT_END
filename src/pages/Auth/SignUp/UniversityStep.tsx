@@ -1,12 +1,11 @@
 import { useState } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { universityQueries } from '@/apis/university/queries';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import Card from '@/components/common/Card';
 import { KAKAO_OPEN_CHAT_URL } from '@/constants/links';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
+import { useGetUniversityList } from './hooks/useUniversity';
 
 function UniversityCard({ label, onClick }: { label: string; onClick: () => void }) {
   return (
@@ -20,7 +19,7 @@ function UniversityCard({ label, onClick }: { label: string; onClick: () => void
 function UniversityStep() {
   const navigate = useNavigate();
 
-  const { data: universityList } = useSuspenseQuery(universityQueries.list());
+  const { data: universityList } = useGetUniversityList();
 
   const update = useSignupStore((state) => state.update);
   const [universityName, setUniversityName] = useState('');

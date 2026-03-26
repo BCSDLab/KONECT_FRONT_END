@@ -1,15 +1,29 @@
-import { useInfiniteQuery, useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { useCreateChatRoomMutation, useSendChatMessageMutation, useToggleChatMuteMutation } from '@/apis/chat/hooks';
-import { chatQueries } from '@/apis/chat/queries';
-import { clubQueries } from '@/apis/club/queries';
+import { useMutation, useSuspenseQuery, useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { getChatMessages, getChatRooms, postChatMessage, postChatRooms, postChatMute } from '@/apis/chat';
+import { useGetClubMembers } from '@/pages/Club/ClubDetail/hooks/useGetClubMembers';
+
+export const chatQueryKeys = {
+  all: ['chat'] as const,
+  rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
+  messages: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId] as const,
+};
 
 const useChat = (chatRoomId?: number) => {
+  const queryClient = useQueryClient();
+
   const { data: chatRoomList } = useSuspenseQuery({
-    ...chatQueries.rooms(),
+    queryKey: chatQueryKeys.rooms(),
+    queryFn: getChatRooms,
     refetchInterval: 5000,
   });
 
-  const createChatRoomMutation = useCreateChatRoomMutation();
+  const createChatRoomMutation = useMutation({
+    mutationKey: ['createChatRoom'],
+    mutationFn: (userId: number) => postChatRooms(userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
 
   const {
     data: chatMessagesData,
@@ -17,7 +31,21 @@ const useChat = (chatRoomId?: number) => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...chatQueries.messages(chatRoomId),
+    queryKey: chatRoomId ? chatQueryKeys.messages(chatRoomId) : ['chat', 'messages', 'disabled'],
+
+    enabled: !!chatRoomId,
+
+    queryFn: ({ pageParam }) =>
+      getChatMessages({
+        chatRoomId: chatRoomId!,
+        page: pageParam,
+        limit: 20,
+      }),
+
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage) => (lastPage.currentPage < lastPage.totalPage ? lastPage.currentPage + 1 : undefined),
+
     refetchInterval: 1000,
   });
 
@@ -25,13 +53,40 @@ const useChat = (chatRoomId?: number) => {
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
-  const sendMessageMutation = useSendChatMessageMutation(chatRoomId);
+  const sendMessageMutation = useMutation({
+    mutationKey: ['sendMessage', chatRoomId],
+    mutationFn: postChatMessage,
+
+    onSuccess: () => {
+      if (!chatRoomId) return;
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.messages(chatRoomId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.rooms(),
+      });
+    },
+  });
 
   const clubId = chatMessagesData?.pages[0]?.clubId;
 
-  const { data: clubMembersData } = useQuery(clubQueries.members(clubId));
+  const { data: clubMembersData } = useGetClubMembers(clubId);
 
-  const toggleMuteMutation = useToggleChatMuteMutation(chatRoomId);
+  const toggleMuteMutation = useMutation({
+    mutationKey: ['toggleMute', chatRoomId],
+    mutationFn: async () => {
+      if (!chatRoomId) {
+        throw new Error('chatRoomId is missing');
+      }
+
+      return postChatMute(chatRoomId);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: chatQueryKeys.rooms(),
+      });
+    },
+  });
 
   return {
     chatRoomList,

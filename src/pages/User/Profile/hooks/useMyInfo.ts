@@ -1,25 +1,37 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useUpdateMyInfoMutation } from '@/apis/auth/hooks';
-import { authQueries } from '@/apis/auth/queries';
+import { getMyInfo, putMyInfo } from '@/apis/auth';
+import type { ModifyMyInfoRequest } from '@/apis/auth/entity';
 import type { ApiError } from '@/interface/error';
+
+export const userQueryKeys = {
+  all: ['user'],
+  myInfo: () => [...userQueryKeys.all, 'myInfo'],
+  oauthLinks: () => [...userQueryKeys.all, 'oauthLinks'],
+};
 
 interface UseMyInfoOptions {
   onSuccess?: () => void;
 }
 
 export const useMyInfo = (options: UseMyInfoOptions = {}) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
-  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
+  const { data: myInfo } = useSuspenseQuery({
+    queryKey: userQueryKeys.myInfo(),
+    queryFn: () => getMyInfo(),
+  });
 
-  const { mutateAsync, error } = useUpdateMyInfoMutation();
-
-  const modifyMyInfo = async (...args: Parameters<typeof mutateAsync>) => {
-    await mutateAsync(...args);
-    options.onSuccess?.();
-    navigate(-1);
-  };
+  const { mutateAsync: modifyMyInfo, error } = useMutation({
+    mutationKey: ['modifyMyInfo'],
+    mutationFn: (data: ModifyMyInfoRequest) => putMyInfo(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userQueryKeys.myInfo() });
+      options.onSuccess?.();
+      navigate(-1);
+    },
+  });
 
   return {
     myInfo,

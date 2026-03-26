@@ -1,16 +1,7 @@
 import { type MouseEvent, type ReactNode, useMemo, useRef, useState } from 'react';
-import { useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { ClubMember, PositionType, PreMember } from '@/apis/club/entity';
-import {
-  useAddManagedPreMemberMutation,
-  useChangeManagedMemberPositionMutation,
-  useChangeManagedVicePresidentMutation,
-  useDeleteManagedPreMemberMutation,
-  useRemoveManagedMemberMutation,
-  useTransferManagedPresidentMutation,
-} from '@/apis/club/managedHooks';
-import { managedClubQueries, managedClubQueryKeys } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import MoreHorizontalIcon from '@/assets/svg/more-horizontal.svg';
 import RoleSelectorArrowDownIcon from '@/assets/svg/role-selector-arrow-down.svg';
@@ -20,6 +11,17 @@ import { useToastContext } from '@/contexts/useToastContext';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
+import {
+  memberQueryKeys,
+  useAddPreMember,
+  useChangeMemberPosition,
+  useChangeVicePresident,
+  useDeletePreMember,
+  useGetPreMemberList,
+  useManagedMembers,
+  useRemoveMember,
+  useTransferPresident,
+} from '../hooks/useManagedMembers';
 
 const POSITION_LABELS: Record<PositionType, string> = {
   PRESIDENT: '회장',
@@ -225,21 +227,19 @@ function ManagedMemberList() {
   const clubId = Number(params.clubId);
   const { showToast } = useToastContext();
 
-  const { data: managedMemberList } = useSuspenseQuery(managedClubQueries.members(clubId));
+  const { managedMemberList } = useManagedMembers(clubId);
 
-  const { mutate: transferPresident, isPending: isTransferring } = useTransferManagedPresidentMutation(clubId);
-  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeManagedVicePresidentMutation(clubId);
-  const { mutateAsync: changeMemberPosition, isPending: isChangingPosition } = useChangeManagedMemberPositionMutation(
-    clubId,
-    {
-      invalidateOnSuccess: false,
-    }
-  );
-  const { mutate: removeMember, isPending: isRemoving } = useRemoveManagedMemberMutation(clubId);
-  const { mutate: addPreMember, isPending: isAdding } = useAddManagedPreMemberMutation(clubId);
+  const { mutate: transferPresident, isPending: isTransferring } = useTransferPresident(clubId);
+  const { mutate: changeVicePresident, isPending: isChangingVP } = useChangeVicePresident(clubId);
+  const { mutateAsync: changeMemberPosition, isPending: isChangingPosition } = useChangeMemberPosition(clubId, {
+    invalidateOnSuccess: false,
+    showToastOnSuccess: false,
+  });
+  const { mutate: removeMember, isPending: isRemoving } = useRemoveMember(clubId);
+  const { mutate: addPreMember, isPending: isAdding } = useAddPreMember(clubId);
 
-  const { data: preMembersList } = useSuspenseQuery(managedClubQueries.preMembers(clubId));
-  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeleteManagedPreMemberMutation(clubId);
+  const { preMembersList } = useGetPreMemberList(clubId);
+  const { mutate: deletePreMemberMutate, isPending: isDeletingPreMember } = useDeletePreMember(clubId);
 
   const isPending =
     isTransferring || isChangingVP || isChangingPosition || isRemoving || isAdding || isDeletingPreMember;
@@ -386,15 +386,7 @@ function ManagedMemberList() {
       }
 
       closeRoleManage();
-      transferPresident(
-        { newPresidentUserId: nextPresidentId },
-        {
-          onSuccess: () => {
-            showToast('회장이 위임되었습니다');
-            navigate(-1);
-          },
-        }
-      );
+      transferPresident({ newPresidentUserId: nextPresidentId });
       return;
     }
 
@@ -407,12 +399,7 @@ function ManagedMemberList() {
       }
 
       closeRoleManage();
-      changeVicePresident(
-        { vicePresidentUserId: nextVicePresidentId },
-        {
-          onSuccess: () => showToast('부회장이 변경되었습니다'),
-        }
-      );
+      changeVicePresident({ vicePresidentUserId: nextVicePresidentId });
       return;
     }
 
@@ -429,28 +416,21 @@ function ManagedMemberList() {
 
     await Promise.all(demoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MEMBER' } })));
 
-    await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
+    await queryClient.invalidateQueries({ queryKey: memberQueryKeys.managedMembers(clubId) });
     showToast('직책이 변경되었습니다');
     closeRoleManage();
   };
 
   const handleRemoveMember = () => {
     if (!selectedMember) return;
-    removeMember(selectedMember.userId, {
-      onSuccess: () => showToast('부원이 추방되었습니다'),
-    });
+    removeMember(selectedMember.userId);
     closeRemove();
     setSelectedMember(null);
   };
 
   const handleAddMember = () => {
     if (!newStudentNumber || !newMemberName) return;
-    addPreMember(
-      { studentNumber: newStudentNumber, name: newMemberName },
-      {
-        onSuccess: () => showToast('부원이 추가되었습니다'),
-      }
-    );
+    addPreMember({ studentNumber: newStudentNumber, name: newMemberName });
     closeAdd();
     setNewStudentNumber('');
     setNewMemberName('');
@@ -471,9 +451,7 @@ function ManagedMemberList() {
 
   const handleDeletePreMember = () => {
     if (!selectedPreMember) return;
-    deletePreMemberMutate(selectedPreMember.preMemberId, {
-      onSuccess: () => showToast('사전 등록 회원이 삭제되었습니다'),
-    });
+    deletePreMemberMutate(selectedPreMember.preMemberId);
     closePreMemberDelete();
     setSelectedPreMember(null);
   };

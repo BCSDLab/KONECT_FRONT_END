@@ -1,7 +1,7 @@
 import { useMutation, useQueries } from '@tanstack/react-query';
+import { getAdvertisements, postAdvertisementClick } from '@/apis/advertisement';
 import type { Advertisement } from '@/apis/advertisement/entity';
-import { advertisementMutations } from '@/apis/advertisement/mutations';
-import { advertisementQueries as advertisementQueryFactories } from '@/apis/advertisement/queries';
+import { advertisementQueryKeys } from '@/apis/advertisement/queries';
 
 const ADVERTISEMENT_BATCH_SIZE = 2;
 
@@ -14,12 +14,17 @@ export const useAdvertisements = ({ advertisementCount, scope }: UseAdvertisemen
   const batchCount = Math.ceil(advertisementCount / ADVERTISEMENT_BATCH_SIZE);
 
   const advertisementQueries = useQueries({
-    queries: Array.from({ length: batchCount }, (_, batchIndex) =>
-      advertisementQueryFactories.randomBatch(scope, batchIndex)
-    ),
+    queries: Array.from({ length: batchCount }, (_, batchIndex) => ({
+      queryKey: advertisementQueryKeys.randomBatch(scope, batchIndex),
+      queryFn: () => getAdvertisements({ count: ADVERTISEMENT_BATCH_SIZE }),
+      staleTime: Infinity,
+    })),
   });
 
-  const { mutate: trackAdvertisementClick } = useMutation(advertisementMutations.click());
+  const { mutate: trackAdvertisementClick } = useMutation({
+    mutationFn: (advertisementId: number) => postAdvertisementClick(advertisementId),
+    retry: false,
+  });
 
   const advertisements: Advertisement[] = advertisementQueries
     .flatMap((query) => query.data?.advertisements ?? [])

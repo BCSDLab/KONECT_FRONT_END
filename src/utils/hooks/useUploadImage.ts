@@ -1,10 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
+import { uploadImage } from '@/apis/upload';
 import type { UploadTarget } from '@/apis/upload/entity';
-import { uploadMutations } from '@/apis/upload/mutations';
 import type { ApiError } from '@/interface/error';
 
 const useUploadImage = (target: UploadTarget) => {
-  const mutation = useMutation(uploadMutations.image(target));
+  const mutation = useMutation({
+    mutationFn: (file: File) => uploadImage(file, target),
+  });
 
   return {
     ...mutation,

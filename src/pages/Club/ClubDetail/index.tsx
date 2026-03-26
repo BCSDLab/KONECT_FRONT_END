@@ -1,13 +1,12 @@
 import { Activity, useEffect } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useLocation, useParams, useSearchParams } from 'react-router-dom';
-import { clubQueries } from '@/apis/club/queries';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import ClubAccount from './components/ClubAccount';
 import ClubIntro from './components/ClubIntro';
 import ClubMemberTab from './components/ClubMember';
 import ClubRecruit from './components/ClubRecruitment';
+import { useGetClubDetail } from './hooks/useGetClubDetail';
 
 const SCROLL_RESTORE_KEY = 'clubList_shouldRestore';
 
@@ -28,7 +27,7 @@ function ClubDetail() {
   const requestedTab = searchParams.get('tab');
   const clubIdNumber = Number(clubId);
 
-  const { data: clubDetail } = useSuspenseQuery(clubQueries.detail(clubIdNumber));
+  const { data: clubDetail } = useGetClubDetail(clubIdNumber);
 
   const handleTabClick = (tab: TabType) => {
     setSearchParams({ tab }, { replace: true });

@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { clubQueries } from '@/apis/club/queries';
 import ImageIcon from '@/assets/svg/image.svg';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
@@ -12,11 +10,12 @@ import useUploadImage from '@/utils/hooks/useUploadImage';
 import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
 import AccountInfoCard from './components/AccountInfo';
 import useApplyToClub from './hooks/useApplyToClub';
+import { useGetClubFee } from './hooks/useGetClubFee';
 
 function ClubFeePage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const { data: clubFee } = useSuspenseQuery(clubQueries.fee(Number(clubId)));
+  const { data: clubFee } = useGetClubFee(Number(clubId));
   const { applyToClub, isPending: isApplyingToClub } = useApplyToClub(Number(clubId));
   const { answers, clubId: storedClubId } = useClubApplicationStore();
 

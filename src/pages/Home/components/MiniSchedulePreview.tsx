@@ -1,7 +1,6 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { scheduleQueries } from '@/apis/schedule/queries';
 import { SCHEDULE_DAYS } from '@/constants/schedule';
+import { useGetScheduleList } from '@/pages/Home/hooks/useGetScheduleList';
 import CalendarWeekRow from '@/pages/Schedule/components/CalendarWeekRow';
 import { dateUtils } from '@/utils/hooks/useSchedule';
 
@@ -37,7 +36,7 @@ function MiniSchedulePreview() {
   const month = today.getMonth() + 1;
   const day = today.getDate();
 
-  const { data } = useSuspenseQuery(scheduleQueries.monthly({ year, month }));
+  const { data } = useGetScheduleList({ year, month });
   const { isCurrentMonth, isSelectedDay, isSunday, getMonthDateList } = dateUtils(year, month, day);
 
   const dateList = getMonthDateList();

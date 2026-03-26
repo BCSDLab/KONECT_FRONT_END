@@ -1,17 +1,13 @@
-import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { authMutations } from '@/apis/auth/mutations';
 import { KAKAO_OPEN_CHAT_URL } from '@/constants/links';
 import { API_ERROR_CODES } from '@/interface/error';
-import type { ApiError } from '@/interface/error';
 import { useSignupStore } from '@/stores/signupStore';
 import StepLayout from './components/StepLayout';
+import { useSignupMutation } from './hooks/useSignup';
 
 function ConfirmStep() {
   const navigate = useNavigate();
-  const signupMutation = useMutation(authMutations.signup());
-  const { mutate, isPending } = signupMutation;
-  const error = signupMutation.error as ApiError | null;
+  const { mutate, isPending, error } = useSignupMutation();
 
   const { universityName, universityId, studentId, isMarketingAgreement, name, reset } = useSignupStore();
 

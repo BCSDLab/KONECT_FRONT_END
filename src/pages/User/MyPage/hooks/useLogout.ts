@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { authMutations } from '@/apis/auth/mutations';
+import { logout } from '@/apis/auth';
 import { useAuthStore } from '@/stores/authStore';
 
 export const useLogoutMutation = () => {
@@ -8,7 +8,7 @@ export const useLogoutMutation = () => {
   const clearAuth = useAuthStore((state) => state.clearAuth);
 
   return useMutation({
-    ...authMutations.logout(),
+    mutationFn: logout,
     onSuccess: () => {
       try {
         if (window.ReactNativeWebView) {

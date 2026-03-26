@@ -1,11 +1,10 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { managedClubQueries } from '@/apis/club/managedQueries';
 import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import { useGetManagedClubs } from '../hooks/useManagedClubs';
 
 function ManagedClubList() {
-  const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
+  const { managedClubList } = useGetManagedClubs();
 
   return (
     <div className="flex flex-col gap-7 p-[19px]">

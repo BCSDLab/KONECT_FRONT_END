@@ -1,8 +1,7 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { managedClubQueries } from '@/apis/club/managedQueries';
 import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import Card from '@/components/common/Card';
+import { useManagedClub, useGetManagedClubs } from '@/pages/Manager/hooks/useManagedClubs';
 import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
 import { cn } from '@/utils/ts/cn';
 
@@ -15,8 +14,8 @@ function ManagerDetailInfoCard() {
   const clubId = Number(params.clubId);
   const navigate = useNavigate();
   const { myInfo } = useMyInfo();
-  const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
-  const { data: managedClub } = useSuspenseQuery(managedClubQueries.club(clubId));
+  const { managedClubList } = useGetManagedClubs();
+  const { managedClub } = useManagedClub(clubId);
 
   const currentClub = managedClubList.joinedClubs.find((club) => club.id === clubId);
 
@@ -50,7 +49,7 @@ function ManagerStats({
 }: {
   onButtonClick: (e: React.MouseEvent<HTMLButtonElement>, to: string) => void;
 }) {
-  const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
+  const { managedClubList } = useGetManagedClubs();
   const { myInfo } = useMyInfo();
 
   return (

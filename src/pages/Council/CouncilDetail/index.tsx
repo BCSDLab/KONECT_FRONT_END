@@ -1,11 +1,10 @@
 import { Activity } from 'react';
-import { useSuspenseQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import { useSearchParams } from 'react-router-dom';
-import { councilQueries } from '@/apis/council/queries';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
 import CouncilIntro from './components/CouncilIntro';
 import CouncilNotice from './components/CouncilNotice';
+import { useGetCouncilInfo } from './hooks/useGetCouncilInfo';
 
 type TabType = 'intro' | 'notice';
 
@@ -14,7 +13,7 @@ function CouncilDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') || 'intro';
 
-  const { data: councilInfo } = useSuspenseQuery(councilQueries.info());
+  const { data: councilInfo } = useGetCouncilInfo();
 
   const handleTabClick = (tab: TabType) => {
     setSearchParams({ tab }, { replace: true });

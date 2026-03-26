@@ -1,13 +1,23 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { clubQueries } from '@/apis/club/queries';
+import { getClubFee, getClubQuestions, getClubRecruitment } from '@/apis/club';
+import { clubQueryKeys } from '@/apis/club/queries';
 import useApplyToClub from './useApplyToClub';
 
 const useClubApply = (clubId: number) => {
-  const { data: clubQuestions } = useSuspenseQuery(clubQueries.questions(clubId));
+  const { data: clubQuestions } = useSuspenseQuery({
+    queryKey: clubQueryKeys.questions(clubId),
+    queryFn: () => getClubQuestions(clubId),
+  });
 
-  const { data: recruitment } = useSuspenseQuery(clubQueries.recruitment(clubId));
+  const { data: recruitment } = useSuspenseQuery({
+    queryKey: clubQueryKeys.recruitment(clubId),
+    queryFn: () => getClubRecruitment(clubId),
+  });
 
-  const { data: clubFee } = useSuspenseQuery(clubQueries.fee(clubId));
+  const { data: clubFee } = useSuspenseQuery({
+    queryKey: clubQueryKeys.fee(clubId),
+    queryFn: () => getClubFee(clubId),
+  });
 
   const hasFeeData = clubFee.amount !== null && clubFee.accountNumber !== null;
   const isFeeRequired = recruitment.isFeeRequired && hasFeeData;

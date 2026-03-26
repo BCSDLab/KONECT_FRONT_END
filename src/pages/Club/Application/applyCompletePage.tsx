@@ -1,13 +1,12 @@
-import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import { clubQueries } from '@/apis/club/queries';
 import CheckCircleIcon from '@/assets/svg/check-circle.svg';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
+import { useGetClubDetail } from '../ClubDetail/hooks/useGetClubDetail';
 
 function ApplyCompletePage() {
   const { clubId } = useParams();
   const navigate = useNavigate();
-  const { data: clubDetail } = useSuspenseQuery(clubQueries.detail(Number(clubId)));
+  const { data: clubDetail } = useGetClubDetail(Number(clubId));
   const clearApplication = useClubApplicationStore((s) => s.clearApplication);
 
   const handleGoToClubDetail = () => {
