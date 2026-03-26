@@ -1,12 +1,10 @@
-import { useParams } from 'react-router-dom';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useApproveManagedApplicationMutation, useRejectManagedApplicationMutation } from '@/apis/club/managedHooks';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import BottomModal from '@/components/common/BottomModal';
 import { useToastContext } from '@/contexts/useToastContext';
 import ApplicationDetailContent from '@/pages/Manager/components/ApplicationDetailContent';
-import {
-  useApproveApplication,
-  useGetManagedApplicationDetail,
-  useRejectApplication,
-} from '@/pages/Manager/hooks/useManagedApplications';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { cn } from '@/utils/ts/cn';
 
@@ -19,17 +17,14 @@ const BUTTON_DISABLED_WITH_CURSOR_CLASS = 'disabled:cursor-not-allowed disabled:
 
 function ManagedApplicationDetail() {
   const params = useParams();
+  const navigate = useNavigate();
   const clubId = Number(params.clubId);
   const applicationId = Number(params.applicationId);
 
   const { showToast } = useToastContext();
-  const { managedClubApplicationDetail: application } = useGetManagedApplicationDetail(clubId, applicationId);
-  const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId, {
-    navigateBack: true,
-  });
-  const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId, {
-    navigateBack: true,
-  });
+  const { data: application } = useSuspenseQuery(managedClubQueries.applicationDetail(clubId, applicationId));
+  const { mutate: approve, isPending: isApproving } = useApproveManagedApplicationMutation(clubId);
+  const { mutate: reject, isPending: isRejecting } = useRejectManagedApplicationMutation(clubId);
   const { value: isApproveOpen, setTrue: openApprove, setFalse: closeApprove } = useBooleanState();
   const { value: isRejectOpen, setTrue: openReject, setFalse: closeReject } = useBooleanState();
 
@@ -37,14 +32,22 @@ function ManagedApplicationDetail() {
 
   const handleApprove = () => {
     approve(application.applicationId, {
-      onSuccess: closeApprove,
+      onSuccess: () => {
+        showToast('지원이 승인되었습니다');
+        closeApprove();
+        navigate(-1);
+      },
       onError: () => showToast('요청 처리에 실패했습니다'),
     });
   };
 
   const handleReject = () => {
     reject(application.applicationId, {
-      onSuccess: closeReject,
+      onSuccess: () => {
+        showToast('지원이 거절되었습니다');
+        closeReject();
+        navigate(-1);
+      },
       onError: () => showToast('요청 처리에 실패했습니다'),
     });
   };

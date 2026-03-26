@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { twMerge } from 'tailwind-merge';
 import type { ClubQuestion, ClubQuestionRequest } from '@/apis/club/entity';
+import { usePatchManagedClubSettingsMutation, useUpdateManagedClubQuestionsMutation } from '@/apis/club/managedHooks';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
-import { useManagedClubQuestions, useManagedClubQuestionsMutation } from '@/pages/Manager/hooks/useManagedRecruitment';
-import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+import { useToastContext } from '@/contexts/useToastContext';
 import { cn } from '@/utils/ts/cn';
 
 interface QuestionItem extends ClubQuestionRequest {
@@ -27,10 +29,11 @@ function ManagedRecruitmentForm() {
   const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
-  const { managedClubQuestions } = useManagedClubQuestions(clubIdNumber);
-  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
-  const { mutate: updateQuestions, isPending, error } = useManagedClubQuestionsMutation(clubIdNumber);
-  const { mutate: patchSettings, isPending: isPatchPending } = usePatchClubSettings(clubIdNumber);
+  const { showToast } = useToastContext();
+  const { data: managedClubQuestions } = useSuspenseQuery(managedClubQueries.questions(clubIdNumber));
+  const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
+  const { mutate: updateQuestions, isPending, error } = useUpdateManagedClubQuestionsMutation(clubIdNumber);
+  const { mutate: patchSettings, isPending: isPatchPending } = usePatchManagedClubSettingsMutation(clubIdNumber);
 
   const [questions, setQuestions] = useState<QuestionItem[]>(() =>
     managedClubQuestions.questions.map(createQuestionItem)
@@ -83,9 +86,14 @@ function ManagedRecruitmentForm() {
 
     updateQuestions(requestData, {
       onSuccess: () => {
+        showToast('질문이 수정되었습니다', 'success');
+
         if (location.state?.enableAfterSave) {
           patchSettings({ isApplicationEnabled: true }, { onSuccess: () => navigate(-1) });
+          return;
         }
+
+        navigate(-1);
       },
     });
   };

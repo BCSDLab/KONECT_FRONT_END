@@ -1,15 +1,16 @@
+import { useQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import cardIcon from '@/assets/image/3d-card.png';
 import fileIcon from '@/assets/image/3d-file.png';
 import flagIcon from '@/assets/image/3d-flag.png';
 import ChevronRightIcon from '@/assets/svg/chevron-right.svg';
 import Card from '@/components/common/Card';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import { useGetClubSettings } from '../hooks/useManagedSettings';
 
 function ManagedRecruitment() {
   const { clubId } = useParams<{ clubId: string }>();
-  const { data: settings } = useGetClubSettings(Number(clubId));
+  const { data: settings } = useQuery(managedClubQueries.settings(Number(clubId)));
 
   const recruitmentContent = (() => {
     if (!settings?.isRecruitmentEnabled) return '모집공고가 비활성화되어 있습니다.';
