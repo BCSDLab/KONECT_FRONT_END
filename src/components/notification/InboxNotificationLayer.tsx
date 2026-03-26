@@ -22,6 +22,7 @@ function InboxNotificationLayer() {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  const isNotificationListPage = pathname === '/notifications';
   const authStatus = useAuthStore((state) => state.authStatus);
   const lastReconnectResyncAtRef = useRef(0);
   const seenNotificationIdsRef = useRef<number[]>([]);
@@ -49,6 +50,10 @@ function InboxNotificationLayer() {
       (previousData) => prependInboxNotification(previousData, notification)
     );
 
+    if (isNotificationListPage) {
+      return;
+    }
+
     startTransition(() => {
       setNotificationQueue((previousQueue) => [...previousQueue, notification]);
     });
@@ -66,6 +71,16 @@ function InboxNotificationLayer() {
       setNotificationQueue([]);
     });
   }, [authStatus]);
+
+  useEffect(() => {
+    if (!isNotificationListPage) {
+      return;
+    }
+
+    startTransition(() => {
+      setNotificationQueue([]);
+    });
+  }, [isNotificationListPage]);
 
   useEffect(() => {
     if (!activeNotification) {
@@ -115,7 +130,7 @@ function InboxNotificationLayer() {
     }
   };
 
-  if (pathname === '/notifications') {
+  if (isNotificationListPage) {
     return null;
   }
 
