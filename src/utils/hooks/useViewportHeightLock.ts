@@ -1,4 +1,7 @@
 import { useLayoutEffect } from 'react';
+import { isTextInputElement } from '@/utils/ts/dom';
+
+const SCROLL_RESET_TIMEOUT_MS = 180;
 
 function useViewportHeightLock() {
   useLayoutEffect(() => {
@@ -14,12 +17,6 @@ function useViewportHeightLock() {
     let trailingResetFrameId = 0;
     let resetTimeoutId = 0;
 
-    const isTextInputElement = (element: EventTarget | null): element is HTMLElement => {
-      if (!(element instanceof HTMLElement)) return false;
-
-      return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element.isContentEditable;
-    };
-
     const resetDocumentScroll = () => {
       window.scrollTo(0, 0);
       root.scrollTop = 0;
@@ -30,6 +27,9 @@ function useViewportHeightLock() {
       }
     };
 
+    // iOS Safari는 focus와 visualViewport 갱신 뒤에 문서 스크롤을 비동기로 다시 적용할 수 있습니다.
+    // 즉시 1번, 두 번의 animation frame, 그리고 기기 테스트 기반의 짧은 휴리스틱 timeout으로
+    // 한 번 더 복구해 뒤늦게 들어오는 브라우저 스크롤도 최대한 잡습니다.
     const scheduleDocumentScrollReset = () => {
       cancelAnimationFrame(resetFrameId);
       cancelAnimationFrame(trailingResetFrameId);
@@ -40,7 +40,7 @@ function useViewportHeightLock() {
         resetDocumentScroll();
         trailingResetFrameId = requestAnimationFrame(resetDocumentScroll);
       });
-      resetTimeoutId = window.setTimeout(resetDocumentScroll, 180);
+      resetTimeoutId = window.setTimeout(resetDocumentScroll, SCROLL_RESET_TIMEOUT_MS);
     };
 
     const handleFocusIn = (event: FocusEvent) => {
@@ -83,6 +83,8 @@ function useViewportHeightLock() {
     root.style.height = 'var(--viewport-height)';
     scheduleDocumentScrollReset();
 
+    // installViewportVars는 같은 신호로 CSS 변수를 갱신하고,
+    // 이 훅은 ChatRoom에서 문서 스크롤 복구를 위해 의도적으로 한 번 더 사용합니다.
     window.addEventListener('focusin', handleFocusIn);
     window.addEventListener('focusout', handleFocusOut);
     window.addEventListener('scroll', handleWindowScroll, { passive: true });

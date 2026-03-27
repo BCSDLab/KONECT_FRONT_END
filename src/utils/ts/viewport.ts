@@ -1,3 +1,5 @@
+import { isTextInputElement } from '@/utils/ts/dom';
+
 const KEYBOARD_OPEN_THRESHOLD_PX = 120;
 
 export function installViewportVars() {
@@ -5,12 +7,6 @@ export function installViewportVars() {
   let isEditableFocused = false;
   let restingViewportHeight = 0;
   let restingViewportWidth = 0;
-
-  const isTextInputElement = (element: EventTarget | null): element is HTMLElement => {
-    if (!(element instanceof HTMLElement)) return false;
-
-    return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement || element.isContentEditable;
-  };
 
   const setViewportHeight = () => {
     const vv = window.visualViewport;
