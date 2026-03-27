@@ -29,7 +29,7 @@ export function installViewportVars() {
     const isKeyboardOpen = isEditableFocused && keyboardHeight > KEYBOARD_OPEN_THRESHOLD_PX;
 
     root.style.setProperty('--viewport-height', `${h}px`);
-    root.style.setProperty('--viewport-offset', `${offset}px`);
+    root.style.setProperty('--viewport-offset', isEditableFocused ? '0px' : `${offset}px`);
     root.style.setProperty('--effective-bottom-safe-area', isKeyboardOpen ? '0px' : 'var(--sab)');
   };
 
