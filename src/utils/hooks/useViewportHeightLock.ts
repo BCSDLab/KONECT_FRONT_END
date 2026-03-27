@@ -74,11 +74,16 @@ function useViewportHeightLock(scrollContainerRef?: RefObject<HTMLElement | null
 
     const handleTouchMove = (event: TouchEvent) => {
       if (event.touches.length !== 1) return;
+      if (!isEditableFocused) return;
 
       const scrollContainer = scrollContainerRef?.current;
       const target = event.target;
+      const targetElement =
+        target instanceof HTMLElement ? target : target instanceof Node ? target.parentElement : null;
+      const editableElement = targetElement?.closest('input, textarea, [contenteditable]');
 
       if (!scrollContainer) return;
+      if (editableElement instanceof HTMLElement && isTextInputElement(editableElement)) return;
 
       if (!(target instanceof Node) || !scrollContainer.contains(target)) {
         event.preventDefault();
