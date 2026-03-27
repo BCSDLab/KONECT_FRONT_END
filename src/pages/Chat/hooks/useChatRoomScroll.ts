@@ -25,6 +25,7 @@ const useChatRoomScroll = ({
   isFetchingNextPage,
 }: UseChatRoomScrollParams) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const chatMessagesLengthRef = useRef(chatMessagesLength);
   const isInitialScrollDoneRef = useRef(false);
   const shouldRestoreScrollRef = useRef(false);
   const previousScrollTopRef = useRef(0);
@@ -54,6 +55,10 @@ const useChatRoomScroll = ({
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const topRef = useInfiniteScroll(handleFetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
+
+  useEffect(() => {
+    chatMessagesLengthRef.current = chatMessagesLength;
+  }, [chatMessagesLength]);
 
   useEffect(() => {
     isInitialScrollDoneRef.current = false;
@@ -109,24 +114,27 @@ const useChatRoomScroll = ({
 
     previousClientHeightRef.current = container.clientHeight;
 
-    const resizeObserver = new ResizeObserver(() => {
-      const nextClientHeight = container.clientHeight;
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            const nextClientHeight = container.clientHeight;
 
-      if (nextClientHeight === previousClientHeightRef.current) return;
+            if (nextClientHeight === previousClientHeightRef.current) return;
 
-      previousClientHeightRef.current = nextClientHeight;
+            previousClientHeightRef.current = nextClientHeight;
 
-      if (chatMessagesLength === 0 || !isNearBottomRef.current) return;
+            if (chatMessagesLengthRef.current === 0 || !isNearBottomRef.current) return;
 
-      requestAnimationFrame(scrollToBottom);
-    });
+            requestAnimationFrame(scrollToBottom);
+          })
+        : undefined;
 
-    resizeObserver.observe(container);
+    resizeObserver?.observe(container);
 
     return () => {
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
     };
-  }, [chatMessagesLength, scrollToBottom]);
+  }, [chatRoomId, scrollToBottom]);
 
   return {
     scrollContainerRef,
