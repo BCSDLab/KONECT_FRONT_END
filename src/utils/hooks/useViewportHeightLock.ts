@@ -65,7 +65,12 @@ function useViewportHeightLock() {
     };
 
     const handleWindowScroll = () => {
-      const currentScrollTop = scrollingElement?.scrollTop ?? root.scrollTop ?? body.scrollTop ?? window.scrollY;
+      const currentScrollTop = Math.max(
+        scrollingElement?.scrollTop ?? 0,
+        root.scrollTop,
+        body.scrollTop,
+        window.scrollY
+      );
 
       if (currentScrollTop > 0) {
         scheduleDocumentScrollReset();
