@@ -1,7 +1,10 @@
+const KEYBOARD_OPEN_THRESHOLD_PX = 120;
+
 export function installViewportVars() {
   let scheduled = false;
   let isEditableFocused = false;
   let restingViewportHeight = 0;
+  let restingViewportWidth = 0;
 
   const isTextInputElement = (element: EventTarget | null): element is HTMLElement => {
     if (!(element instanceof HTMLElement)) return false;
@@ -12,17 +15,18 @@ export function installViewportVars() {
   const setViewportHeight = () => {
     const vv = window.visualViewport;
     const h = vv?.height ?? window.innerHeight;
+    const w = vv?.width ?? window.innerWidth;
     const offset = Math.max(0, vv?.offsetTop ?? 0);
     const root = document.documentElement;
+    const hasViewportContextChanged = Math.abs(restingViewportWidth - w) > 80;
 
-    if (!isEditableFocused) {
+    if (!isEditableFocused || !restingViewportHeight || hasViewportContextChanged) {
       restingViewportHeight = h;
-    } else if (!restingViewportHeight) {
-      restingViewportHeight = h;
+      restingViewportWidth = w;
     }
 
     const keyboardHeight = Math.max(0, restingViewportHeight - h);
-    const isKeyboardOpen = isEditableFocused && keyboardHeight > 120;
+    const isKeyboardOpen = isEditableFocused && keyboardHeight > KEYBOARD_OPEN_THRESHOLD_PX;
 
     root.style.setProperty('--viewport-height', `${h}px`);
     root.style.setProperty('--viewport-offset', `${offset}px`);
