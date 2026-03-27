@@ -18,7 +18,7 @@ interface LayoutProps {
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   const { pathname } = useLocation();
   const { contentPaddingClassName, hasHeader } = getHeaderPresentation(pathname);
-  const isChatRoomPage = /^\/chats\/\d+$/.test(pathname);
+  const isChatRoomPage = pathname.startsWith('/chats/') && pathname !== '/chats';
   const mainBackgroundClassName = pathname === '/chats' ? 'bg-white' : 'bg-background';
   const { bottomNavRef, bottomOverlayInset, handleLayoutElement, layoutElement, mainRef } =
     useLayoutElements(showBottomNav);
