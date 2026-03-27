@@ -50,7 +50,7 @@ export const useAdvertisementInterval = ({
     const nextItemsPerAdvertisement =
       availableHeight <= 0 || slotHeight <= 0
         ? DEFAULT_ITEMS_PER_ADVERTISEMENT
-        : Math.max(1, Math.max(2, Math.floor((availableHeight + gap) / slotHeight)) - 1);
+        : Math.max(2, Math.floor((availableHeight + gap) / slotHeight)) - 1;
 
     setItemsPerAdvertisement((previous) =>
       previous === nextItemsPerAdvertisement ? previous : nextItemsPerAdvertisement

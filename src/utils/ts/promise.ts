@@ -11,18 +11,28 @@ export async function mapWithConcurrencyLimit<T, TResult>(
   const results = new Array<TResult>(items.length);
   const workerCount = Math.max(1, Math.min(concurrency, items.length));
   let nextIndex = 0;
+  let isAborted = false;
 
   const workers = Array.from({ length: workerCount }, async () => {
     while (true) {
+      if (isAborted) return;
+
       const currentIndex = nextIndex++;
 
       if (currentIndex >= items.length) {
         return;
       }
 
-      const result = await iteratee(items[currentIndex], currentIndex);
-      results[currentIndex] = result;
-      onResolved?.(result, currentIndex);
+      if (isAborted) return;
+
+      try {
+        const result = await iteratee(items[currentIndex], currentIndex);
+        results[currentIndex] = result;
+        onResolved?.(result, currentIndex);
+      } catch (error) {
+        isAborted = true;
+        throw error;
+      }
     }
   });
 

@@ -1,6 +1,7 @@
 import { isTextInputElement } from '@/utils/ts/dom';
 
 const KEYBOARD_OPEN_THRESHOLD_PX = 120;
+const VIEWPORT_CONTEXT_CHANGE_THRESHOLD_PX = 80;
 
 export function installViewportVars() {
   let scheduled = false;
@@ -14,7 +15,7 @@ export function installViewportVars() {
     const w = vv?.width ?? window.innerWidth;
     const offset = Math.max(0, vv?.offsetTop ?? 0);
     const root = document.documentElement;
-    const hasViewportContextChanged = Math.abs(restingViewportWidth - w) > 80;
+    const hasViewportContextChanged = Math.abs(restingViewportWidth - w) > VIEWPORT_CONTEXT_CHANGE_THRESHOLD_PX;
 
     if (!isEditableFocused || !restingViewportHeight || hasViewportContextChanged) {
       restingViewportHeight = h;

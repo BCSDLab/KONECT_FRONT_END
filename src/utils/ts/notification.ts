@@ -49,8 +49,16 @@ const NOTIFICATION_PRESENTATIONS = {
   },
 } satisfies Record<NotificationInboxType, InboxNotificationPresentation>;
 
+function isNotificationInboxType(value: string): value is NotificationInboxType {
+  return value in NOTIFICATION_PRESENTATIONS;
+}
+
 export function getInboxNotificationPresentation(notification: InboxNotification): InboxNotificationPresentation {
-  return NOTIFICATION_PRESENTATIONS[notification.type as NotificationInboxType] ?? DEFAULT_NOTIFICATION_PRESENTATION;
+  if (isNotificationInboxType(notification.type)) {
+    return NOTIFICATION_PRESENTATIONS[notification.type];
+  }
+
+  return DEFAULT_NOTIFICATION_PRESENTATION;
 }
 
 export function getInboxNotificationMessage(notification: InboxNotification): string {
