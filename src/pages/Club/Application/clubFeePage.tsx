@@ -6,6 +6,7 @@ import ImageIcon from '@/assets/svg/image.svg';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
 import Portal from '@/components/common/Portal';
+import { useToastContext } from '@/contexts/useToastContext';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
@@ -25,6 +26,7 @@ function ClubFeePage() {
       navigate(`/clubs/${clubId}/apply`, { replace: true });
     }
   }, [storedClubId, clubId, navigate]);
+  const { showToast } = useToastContext();
   const { mutateAsync: uploadImage, isPending: isUploadingImage } = useUploadImage('CLUB');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +55,9 @@ function ClubFeePage() {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
       setImageFile(preparedFile);
       setPreviewUrl(URL.createObjectURL(preparedFile));
+    } catch {
+      showToast('이미지 처리에 실패했습니다. 다시 시도해주세요.', 'error');
+      if (fileInputRef.current) fileInputRef.current.value = '';
     } finally {
       setIsPreparingImage(false);
     }
@@ -93,7 +98,14 @@ function ClubFeePage() {
 
         <Card>
           <div className="text-sm leading-4 font-bold text-indigo-700">입금 확인 인증</div>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handleImageSelect}
+            disabled={isPreparingImage}
+            className="hidden"
+          />
           <div className="flex justify-center">
             {previewUrl ? (
               <div className="relative h-52 w-36 overflow-hidden rounded-xl">
@@ -117,7 +129,8 @@ function ClubFeePage() {
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="border-indigo-75 hover:bg-indigo-25 flex h-52 w-36 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors"
+                disabled={isPreparingImage}
+                className="border-indigo-75 hover:bg-indigo-25 flex h-52 w-36 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors disabled:opacity-50"
               >
                 <ImageIcon />
                 <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">

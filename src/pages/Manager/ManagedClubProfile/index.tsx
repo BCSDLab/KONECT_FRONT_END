@@ -117,6 +117,12 @@ function ManagedClubInfo() {
       setImageFile(preparedFile);
       setImagePreview(previewUrl);
       e.target.value = '';
+    } catch {
+      clearLocalPreviewUrl(localPreviewUrlRef);
+      setImageFile(null);
+      setImagePreview('');
+      e.target.value = '';
+      showToast('이미지 처리에 실패했습니다');
     } finally {
       setIsPreparingImage(false);
     }
