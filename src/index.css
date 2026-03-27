@@ -16,6 +16,7 @@
 
   --viewport-height: 100dvh;
   --viewport-offset: 0px;
+  --effective-bottom-safe-area: var(--sab);
 
   --font-suit:
     'SUIT', Roboto, system-ui, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
