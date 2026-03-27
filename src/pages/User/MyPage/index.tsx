@@ -35,7 +35,12 @@ function MyPage() {
         {menuItems
           .filter(({ to }) => to !== 'manager' || myInfo.isClubManager || myInfo.role === 'ADMIN')
           .map(({ to, icon: Icon, label }) => (
-            <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
+            <Link
+              key={to}
+              to={to}
+              state={to.startsWith('/legal/') ? { backPath: '/mypage' } : undefined}
+              className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors"
+            >
               <div className="flex items-center justify-between px-3 py-2">
                 <div className="flex items-center gap-4">
                   <Icon />
