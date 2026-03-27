@@ -84,8 +84,6 @@ function ChatRoom() {
     useChat(Number(chatRoomId));
   const [value, setValue] = useState('');
 
-  useViewportHeightLock();
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseTextareaHeightRef = useRef(0);
   const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
@@ -96,6 +94,8 @@ function ChatRoom() {
     hasNextPage,
     isFetchingNextPage,
   });
+
+  useViewportHeightLock(scrollContainerRef);
 
   const currentRoom = chatRoomList.rooms.find((room) => room.roomId === Number(chatRoomId));
 
