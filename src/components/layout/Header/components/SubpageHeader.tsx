@@ -31,7 +31,7 @@ function SubpageHeader({
         <button type="button" aria-label="뒤로가기" onClick={smartBack} className="shrink-0">
           <ChevronLeftIcon />
         </button>
-        <span className="text-sub1 truncate text-indigo-700">{title}</span>
+        <h1 className="text-sub1 truncate text-indigo-700">{title}</h1>
       </div>
 
       {rightSlot ? <div className="shrink-0">{rightSlot}</div> : <div className="size-6 shrink-0" aria-hidden="true" />}

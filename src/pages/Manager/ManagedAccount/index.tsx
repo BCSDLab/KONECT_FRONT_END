@@ -70,13 +70,23 @@ function ManagedAccount() {
 
     updateClubFee(payload, {
       onSuccess: () => {
-        showToast('회비가 수정되었습니다');
-
         if (location.state?.enableAfterSave) {
-          patchSettings({ isFeeEnabled: true }, { onSuccess: () => navigate(-1) });
+          patchSettings(
+            { isFeeEnabled: true },
+            {
+              onSuccess: () => {
+                showToast('회비가 수정되었습니다');
+                navigate(-1);
+              },
+              onError: () => {
+                showToast('회비 활성화에 실패했습니다');
+              },
+            }
+          );
           return;
         }
 
+        showToast('회비가 수정되었습니다');
         navigate(-1);
       },
     });

@@ -43,7 +43,7 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   },
   {
     type: 'schedule',
-    match: (pathname) => pathname == '/schedule',
+    match: (pathname) => pathname === '/schedule',
   },
 ];
 
