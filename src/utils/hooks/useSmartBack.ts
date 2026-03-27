@@ -1,13 +1,29 @@
 import { useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
+interface SmartBackState {
+  backPath?: string;
+  backReplace?: boolean;
+  backState?: { from?: string };
+  from?: string;
+}
+
 export function useSmartBack() {
   const navigate = useNavigate();
   const location = useLocation();
   const { pathname } = location;
-  const fromClubList = location.state?.from === 'clubList';
+  const navigationState = location.state as SmartBackState | null;
+  const fromClubList = navigationState?.from === 'clubList';
 
   return useCallback(() => {
+    if (navigationState?.backPath) {
+      navigate(navigationState.backPath, {
+        replace: navigationState.backReplace ?? true,
+        state: navigationState.backState,
+      });
+      return;
+    }
+
     let targetPath = '/home';
     let state: { from?: string } | undefined;
     let replace = true;
@@ -77,5 +93,5 @@ export function useSmartBack() {
     }
 
     navigate(targetPath, { replace, state });
-  }, [navigate, pathname, fromClubList]);
+  }, [navigate, pathname, fromClubList, navigationState]);
 }
