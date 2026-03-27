@@ -1,7 +1,6 @@
 import { startTransition, useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
@@ -19,6 +18,7 @@ import {
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/date';
 import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
 import { mapWithConcurrencyLimit } from '@/utils/ts/promise';
@@ -343,7 +343,7 @@ function ManagedRecruitmentWrite() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                <div className={twMerge(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
+                <div className={cn(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
                   <div className="flex items-center gap-4">
                     <span className="bg-primary-100 text-primary-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
                       시작
@@ -356,9 +356,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-[5px]">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
-                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
-                                {formatDateDot(startDate)}
-                              </span>
+                              <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(startDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -403,9 +401,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-[5px]">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
-                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
-                                {formatDateDot(endDate)}
-                              </span>
+                              <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(endDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -533,7 +529,7 @@ function ManagedRecruitmentWrite() {
                         type="button"
                         onClick={() => setCurrentImageIndex(index)}
                         aria-label={`${index + 1}번 이미지 보기`}
-                        className={twMerge(
+                        className={cn(
                           'h-2 w-2 rounded-full transition-colors',
                           index === currentImageIndex ? 'bg-primary-500' : 'bg-text-200'
                         )}

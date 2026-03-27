@@ -71,14 +71,14 @@ function RoleManageSelector({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="flex h-[29px] min-w-[72px] items-center rounded-full border border-[#A5B3C1] bg-white pr-2 pl-[18px]"
+        className="border-text-300 flex h-[29px] min-w-[72px] items-center rounded-full border bg-white pr-2 pl-[18px]"
       >
         <span className="text-sub2 text-text-600">{selectedOption?.label}</span>
         <RoleSelectorArrowDownIcon className="text-text-600 ml-0.5 h-[29.5px] w-[29.5px]" />
       </button>
 
       {isOpen && (
-        <div className="absolute top-[31px] left-0 z-10 w-[72px] overflow-hidden rounded-[10px] border border-[#A5B3C1] bg-white">
+        <div className="border-text-300 absolute top-[31px] left-0 z-10 w-[72px] overflow-hidden rounded-[10px] border bg-white">
           {ROLE_OPTIONS.map((option, index) => (
             <button
               key={option.value}
@@ -88,7 +88,7 @@ function RoleManageSelector({
                 setIsOpen(false);
               }}
               className={`text-sub2 text-text-600 w-full px-3 py-[3px] text-left ${
-                index !== ROLE_OPTIONS.length - 1 ? 'border-b border-[#C6CFD8]' : ''
+                index !== ROLE_OPTIONS.length - 1 ? 'border-text-200 border-b' : ''
               }`}
             >
               {option.label}
@@ -184,7 +184,7 @@ function ActionPopupMenu({
         <div
           role="menu"
           aria-orientation="vertical"
-          className="fixed w-[195px] overflow-hidden rounded-[10px] border border-[#C6CFD8] bg-white p-3"
+          className="border-text-200 fixed w-[195px] overflow-hidden rounded-[10px] border bg-white p-3"
           style={{ left, top }}
           onClick={(event) => event.stopPropagation()}
           onMouseDown={(event) => event.stopPropagation()}
@@ -197,7 +197,7 @@ function ActionPopupMenu({
                 type="button"
                 role="menuitem"
                 onClick={onClick}
-                className={`text-sub2 text-left ${tone === 'danger' ? 'text-[#FF4E4E]' : 'text-text-600'}`}
+                className={`text-sub2 text-left ${tone === 'danger' ? 'text-danger-600' : 'text-text-600'}`}
               >
                 {label}
               </button>
@@ -493,7 +493,7 @@ function ManagedMemberList() {
               type="button"
               onClick={handleOpenRoleManage}
               disabled={isPending}
-              className="border-indigo-5 flex-1 rounded-2xl border bg-[#69BFDF] px-4 py-1.5 text-[15px] leading-6 font-semibold text-white disabled:opacity-50"
+              className="border-indigo-5 bg-primary-500 flex-1 rounded-2xl border px-4 py-1.5 text-[15px] leading-6 font-semibold text-white disabled:opacity-50"
             >
               직책 변경
             </button>
@@ -501,7 +501,7 @@ function ManagedMemberList() {
               type="button"
               onClick={openAdd}
               disabled={isPending}
-              className="border-indigo-5 flex-1 rounded-2xl border bg-[#69BFDF] px-4 py-1.5 text-[15px] leading-6 font-semibold text-white disabled:opacity-50"
+              className="border-indigo-5 bg-primary-500 flex-1 rounded-2xl border px-4 py-1.5 text-[15px] leading-6 font-semibold text-white disabled:opacity-50"
             >
               부원 추가
             </button>
@@ -641,7 +641,7 @@ function ManagedMemberList() {
                         {member.name} ({member.studentNumber})
                       </div>
                     </div>
-                    {isSelected && <CheckIcon className="h-[26px] w-[26px] text-[#69BFDF]" />}
+                    {isSelected && <CheckIcon className="text-primary-500 h-[26px] w-[26px]" />}
                   </button>
                 );
               })}
@@ -652,7 +652,7 @@ function ManagedMemberList() {
                 type="button"
                 onClick={() => void handleSubmitRoleManage()}
                 disabled={isPending}
-                className="text-h2 h-12 w-full rounded-2xl bg-[#69BFDF] text-white disabled:opacity-50"
+                className="text-h2 bg-primary-500 h-12 w-full rounded-2xl text-white disabled:opacity-50"
               >
                 완료
               </button>
@@ -682,7 +682,7 @@ function ManagedMemberList() {
             <button
               type="button"
               onClick={closeRemove}
-              className="h-[55px] flex-1 rounded-2xl border border-[#69BFDF] text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px] text-[#69BFDF]"
+              className="border-primary-500 text-primary-500 h-[55px] flex-1 rounded-2xl border text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px]"
             >
               취소
             </button>
@@ -690,7 +690,7 @@ function ManagedMemberList() {
               type="button"
               onClick={handleRemoveMember}
               disabled={isPending}
-              className="h-[55px] flex-1 rounded-2xl border border-[#69BFDF] bg-[#69BFDF] text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px] text-white disabled:opacity-50"
+              className="border-primary-500 bg-primary-500 h-[55px] flex-1 rounded-2xl border text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px] text-white disabled:opacity-50"
             >
               {isRemoving ? '삭제 중...' : '삭제'}
             </button>
@@ -726,7 +726,7 @@ function ManagedMemberList() {
                 value={newStudentNumber}
                 onChange={(e) => setNewStudentNumber(e.target.value.replace(/\D/g, ''))}
                 placeholder="학번을 입력해주세요."
-                className="text-sub3 h-9 rounded-2xl border border-[#C6CFD8] px-3 text-indigo-700 outline-none placeholder:text-[#8497AA] focus:border-[#69BFDF]"
+                className="text-sub3 border-text-200 placeholder:text-text-400 focus:border-primary-500 h-9 rounded-2xl border px-3 text-indigo-700 outline-none"
               />
             </div>
 
@@ -740,7 +740,7 @@ function ManagedMemberList() {
                 value={newMemberName}
                 onChange={(e) => setNewMemberName(e.target.value)}
                 placeholder="이름을 입력해주세요."
-                className="text-sub3 h-9 rounded-2xl border border-[#C6CFD8] px-3 text-indigo-700 outline-none placeholder:text-[#8497AA] focus:border-[#69BFDF]"
+                className="text-sub3 border-text-200 placeholder:text-text-400 focus:border-primary-500 h-9 rounded-2xl border px-3 text-indigo-700 outline-none"
               />
             </div>
           </div>
@@ -750,7 +750,7 @@ function ManagedMemberList() {
               type="button"
               onClick={handleAddMember}
               disabled={!newStudentNumber || !newMemberName || isPending}
-              className="text-h2 h-12 w-full rounded-2xl bg-[#69BFDF] text-white disabled:bg-[#B7DDEE]"
+              className="text-h2 bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-white"
             >
               {isAdding ? '추가 중...' : '추가'}
             </button>

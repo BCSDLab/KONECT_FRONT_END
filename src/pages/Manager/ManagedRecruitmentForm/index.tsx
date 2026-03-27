@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
 import type { ClubQuestion, ClubQuestionRequest } from '@/apis/club/entity';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
@@ -125,7 +124,7 @@ function ManagedRecruitmentForm() {
             </div>
 
             {questions.length === 0 ? (
-              <div className={twMerge(sectionCardStyle, 'items-center py-10 text-center')}>
+              <div className={cn(sectionCardStyle, 'items-center py-10 text-center')}>
                 <p className="text-[16px] leading-[1.6] font-medium text-indigo-300">등록된 문항이 없습니다.</p>
               </div>
             ) : (
@@ -134,7 +133,7 @@ function ManagedRecruitmentForm() {
                   <div key={q.tempId} className={sectionCardStyle}>
                     <div className="flex flex-col gap-5">
                       <div className="flex items-start justify-between gap-3">
-                        <span className={twMerge(sectionTitleStyle, 'pl-1')}>{`문항${index + 1}`}</span>
+                        <span className={cn(sectionTitleStyle, 'pl-1')}>{`문항${index + 1}`}</span>
                         <button
                           type="button"
                           onClick={() => handleDeleteQuestion(q.tempId)}
