@@ -186,7 +186,10 @@ function ChatRoom() {
         })}
       </div>
 
-      <form onSubmit={handleSubmit} className="shrink-0 bg-white px-5 pt-3 pb-[calc(22px+var(--sab))]">
+      <form
+        onSubmit={handleSubmit}
+        className="shrink-0 bg-white px-5 pt-3 pb-[calc(12px+var(--effective-bottom-safe-area))]"
+      >
         <div className="bg-text-100 flex min-w-0 items-end gap-3 rounded-[30px] px-4 py-3">
           <textarea
             ref={textareaRef}
