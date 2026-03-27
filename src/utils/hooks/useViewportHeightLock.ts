@@ -1,9 +1,9 @@
-import { useLayoutEffect } from 'react';
+import { useLayoutEffect, type RefObject } from 'react';
 import { isTextInputElement } from '@/utils/ts/dom';
 
 const SCROLL_RESET_TIMEOUT_MS = 180;
 
-function useViewportHeightLock() {
+function useViewportHeightLock(scrollContainerRef?: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const root = document.documentElement;
     const body = document.body;
@@ -64,7 +64,43 @@ function useViewportHeightLock() {
       }
     };
 
+    let lastTouchClientY = 0;
+
+    const handleTouchStart = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+
+      lastTouchClientY = event.touches[0].clientY;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (event.touches.length !== 1) return;
+
+      const scrollContainer = scrollContainerRef?.current;
+      const target = event.target;
+
+      if (!scrollContainer) return;
+
+      if (!(target instanceof Node) || !scrollContainer.contains(target)) {
+        event.preventDefault();
+        return;
+      }
+
+      const currentTouchClientY = event.touches[0].clientY;
+      const deltaY = currentTouchClientY - lastTouchClientY;
+      const canScroll = scrollContainer.scrollHeight > scrollContainer.clientHeight;
+      const isAtTop = scrollContainer.scrollTop <= 0;
+      const isAtBottom = scrollContainer.scrollTop + scrollContainer.clientHeight >= scrollContainer.scrollHeight - 1;
+
+      lastTouchClientY = currentTouchClientY;
+
+      if (!canScroll || (deltaY > 0 && isAtTop) || (deltaY < 0 && isAtBottom)) {
+        event.preventDefault();
+      }
+    };
+
     const handleWindowScroll = () => {
+      if (!isEditableFocused) return;
+
       const currentScrollTop = Math.max(
         scrollingElement?.scrollTop ?? 0,
         root.scrollTop,
@@ -88,6 +124,8 @@ function useViewportHeightLock() {
     window.addEventListener('focusin', handleFocusIn);
     window.addEventListener('focusout', handleFocusOut);
     window.addEventListener('scroll', handleWindowScroll, { passive: true });
+    document.addEventListener('touchstart', handleTouchStart, { passive: true });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     window.visualViewport?.addEventListener('resize', handleViewportChange);
     window.visualViewport?.addEventListener('scroll', handleViewportChange);
@@ -100,6 +138,8 @@ function useViewportHeightLock() {
       window.removeEventListener('focusin', handleFocusIn);
       window.removeEventListener('focusout', handleFocusOut);
       window.removeEventListener('scroll', handleWindowScroll);
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
 
       window.visualViewport?.removeEventListener('resize', handleViewportChange);
       window.visualViewport?.removeEventListener('scroll', handleViewportChange);
@@ -109,7 +149,7 @@ function useViewportHeightLock() {
       body.style.height = prevBodyHeight;
       root.style.height = prevRootHeight;
     };
-  }, []);
+  }, [scrollContainerRef]);
 }
 
 export default useViewportHeightLock;
