@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import type { ChatMessage } from '@/apis/chat/entity';
 import SendArrowIcon from '@/assets/svg/chat-send-arrow.svg';
 import LinkifiedText from '@/components/common/LinkifiedText';
-import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
+import useViewportHeightLock from '@/utils/hooks/useViewportHeightLock';
 import { cn } from '@/utils/ts/cn';
 import useChat from './hooks/useChat';
 import useChatRoomScroll from './hooks/useChatRoomScroll';
@@ -84,7 +84,7 @@ function ChatRoom() {
     useChat(Number(chatRoomId));
   const [value, setValue] = useState('');
 
-  useKeyboardHeight();
+  useViewportHeightLock();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseTextareaHeightRef = useRef(0);
