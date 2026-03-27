@@ -9,10 +9,10 @@ import {
   useApproveManagedApplicationMutation,
   useRejectManagedApplicationMutation,
 } from '@/pages/Manager/hooks/useManagedApplicationMutations';
+import { useGetManagedApplications } from '@/pages/Manager/hooks/useManagedApplications';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
-import { useGetManagedApplications } from '../hooks/useManagedApplications';
 
 type ManagedApplication = ClubApplicationsResponse['applications'][number];
 

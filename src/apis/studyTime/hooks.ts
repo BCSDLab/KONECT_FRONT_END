@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { studyTimeMutations } from '@/apis/studyTime/mutations';
+import { studyTimeQueryKeys } from '@/apis/studyTime/queries';
 import { API_ERROR_CODES, isApiError } from '@/interface/error';
-import { studyTimeMutations } from './mutations';
-import { studyTimeQueryKeys } from './queries';
 
 export const useStopStudyTimerMutation = () => {
   const queryClient = useQueryClient();

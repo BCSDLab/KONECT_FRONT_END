@@ -1,5 +1,5 @@
+import { apiClient } from '@/apis/client';
 import type { InboxNotificationListResponse, InboxNotificationUnreadCountResponse } from '@/apis/notification/entity';
-import { apiClient } from '../client';
 
 export const registerPushToken = async (token: string) => {
   if (window.ReactNativeWebView) {

@@ -5,7 +5,7 @@ import {
   useCreateChatRoomMutation,
   useSendChatMessageMutation,
   useToggleChatMuteMutation,
-} from '@/pages/Chat/hooks/useChatMutations.ts';
+} from '@/pages/Chat/hooks/useChatMutations';
 
 const useChat = (chatRoomId?: number) => {
   const { data: chatRoomList } = useSuspenseQuery({

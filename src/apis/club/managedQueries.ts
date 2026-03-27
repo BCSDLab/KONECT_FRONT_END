@@ -1,5 +1,4 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import { isApiError } from '@/interface/error';
 import {
   getBanks,
   getClubFee,
@@ -14,7 +13,8 @@ import {
   getManagedClubMemberApplications,
   getManagedClubs,
   getPreMembers,
-} from '.';
+} from '@/apis/club';
+import { isApiError } from '@/interface/error';
 
 interface ManagedClubApplicationsParams {
   clubId: number;

@@ -1,5 +1,5 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
-import { useStudyTime } from './useStudyTime';
+import { useStudyTime } from '@/pages/Timer/hooks/useStudyTime';
 
 export const useStudyTimer = () => {
   const { studyTime, startStudyTimer, stopStudyTimer, isStarting, isStopping } = useStudyTime();

@@ -1,5 +1,5 @@
 import { mutationOptions } from '@tanstack/react-query';
-import { markInboxNotificationAsRead } from '.';
+import { markInboxNotificationAsRead } from '@/apis/notification';
 
 export interface MarkInboxNotificationAsReadVariables {
   notificationId: number;

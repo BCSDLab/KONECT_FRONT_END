@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import type { StudyRankingParams } from './entity';
-import { getMyStudyTimeRanking, getStudyTimeRanking, getStudyTimeSummary } from '.';
+import { getMyStudyTimeRanking, getStudyTimeRanking, getStudyTimeSummary } from '@/apis/studyTime';
+import type { StudyRankingParams } from '@/apis/studyTime/entity';
 
 interface StudyTimeRankingKeyParams {
   limit: number;

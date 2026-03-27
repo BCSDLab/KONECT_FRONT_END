@@ -1,6 +1,6 @@
 import { mutationOptions } from '@tanstack/react-query';
-import type { StopTimerRequest } from './entity';
-import { startStudyTimer, stopStudyTimer } from '.';
+import { startStudyTimer, stopStudyTimer } from '@/apis/studyTime';
+import type { StopTimerRequest } from '@/apis/studyTime/entity';
 
 export const studyTimeMutationKeys = {
   startTimer: () => ['studyTime', 'startTimer'] as const,

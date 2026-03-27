@@ -1,5 +1,5 @@
 import { queryOptions } from '@tanstack/react-query';
-import { getAdvertisements } from '.';
+import { getAdvertisements } from '@/apis/advertisement';
 
 export const advertisementQueryKeys = {
   all: ['advertisements'] as const,

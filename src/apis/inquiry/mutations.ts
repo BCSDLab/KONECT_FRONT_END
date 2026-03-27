@@ -1,5 +1,5 @@
 import { mutationOptions } from '@tanstack/react-query';
-import { postInquiry } from '.';
+import { postInquiry } from '@/apis/inquiry';
 
 export const inquiryMutationKeys = {
   create: () => ['inquiry', 'create'] as const,
