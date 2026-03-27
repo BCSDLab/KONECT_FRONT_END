@@ -5,7 +5,7 @@ export const authQueryKeys = {
   all: ['user'] as const,
   myInfo: () => [...authQueryKeys.all, 'myInfo'] as const,
   oauthLinks: () => [...authQueryKeys.all, 'oauthLinks'] as const,
-  signupPrefill: () => ['signup', 'prefill'] as const,
+  signupPrefill: () => [...authQueryKeys.all, 'prefill'] as const,
 };
 
 export const authQueries = {

@@ -89,7 +89,7 @@ export const clubQueries = {
   infiniteList: (params: ClubInfiniteListParams) =>
     infiniteQueryOptions({
       queryKey: clubQueryKeys.infinite.list(params),
-      queryFn: ({ pageParam = 1 }) => getClubs(buildClubListRequest(params, pageParam)),
+      queryFn: ({ pageParam }) => getClubs(buildClubListRequest(params, pageParam)),
       initialPageParam: 1,
       getNextPageParam: (lastPage: ClubResponse) => {
         if (lastPage.currentPage < lastPage.totalPage) {

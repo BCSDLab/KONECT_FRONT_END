@@ -8,10 +8,6 @@ function FinishStep() {
   const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const setUser = useAuthStore((state) => state.setUser);
 
-  if (!myInfo) {
-    return null;
-  }
-
   const handleStart = () => {
     setUser(myInfo);
     navigate('/guide');

@@ -3,7 +3,7 @@ import { getInboxNotifications, getInboxUnreadCount, getNotificationToken } from
 
 export const notificationQueryKeys = {
   all: ['notifications'] as const,
-  token: () => ['notification', 'token'] as const,
+  token: () => [...notificationQueryKeys.all, 'token'] as const,
   inbox: {
     all: () => [...notificationQueryKeys.all, 'inbox'] as const,
     list: () => [...notificationQueryKeys.inbox.all(), 'list'] as const,
