@@ -30,7 +30,7 @@ function AgreementRow({ checked, onChange, label, route, state, RightIcon, Check
       </label>
 
       {RightIcon ? (
-        <Link to={route} state={state}>
+        <Link to={route} state={state} aria-label={`${label} 보기`}>
           <RightIcon className="text-indigo-100" />
         </Link>
       ) : null}
