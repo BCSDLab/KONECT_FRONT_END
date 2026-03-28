@@ -1,9 +1,11 @@
+import type { Ref } from 'react';
 import { Link } from 'react-router-dom';
 import type { Club } from '@/apis/club/entity';
 import CircleWarningIcon from '@/assets/svg/circle-warning.svg';
 
 interface ClubCardProps {
   club: Club;
+  itemRef?: Ref<HTMLAnchorElement>;
 }
 
 function getDDay(dateString: string): string {
@@ -23,7 +25,7 @@ function getDDay(dateString: string): string {
   return '마감';
 }
 
-function ClubCard({ club }: ClubCardProps) {
+function ClubCard({ club, itemRef }: ClubCardProps) {
   type ClubTag = {
     label: string;
     bgColor: string;
@@ -60,6 +62,7 @@ function ClubCard({ club }: ClubCardProps) {
 
   return (
     <Link
+      ref={itemRef}
       to={`/clubs/${club.id}${club.status === 'ONGOING' ? '?tab=recruitment' : ''}`}
       state={{ from: 'clubList' }}
       className="border-indigo-5 flex w-full items-start gap-3 rounded-2xl border bg-white p-4"

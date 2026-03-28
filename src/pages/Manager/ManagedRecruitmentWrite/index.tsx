@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useRef, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { twMerge } from 'tailwind-merge';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
@@ -8,12 +9,16 @@ import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ClockIcon from '@/assets/svg/clock.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
+import { useToastContext } from '@/contexts/useToastContext';
 import DatePicker from '@/pages/Manager/components/DatePicker';
 import TimePicker from '@/pages/Manager/components/TimePicker';
-import { useCreateRecruitment, useGetManagedRecruitments } from '@/pages/Manager/hooks/useManagedRecruitment';
-import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpsertManagedClubRecruitmentMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useUploadImage from '@/utils/hooks/useUploadImage';
+import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/date';
 import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
 import { mapWithConcurrencyLimit } from '@/utils/ts/promise';
@@ -46,6 +51,7 @@ function ManagedRecruitmentWrite() {
   const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
+  const { showToast } = useToastContext();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
@@ -62,10 +68,11 @@ function ManagedRecruitmentWrite() {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { data: existingRecruitment } = useGetManagedRecruitments(clubIdNumber);
-  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
-  const { mutate: saveRecruitment, isPending, error } = useCreateRecruitment(clubIdNumber);
-  const { mutate: patchSettings, isPending: isSettingsPending } = usePatchClubSettings(clubIdNumber);
+  const { data: existingRecruitment } = useQuery(managedClubQueries.recruitment(clubIdNumber));
+  const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
+  const { mutateAsync: saveRecruitment, isPending, error } = useUpsertManagedClubRecruitmentMutation(clubIdNumber);
+  const { mutateAsync: patchSettings, isPending: isSettingsPending } =
+    usePatchManagedClubSettingsMutation(clubIdNumber);
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -257,46 +264,41 @@ function ManagedRecruitmentWrite() {
       const uploadedImageData = uploadResults.map((res) => ({ url: res.fileUrl }));
       const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
       const imageData = [...existingImageData, ...uploadedImageData];
-
-      const onSuccess = () => {
-        const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
-        const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
-        const navigateAfterSave = () =>
-          shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
-
-        if (clubSettings?.isRecruitmentEnabled === nextRecruitmentEnabled) {
-          navigateAfterSave();
-          return;
-        }
-
-        patchSettings(
-          { isRecruitmentEnabled: nextRecruitmentEnabled },
-          {
-            onSuccess: navigateAfterSave,
-          }
-        );
-      };
+      const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+      const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
+      const navigateAfterSave = () =>
+        shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
 
       if (isAlwaysRecruiting) {
-        saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
+        await saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true });
       } else {
-        saveRecruitment(
-          {
-            content,
-            images: imageData,
-            isAlwaysRecruiting: false,
-            startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
-            endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
-          },
-          { onSuccess }
-        );
+        await saveRecruitment({
+          content,
+          images: imageData,
+          isAlwaysRecruiting: false,
+          startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
+          endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
+        });
       }
+
+      if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
+        try {
+          await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
+        } catch {
+          showToast('모집 공고 활성화 설정에 실패했습니다');
+          return;
+        }
+      }
+
+      showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
+      navigateAfterSave();
     } finally {
       setIsUploading(false);
     }
   };
 
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
+  const isSavingRecruitment = isPending || isSettingsPending;
 
   return (
     <div className="flex h-full flex-col">
@@ -309,7 +311,7 @@ function ManagedRecruitmentWrite() {
               ariaLabel="모집 공고 활성화 설정"
               enabled={isRecruitmentEnabled}
               onChange={handleRecruitmentEnabledChange}
-              disabled={isSettingsPending}
+              disabled={isSavingRecruitment}
             />
           </div>
 
@@ -335,7 +337,7 @@ function ManagedRecruitmentWrite() {
               </div>
             ) : (
               <div className="flex flex-col gap-3">
-                <div className={twMerge(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
+                <div className={cn(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
                   <div className="flex items-center gap-4">
                     <span className="bg-primary-100 text-primary-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
                       시작
@@ -348,9 +350,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-[5px]">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
-                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
-                                {formatDateDot(startDate)}
-                              </span>
+                              <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(startDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -395,9 +395,7 @@ function ManagedRecruitmentWrite() {
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
                             <span className="flex min-w-0 items-center gap-[5px]">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
-                              <span className={twMerge(compactButtonTextStyle, 'truncate')}>
-                                {formatDateDot(endDate)}
-                              </span>
+                              <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(endDate)}</span>
                             </span>
                             <ChevronRight
                               aria-hidden="true"
@@ -525,7 +523,7 @@ function ManagedRecruitmentWrite() {
                         type="button"
                         onClick={() => setCurrentImageIndex(index)}
                         aria-label={`${index + 1}번 이미지 보기`}
-                        className={twMerge(
+                        className={cn(
                           'h-2 w-2 rounded-full transition-colors',
                           index === currentImageIndex ? 'bg-primary-500' : 'bg-text-200'
                         )}
@@ -562,13 +560,13 @@ function ManagedRecruitmentWrite() {
             <button
               type="submit"
               className="bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-[18px] leading-[1.6] font-semibold text-white disabled:cursor-not-allowed"
-              disabled={isPending || isPreparingImages || isUploading || !content.trim() || hasDateError}
+              disabled={isSavingRecruitment || isPreparingImages || isUploading || !content.trim() || hasDateError}
             >
               {isPreparingImages
                 ? '이미지 준비 중…'
                 : isUploading
                   ? '이미지 업로드 중…'
-                  : isPending
+                  : isSavingRecruitment
                     ? '수정 중…'
                     : '모집공고 수정'}
             </button>

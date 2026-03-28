@@ -1,5 +1,7 @@
 import type { ComponentType, SVGAttributes } from 'react';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import type { OAuthProvider } from '@/apis/auth/entity';
+import { authQueries } from '@/apis/auth/queries';
 import AppleFigmaIcon from '@/assets/svg/apple-figma.svg';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
@@ -10,7 +12,6 @@ import { cn } from '@/utils/ts/cn';
 import { getOAuthAuthorizationUrl } from '@/utils/ts/oauth';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';
-import { useMyInfo } from './hooks/useMyInfo';
 import { useOAuthLinks } from './hooks/useOAuthLinks';
 
 const fields = [
@@ -94,7 +95,7 @@ function OAuthLinkButton({ linked, onLink, provider }: OAuthLinkButtonProps) {
 }
 
 function Profile() {
-  const { myInfo } = useMyInfo({});
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const { oauthLinks } = useOAuthLinks();
   const { mutate: withdraw, isPending: isWithdrawing } = useWithdrawMutation();
 

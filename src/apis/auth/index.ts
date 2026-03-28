@@ -10,7 +10,9 @@ import type {
   SignupRequest,
 } from './entity';
 
-export const refreshAccessToken = async (): Promise<string> => {
+let refreshAccessTokenPromise: Promise<string> | null = null;
+
+const requestAccessTokenRefresh = async (): Promise<string> => {
   const url = `${NORMALIZED_API_BASE_URL}/users/refresh`;
 
   let response: Response;
@@ -47,6 +49,16 @@ export const refreshAccessToken = async (): Promise<string> => {
 
   const data: RefreshTokenResponse = await response.json();
   return data.accessToken;
+};
+
+export const refreshAccessToken = async (): Promise<string> => {
+  if (!refreshAccessTokenPromise) {
+    refreshAccessTokenPromise = requestAccessTokenRefresh().finally(() => {
+      refreshAccessTokenPromise = null;
+    });
+  }
+
+  return refreshAccessTokenPromise;
 };
 
 export const signup = async (data: SignupRequest) => {

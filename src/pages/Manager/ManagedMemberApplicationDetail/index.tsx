@@ -1,16 +1,14 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import ApplicationDetailContent from '@/pages/Manager/components/ApplicationDetailContent';
-import { useGetManagedMemberApplicationDetailByUser } from '@/pages/Manager/hooks/useManagedApplications';
 
 function ManagedMemberApplicationDetail() {
   const params = useParams();
   const clubId = Number(params.clubId);
   const userId = Number(params.userId);
 
-  const { managedClubMemberApplicationDetail: application } = useGetManagedMemberApplicationDetailByUser(
-    clubId,
-    userId
-  );
+  const { data: application } = useSuspenseQuery(managedClubQueries.memberApplicationDetail(clubId, userId));
 
   if (!application) {
     return (

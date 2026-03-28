@@ -25,10 +25,12 @@ const useChatRoomScroll = ({
   isFetchingNextPage,
 }: UseChatRoomScrollParams) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const chatMessagesLengthRef = useRef(chatMessagesLength);
   const isInitialScrollDoneRef = useRef(false);
   const shouldRestoreScrollRef = useRef(false);
   const previousScrollTopRef = useRef(0);
   const previousScrollHeightRef = useRef(0);
+  const previousClientHeightRef = useRef(0);
   const isNearBottomRef = useRef(true);
 
   const scrollToBottom = useCallback(() => {
@@ -55,10 +57,15 @@ const useChatRoomScroll = ({
   const topRef = useInfiniteScroll(handleFetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
 
   useEffect(() => {
+    chatMessagesLengthRef.current = chatMessagesLength;
+  }, [chatMessagesLength]);
+
+  useEffect(() => {
     isInitialScrollDoneRef.current = false;
     shouldRestoreScrollRef.current = false;
     previousScrollTopRef.current = 0;
     previousScrollHeightRef.current = 0;
+    previousClientHeightRef.current = 0;
     isNearBottomRef.current = true;
   }, [chatRoomId]);
 
@@ -100,6 +107,34 @@ const useChatRoomScroll = ({
       scrollToBottom();
     }
   }, [chatMessagesLength, latestMessageId, scrollToBottom]);
+
+  useLayoutEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    previousClientHeightRef.current = container.clientHeight;
+
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(() => {
+            const nextClientHeight = container.clientHeight;
+
+            if (nextClientHeight === previousClientHeightRef.current) return;
+
+            previousClientHeightRef.current = nextClientHeight;
+
+            if (chatMessagesLengthRef.current === 0 || !isNearBottomRef.current) return;
+
+            requestAnimationFrame(scrollToBottom);
+          })
+        : undefined;
+
+    resizeObserver?.observe(container);
+
+    return () => {
+      resizeObserver?.disconnect();
+    };
+  }, [chatRoomId, scrollToBottom]);
 
   return {
     scrollContainerRef,

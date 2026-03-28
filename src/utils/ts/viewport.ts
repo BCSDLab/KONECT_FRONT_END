@@ -1,12 +1,33 @@
+import { isTextInputElement } from '@/utils/ts/dom';
+
+const KEYBOARD_OPEN_THRESHOLD_PX = 120;
+const VIEWPORT_CONTEXT_CHANGE_THRESHOLD_PX = 80;
+
 export function installViewportVars() {
   let scheduled = false;
+  let isEditableFocused = false;
+  let restingViewportHeight = 0;
+  let restingViewportWidth = 0;
 
   const setViewportHeight = () => {
     const vv = window.visualViewport;
     const h = vv?.height ?? window.innerHeight;
+    const w = vv?.width ?? window.innerWidth;
     const offset = Math.max(0, vv?.offsetTop ?? 0);
-    document.documentElement.style.setProperty('--viewport-height', `${h}px`);
-    document.documentElement.style.setProperty('--viewport-offset', `${offset}px`);
+    const root = document.documentElement;
+    const hasViewportContextChanged = Math.abs(restingViewportWidth - w) > VIEWPORT_CONTEXT_CHANGE_THRESHOLD_PX;
+
+    if (!isEditableFocused || !restingViewportHeight || hasViewportContextChanged) {
+      restingViewportHeight = h;
+      restingViewportWidth = w;
+    }
+
+    const keyboardHeight = Math.max(0, restingViewportHeight - h);
+    const isKeyboardOpen = isEditableFocused && keyboardHeight > KEYBOARD_OPEN_THRESHOLD_PX;
+
+    root.style.setProperty('--viewport-height', `${h}px`);
+    root.style.setProperty('--viewport-offset', isEditableFocused ? '0px' : `${offset}px`);
+    root.style.setProperty('--effective-bottom-safe-area', isKeyboardOpen ? '0px' : 'var(--sab)');
   };
 
   const requestSetViewportHeight = () => {
@@ -21,6 +42,18 @@ export function installViewportVars() {
   setViewportHeight();
   requestAnimationFrame(() => requestAnimationFrame(setViewportHeight));
 
+  const handleFocusIn = (event: FocusEvent) => {
+    isEditableFocused = isTextInputElement(event.target);
+    requestSetViewportHeight();
+  };
+
+  const handleFocusOut = (event: FocusEvent) => {
+    if (isTextInputElement(event.target)) {
+      isEditableFocused = false;
+      requestSetViewportHeight();
+    }
+  };
+
   window.addEventListener('resize', requestSetViewportHeight);
   window.addEventListener('orientationchange', requestSetViewportHeight);
   window.addEventListener('pageshow', requestSetViewportHeight);
@@ -28,8 +61,8 @@ export function installViewportVars() {
   window.visualViewport?.addEventListener('resize', requestSetViewportHeight);
   window.visualViewport?.addEventListener('scroll', requestSetViewportHeight);
 
-  window.addEventListener('focusin', requestSetViewportHeight);
-  window.addEventListener('focusout', requestSetViewportHeight);
+  window.addEventListener('focusin', handleFocusIn);
+  window.addEventListener('focusout', handleFocusOut);
 
   return () => {
     window.removeEventListener('resize', requestSetViewportHeight);
@@ -39,7 +72,7 @@ export function installViewportVars() {
     window.visualViewport?.removeEventListener('resize', requestSetViewportHeight);
     window.visualViewport?.removeEventListener('scroll', requestSetViewportHeight);
 
-    window.removeEventListener('focusin', requestSetViewportHeight);
-    window.removeEventListener('focusout', requestSetViewportHeight);
+    window.removeEventListener('focusin', handleFocusIn);
+    window.removeEventListener('focusout', handleFocusOut);
   };
 }

@@ -6,6 +6,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/',
   },
   {
+    type: 'notification',
+    match: (pathname) => pathname === '/notifications',
+  },
+  {
     type: 'default',
     match: (pathname) => /^\/clubs\/\d+$/.test(pathname),
   },
@@ -39,7 +43,7 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   },
   {
     type: 'schedule',
-    match: (pathname) => pathname == '/schedule',
+    match: (pathname) => pathname === '/schedule',
   },
 ];
 

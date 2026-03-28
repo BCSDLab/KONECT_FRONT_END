@@ -1,12 +1,17 @@
 import { useState } from 'react';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
+import { useToastContext } from '@/contexts/useToastContext';
 import { isApiError } from '@/interface/error';
-import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
-import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpdateManagedClubFeeMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
 import { cn } from '@/utils/ts/cn';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';
@@ -20,12 +25,13 @@ function ManagedAccount() {
   const navigate = useNavigate();
   const location = useLocation();
   const clubIdNumber = Number(clubId);
+  const { showToast } = useToastContext();
 
-  const { banks } = useGetBanks();
-  const { managedClubFee } = useManagedClubFee(clubIdNumber);
-  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
-  const { mutate, isPending, error } = useManagedClubFeeMutation(clubIdNumber);
-  const { mutate: patchSettings, isPending: isPatchPending } = usePatchClubSettings(clubIdNumber);
+  const { data: banks } = useSuspenseQuery(managedClubQueries.banks());
+  const { data: managedClubFee } = useSuspenseQuery(managedClubQueries.fee(clubIdNumber));
+  const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
+  const { mutate: updateClubFee, isPending, error } = useUpdateManagedClubFeeMutation(clubIdNumber);
+  const { mutate: patchSettings, isPending: isPatchPending } = usePatchManagedClubSettingsMutation(clubIdNumber);
 
   const initialAmount = managedClubFee.amount?.toString() ?? '';
   const initialBankId = banks.find((bank) => bank.name === managedClubFee.bankName)?.id ?? null;
@@ -62,11 +68,26 @@ function ManagedAccount() {
       accountHolder: accountHolder.trim(),
     };
 
-    mutate(payload, {
+    updateClubFee(payload, {
       onSuccess: () => {
         if (location.state?.enableAfterSave) {
-          patchSettings({ isFeeEnabled: true }, { onSuccess: () => navigate(-1) });
+          patchSettings(
+            { isFeeEnabled: true },
+            {
+              onSuccess: () => {
+                showToast('회비가 수정되었습니다');
+                navigate(-1);
+              },
+              onError: () => {
+                showToast('회비 활성화에 실패했습니다');
+              },
+            }
+          );
+          return;
         }
+
+        showToast('회비가 수정되었습니다');
+        navigate(-1);
       },
     });
   };

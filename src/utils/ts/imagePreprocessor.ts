@@ -1,5 +1,6 @@
 const DEFAULT_MAX_DIMENSION = 1600;
 const DEFAULT_QUALITY = 0.9;
+const IMAGE_PREPROCESS_WORKER_TIMEOUT_MS = 10_000;
 const JPEG_MIME_TYPE = 'image/jpeg';
 const PNG_MIME_TYPE = 'image/png';
 const WEBP_MIME_TYPE = 'image/webp';
@@ -30,6 +31,7 @@ interface PrepareImageFileOptions {
 interface PendingRequestHandlers {
   reject: (error: unknown) => void;
   resolve: (value: ImagePreprocessResponse | null) => void;
+  timeoutHandle: ReturnType<typeof setTimeout>;
 }
 
 let imagePreprocessWorker: Worker | null = null;
@@ -67,6 +69,30 @@ function resetImagePreprocessWorker() {
   imagePreprocessWorker = null;
 }
 
+function takePendingImagePreprocessRequest(id: number) {
+  const currentRequest = pendingImagePreprocessRequests.get(id);
+
+  if (!currentRequest) {
+    return null;
+  }
+
+  clearTimeout(currentRequest.timeoutHandle);
+  pendingImagePreprocessRequests.delete(id);
+
+  return currentRequest;
+}
+
+function settlePendingImagePreprocessRequests(settleRequest: (currentRequest: PendingRequestHandlers) => void) {
+  const pendingRequests = Array.from(pendingImagePreprocessRequests.values());
+
+  pendingImagePreprocessRequests.clear();
+
+  pendingRequests.forEach((currentRequest) => {
+    clearTimeout(currentRequest.timeoutHandle);
+    settleRequest(currentRequest);
+  });
+}
+
 function getWorker() {
   if (typeof Worker === 'undefined') {
     return null;
@@ -79,13 +105,11 @@ function getWorker() {
       });
 
       worker.onmessage = (event: MessageEvent<ImagePreprocessResponse | ImagePreprocessErrorResponse>) => {
-        const currentRequest = pendingImagePreprocessRequests.get(event.data.id);
+        const currentRequest = takePendingImagePreprocessRequest(event.data.id);
 
         if (!currentRequest) {
           return;
         }
-
-        pendingImagePreprocessRequests.delete(event.data.id);
 
         if ('errorMessage' in event.data) {
           currentRequest.reject(new Error(event.data.errorMessage));
@@ -95,10 +119,9 @@ function getWorker() {
         currentRequest.resolve(event.data);
       };
       worker.onerror = (event) => {
-        pendingImagePreprocessRequests.forEach(({ reject }) => {
+        settlePendingImagePreprocessRequests(({ reject }) => {
           reject(new Error(event.message || '이미지 전처리 worker에서 오류가 발생했습니다.'));
         });
-        pendingImagePreprocessRequests.clear();
         resetImagePreprocessWorker();
       };
 
@@ -135,13 +158,27 @@ async function runWorkerPreprocess(file: File, options: PrepareImageFileOptions)
   };
 
   return new Promise<ImagePreprocessResponse | null>((resolve, reject) => {
+    const timeoutHandle = setTimeout(() => {
+      const currentRequest = takePendingImagePreprocessRequest(id);
+
+      if (!currentRequest) {
+        return;
+      }
+
+      currentRequest.resolve(null);
+    }, IMAGE_PREPROCESS_WORKER_TIMEOUT_MS);
+
     try {
-      pendingImagePreprocessRequests.set(id, { reject, resolve });
+      pendingImagePreprocessRequests.set(id, { reject, resolve, timeoutHandle });
       worker.postMessage(requestPayload);
     } catch {
-      pendingImagePreprocessRequests.delete(id);
+      const currentRequest = takePendingImagePreprocessRequest(id);
+
       resetImagePreprocessWorker();
-      resolve(null);
+      currentRequest?.resolve(null);
+      settlePendingImagePreprocessRequests(({ resolve: resolvePendingRequest }) => {
+        resolvePendingRequest(null);
+      });
     }
   });
 }

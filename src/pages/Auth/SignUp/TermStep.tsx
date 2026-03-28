@@ -53,6 +53,7 @@ function TermStep() {
             onChange={setTerms}
             label="[필수] 서비스 이용약관"
             route="/legal/terms"
+            state={{ backPath: '/signup' }}
             CheckIcon={CheckIcon}
             RightIcon={RightArrowIcon}
           />
@@ -62,6 +63,7 @@ function TermStep() {
             onChange={setPrivacy}
             label="[필수] 개인정보 처리방침"
             route="/legal/privacy"
+            state={{ backPath: '/signup' }}
             CheckIcon={CheckIcon}
             RightIcon={RightArrowIcon}
           />
@@ -71,6 +73,7 @@ function TermStep() {
             onChange={setMarketing}
             label="[선택] 마케팅 정보 수신"
             route="/legal/marketing"
+            state={{ backPath: '/signup' }}
             CheckIcon={CheckIcon}
             RightIcon={RightArrowIcon}
           />

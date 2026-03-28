@@ -1,10 +1,11 @@
 import { Activity } from 'react';
-import clsx from 'clsx';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
+import { councilQueries } from '@/apis/council/queries';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
+import { cn } from '@/utils/ts/cn';
 import CouncilIntro from './components/CouncilIntro';
 import CouncilNotice from './components/CouncilNotice';
-import { useGetCouncilInfo } from './hooks/useGetCouncilInfo';
 
 type TabType = 'intro' | 'notice';
 
@@ -13,7 +14,7 @@ function CouncilDetail() {
   const [searchParams, setSearchParams] = useSearchParams();
   const currentTab = searchParams.get('tab') || 'intro';
 
-  const { data: councilInfo } = useGetCouncilInfo();
+  const { data: councilInfo } = useSuspenseQuery(councilQueries.info());
 
   const handleTabClick = (tab: TabType) => {
     setSearchParams({ tab }, { replace: true });
@@ -23,10 +24,6 @@ function CouncilDetail() {
     { key: 'intro', label: '소개' },
     { key: 'notice', label: '공지사항' },
   ];
-
-  if (!councilInfo) {
-    return <div>잘못된 경로입니다</div>;
-  }
 
   return (
     <>
@@ -46,7 +43,7 @@ function CouncilDetail() {
             <button
               key={tab.key}
               onClick={() => handleTabClick(tab.key)}
-              className={clsx(
+              className={cn(
                 'relative h-[38px] px-3 py-1 text-sm leading-5 font-medium transition-colors',
                 currentTab === tab.key
                   ? 'text-indigo-700 after:absolute after:bottom-0 after:left-0 after:h-[1.6px] after:w-full after:bg-indigo-300'

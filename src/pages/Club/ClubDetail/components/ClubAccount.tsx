@@ -1,10 +1,11 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
+import { clubQueries } from '@/apis/club/queries';
 import AccountInfoCard from '../../Application/components/AccountInfo';
-import { useGetClubFee } from '../../Application/hooks/useGetClubFee';
 
 function ClubAccount() {
   const { clubId } = useParams();
-  const { data: clubFee } = useGetClubFee(Number(clubId));
+  const { data: clubFee } = useSuspenseQuery(clubQueries.fee(Number(clubId)));
 
   return <AccountInfoCard accountInfo={clubFee} />;
 }
