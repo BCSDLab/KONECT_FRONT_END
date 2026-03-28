@@ -70,8 +70,9 @@ function ManagedRecruitmentWrite() {
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
   const { data: existingRecruitment } = useQuery(managedClubQueries.recruitment(clubIdNumber));
   const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
-  const { mutate: saveRecruitment, isPending, error } = useUpsertManagedClubRecruitmentMutation(clubIdNumber);
-  const { mutate: patchSettings, isPending: isSettingsPending } = usePatchManagedClubSettingsMutation(clubIdNumber);
+  const { mutateAsync: saveRecruitment, isPending, error } = useUpsertManagedClubRecruitmentMutation(clubIdNumber);
+  const { mutateAsync: patchSettings, isPending: isSettingsPending } =
+    usePatchManagedClubSettingsMutation(clubIdNumber);
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -263,48 +264,41 @@ function ManagedRecruitmentWrite() {
       const uploadedImageData = uploadResults.map((res) => ({ url: res.fileUrl }));
       const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
       const imageData = [...existingImageData, ...uploadedImageData];
-
-      const onSuccess = () => {
-        showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
-
-        const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
-        const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
-        const navigateAfterSave = () =>
-          shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
-
-        if (clubSettings?.isRecruitmentEnabled === nextRecruitmentEnabled) {
-          navigateAfterSave();
-          return;
-        }
-
-        patchSettings(
-          { isRecruitmentEnabled: nextRecruitmentEnabled },
-          {
-            onSuccess: navigateAfterSave,
-          }
-        );
-      };
+      const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+      const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
+      const navigateAfterSave = () =>
+        shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
 
       if (isAlwaysRecruiting) {
-        saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true }, { onSuccess });
+        await saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true });
       } else {
-        saveRecruitment(
-          {
-            content,
-            images: imageData,
-            isAlwaysRecruiting: false,
-            startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
-            endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
-          },
-          { onSuccess }
-        );
+        await saveRecruitment({
+          content,
+          images: imageData,
+          isAlwaysRecruiting: false,
+          startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
+          endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
+        });
       }
+
+      if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
+        try {
+          await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
+        } catch {
+          showToast('모집 공고 활성화 설정에 실패했습니다');
+          return;
+        }
+      }
+
+      showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
+      navigateAfterSave();
     } finally {
       setIsUploading(false);
     }
   };
 
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
+  const isSavingRecruitment = isPending || isSettingsPending;
 
   return (
     <div className="flex h-full flex-col">
@@ -317,7 +311,7 @@ function ManagedRecruitmentWrite() {
               ariaLabel="모집 공고 활성화 설정"
               enabled={isRecruitmentEnabled}
               onChange={handleRecruitmentEnabledChange}
-              disabled={isSettingsPending}
+              disabled={isSavingRecruitment}
             />
           </div>
 
@@ -566,13 +560,13 @@ function ManagedRecruitmentWrite() {
             <button
               type="submit"
               className="bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-[18px] leading-[1.6] font-semibold text-white disabled:cursor-not-allowed"
-              disabled={isPending || isPreparingImages || isUploading || !content.trim() || hasDateError}
+              disabled={isSavingRecruitment || isPreparingImages || isUploading || !content.trim() || hasDateError}
             >
               {isPreparingImages
                 ? '이미지 준비 중…'
                 : isUploading
                   ? '이미지 업로드 중…'
-                  : isPending
+                  : isSavingRecruitment
                     ? '수정 중…'
                     : '모집공고 수정'}
             </button>
