@@ -2,6 +2,7 @@ interface Window {
   ReactNativeWebView?: {
     postMessage: (message: string) => void;
   };
+  APP_VERSION?: string;
 }
 
 interface ImportMetaEnv {
