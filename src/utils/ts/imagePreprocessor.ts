@@ -165,11 +165,7 @@ async function runWorkerPreprocess(file: File, options: PrepareImageFileOptions)
         return;
       }
 
-      resetImagePreprocessWorker();
       currentRequest.resolve(null);
-      settlePendingImagePreprocessRequests(({ resolve: resolvePendingRequest }) => {
-        resolvePendingRequest(null);
-      });
     }, IMAGE_PREPROCESS_WORKER_TIMEOUT_MS);
 
     try {
