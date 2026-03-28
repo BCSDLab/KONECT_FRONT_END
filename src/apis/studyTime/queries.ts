@@ -18,8 +18,7 @@ export const studyTimeQueryKeys = {
   summary: () => [...studyTimeQueryKeys.all, 'summary'] as const,
   ranking: (params: StudyTimeRankingKeyParams) =>
     [...studyTimeQueryKeys.all, 'ranking', params.limit, params.sort, params.type] as const,
-  myRanking: (params: MyStudyTimeRankingKeyParams) =>
-    [...studyTimeQueryKeys.all, 'myRanking', params.sort, params.type] as const,
+  myRanking: (params: MyStudyTimeRankingKeyParams) => [...studyTimeQueryKeys.all, 'myRanking', params.sort] as const,
 };
 
 export const studyTimeQueries = {

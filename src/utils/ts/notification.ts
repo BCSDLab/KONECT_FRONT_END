@@ -50,7 +50,7 @@ const NOTIFICATION_PRESENTATIONS = {
 } satisfies Record<NotificationInboxType, InboxNotificationPresentation>;
 
 function isNotificationInboxType(value: string): value is NotificationInboxType {
-  return value in NOTIFICATION_PRESENTATIONS;
+  return Object.hasOwn(NOTIFICATION_PRESENTATIONS, value);
 }
 
 export function getInboxNotificationPresentation(notification: InboxNotification): InboxNotificationPresentation {
@@ -80,7 +80,12 @@ export function getInboxNotificationToastVariant(notification: InboxNotification
 export function normalizeInboxNotificationPath(path: string): string | null {
   const normalizedPath = path.trim();
 
-  if (!normalizedPath) {
+  if (
+    !normalizedPath ||
+    normalizedPath.startsWith('//') ||
+    normalizedPath.includes('://') ||
+    /^[a-zA-Z][\w+.-]*:/.test(normalizedPath)
+  ) {
     return null;
   }
 

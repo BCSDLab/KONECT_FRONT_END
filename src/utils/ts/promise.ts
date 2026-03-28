@@ -27,6 +27,9 @@ export async function mapWithConcurrencyLimit<T, TResult>(
 
       try {
         const result = await iteratee(items[currentIndex], currentIndex);
+
+        if (isAborted) return;
+
         results[currentIndex] = result;
         onResolved?.(result, currentIndex);
       } catch (error) {
