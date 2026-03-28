@@ -425,13 +425,18 @@ function ManagedMemberList() {
       return;
     }
 
-    await Promise.all(promoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MANAGER' } })));
-
-    await Promise.all(demoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MEMBER' } })));
-
-    await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
-    showToast('직책이 변경되었습니다');
-    closeRoleManage();
+    try {
+      await Promise.all(
+        promoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MANAGER' } }))
+      );
+      await Promise.all(demoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MEMBER' } })));
+      showToast('직책이 변경되었습니다');
+    } catch {
+      showToast('일부 직책 변경에 실패했습니다');
+    } finally {
+      await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
+      closeRoleManage();
+    }
   };
 
   const handleRemoveMember = () => {
