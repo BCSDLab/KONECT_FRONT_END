@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { getMyInfo, refreshAccessToken } from '@/apis/auth';
 import type { MyInfoResponse } from '@/apis/auth/entity';
 import { isAccessTokenExpired } from '@/utils/ts/accessToken';
+import { postNativeMessage } from '@/utils/ts/nativeBridge';
 
 let initializePromise: Promise<void> | null = null;
 let hydrateUserPromise: Promise<void> | null = null;
@@ -19,15 +20,7 @@ const hydrateUser = async (nextAccessToken: string) => {
 
       useAuthStore.setState({ user: nextUser });
 
-      try {
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(
-            JSON.stringify({ type: 'LOGIN_COMPLETE', accessToken: nextAccessToken })
-          );
-        }
-      } catch {
-        // 브릿지 전달 실패가 인증 성공 상태를 롤백시키지 않도록 무시
-      }
+      postNativeMessage({ type: 'LOGIN_COMPLETE', accessToken: nextAccessToken });
     } catch {
       if (useAuthStore.getState().accessToken !== nextAccessToken) return;
 
@@ -95,7 +88,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         set({ accessToken: nextAccessToken, authStatus: 'authenticated' });
         void hydrateUser(nextAccessToken);
       } catch {
-        set({ user: null, accessToken: null, authStatus: 'anonymous' });
+        get().clearAuth();
       } finally {
         initializePromise = null;
       }
@@ -122,5 +115,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     initializePromise = null;
     hydrateUserPromise = null;
     set({ user: null, accessToken: null, authStatus: 'anonymous' });
+    postNativeMessage({ type: 'LOGOUT' });
   },
 }));

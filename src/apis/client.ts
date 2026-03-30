@@ -2,6 +2,7 @@ import { refreshAccessToken } from '@/apis/auth';
 import type { ApiError, ApiErrorResponse } from '@/interface/error';
 import { useAuthStore } from '@/stores/authStore';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import { postNativeMessage } from '@/utils/ts/nativeBridge';
 
 const BASE_URL = import.meta.env.VITE_API_PATH;
 
@@ -18,8 +19,6 @@ interface FetchOptions<P extends object = Record<string, QueryParamValue>> exten
   params?: P;
   requiresAuth?: boolean;
 }
-
-let refreshPromise: Promise<string> | null = null;
 
 export const apiClient = {
   get: <T = unknown, P extends object = Record<string, QueryParamValue>>(
@@ -128,22 +127,61 @@ function buildQuery(params: Record<string, QueryParamValue>) {
   return usp.toString();
 }
 
-async function sendRequest<T = unknown, P extends object = Record<string, QueryParamValue>>(
-  endPoint: string,
-  options: FetchOptions<P> = {},
-  timeout: number = 10000
-): Promise<T> {
-  const { headers, body, method, params, requiresAuth, ...restOptions } = options;
-
-  if (!method) {
-    throw new Error('HTTP method가 설정되지 않았습니다.');
-  }
-
+function buildUrl(endPoint: string, params?: Record<string, QueryParamValue>): string {
   let url = joinUrl(BASE_URL, endPoint);
   if (params && Object.keys(params).length > 0) {
-    const query = buildQuery(params as Record<string, QueryParamValue>);
+    const query = buildQuery(params);
     if (query) url += `?${query}`;
   }
+  return url;
+}
+
+function buildFetchOptions<P extends object>(
+  options: FetchOptions<P> & { method: string },
+  abortSignal: AbortSignal
+): RequestInit {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { headers, body, method, params, requiresAuth, ...restOptions } = options;
+
+  const isPlainObjectOrArray =
+    body !== undefined &&
+    body !== null &&
+    typeof body === 'object' &&
+    (Array.isArray(body) || body.constructor === Object);
+
+  const h: Record<string, string> = {
+    ...(isPlainObjectOrArray ? { 'Content-Type': 'application/json' } : {}),
+    ...headers,
+  };
+
+  if (requiresAuth) {
+    const accessToken = useAuthStore.getState().getAccessToken();
+    if (accessToken) {
+      h['Authorization'] = `Bearer ${accessToken}`;
+    }
+  }
+
+  const fetchOpts: RequestInit = {
+    headers: h,
+    method,
+    signal: abortSignal,
+    credentials: 'include',
+    ...restOptions,
+  };
+
+  if (body !== undefined && body !== null && !['GET', 'HEAD'].includes(method)) {
+    fetchOpts.body = isPlainObjectOrArray ? JSON.stringify(body) : (body as BodyInit);
+  }
+
+  return fetchOpts;
+}
+
+async function executeFetch<P extends object>(
+  endPoint: string,
+  options: FetchOptions<P> & { method: string },
+  timeout: number
+): Promise<{ response: Response; timeoutId: ReturnType<typeof setTimeout> }> {
+  const url = buildUrl(endPoint, options.params as Record<string, QueryParamValue> | undefined);
 
   const abortController = new AbortController();
   let didTimeout = false;
@@ -152,44 +190,38 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     abortController.abort();
   }, timeout);
 
-  const isJsonBody = body !== undefined && body !== null && !(body instanceof FormData);
+  try {
+    const fetchOpts = buildFetchOptions(options, abortController.signal);
+    const response = await fetch(url, fetchOpts);
+    return { response, timeoutId };
+  } catch (error) {
+    clearTimeout(timeoutId);
+    rethrowFetchError(error, url, didTimeout);
+  }
+}
 
-  const buildHeaders = (): Record<string, string> => {
-    const h: Record<string, string> = {
-      ...(isJsonBody ? { 'Content-Type': 'application/json' } : {}),
-      ...headers,
-    };
+async function sendRequest<T = unknown, P extends object = Record<string, QueryParamValue>>(
+  endPoint: string,
+  options: FetchOptions<P> = {},
+  timeout: number = 10000,
+  allowRetry: boolean = true
+): Promise<T> {
+  const { method } = options;
 
-    if (requiresAuth) {
-      const accessToken = useAuthStore.getState().getAccessToken();
-      if (accessToken) {
-        h['Authorization'] = `Bearer ${accessToken}`;
-      }
-    }
+  if (!method) {
+    throw new Error('HTTP method가 설정되지 않았습니다.');
+  }
 
-    return h;
-  };
+  const { response, timeoutId } = await executeFetch<P>(
+    endPoint,
+    options as FetchOptions<P> & { method: string },
+    timeout
+  );
+
+  const url = response.url;
 
   try {
-    const fetchOptions: RequestInit = {
-      headers: buildHeaders(),
-      method,
-      signal: abortController.signal,
-      credentials: 'include',
-      ...restOptions,
-    };
-
-    if (body !== undefined && body !== null && !['GET', 'HEAD'].includes(method)) {
-      fetchOptions.body =
-        typeof body === 'object' && !(body instanceof Blob) && !(body instanceof FormData)
-          ? JSON.stringify(body)
-          : (body as BodyInit);
-    }
-
-    const response = await fetch(url, fetchOptions);
-
-    if (response.status === 401 && requiresAuth) {
-      clearTimeout(timeoutId);
+    if (response.status === 401 && options.requiresAuth && allowRetry) {
       return await handleUnauthorized<T, P>(endPoint, options, timeout);
     }
 
@@ -197,9 +229,12 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
       return await throwApiError(response);
     }
 
-    return parseResponse<T>(response);
+    return await parseResponse<T>(response);
   } catch (error) {
-    rethrowFetchError(error, url, didTimeout);
+    if (error instanceof Error && error.name === 'AbortError') {
+      rethrowFetchError(error, url, true);
+    }
+    throw error;
   } finally {
     clearTimeout(timeoutId);
   }
@@ -213,98 +248,16 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
   let newAccessToken: string;
 
   try {
-    if (!refreshPromise) {
-      refreshPromise = refreshAccessToken();
-    }
-    newAccessToken = await refreshPromise;
+    newAccessToken = await refreshAccessToken();
   } catch {
-    // refresh 실패 → 인증 만료, 로그아웃 처리
     useAuthStore.getState().clearAuth();
     throw new Error('인증이 만료되었습니다.');
-  } finally {
-    refreshPromise = null;
   }
 
   useAuthStore.getState().setAccessToken(newAccessToken);
+  postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: newAccessToken });
 
-  try {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TOKEN_REFRESH', accessToken: newAccessToken }));
-    }
-  } catch {
-    // 브릿지 전달 실패가 인증 흐름을 중단시키지 않도록 무시
-  }
-
-  // retry 실패는 그대로 throw (로그아웃 처리 안 함)
-  return await sendRequestWithoutRetry<T, P>(endPoint, options, timeout);
-}
-
-async function sendRequestWithoutRetry<T = unknown, P extends object = Record<string, QueryParamValue>>(
-  endPoint: string,
-  options: FetchOptions<P> = {},
-  timeout: number = 10000
-): Promise<T> {
-  const { headers, body, method, params, requiresAuth, ...restOptions } = options;
-
-  if (!method) {
-    throw new Error('HTTP method가 설정되지 않았습니다.');
-  }
-
-  let url = joinUrl(BASE_URL, endPoint);
-  if (params && Object.keys(params).length > 0) {
-    const query = buildQuery(params as Record<string, QueryParamValue>);
-    if (query) url += `?${query}`;
-  }
-
-  const abortController = new AbortController();
-  let didTimeout = false;
-  const timeoutId = setTimeout(() => {
-    didTimeout = true;
-    abortController.abort();
-  }, timeout);
-
-  const isJsonBody = body !== undefined && body !== null && !(body instanceof FormData);
-
-  try {
-    const h: Record<string, string> = {
-      ...(isJsonBody ? { 'Content-Type': 'application/json' } : {}),
-      ...headers,
-    };
-
-    if (requiresAuth) {
-      const accessToken = useAuthStore.getState().getAccessToken();
-      if (accessToken) {
-        h['Authorization'] = `Bearer ${accessToken}`;
-      }
-    }
-
-    const fetchOptions: RequestInit = {
-      headers: h,
-      method,
-      signal: abortController.signal,
-      credentials: 'include',
-      ...restOptions,
-    };
-
-    if (body !== undefined && body !== null && !['GET', 'HEAD'].includes(method)) {
-      fetchOptions.body =
-        typeof body === 'object' && !(body instanceof Blob) && !(body instanceof FormData)
-          ? JSON.stringify(body)
-          : (body as BodyInit);
-    }
-
-    const response = await fetch(url, fetchOptions);
-
-    if (!response.ok) {
-      return await throwApiError(response);
-    }
-
-    return parseResponse<T>(response);
-  } catch (error) {
-    rethrowFetchError(error, url, didTimeout);
-  } finally {
-    clearTimeout(timeoutId);
-  }
+  return await sendRequest<T, P>(endPoint, options, timeout, false);
 }
 
 async function parseErrorResponse(response: Response): Promise<ApiErrorResponse | null> {
@@ -320,16 +273,28 @@ async function parseErrorResponse(response: Response): Promise<ApiErrorResponse 
 }
 
 async function parseResponse<T = unknown>(response: Response): Promise<T> {
+  if (response.status === 204 || response.headers.get('Content-Length') === '0') {
+    return null as unknown as T;
+  }
+
   const contentType = response.headers.get('Content-Type') || '';
+
   if (contentType.includes('application/json')) {
     try {
       return await response.json();
     } catch {
-      return {} as T;
+      const error = new Error('응답 JSON 파싱에 실패했습니다.') as ApiError;
+      error.name = 'ParseError';
+      error.status = response.status;
+      error.statusText = response.statusText;
+      error.url = response.url;
+      throw error;
     }
-  } else if (contentType.includes('text')) {
-    return (await response.text()) as unknown as T;
-  } else {
-    return null as unknown as T;
   }
+
+  if (contentType.includes('text')) {
+    return (await response.text()) as unknown as T;
+  }
+
+  return null as unknown as T;
 }
