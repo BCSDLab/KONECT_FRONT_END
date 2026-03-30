@@ -143,10 +143,14 @@ function buildFetchOptions<P extends object>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { headers, body, method, params, requiresAuth, ...restOptions } = options;
 
-  const isJsonBody = body !== undefined && body !== null && !(body instanceof FormData);
+  const isPlainObjectOrArray =
+    body !== undefined &&
+    body !== null &&
+    typeof body === 'object' &&
+    (Array.isArray(body) || body.constructor === Object);
 
   const h: Record<string, string> = {
-    ...(isJsonBody ? { 'Content-Type': 'application/json' } : {}),
+    ...(isPlainObjectOrArray ? { 'Content-Type': 'application/json' } : {}),
     ...headers,
   };
 
@@ -166,10 +170,7 @@ function buildFetchOptions<P extends object>(
   };
 
   if (body !== undefined && body !== null && !['GET', 'HEAD'].includes(method)) {
-    fetchOpts.body =
-      typeof body === 'object' && !(body instanceof Blob) && !(body instanceof FormData)
-        ? JSON.stringify(body)
-        : (body as BodyInit);
+    fetchOpts.body = isPlainObjectOrArray ? JSON.stringify(body) : (body as BodyInit);
   }
 
   return fetchOpts;
