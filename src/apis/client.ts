@@ -1,7 +1,7 @@
 import { refreshAccessToken } from '@/apis/auth';
-import type { ApiError, ApiErrorResponse } from '@/interface/error';
 import { useAuthStore } from '@/stores/authStore';
-import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import type { ApiError, ApiErrorResponse } from '@/utils/ts/error/apiError';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 
 const BASE_URL = import.meta.env.VITE_API_PATH;

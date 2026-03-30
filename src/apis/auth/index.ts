@@ -1,5 +1,5 @@
-import type { ApiError } from '@/interface/error';
-import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import type { ApiError } from '@/utils/ts/error/apiError';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 import { apiClient } from '../client';
 import type {

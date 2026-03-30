@@ -18,6 +18,7 @@ import {
   useTransferManagedPresidentMutation,
 } from '@/pages/Manager/hooks/useManagedMemberMutations';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
 
@@ -224,6 +225,7 @@ function ManagedMemberList() {
   const queryClient = useQueryClient();
   const clubId = Number(params.clubId);
   const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
 
   const { data: managedMemberList } = useSuspenseQuery(managedClubQueries.members(clubId));
 
@@ -393,6 +395,7 @@ function ManagedMemberList() {
             showToast('회장이 위임되었습니다');
             navigate(-1);
           },
+          onError: (error) => showApiErrorToast(error, '회장 위임에 실패했습니다.'),
         }
       );
       return;
@@ -411,6 +414,7 @@ function ManagedMemberList() {
         { vicePresidentUserId: nextVicePresidentId },
         {
           onSuccess: () => showToast('부회장이 변경되었습니다'),
+          onError: (error) => showApiErrorToast(error, '부회장 변경에 실패했습니다.'),
         }
       );
       return;
@@ -431,8 +435,8 @@ function ManagedMemberList() {
       );
       await Promise.all(demoteUserIds.map((userId) => changeMemberPosition({ userId, data: { position: 'MEMBER' } })));
       showToast('직책이 변경되었습니다');
-    } catch {
-      showToast('일부 직책 변경에 실패했습니다');
+    } catch (error) {
+      showApiErrorToast(error, '일부 직책 변경에 실패했습니다.');
     } finally {
       await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
       closeRoleManage();
@@ -443,6 +447,7 @@ function ManagedMemberList() {
     if (!selectedMember) return;
     removeMember(selectedMember.userId, {
       onSuccess: () => showToast('부원이 추방되었습니다'),
+      onError: (error) => showApiErrorToast(error, '부원 추방에 실패했습니다.'),
     });
     closeRemove();
     setSelectedMember(null);
@@ -454,6 +459,7 @@ function ManagedMemberList() {
       { studentNumber: newStudentNumber, name: newMemberName },
       {
         onSuccess: () => showToast('부원이 추가되었습니다'),
+        onError: (error) => showApiErrorToast(error, '부원 추가에 실패했습니다.'),
       }
     );
     closeAdd();
@@ -478,6 +484,7 @@ function ManagedMemberList() {
     if (!selectedPreMember) return;
     deletePreMemberMutate(selectedPreMember.preMemberId, {
       onSuccess: () => showToast('사전 등록 회원이 삭제되었습니다'),
+      onError: (error) => showApiErrorToast(error, '사전 등록 회원 삭제에 실패했습니다.'),
     });
     closePreMemberDelete();
     setSelectedPreMember(null);

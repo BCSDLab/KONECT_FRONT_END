@@ -14,7 +14,7 @@ import {
   getManagedClubs,
   getPreMembers,
 } from '@/apis/club';
-import { isApiError } from '@/interface/error';
+import { isApiError } from '@/utils/ts/error/apiError';
 
 interface ManagedClubApplicationsParams {
   clubId: number;

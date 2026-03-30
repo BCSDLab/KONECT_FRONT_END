@@ -1,3 +1,5 @@
+import { isServerErrorStatus } from '@/utils/ts/error/errorRedirect';
+
 export const API_ERROR_CODES = {
   INVALID_SESSION: 'INVALID_SESSION',
   ALREADY_RUNNING_STUDY_TIMER: 'ALREADY_RUNNING_STUDY_TIMER',
@@ -25,6 +27,15 @@ export interface ApiError extends Error {
   url: string;
   apiError?: ApiErrorResponse;
 }
+
+const AUTH_EXPIRED_ERROR_MESSAGE = '인증이 만료되었습니다.';
+const SERVER_ERROR_KEYWORD = '서버 오류';
+
+type ApiErrorWithFieldErrors = ApiError & {
+  apiError: ApiErrorResponse & {
+    fieldErrors: FieldError[];
+  };
+};
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null;
@@ -72,8 +83,39 @@ export function isApiError(value: unknown): value is ApiError {
   if (typeof statusText !== 'string') return false;
   if (typeof url !== 'string') return false;
 
-  // apiError는 optional
   if (apiError === undefined) return true;
 
   return isApiErrorResponse(apiError);
+}
+
+export function hasApiFieldErrors(error: unknown): error is ApiErrorWithFieldErrors {
+  return isApiError(error) && Boolean(error.apiError?.fieldErrors?.length);
+}
+
+export function isAuthError(error: unknown): boolean {
+  if (isApiError(error)) {
+    return error.status === 401 || error.apiError?.code === API_ERROR_CODES.INVALID_SESSION;
+  }
+
+  return error instanceof Error && error.message === AUTH_EXPIRED_ERROR_MESSAGE;
+}
+
+export function isServerError(error: unknown): boolean {
+  if (isApiError(error)) {
+    return isServerErrorStatus(error.status);
+  }
+
+  return error instanceof Error && error.message.includes(SERVER_ERROR_KEYWORD);
+}
+
+export function isNetworkError(error: unknown): boolean {
+  return isApiError(error) && error.name === 'NetworkError';
+}
+
+export function isTimeoutError(error: unknown): boolean {
+  return isApiError(error) && error.name === 'TimeoutError';
+}
+
+export function isCanceledError(error: unknown): boolean {
+  return isApiError(error) && error.name === 'Canceled';
 }

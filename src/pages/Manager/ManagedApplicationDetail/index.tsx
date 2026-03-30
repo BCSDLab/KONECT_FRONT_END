@@ -8,6 +8,7 @@ import {
   useApproveManagedApplicationMutation,
   useRejectManagedApplicationMutation,
 } from '@/pages/Manager/hooks/useManagedApplicationMutations';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { cn } from '@/utils/ts/cn';
 
@@ -25,6 +26,7 @@ function ManagedApplicationDetail() {
   const applicationId = Number(params.applicationId);
 
   const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
   const { data: application } = useSuspenseQuery(managedClubQueries.applicationDetail(clubId, applicationId));
   const { mutate: approve, isPending: isApproving } = useApproveManagedApplicationMutation(clubId);
   const { mutate: reject, isPending: isRejecting } = useRejectManagedApplicationMutation(clubId);
@@ -40,7 +42,7 @@ function ManagedApplicationDetail() {
         closeApprove();
         navigate(-1);
       },
-      onError: () => showToast('요청 처리에 실패했습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 승인 처리에 실패했습니다.'),
     });
   };
 
@@ -51,7 +53,7 @@ function ManagedApplicationDetail() {
         closeReject();
         navigate(-1);
       },
-      onError: () => showToast('요청 처리에 실패했습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 거절 처리에 실패했습니다.'),
     });
   };
 

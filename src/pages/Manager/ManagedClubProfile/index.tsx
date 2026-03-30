@@ -5,11 +5,11 @@ import { clubQueries } from '@/apis/club/queries';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
 import { useToastContext } from '@/contexts/useToastContext';
-import { isApiError } from '@/interface/error';
 import { useUpdateManagedClubInfoMutation } from '@/pages/Manager/hooks/useManagedClubMutations';
+import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import useUploadImage from '@/utils/hooks/useUploadImage';
-import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
+import { getApiErrorMessage, getApiErrorMessages } from '@/utils/ts/error/apiErrorMessage';
+import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 
 const DESCRIPTION_MAX_LENGTH = 25;
 
@@ -277,17 +277,16 @@ function ManagedClubInfo() {
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
           {uploadError && (
-            <p className="text-body3 text-danger-700">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+            <p className="text-body3 text-danger-700">
+              {getApiErrorMessage(uploadError, '이미지 업로드에 실패했습니다.')}
+            </p>
           )}
-          {error && isApiError(error) && error.apiError?.fieldErrors?.length
-            ? error.apiError.fieldErrors.map((fieldError) => (
-                <p key={fieldError.field} className="text-body3 text-danger-700">
-                  {fieldError.message}
-                </p>
-              ))
-            : error && (
-                <p className="text-body3 text-danger-700">{error.message ?? '동아리 정보 수정에 실패했습니다.'}</p>
-              )}
+          {error &&
+            getApiErrorMessages(error, '동아리 정보 수정에 실패했습니다.').map((message) => (
+              <p key={message} className="text-body3 text-danger-700">
+                {message}
+              </p>
+            ))}
           <button
             type="button"
             onClick={openSubmitModal}

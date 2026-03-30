@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 import type { StudyRanking, StudyRankingParams } from '@/apis/studyTime/entity';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
-import { formatTime } from '@/utils/ts/time';
+import { formatTime } from '@/utils/ts/datetime/time';
 import { useStudyTimeRanking } from '../hooks/useStudyTimeRanking';
 
 interface RankingItemProps {

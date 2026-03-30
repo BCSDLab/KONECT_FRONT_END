@@ -2,9 +2,10 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { authMutations } from '@/apis/auth/mutations';
 import { KAKAO_OPEN_CHAT_URL } from '@/constants/links';
-import { API_ERROR_CODES } from '@/interface/error';
-import type { ApiError } from '@/interface/error';
 import { useSignupStore } from '@/stores/signupStore';
+import { API_ERROR_CODES } from '@/utils/ts/error/apiError';
+import type { ApiError } from '@/utils/ts/error/apiError';
+import { getApiErrorMessages } from '@/utils/ts/error/apiErrorMessage';
 import StepLayout from './components/StepLayout';
 
 function ConfirmStep() {
@@ -75,11 +76,9 @@ function ConfirmStep() {
       </div>
       {error && (
         <div className="mt-2 text-sm text-red-500">
-          {error.apiError?.fieldErrors?.length ? (
-            error.apiError.fieldErrors.map((fieldError) => <p key={fieldError.message}>{fieldError.message}</p>)
-          ) : (
-            <p>{error.message ?? '회원가입에 실패했습니다.'}</p>
-          )}
+          {getApiErrorMessages(error, '회원가입에 실패했습니다.').map((message) => (
+            <p key={message}>{message}</p>
+          ))}
         </div>
       )}
       {isDuplicateStudentNumber && (

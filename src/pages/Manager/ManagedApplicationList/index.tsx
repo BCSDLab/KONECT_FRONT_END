@@ -11,8 +11,9 @@ import {
 } from '@/pages/Manager/hooks/useManagedApplicationMutations';
 import { useGetManagedApplications } from '@/pages/Manager/hooks/useManagedApplications';
 import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
-import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
+import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
 
 type ManagedApplication = ClubApplicationsResponse['applications'][number];
 
@@ -84,6 +85,7 @@ function ManagedApplicationList() {
   const navigate = useNavigate();
   const clubId = Number(params.clubId);
   const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
 
   const limit = 10;
 
@@ -102,6 +104,7 @@ function ManagedApplicationList() {
     e.stopPropagation();
     approve(applicationId, {
       onSuccess: () => showToast('지원이 승인되었습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 승인 처리에 실패했습니다.'),
     });
   };
 
@@ -109,6 +112,7 @@ function ManagedApplicationList() {
     e.stopPropagation();
     reject(applicationId, {
       onSuccess: () => showToast('지원이 거절되었습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 거절 처리에 실패했습니다.'),
     });
   };
 

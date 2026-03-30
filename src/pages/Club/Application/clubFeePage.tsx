@@ -8,9 +8,9 @@ import Card from '@/components/common/Card';
 import Portal from '@/components/common/Portal';
 import { useToastContext } from '@/contexts/useToastContext';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
+import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import useUploadImage from '@/utils/hooks/useUploadImage';
-import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
+import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 import AccountInfoCard from './components/AccountInfo';
 import useApplyToClub from './hooks/useApplyToClub';
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { formatTime } from '@/utils/ts/time';
+import { formatTime } from '@/utils/ts/datetime/time';
 
 interface TimerButtonProps {
   todayAccumulatedSeconds: number;
