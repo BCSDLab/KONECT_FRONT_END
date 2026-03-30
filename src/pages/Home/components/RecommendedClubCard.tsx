@@ -27,8 +27,9 @@ function RecommendedClubCard({
       to={`/clubs/${club.id}`}
       tabIndex={tabIndex}
       aria-hidden={ariaHidden}
+      style={{ height: `${RECOMMENDED_CLUB_CARD_HEIGHT}px`, width: `${RECOMMENDED_CLUB_CARD_WIDTH}px` }}
       className={cn(
-        'flex h-[97px] max-w-[191px] items-center justify-between rounded-lg border border-[#f4f6f9] bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]',
+        'border-indigo-5 flex items-center justify-between rounded-lg border bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]',
         className
       )}
     >

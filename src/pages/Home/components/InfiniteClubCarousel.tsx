@@ -1,7 +1,7 @@
+import RecommendedClubCard, { RECOMMENDED_CLUB_CARD_WIDTH } from '@/pages/Home/components/RecommendedClubCard';
 import { useInfiniteClubCarousel } from '@/pages/Home/hooks/useInfiniteClubCarousel';
 import type { HomeClubCardItem } from '@/pages/Home/types';
 import { cn } from '@/utils/ts/cn';
-import RecommendedClubCard, { RECOMMENDED_CLUB_CARD_WIDTH } from './RecommendedClubCard';
 
 interface InfiniteClubCarouselProps {
   clubs: HomeClubCardItem[];
