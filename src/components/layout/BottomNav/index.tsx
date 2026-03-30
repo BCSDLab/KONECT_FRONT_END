@@ -1,9 +1,9 @@
 import { type ComponentType, type Ref, type SVGProps } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import HomeResultImage from '@/assets/image/bottom-nav-home.png';
-import ChatIcon from '@/assets/svg/bottom-nav-chat.svg';
 import ClubsIcon from '@/assets/svg/bottom-nav-clubs.svg';
 import MyPageIcon from '@/assets/svg/bottom-nav-mypage.svg';
+import ChatIcon from '@/assets/svg/bottom-nav-sms.svg';
 import TimerIcon from '@/assets/svg/bottom-nav-timer.svg';
 import { cn } from '@/utils/ts/cn';
 
