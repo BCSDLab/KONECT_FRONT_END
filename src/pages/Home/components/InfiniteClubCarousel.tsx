@@ -47,7 +47,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
         style={centeredPaddingStyle}
         className={cn(
           'snap-x snap-mandatory overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-          shouldCenterCard ? 'px-0' : ''
+          shouldCenterCard && 'px-0'
         )}
       >
         <div className="flex gap-2">
