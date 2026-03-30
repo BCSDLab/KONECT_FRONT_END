@@ -4,6 +4,7 @@ import type { InboxNotification } from '@/apis/notification/entity';
 import { useAuthStore } from '@/stores/authStore';
 import { getAccessTokenExpirationTime } from '@/utils/ts/accessToken';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import { postNativeMessage } from '@/utils/ts/nativeBridge';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 
 const ACCESS_TOKEN_REFRESH_BUFFER_MS = 60_000;
@@ -60,16 +61,6 @@ function parseSseEvent(chunk: string): { event: string | null; data: string | nu
   };
 }
 
-function syncAccessTokenToNative(accessToken: string) {
-  try {
-    if (window.ReactNativeWebView) {
-      window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'TOKEN_REFRESH', accessToken }));
-    }
-  } catch {
-    // 브릿지 전달 실패가 인증 흐름을 중단시키지 않도록 무시
-  }
-}
-
 async function openInboxNotificationStream(
   signal: AbortSignal,
   onConnected: () => void,
@@ -106,7 +97,7 @@ async function openInboxNotificationStream(
       try {
         const nextAccessToken = await refreshAccessToken();
         useAuthStore.getState().setAccessToken(nextAccessToken);
-        syncAccessTokenToNative(nextAccessToken);
+        postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: nextAccessToken });
       } catch {
         useAuthStore.getState().clearAuth();
         throw new Error('인증이 만료되었습니다.');
@@ -224,7 +215,7 @@ export function useInboxNotificationStream(
         }
 
         useAuthStore.getState().setAccessToken(nextAccessToken);
-        syncAccessTokenToNative(nextAccessToken);
+        postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: nextAccessToken });
       } catch {
         if (isCancelled || useAuthStore.getState().getAccessToken() !== accessToken) {
           return;
