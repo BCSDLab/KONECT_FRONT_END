@@ -245,6 +245,12 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
   options: FetchOptions<P>,
   timeout: number
 ): Promise<T> {
+  await refreshAuthSession();
+
+  return await sendRequest<T, P>(endPoint, options, timeout, false);
+}
+
+export async function refreshAuthSession(): Promise<string> {
   let newAccessToken: string;
 
   try {
@@ -257,7 +263,7 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
   useAuthStore.getState().setAccessToken(newAccessToken);
   postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: newAccessToken });
 
-  return await sendRequest<T, P>(endPoint, options, timeout, false);
+  return newAccessToken;
 }
 
 async function parseErrorResponse(response: Response): Promise<ApiErrorResponse | null> {
@@ -280,8 +286,14 @@ async function parseResponse<T = unknown>(response: Response): Promise<T> {
   const contentType = response.headers.get('Content-Type') || '';
 
   if (contentType.includes('application/json')) {
+    const responseText = await response.text();
+
+    if (responseText.trim() === '') {
+      return null as unknown as T;
+    }
+
     try {
-      return await response.json();
+      return JSON.parse(responseText) as T;
     } catch {
       const error = new Error('응답 JSON 파싱에 실패했습니다.') as ApiError;
       error.name = 'ParseError';

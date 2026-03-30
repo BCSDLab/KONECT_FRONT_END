@@ -43,6 +43,7 @@ interface AuthState {
   setAccessToken: (token: string | null) => void;
   getAccessToken: () => string | null;
   clearAuth: () => void;
+  clearAuthAndNotifyNative: () => void;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -115,6 +116,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     initializePromise = null;
     hydrateUserPromise = null;
     set({ user: null, accessToken: null, authStatus: 'anonymous' });
+  },
+
+  clearAuthAndNotifyNative: () => {
+    get().clearAuth();
     postNativeMessage({ type: 'LOGOUT' });
   },
 }));

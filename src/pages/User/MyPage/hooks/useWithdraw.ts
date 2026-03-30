@@ -5,12 +5,12 @@ import { useAuthStore } from '@/stores/authStore';
 
 export const useWithdrawMutation = () => {
   const navigate = useNavigate();
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const clearAuthAndNotifyNative = useAuthStore((state) => state.clearAuthAndNotifyNative);
 
   return useMutation({
     ...authMutations.withdraw(),
     onSuccess: () => {
-      clearAuth();
+      clearAuthAndNotifyNative();
       navigate('/');
     },
   });

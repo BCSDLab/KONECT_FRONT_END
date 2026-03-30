@@ -5,12 +5,12 @@ import { useAuthStore } from '@/stores/authStore';
 
 export const useLogoutMutation = () => {
   const navigate = useNavigate();
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const clearAuthAndNotifyNative = useAuthStore((state) => state.clearAuthAndNotifyNative);
 
   return useMutation({
     ...authMutations.logout(),
     onSuccess: () => {
-      clearAuth();
+      clearAuthAndNotifyNative();
       navigate('/');
     },
   });

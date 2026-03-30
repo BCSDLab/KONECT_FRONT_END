@@ -1,13 +1,16 @@
 import { useEffect, useEffectEvent, useRef } from 'react';
 import { refreshAccessToken } from '@/apis/auth';
+import { refreshAuthSession } from '@/apis/client';
 import type { InboxNotification } from '@/apis/notification/entity';
 import { useAuthStore } from '@/stores/authStore';
 import { getAccessTokenExpirationTime } from '@/utils/ts/accessToken';
+import { isAuthError } from '@/utils/ts/error/apiError';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 
 const ACCESS_TOKEN_REFRESH_BUFFER_MS = 60_000;
+const ACCESS_TOKEN_REFRESH_RETRY_DELAY_MS = 10_000;
 const NOTIFICATION_STREAM_RECONNECT_DELAY = 3_000;
 
 function isInboxNotification(value: unknown): value is InboxNotification {
@@ -93,15 +96,7 @@ async function openInboxNotificationStream(
       }
 
       lastUnauthorizedAccessToken = accessToken;
-
-      try {
-        const nextAccessToken = await refreshAccessToken();
-        useAuthStore.getState().setAccessToken(nextAccessToken);
-        postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: nextAccessToken });
-      } catch {
-        useAuthStore.getState().clearAuth();
-        throw new Error('인증이 만료되었습니다.');
-      }
+      await refreshAuthSession();
 
       continue;
     }
@@ -201,6 +196,14 @@ export function useInboxNotificationStream(
 
     const refreshDelay = Math.max(expirationTime - Date.now() - ACCESS_TOKEN_REFRESH_BUFFER_MS, 0);
     let isCancelled = false;
+    let refreshTimeoutId: number | null = null;
+
+    const scheduleRefresh = (delay: number) => {
+      refreshTimeoutId = window.setTimeout(() => {
+        refreshTimeoutId = null;
+        void refreshAccessTokenBeforeExpiry();
+      }, delay);
+    };
 
     const refreshAccessTokenBeforeExpiry = async () => {
       if (useAuthStore.getState().getAccessToken() !== accessToken) {
@@ -216,22 +219,29 @@ export function useInboxNotificationStream(
 
         useAuthStore.getState().setAccessToken(nextAccessToken);
         postNativeMessage({ type: 'TOKEN_REFRESH', accessToken: nextAccessToken });
-      } catch {
+      } catch (error) {
         if (isCancelled || useAuthStore.getState().getAccessToken() !== accessToken) {
           return;
         }
 
-        useAuthStore.getState().clearAuth();
+        if (isAuthError(error)) {
+          useAuthStore.getState().clearAuth();
+          return;
+        }
+
+        console.error('액세스 토큰 사전 갱신 실패:', error);
+        scheduleRefresh(ACCESS_TOKEN_REFRESH_RETRY_DELAY_MS);
       }
     };
 
-    const refreshTimeoutId = window.setTimeout(() => {
-      void refreshAccessTokenBeforeExpiry();
-    }, refreshDelay);
+    scheduleRefresh(refreshDelay);
 
     return () => {
       isCancelled = true;
-      window.clearTimeout(refreshTimeoutId);
+
+      if (refreshTimeoutId !== null) {
+        window.clearTimeout(refreshTimeoutId);
+      }
     };
   }, [accessToken, authStatus]);
 
