@@ -268,6 +268,7 @@ function ManagedRecruitmentWrite() {
       const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
       const imageData = [...existingImageData, ...uploadedImageData];
       const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+      const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
       const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
       const navigateAfterSave = () =>
         shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
@@ -289,6 +290,7 @@ function ManagedRecruitmentWrite() {
           await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
         } catch (error) {
           showApiErrorToast(error, '모집 공고 활성화 설정에 실패했습니다.');
+          setIsRecruitmentEnabled(previousRecruitmentEnabled);
           return;
         }
       }
@@ -555,7 +557,10 @@ function ManagedRecruitmentWrite() {
               )}
               {error && (
                 <p className="text-[13px] leading-[1.6] font-medium text-red-500">
-                  {getApiErrorMessage(error, '모집 공고 수정에 실패했습니다.')}
+                  {getApiErrorMessage(
+                    error,
+                    existingRecruitment ? '모집 공고 수정에 실패했습니다.' : '모집 공고 등록에 실패했습니다.'
+                  )}
                 </p>
               )}
             </div>

@@ -3,7 +3,7 @@ import { hasApiFieldErrors, isApiError } from '@/utils/ts/error/apiError';
 export function getApiErrorMessages(error: unknown, fallbackMessage: string): string[] {
   if (isApiError(error)) {
     const fieldErrorMessages = hasApiFieldErrors(error)
-      ? Array.from(new Set(error.apiError.fieldErrors.map(({ message }) => message).filter(Boolean)))
+      ? Array.from(new Set(error.apiError.fieldErrors.map(({ message }) => message).filter((message) => message)))
       : [];
 
     if (fieldErrorMessages.length > 0) {
