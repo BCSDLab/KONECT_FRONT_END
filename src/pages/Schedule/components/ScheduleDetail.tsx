@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { Schedule } from '@/apis/schedule/entity';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
-import { parseDateDot } from '@/utils/ts/date';
+import { parseDateDot } from '@/utils/ts/datetime/date';
 
 type ScheduleDetailProps = {
   year: number;

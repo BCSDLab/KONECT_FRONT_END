@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import type { ClubApplicationDetailResponse } from '@/apis/club/entity';
 import Portal from '@/components/common/Portal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
+import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
 
 type ApplicationAnswer = ClubApplicationDetailResponse['answers'][number];
 

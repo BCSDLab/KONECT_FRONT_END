@@ -3,8 +3,8 @@ import ArrowBackIcon from '@/assets/svg/calendar/chevron-left.svg';
 import ArrowGoIcon from '@/assets/svg/calendar/chevron-right.svg';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
-import { formatKoreanDate, getCalendarDates, isSameDate } from '@/utils/ts/calendar';
 import { cn } from '@/utils/ts/cn';
+import { formatKoreanDate, getCalendarDates, isSameDate } from '@/utils/ts/datetime/calendar';
 
 const DAYS = ['일', '월', '화', '수', '목', '금', '토'];
 

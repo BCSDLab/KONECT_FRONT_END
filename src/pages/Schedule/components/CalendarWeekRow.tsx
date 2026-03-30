@@ -1,6 +1,6 @@
 import type { Schedule } from '@/apis/schedule/entity';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
-import { parseDateDot } from '@/utils/ts/date';
+import { parseDateDot } from '@/utils/ts/datetime/date';
 import DateBox from './DateBox';
 
 const BAR_HEIGHT = 13;
