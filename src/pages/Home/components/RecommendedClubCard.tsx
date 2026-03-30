@@ -37,8 +37,6 @@ function RecommendedClubCard({
         src={club.imageUrl}
         alt=""
         aria-hidden="true"
-        width={67}
-        height={59}
         loading={imageLoading}
         decoding="async"
         fetchPriority={imageFetchPriority}
