@@ -2,6 +2,9 @@ import { Link } from 'react-router-dom';
 import type { HomeClubCardItem } from '@/pages/Home/types';
 import { cn } from '@/utils/ts/cn';
 
+export const RECOMMENDED_CLUB_CARD_WIDTH = 191;
+export const RECOMMENDED_CLUB_CARD_HEIGHT = 97;
+
 interface RecommendedClubCardProps {
   club: HomeClubCardItem;
   className?: string;
@@ -25,7 +28,7 @@ function RecommendedClubCard({
       tabIndex={tabIndex}
       aria-hidden={ariaHidden}
       className={cn(
-        'flex h-[108px] items-center justify-between rounded-lg border border-[#f4f6f9] bg-white px-[27.5px] py-[24.5px] shadow-[0_0_3px_rgba(0,0,0,0.2)]',
+        'flex h-[97px] max-w-[191px] items-center justify-between rounded-lg border border-[#f4f6f9] bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]',
         className
       )}
     >
@@ -38,7 +41,7 @@ function RecommendedClubCard({
         loading={imageLoading}
         decoding="async"
         fetchPriority={imageFetchPriority}
-        className={cn('bg-indigo-5 h-[59px] w-[67px] shrink-0 rounded-sm object-cover')}
+        className={cn('bg-indigo-5 size-[59px] shrink-0 rounded-sm object-cover')}
       />
       <div className="min-w-0 flex-1">
         <div className="flex flex-col items-end text-right">
