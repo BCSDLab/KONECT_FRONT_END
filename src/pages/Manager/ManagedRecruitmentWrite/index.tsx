@@ -16,11 +16,13 @@ import {
   usePatchManagedClubSettingsMutation,
   useUpsertManagedClubRecruitmentMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
+import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import useUploadImage from '@/utils/hooks/useUploadImage';
 import { cn } from '@/utils/ts/cn';
-import { formatDateDot } from '@/utils/ts/date';
-import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
+import { formatDateDot } from '@/utils/ts/datetime/date';
+import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
+import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 import { mapWithConcurrencyLimit } from '@/utils/ts/promise';
 import {
   combineDateTime,
@@ -52,6 +54,7 @@ function ManagedRecruitmentWrite() {
   const navigate = useNavigate();
   const location = useLocation();
   const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
   const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
@@ -284,8 +287,8 @@ function ManagedRecruitmentWrite() {
       if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
         try {
           await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
-        } catch {
-          showToast('모집 공고 활성화 설정에 실패했습니다');
+        } catch (error) {
+          showApiErrorToast(error, '모집 공고 활성화 설정에 실패했습니다.');
           return;
         }
       }
@@ -547,12 +550,12 @@ function ManagedRecruitmentWrite() {
             <div className="flex flex-col gap-1">
               {uploadError && (
                 <p className="text-[13px] leading-[1.6] font-medium text-red-500">
-                  {uploadError.message ?? '이미지 업로드에 실패했습니다.'}
+                  {getApiErrorMessage(uploadError, '이미지 업로드에 실패했습니다.')}
                 </p>
               )}
               {error && (
                 <p className="text-[13px] leading-[1.6] font-medium text-red-500">
-                  {error.message ?? '모집 공고 수정에 실패했습니다.'}
+                  {getApiErrorMessage(error, '모집 공고 수정에 실패했습니다.')}
                 </p>
               )}
             </div>

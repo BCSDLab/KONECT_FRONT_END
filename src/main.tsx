@@ -3,11 +3,11 @@ import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import { useAuthStore } from '@/stores/authStore';
-import { SERVER_ERROR_PATH } from '@/utils/ts/errorRedirect';
+import { isNetworkError, isTimeoutError } from '@/utils/ts/error/apiError';
+import { SERVER_ERROR_PATH } from '@/utils/ts/error/errorRedirect';
 import './index.css';
 import { initSentry } from './config/sentry.ts';
 import ToastProvider from './contexts/ToastContext';
-import { isApiError } from './interface/error.ts';
 import { installViewportVars } from './utils/ts/viewport.ts';
 
 installViewportVars();
@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
       refetchOnReconnect: true,
       retry: (failureCount, error) => {
         const maxRetries = 2;
-        return failureCount <= maxRetries && isApiError(error) && error.status === 0;
+        return failureCount <= maxRetries && (isNetworkError(error) || isTimeoutError(error));
       },
     },
   },

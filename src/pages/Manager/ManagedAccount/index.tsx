@@ -7,12 +7,13 @@ import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { useToastContext } from '@/contexts/useToastContext';
-import { isApiError } from '@/interface/error';
 import {
   usePatchManagedClubSettingsMutation,
   useUpdateManagedClubFeeMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
+import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';
 const fieldLabelClassName = 'text-body3-strong text-text-700';
@@ -26,6 +27,7 @@ function ManagedAccount() {
   const location = useLocation();
   const clubIdNumber = Number(clubId);
   const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
 
   const { data: banks } = useSuspenseQuery(managedClubQueries.banks());
   const { data: managedClubFee } = useSuspenseQuery(managedClubQueries.fee(clubIdNumber));
@@ -78,8 +80,8 @@ function ManagedAccount() {
                 showToast('회비가 수정되었습니다');
                 navigate(-1);
               },
-              onError: () => {
-                showToast('회비 활성화에 실패했습니다');
+              onError: (error) => {
+                showApiErrorToast(error, '회비 활성화에 실패했습니다.');
               },
             }
           );
@@ -96,10 +98,7 @@ function ManagedAccount() {
     patchSettings({ isFeeEnabled: enabled });
   };
 
-  const errorMessage =
-    (isApiError(error) ? error.apiError?.fieldErrors?.[0]?.message : undefined) ??
-    error?.message ??
-    '회비 정보 저장에 실패했습니다.';
+  const errorMessage = getApiErrorMessage(error, '회비 정보 저장에 실패했습니다.');
 
   return (
     <div className="bg-background flex min-h-full flex-col px-4 pt-5">

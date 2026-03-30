@@ -3,7 +3,7 @@ import { refreshAccessToken } from '@/apis/auth';
 import type { InboxNotification } from '@/apis/notification/entity';
 import { useAuthStore } from '@/stores/authStore';
 import { getAccessTokenExpirationTime } from '@/utils/ts/accessToken';
-import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/errorRedirect';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 

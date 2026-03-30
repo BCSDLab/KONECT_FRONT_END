@@ -11,6 +11,7 @@ import {
   useUpdateManagedClubQuestionsMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import { cn } from '@/utils/ts/cn';
+import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;
@@ -191,7 +192,7 @@ function ManagedRecruitmentForm() {
           <div className="flex flex-col gap-2">
             {error && (
               <p className="text-[13px] leading-[1.6] font-medium text-red-500">
-                {error.message ?? '지원서 수정에 실패했습니다.'}
+                {getApiErrorMessage(error, '지원서 수정에 실패했습니다.')}
               </p>
             )}
             <button
