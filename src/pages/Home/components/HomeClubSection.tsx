@@ -17,7 +17,7 @@ function RecommendedClubCardSkeleton() {
   return (
     <div className="shrink-0 py-1" style={{ width: `${RECOMMENDED_CLUB_CARD_WIDTH}px` }}>
       <div
-        className="flex items-center rounded-lg border border-[#f4f6f9] bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+        className="flex items-center rounded-lg border border-indigo-5 bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
         style={{ height: `${RECOMMENDED_CLUB_CARD_HEIGHT}px` }}
       >
         <div className="bg-indigo-25 size-[59px] shrink-0 animate-pulse rounded-sm" />
