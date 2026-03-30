@@ -288,8 +288,8 @@ function ManagedRecruitmentWrite() {
       if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
         try {
           await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
-        } catch (error) {
-          showApiErrorToast(error, '모집 공고 활성화 설정에 실패했습니다.');
+        } catch (apiError) {
+          showApiErrorToast(apiError, '모집 공고 활성화 설정에 실패했습니다.');
           setIsRecruitmentEnabled(previousRecruitmentEnabled);
           return;
         }
@@ -304,6 +304,7 @@ function ManagedRecruitmentWrite() {
 
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
   const isSavingRecruitment = isPending || isSettingsPending;
+  const recruitmentActionText = existingRecruitment ? '모집공고 수정' : '모집공고 등록';
 
   return (
     <div className="flex h-full flex-col">
@@ -575,8 +576,8 @@ function ManagedRecruitmentWrite() {
                 : isUploading
                   ? '이미지 업로드 중…'
                   : isSavingRecruitment
-                    ? '수정 중…'
-                    : '모집공고 수정'}
+                    ? `${recruitmentActionText} 중…`
+                    : recruitmentActionText}
             </button>
           </div>
         </div>
