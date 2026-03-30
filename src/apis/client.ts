@@ -218,6 +218,8 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
     timeout
   );
 
+  const url = response.url;
+
   try {
     if (response.status === 401 && options.requiresAuth && allowRetry) {
       return await handleUnauthorized<T, P>(endPoint, options, timeout);
@@ -227,7 +229,12 @@ async function sendRequest<T = unknown, P extends object = Record<string, QueryP
       return await throwApiError(response);
     }
 
-    return parseResponse<T>(response);
+    return await parseResponse<T>(response);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      rethrowFetchError(error, url, true);
+    }
+    throw error;
   } finally {
     clearTimeout(timeoutId);
   }
