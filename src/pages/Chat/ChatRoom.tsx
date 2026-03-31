@@ -46,7 +46,7 @@ function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps)
           )}
           <span className="shrink-0 text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
 
-          <div className="bg-primary-500/80 text-sub4 max-w-[78%] min-w-0 rounded-2xl px-3 py-2 text-white shadow-[0_0_3px_rgba(0,0,0,0.15)]">
+          <div className="bg-primary-500 text-sub4 max-w-[78%] min-w-0 rounded-2xl px-3 py-2 text-white shadow-[0_0_3px_rgba(0,0,0,0.15)]">
             <LinkifiedText
               text={message.content}
               className="wrap-anywhere whitespace-pre-wrap"

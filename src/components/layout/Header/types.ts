@@ -12,7 +12,8 @@ export type HeaderType =
   | 'signup'
   | 'schedule'
   | 'council'
-  | 'manager';
+  | 'manager'
+  | 'chatList';
 
 export interface HeaderConfig {
   type: HeaderType;

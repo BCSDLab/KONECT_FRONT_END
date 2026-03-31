@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatHeader from './components/ChatHeader';
+import ChatListHeader from './components/ChatListHeader';
 import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
 import ManagerHeader from './components/ManagerHeader';
@@ -17,6 +18,7 @@ function Header() {
   const HEADER_RENDERERS: Record<HeaderType, HeaderRenderer> = {
     profile: () => <ProfileHeader />,
     info: () => <InfoHeader />,
+    chatList: () => <ChatListHeader />,
     chat: () => <ChatHeader />,
     none: () => null,
     notification: ({ title }) => <SubpageHeader title={title} />,

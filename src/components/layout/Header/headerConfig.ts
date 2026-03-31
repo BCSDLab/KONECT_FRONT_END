@@ -22,6 +22,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/home' || pathname === '/timer',
   },
   {
+    type: 'chatList',
+    match: (pathname) => pathname === '/chats',
+  },
+  {
     type: 'chat',
     match: (pathname) => /^\/chats\/\d+$/.test(pathname),
   },
