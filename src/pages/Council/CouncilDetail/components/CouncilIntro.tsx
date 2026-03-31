@@ -4,6 +4,7 @@ import ClockIcon from '@/assets/svg/clock.svg';
 import InstagramIcon from '@/assets/svg/instagram.svg';
 import LocationPinIcon from '@/assets/svg/location-pin.svg';
 import Card from '@/components/common/Card';
+import { cn } from '@/utils/ts/cn';
 
 interface CouncilIntroProps {
   councilDetail: CouncilResponse;
@@ -33,7 +34,7 @@ function CouncilIntro({ councilDetail }: CouncilIntroProps) {
           href={`https://instagram.com/${councilDetail.instagramUserName}`}
           target="_blank"
           rel="noopener noreferrer"
-          className={`${contactItemClassName} underline`}
+          className={cn(contactItemClassName, 'underline')}
         >
           @{councilDetail.instagramUserName}
         </a>

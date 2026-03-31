@@ -20,13 +20,15 @@ function CouncilDetail() {
   const handleTabClick = (tab: TabType) => {
     setSearchParams({ tab }, { replace: true });
   };
+  const getTabId = (tab: TabType) => `tab-${tab}`;
+  const getPanelId = (tab: TabType) => `panel-${tab}`;
 
   const tabs: { key: TabType; label: string }[] = [
     { key: 'intro', label: '소개' },
     { key: 'notice', label: '공지사항' },
   ];
   const backgroundStyle = {
-    backgroundImage: `linear-gradient(180deg, ${councilInfo.personalColor} 0%, #f4f6f9 38%, #f4f6f9 100%)`,
+    backgroundImage: `linear-gradient(180deg, ${councilInfo.personalColor} 0%, var(--color-background) 38%, var(--color-background) 100%)`,
     top: 'calc(-1 * var(--subpage-header-height))',
   } satisfies CSSProperties;
 
@@ -44,13 +46,15 @@ function CouncilDetail() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 items-center px-1">
+          <div role="tablist" className="grid grid-cols-2 items-center px-1">
             {tabs.map((tab) => (
               <button
                 type="button"
                 key={tab.key}
                 onClick={() => handleTabClick(tab.key)}
-                aria-pressed={currentTab === tab.key}
+                id={getTabId(tab.key)}
+                role="tab"
+                aria-selected={currentTab === tab.key}
                 className={cn(
                   'flex h-12 items-center justify-center px-3 text-[15px] leading-5 font-medium transition-colors',
                   currentTab === tab.key ? 'text-primary-500' : 'text-text-600'
@@ -64,10 +68,14 @@ function CouncilDetail() {
 
         <div className="px-4.5 pt-2">
           <Activity mode={currentTab === 'intro' ? 'visible' : 'hidden'}>
-            <CouncilIntro councilDetail={councilInfo} />
+            <div role="tabpanel" id={getPanelId('intro')} aria-labelledby={getTabId('intro')}>
+              <CouncilIntro councilDetail={councilInfo} />
+            </div>
           </Activity>
           <Activity mode={currentTab === 'notice' ? 'visible' : 'hidden'}>
-            <CouncilNotice />
+            <div role="tabpanel" id={getPanelId('notice')} aria-labelledby={getTabId('notice')}>
+              <CouncilNotice />
+            </div>
           </Activity>
           <BottomOverlaySpacer gap={24} />
         </div>
