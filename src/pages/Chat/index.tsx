@@ -216,7 +216,7 @@ function ChatListPage() {
           </Fragment>
         );
       })}
-      <BottomOverlaySpacer />
+      <BottomOverlaySpacer gap={24} />
     </div>
   );
 }

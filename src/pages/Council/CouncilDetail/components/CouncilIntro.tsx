@@ -32,7 +32,7 @@ function CouncilIntro({ councilDetail }: CouncilIntroProps) {
         <a
           href={`https://instagram.com/${councilDetail.instagramUserName}`}
           target="_blank"
-          rel="noreferrer"
+          rel="noopener noreferrer"
           className={`${contactItemClassName} underline`}
         >
           @{councilDetail.instagramUserName}
