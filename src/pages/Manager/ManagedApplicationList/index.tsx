@@ -10,7 +10,7 @@ import {
   useRejectManagedApplicationMutation,
 } from '@/pages/Manager/hooks/useManagedApplicationMutations';
 import { useGetManagedApplications } from '@/pages/Manager/hooks/useManagedApplications';
-import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import ManagerInfoCard from '@/pages/User/MyPage/components/ManagerInfoCard';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
@@ -123,7 +123,7 @@ function ManagedApplicationList() {
   if (hasNoRecruitment) {
     return (
       <div className="flex flex-col gap-9 px-[19px] py-[17px]">
-        <UserInfoCard type="detail" />
+        <ManagerInfoCard type="detail" />
         <div className="border-indigo-5 flex items-center justify-center rounded-2xl border bg-white px-4 py-10">
           <p className="text-body2 font-medium text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
         </div>
@@ -133,7 +133,7 @@ function ManagedApplicationList() {
 
   return (
     <div className="flex flex-col gap-9 px-[19px] py-[17px]">
-      <UserInfoCard type="detail" />
+      <ManagerInfoCard type="detail" />
 
       <div className="flex flex-col gap-2">
         <div className="border-indigo-5 rounded-2xl border bg-white px-3 py-3">

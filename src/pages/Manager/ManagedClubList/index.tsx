@@ -2,14 +2,14 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
-import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import ManagerInfoCard from '@/pages/User/MyPage/components/ManagerInfoCard';
 
 function ManagedClubList() {
   const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
 
   return (
     <div className="flex flex-col gap-7 p-[19px]">
-      <UserInfoCard type="manager" />
+      <ManagerInfoCard />
       <div className="flex flex-col gap-3">
         <p className="text-sub1 text-indigo-700">동아리 목록</p>
         <div className="flex flex-col gap-2">
