@@ -29,7 +29,7 @@ function ChatHeader() {
 
           <div className="flex min-w-0 items-center gap-1">
             <span className="truncate text-[16px] leading-5 font-bold text-indigo-700">{chatRoom?.roomName ?? ''}</span>
-            {isGroup && <span className="text-#344352 translate-y-0.45 text-[13px]">{clubMembers.length}</span>}
+            {isGroup && <span className="text-#344352 translate-y-[0.45rem] text-[13px]">{clubMembers.length}</span>}
           </div>
         </div>
 
