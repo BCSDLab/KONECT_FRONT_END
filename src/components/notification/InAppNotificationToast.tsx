@@ -2,7 +2,7 @@ import type { InboxNotification } from '@/apis/notification/entity';
 import NotificationToastApprovedImage from '@/assets/image/notification-toast-approved.png';
 import NotificationToastGeneralImage from '@/assets/image/notification-toast-general.png';
 import Portal from '@/components/common/Portal';
-import { getBottomOverlayOffset, NOTIFICATION_TOAST_BOTTOM_GAP } from '@/components/layout/layoutMetrics';
+import { useBottomOverlayOffset } from '@/components/layout/bottomOverlay';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 import { getInboxNotificationMessage, getInboxNotificationToastVariant } from '@/utils/ts/notification';
 
@@ -26,14 +26,14 @@ function NotificationToneIcon({ notification }: { notification: InboxNotificatio
 }
 
 function InAppNotificationToast({ notification, onAction }: InAppNotificationToastProps) {
-  const { bottomOverlayInset, layoutElement } = useLayoutElementsContext();
+  const { layoutElement } = useLayoutElementsContext();
+  const bottomPosition = useBottomOverlayOffset();
 
   if (!notification) {
     return null;
   }
 
   const message = getInboxNotificationMessage(notification);
-  const bottomPosition = getBottomOverlayOffset(bottomOverlayInset, NOTIFICATION_TOAST_BOTTOM_GAP);
 
   return (
     <Portal container={layoutElement}>

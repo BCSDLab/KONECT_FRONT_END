@@ -86,6 +86,10 @@ function App() {
             <Route element={<Layout showBottomNav />}>
               <Route path="home" element={<Home />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="council">
+                <Route index element={<CouncilDetail />} />
+                <Route path="notice/:noticeId" element={<CouncilNotice />} />
+              </Route>
               <Route path="mypage">
                 <Route index element={<MyPage />} />
                 <Route path="manager">
@@ -116,10 +120,6 @@ function App() {
               <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
               <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="council">
-                <Route index element={<CouncilDetail />} />
-                <Route path="notice/:noticeId" element={<CouncilNotice />} />
-              </Route>
               <Route path="chats/:chatRoomId" element={<ChatRoom />} />
             </Route>
           </Route>

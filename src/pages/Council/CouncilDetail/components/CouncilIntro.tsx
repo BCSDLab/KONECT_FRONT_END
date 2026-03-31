@@ -1,60 +1,68 @@
-import { Link } from 'react-router-dom';
+import type { ComponentType, ReactNode, SVGProps } from 'react';
 import type { CouncilResponse } from '@/apis/council/entity';
 import ClockIcon from '@/assets/svg/clock.svg';
 import InstagramIcon from '@/assets/svg/instagram.svg';
 import LocationPinIcon from '@/assets/svg/location-pin.svg';
 import Card from '@/components/common/Card';
+import { cn } from '@/utils/ts/cn';
 
 interface CouncilIntroProps {
   councilDetail: CouncilResponse;
 }
 
 function CouncilIntro({ councilDetail }: CouncilIntroProps) {
+  const cardClassName = 'rounded-2xl p-4 shadow-[0_0_20px_rgba(0,0,0,0.03)]';
+  const contactItemClassName = 'text-text-800 text-[13px] leading-[1.6] font-semibold';
+  const contactItems: {
+    content: ReactNode;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
+    key: string;
+  }[] = [
+    {
+      content: councilDetail.location,
+      icon: LocationPinIcon,
+      key: 'location',
+    },
+    {
+      content: councilDetail.operatingHour,
+      icon: ClockIcon,
+      key: 'operatingHour',
+    },
+    {
+      content: (
+        <a
+          href={`https://instagram.com/${councilDetail.instagramUserName}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={cn(contactItemClassName, 'underline')}
+        >
+          @{councilDetail.instagramUserName}
+        </a>
+      ),
+      icon: InstagramIcon,
+      key: 'instagram',
+    },
+  ];
+
   return (
-    <div className="mt-31.5 flex flex-col gap-2 p-3">
-      <Card>
-        <div className="mt-1.5 text-xs leading-3.5 whitespace-pre-line text-indigo-300">
+    <div className="flex flex-col gap-2">
+      <Card className={cardClassName}>
+        <div className="text-xs leading-4 whitespace-pre-line text-indigo-300">
           {councilDetail.introduce.replace(/\\n/g, '\n')}
         </div>
       </Card>
 
-      <Card>
-        <div className="text-sm leading-4 font-bold text-indigo-700">위치 및 연락처</div>
+      <Card className={cardClassName}>
+        <div className="text-text-700 leading-[1.6] font-semibold">위치 및 연락처</div>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#E8EBEF]">
-              <LocationPinIcon />
+          {contactItems.map(({ content, icon: Icon, key }) => (
+            <div key={key} className="flex items-center gap-1">
+              <div className="flex size-8 items-center justify-center">
+                <Icon className="text-primary-500" />
+              </div>
+              {typeof content === 'string' ? <div className={contactItemClassName}>{content}</div> : content}
             </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-[10px] leading-3 font-medium text-indigo-300">동아리방 위치</div>
-              <div className="text-sm leading-3.5 font-semibold text-indigo-700">{councilDetail.location}</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#E8EBEF]">
-              <ClockIcon />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-[10px] leading-3 font-medium text-indigo-300">운영 시간</div>
-              <div className="text-sm leading-3.5 font-semibold text-indigo-700">{councilDetail.operatingHour}</div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-sm bg-[#E8EBEF]">
-              <InstagramIcon />
-            </div>
-            <div className="flex flex-col gap-1">
-              <div className="text-[10px] leading-3 font-medium text-indigo-300">인스타그램</div>
-              <Link
-                to={`https://instagram.com/${councilDetail.instagramUserName}`}
-                className="text-sm leading-3.5 font-semibold text-indigo-700"
-              >
-                @{councilDetail.instagramUserName}
-              </Link>
-            </div>
-          </div>
+          ))}
         </div>
       </Card>
     </div>

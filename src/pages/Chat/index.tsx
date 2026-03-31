@@ -4,14 +4,12 @@ import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
-import { getBottomOverlayOffset } from '@/components/layout/layoutMetrics';
-import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
+import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import useChat from './hooks/useChat';
 
 const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
-const CHAT_LIST_BOTTOM_GAP = 24;
 
 const formatTime = (timeString: string) => {
   const timeMatch = timeString.match(/(\d{1,2}):(\d{2})/);
@@ -167,7 +165,6 @@ function ChatAdvertisementListItemSkeleton() {
 }
 
 function ChatListPage() {
-  const { bottomOverlayInset } = useLayoutElementsContext();
   const { chatRoomList } = useChat();
   const rooms = chatRoomList.rooms;
   const firstChatRoomItemRef = useRef<HTMLAnchorElement>(null);
@@ -185,7 +182,6 @@ function ChatListPage() {
     advertisementCount,
     scope: 'chat-list',
   });
-  const bottomSpacerHeight = getBottomOverlayOffset(bottomOverlayInset, CHAT_LIST_BOTTOM_GAP);
 
   if (rooms.length === 0) {
     return (
@@ -220,7 +216,7 @@ function ChatListPage() {
           </Fragment>
         );
       })}
-      <div aria-hidden="true" className="shrink-0" style={{ height: bottomSpacerHeight }} />
+      <BottomOverlaySpacer gap={24} />
     </div>
   );
 }

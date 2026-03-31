@@ -6,12 +6,12 @@ export type HeaderType =
   | 'chat'
   | 'none'
   | 'notification'
+  | 'subpage'
   | 'default'
   | 'normal'
   | 'full'
   | 'signup'
   | 'schedule'
-  | 'council'
   | 'manager';
 
 export interface HeaderConfig {

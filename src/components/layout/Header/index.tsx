@@ -3,6 +3,7 @@ import ChatHeader from './components/ChatHeader';
 import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
 import ManagerHeader from './components/ManagerHeader';
+import PlainSubpageHeader from './components/PlainSubpageHeader';
 import ProfileHeader from './components/ProfileHeader';
 import ScheduleHeader from './components/ScheduleHeader';
 import SubpageHeader from './components/SubpageHeader';
@@ -20,11 +21,11 @@ function Header() {
     chat: () => <ChatHeader />,
     none: () => null,
     notification: ({ title }) => <SubpageHeader title={title} />,
+    subpage: ({ title }) => <PlainSubpageHeader title={title} />,
     schedule: () => <ScheduleHeader />,
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,
     signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
-    council: ({ title }) => <DefaultHeader title={title} />,
     default: ({ title }) => <DefaultHeader title={title} />,
     manager: ({ title }) => <ManagerHeader fallbackTitle={title} />,
   };
