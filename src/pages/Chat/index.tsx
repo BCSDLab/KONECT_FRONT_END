@@ -4,7 +4,6 @@ import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
-import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import useChat from './hooks/useChat';
@@ -222,7 +221,6 @@ function ChatListPage() {
           );
         })}
       </div>
-      <div aria-hidden="true" className="shrink-0" style={{ height: bottomSpacerHeight }} />
     </div>
   );
 }

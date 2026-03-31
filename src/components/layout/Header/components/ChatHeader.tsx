@@ -28,12 +28,12 @@ function ChatHeader() {
           </button>
 
           <div className="flex min-w-0 items-center gap-1">
-            <span className="truncate text-[16px] leading-5 font-bold text-indigo-700">{chatRoom?.roomName ?? ''}</span>
+            <span className="truncate leading-5 font-bold text-indigo-700">{chatRoom?.roomName ?? ''}</span>
             {isGroup && <span className="text-#344352 translate-y-[0.45rem] text-[13px]">{clubMembers.length}</span>}
           </div>
         </div>
 
-        <button type="button" aria-label="채팅방 정보 열기" onClick={openSidebar} className="ml-3 size-6 shrink-0">
+        <button type="button" aria-label="채팅방 정보 열기" onClick={openSidebar} className="shrink-0">
           <HamburgerIcon />
         </button>
       </header>
