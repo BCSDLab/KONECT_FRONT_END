@@ -6,9 +6,8 @@ import { notificationQueries, notificationQueryKeys } from '@/apis/notification/
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import ChatIcon from '@/assets/svg/chat-icon.svg';
 import PersonIcon from '@/assets/svg/person-icon.svg';
-import { getBottomOverlayOffset, NOTIFICATION_LIST_BOTTOM_GAP } from '@/components/layout/layoutMetrics';
+import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useMarkInboxNotificationAsReadMutation } from '@/components/notification/hooks/useInboxNotificationMutations';
-import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import {
   getInboxNotificationIconKind,
@@ -85,7 +84,6 @@ function NotificationRow({ notification, disabled = false, onClick }: Notificati
 function NotificationsPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { bottomOverlayInset } = useLayoutElementsContext();
   const { data, error, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery(
     notificationQueries.inboxInfinite()
   );
@@ -97,7 +95,6 @@ function NotificationsPage() {
   }
 
   const notifications = data?.pages.flatMap((page) => page.notifications) ?? [];
-  const bottomSpacerHeight = getBottomOverlayOffset(bottomOverlayInset, NOTIFICATION_LIST_BOTTOM_GAP);
 
   const handleNotificationClick = async (notification: InboxNotification) => {
     const destinationPath = normalizeInboxNotificationPath(notification.path);
@@ -157,9 +154,7 @@ function NotificationsPage() {
           </div>
         )}
       </section>
-      {notifications.length > 0 && (
-        <div aria-hidden="true" className="shrink-0" style={{ height: bottomSpacerHeight }} />
-      )}
+      {notifications.length > 0 && <BottomOverlaySpacer gap={24} />}
     </div>
   );
 }

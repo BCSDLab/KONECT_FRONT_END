@@ -6,6 +6,7 @@ export type HeaderType =
   | 'chat'
   | 'none'
   | 'notification'
+  | 'subpage'
   | 'default'
   | 'normal'
   | 'full'

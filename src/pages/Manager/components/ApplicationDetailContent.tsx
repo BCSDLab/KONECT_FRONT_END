@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import type { ClubApplicationDetailResponse } from '@/apis/club/entity';
 import Portal from '@/components/common/Portal';
+import { useBottomOverlayOffset } from '@/components/layout/bottomOverlay';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
 
@@ -80,10 +81,14 @@ interface ApplicationDetailContentProps {
 
 function ApplicationDetailContent({ application, footer }: ApplicationDetailContentProps) {
   const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
+  const bottomPadding = useBottomOverlayOffset();
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-1 flex-col gap-6 overflow-auto px-[19px] pt-[17px] pb-[calc(17px+var(--sab))]">
+      <div
+        className="flex flex-1 flex-col gap-6 overflow-auto px-[19px] pt-[17px]"
+        style={{ paddingBottom: bottomPadding }}
+      >
         <ApplicantSummaryCard
           appliedAt={application.appliedAt}
           name={application.name}

@@ -3,7 +3,7 @@ import {
   DEFAULT_BOTTOM_NAV_OVERLAY_INSET,
   DEFAULT_BOTTOM_OVERLAY_INSET,
   getLayoutBottomOverlayInset,
-} from '@/components/layout/layoutMetrics';
+} from '@/components/layout/bottomOverlay';
 
 export function useLayoutBottomOverlayInset(showBottomNav: boolean, bottomNavRef: RefObject<HTMLElement | null>) {
   const [bottomOverlayInset, setBottomOverlayInset] = useState(

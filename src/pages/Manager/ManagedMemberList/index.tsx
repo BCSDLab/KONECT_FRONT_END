@@ -17,7 +17,7 @@ import {
   useRemoveManagedMemberMutation,
   useTransferManagedPresidentMutation,
 } from '@/pages/Manager/hooks/useManagedMemberMutations';
-import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
+import ManagerInfoCard from '@/pages/User/MyPage/components/ManagerInfoCard';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
@@ -492,7 +492,7 @@ function ManagedMemberList() {
 
   return (
     <div className="flex flex-col gap-9 px-[19px] py-[17px]">
-      <UserInfoCard type="detail" />
+      <ManagerInfoCard type="detail" />
 
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">

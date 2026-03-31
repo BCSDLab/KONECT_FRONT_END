@@ -10,6 +10,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/notifications',
   },
   {
+    type: 'subpage',
+    match: (pathname) => /^\/council\/notice\/\d+$/.test(pathname),
+  },
+  {
     type: 'default',
     match: (pathname) => /^\/clubs\/\d+$/.test(pathname),
   },
@@ -19,7 +23,7 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   },
   {
     type: 'info',
-    match: (pathname) => pathname === '/home' || pathname === '/timer',
+    match: (pathname) => pathname === '/home' || pathname === '/timer' || pathname === '/council',
   },
   {
     type: 'chatList',
@@ -28,10 +32,6 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   {
     type: 'chat',
     match: (pathname) => /^\/chats\/\d+$/.test(pathname),
-  },
-  {
-    type: 'council',
-    match: (pathname) => pathname === '/council',
   },
   {
     type: 'normal',
