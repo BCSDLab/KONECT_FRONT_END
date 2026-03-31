@@ -1,4 +1,4 @@
-import BackTitleHeader from './BackTitleHeader';
+import BackTitleHeader from '@/components/layout/Header/components/BackTitleHeader';
 
 interface PlainSubpageHeaderProps {
   title: string;

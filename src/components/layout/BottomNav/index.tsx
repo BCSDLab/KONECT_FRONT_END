@@ -22,11 +22,7 @@ const BOTTOM_NAV_ITEMS = [
     to: '/home',
     label: '홈',
     floatingImageSrc: HomeResultImage,
-    matchesPath: (pathname) =>
-      pathname === '/home' ||
-      pathname === '/notifications' ||
-      pathname === '/council' ||
-      pathname.startsWith('/council/'),
+    matchesPath: (pathname) => pathname === '/home' || pathname === '/notifications' || pathname.startsWith('/council'),
   },
   { to: '/chats', label: '채팅방', Icon: ChatIcon },
   { to: '/mypage', label: '내정보', Icon: MyPageIcon },
