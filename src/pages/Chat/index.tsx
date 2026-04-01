@@ -4,7 +4,6 @@ import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
-import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import useChat from './hooks/useChat';
@@ -91,8 +90,12 @@ function ChatRoomListItem({ room, itemRef }: ChatRoomListItemProps) {
 
           {hasUnreadMessage && (
             <span className="shrink-0">
-              <span aria-hidden="true" className="bg-primary-500 block size-2 rounded-full" />
-              <span className="sr-only">{`읽지 않은 메시지 ${room.unreadCount}개`}</span>
+              <span
+                aria-hidden="true"
+                className="bg-primary-500 flex h-4 min-w-5 items-center justify-center rounded-full px-1 py-0.5 text-[10px] text-white"
+              >
+                {room.unreadCount > 300 ? '300+' : room.unreadCount}
+              </span>
             </span>
           )}
         </div>
@@ -193,30 +196,31 @@ function ChatListPage() {
   }
 
   return (
-    <div className="flex min-h-full flex-col bg-white py-3">
-      {rooms.map((room, index) => {
-        const shouldRenderAdvertisement =
-          chatRoomSlotsPerAdvertisement !== null && (index + 1) % chatRoomSlotsPerAdvertisement === 0;
-        const advertisement = shouldRenderAdvertisement
-          ? advertisements[Math.floor(index / chatRoomSlotsPerAdvertisement)]
-          : undefined;
+    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-gray-100 px-5 py-[23px]">
+      <div className="h-full [&>*:first-child]:rounded-t-2xl [&>*:last-child]:rounded-b-lg">
+        {rooms.map((room, index) => {
+          const shouldRenderAdvertisement =
+            chatRoomSlotsPerAdvertisement !== null && (index + 1) % chatRoomSlotsPerAdvertisement === 0;
+          const advertisement = shouldRenderAdvertisement
+            ? advertisements[Math.floor(index / chatRoomSlotsPerAdvertisement)]
+            : undefined;
 
-        return (
-          <Fragment key={room.roomId}>
-            <ChatRoomListItem
-              room={room}
-              itemRef={index === 0 ? firstChatRoomItemRef : index === 1 ? secondChatRoomItemRef : undefined}
-            />
-            {advertisement && (
-              <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
-            )}
-            {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
-              <ChatAdvertisementListItemSkeleton />
-            )}
-          </Fragment>
-        );
-      })}
-      <BottomOverlaySpacer gap={24} />
+          return (
+            <Fragment key={room.roomId}>
+              <ChatRoomListItem
+                room={room}
+                itemRef={index === 0 ? firstChatRoomItemRef : index === 1 ? secondChatRoomItemRef : undefined}
+              />
+              {advertisement && (
+                <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
+              )}
+              {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+                <ChatAdvertisementListItemSkeleton />
+              )}
+            </Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 }
