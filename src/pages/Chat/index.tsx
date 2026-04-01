@@ -71,7 +71,6 @@ function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
 }
 
 function ChatRoomListItem({ room }: { room: Room }) {
-  const isGroup = room.chatType === 'GROUP';
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
 
@@ -86,13 +85,6 @@ function ChatRoomListItem({ room }: { room: Room }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-1">
             <span className="text-text-700 truncate text-[16px] leading-[1.6] font-semibold">{room.roomName}</span>
-
-            {isGroup && (
-              <span className="bg-primary-500 inline-flex shrink-0 items-center justify-center rounded-[50px] px-1 py-0.5 text-[12px] leading-3 font-medium text-white">
-                단체
-              </span>
-            )}
-
             {room.isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
           </div>
 
