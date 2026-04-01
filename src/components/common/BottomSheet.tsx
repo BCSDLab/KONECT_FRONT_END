@@ -10,9 +10,11 @@ interface BottomSheetProps {
   /** 초기 위치 (기본값: 'half') */
   defaultPosition?: SheetPosition;
   /** 하단 오프셋 (px) */
-  bottomOffset?: number;
+  bottomOffset?: number | string;
   /** half 상태일 때 상단 오프셋 (px) */
   halfTopOffset?: number;
+  /** half 상태일 때 실제 보이는 높이 */
+  halfHeight?: number | string;
   /** full 상태일 때 상단 오프셋 (px) */
   fullTopOffset?: number;
   /** 추가 className */
@@ -27,6 +29,7 @@ export default function BottomSheet({
   defaultPosition = 'half',
   bottomOffset = 0,
   halfTopOffset = 105,
+  halfHeight,
   fullTopOffset = 48,
   className,
   onPositionChange,
@@ -37,9 +40,17 @@ export default function BottomSheet({
   });
 
   const effectivePosition = resizable ? position : defaultPosition;
+  const normalizedBottomOffset = typeof bottomOffset === 'number' ? `${bottomOffset}px` : bottomOffset;
+  const normalizedHalfHeight = typeof halfHeight === 'number' ? `${halfHeight}px` : halfHeight;
 
   const getTransform = () => {
     if (resizable) {
+      if (normalizedHalfHeight) {
+        return effectivePosition === 'half'
+          ? `translateY(${Math.min(0, currentTranslate)}px)`
+          : `translateY(${Math.max(0, currentTranslate)}px)`;
+      }
+
       return effectivePosition === 'half'
         ? `translateY(calc(55% + ${currentTranslate}px))`
         : `translateY(${Math.max(0, currentTranslate)}px)`;
@@ -55,22 +66,25 @@ export default function BottomSheet({
       aria-label="Bottom Sheet"
       ref={sheetRef}
       className={clsx(
-        'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white transition-transform duration-300 ease-out',
+        'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)] transition-transform duration-300 ease-out',
         resizable && isDragging && 'transition-none',
         className
       )}
       style={{
-        bottom: `${bottomOffset}px`,
+        bottom: normalizedBottomOffset,
         height:
           effectivePosition === 'full'
-            ? `calc(100% - ${fullTopOffset}px - ${bottomOffset}px)`
-            : `calc(100% - ${halfTopOffset}px - ${bottomOffset}px)`,
+            ? `calc(100% - ${fullTopOffset}px - ${normalizedBottomOffset})`
+            : (normalizedHalfHeight ?? `calc(100% - ${halfTopOffset}px - ${normalizedBottomOffset})`),
         transform: getTransform(),
       }}
     >
       {resizable && (
-        <div className="flex h-5 shrink-0 cursor-grab items-center justify-center active:cursor-grabbing" {...handlers}>
-          <div className="h-1 w-11 rounded-full bg-indigo-300" />
+        <div
+          className="flex h-6 shrink-0 cursor-grab touch-none items-center justify-center pt-3 select-none active:cursor-grabbing"
+          {...handlers}
+        >
+          <div className="h-1 w-11 rounded-full bg-[#8497AA]" />
         </div>
       )}
       {content}
