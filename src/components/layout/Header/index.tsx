@@ -28,7 +28,6 @@ function Header() {
     normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
     full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,
     signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
-    council: ({ title }) => <DefaultHeader title={title} />,
     default: ({ title }) => <DefaultHeader title={title} />,
     manager: ({ title }) => <ManagerHeader fallbackTitle={title} />,
   };
