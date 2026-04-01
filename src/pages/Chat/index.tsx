@@ -1,15 +1,40 @@
-import { Fragment, useRef, type Ref } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
-import { useAdvertisementInterval } from '@/utils/hooks/useAdvertisementInterval';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import useChat from './hooks/useChat';
 
 const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
+const FIRST_ADVERTISEMENT_ROOM_POSITION = 4;
+const ADVERTISEMENT_INTERVAL = 6;
+
+const getAdvertisementCount = (roomCount: number) => {
+  if (roomCount < FIRST_ADVERTISEMENT_ROOM_POSITION) {
+    return 0;
+  }
+
+  return Math.floor((roomCount - FIRST_ADVERTISEMENT_ROOM_POSITION) / ADVERTISEMENT_INTERVAL) + 1;
+};
+
+const getAdvertisementIndexAfterRoom = (roomIndex: number) => {
+  const roomPosition = roomIndex + 1;
+
+  if (roomPosition < FIRST_ADVERTISEMENT_ROOM_POSITION) {
+    return null;
+  }
+
+  const roomOffsetFromFirstAdvertisement = roomPosition - FIRST_ADVERTISEMENT_ROOM_POSITION;
+
+  if (roomOffsetFromFirstAdvertisement % ADVERTISEMENT_INTERVAL !== 0) {
+    return null;
+  }
+
+  return Math.floor(roomOffsetFromFirstAdvertisement / ADVERTISEMENT_INTERVAL);
+};
 
 const formatTime = (timeString: string) => {
   const timeMatch = timeString.match(/(\d{1,2}):(\d{2})/);
@@ -45,19 +70,13 @@ function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
   );
 }
 
-interface ChatRoomListItemProps {
-  room: Room;
-  itemRef?: Ref<HTMLAnchorElement>;
-}
-
-function ChatRoomListItem({ room, itemRef }: ChatRoomListItemProps) {
+function ChatRoomListItem({ room }: { room: Room }) {
   const isGroup = room.chatType === 'GROUP';
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
 
   return (
     <Link
-      ref={itemRef}
       to={`${room.roomId}`}
       className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
     >
@@ -171,17 +190,7 @@ function ChatAdvertisementListItemSkeleton() {
 function ChatListPage() {
   const { chatRoomList } = useChat();
   const rooms = chatRoomList.rooms;
-  const firstChatRoomItemRef = useRef<HTMLAnchorElement>(null);
-  const secondChatRoomItemRef = useRef<HTMLAnchorElement>(null);
-  const chatRoomSlotsPerAdvertisement = useAdvertisementInterval({
-    firstItemRef: firstChatRoomItemRef,
-    secondItemRef: secondChatRoomItemRef,
-    itemCount: rooms.length,
-    enabled: rooms.length > 0,
-  });
-  const advertisementCount = chatRoomSlotsPerAdvertisement
-    ? Math.floor(rooms.length / chatRoomSlotsPerAdvertisement)
-    : 0;
+  const advertisementCount = getAdvertisementCount(rooms.length);
   const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'chat-list',
@@ -200,18 +209,13 @@ function ChatListPage() {
     <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-gray-100 px-5 py-[23px]">
       <div className="h-full [&>*:first-child]:rounded-t-2xl [&>*:last-child]:rounded-b-lg">
         {rooms.map((room, index) => {
-          const shouldRenderAdvertisement =
-            chatRoomSlotsPerAdvertisement !== null && (index + 1) % chatRoomSlotsPerAdvertisement === 0;
-          const advertisement = shouldRenderAdvertisement
-            ? advertisements[Math.floor(index / chatRoomSlotsPerAdvertisement)]
-            : undefined;
+          const advertisementIndex = getAdvertisementIndexAfterRoom(index);
+          const shouldRenderAdvertisement = advertisementIndex !== null;
+          const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
 
           return (
             <Fragment key={room.roomId}>
-              <ChatRoomListItem
-                room={room}
-                itemRef={index === 0 ? firstChatRoomItemRef : index === 1 ? secondChatRoomItemRef : undefined}
-              />
+              <ChatRoomListItem room={room} />
               {advertisement && (
                 <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
               )}
