@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import clsx from 'clsx';
+import { cn } from '@/utils/ts/cn';
 import { formatTime } from '@/utils/ts/datetime/time';
 
 interface TimerButtonProps {
@@ -7,10 +7,14 @@ interface TimerButtonProps {
   sessionStartMs: number | null;
   isRunning: boolean;
   onToggle: () => void;
+  size: number;
 }
 
-function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onToggle }: TimerButtonProps) {
+function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onToggle, size }: TimerButtonProps) {
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const titleFontSize = Math.max(12, Math.min(14, Math.round(size * 0.045)));
+  const timeFontSize = Math.max(44, Math.min(64, Math.round(size * 0.205)));
+  const helperFontSize = Math.max(12, Math.min(14, Math.round(size * 0.045)));
 
   useEffect(() => {
     if (!isRunning) return;
@@ -29,27 +33,45 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
 
   return (
     <button
+      type="button"
       onClick={onToggle}
       style={{
-        height: 'min(45vh, 90vw)',
-        width: 'min(45vh, 90vw)',
-        containerType: 'size',
+        height: `${size}px`,
+        width: `${size}px`,
       }}
-      className={clsx(
-        'relative mx-auto flex flex-col items-center justify-center gap-1 rounded-full',
-        isRunning ? 'z-40 bg-[#5f7691] text-white' : 'bg-indigo-0 z-10 border border-[#ccc] text-indigo-300'
+      className={cn(
+        'mx-auto flex shrink-0 flex-col items-center justify-center gap-1 rounded-full px-3 py-6 text-center transition-colors',
+        isRunning
+          ? 'border border-white bg-[#7ECFED] text-white'
+          : 'bg-white text-[#5A6B7F] shadow-[0_0_20px_0_rgba(0,0,0,0.03)]'
       )}
     >
-      <div style={{ fontSize: '5cqw' }} className="font-medium">
+      <div
+        style={{
+          fontSize: `${titleFontSize}px`,
+          lineHeight: `${Math.round(titleFontSize * 1.15)}px`,
+        }}
+        className={cn('font-medium', isRunning ? 'text-white' : 'text-[#5A6B7F]')}
+      >
         오늘의 누적 시간
       </div>
-      <div style={{ fontSize: '18cqw' }} className="font-semibold">
+      <div
+        style={{
+          fontSize: `${timeFontSize}px`,
+          lineHeight: `${Math.round(timeFontSize * 1.06)}px`,
+        }}
+        className={cn('font-semibold', isRunning ? 'text-white' : 'text-[#69BFDF]')}
+      >
         {formatTime(time)}
       </div>
-      <div style={{ fontSize: '4.5cqw' }} className="px-2 text-center font-medium whitespace-pre-wrap">
-        {isRunning
-          ? '타이머가 작동중입니다!\n중지하려면 타이머를 클릭해주세요'
-          : '화면을 클릭해 타이머를 작동시키세요!'}
+      <div
+        style={{
+          fontSize: `${helperFontSize}px`,
+          lineHeight: `${Math.round(helperFontSize * 1.15)}px`,
+        }}
+        className={cn('px-2 font-medium', isRunning ? 'text-white' : 'text-[#5A6B7F]')}
+      >
+        {isRunning ? '타이머가 작동중입니다!' : '화면을 클릭해 타이머를 작동시키세요!'}
       </div>
     </button>
   );

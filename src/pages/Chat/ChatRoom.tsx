@@ -25,13 +25,12 @@ const formatTime = (dateString: string) => {
 };
 
 interface ChatMessageRowProps {
-  isGroup: boolean;
   isSameSender: boolean;
   message: ChatMessage;
 }
 
-function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps) {
-  const showSenderName = isGroup && !message.isMine && !isSameSender;
+function ChatMessageRow({ isSameSender, message }: ChatMessageRowProps) {
+  const showSenderName = !message.isMine && !isSameSender;
   const formattedTime = formatTime(message.createdAt);
   const formattedUnreadCount = message.unreadCount > 0 ? String(message.unreadCount) : null;
 
@@ -60,19 +59,22 @@ function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps)
 
   return (
     <div className="px-6 py-2">
-      <div className="max-w-full">
-        {showSenderName && <div className="text-sub4 text-text-400 mb-1 px-3">{message.senderName}</div>}
+      <div className="flex items-end gap-2">
+        <div className="flex max-w-[78%] min-w-0 flex-col items-start gap-1">
+          {showSenderName && (
+            <div className="text-text-500 text-[10px] leading-[1.6] font-bold">{message.senderName}</div>
+          )}
 
-        <div className="flex items-end gap-2">
-          <div className="bg-indigo-5 text-sub4 max-w-[78%] rounded-2xl px-3 py-2 text-black">
+          <div className="bg-indigo-5 text-sub4 max-w-full rounded-2xl px-3 py-2 text-black">
             <LinkifiedText
               text={message.content}
               className="wrap-anywhere whitespace-pre-wrap"
               linkClassName="text-primary-500 underline"
             />
           </div>
-          <span className="shrink-0 text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
         </div>
+
+        <span className="shrink-0 text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
       </div>
     </div>
   );
@@ -80,8 +82,9 @@ function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps)
 
 function ChatRoom() {
   const { chatRoomId } = useParams();
-  const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, chatRoomList, isSendingMessage } =
-    useChat(Number(chatRoomId));
+  const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, isSendingMessage } = useChat(
+    Number(chatRoomId)
+  );
   const [value, setValue] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -96,10 +99,6 @@ function ChatRoom() {
   });
 
   useViewportHeightLock(scrollContainerRef);
-
-  const currentRoom = chatRoomList.rooms.find((room) => room.roomId === Number(chatRoomId));
-
-  const isGroup = currentRoom?.chatType === 'GROUP';
 
   const sortedMessages = [...chatMessages].reverse();
   const isSubmitDisabled = isSendingMessage || !value.trim();
@@ -155,10 +154,7 @@ function ChatRoom() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
-      <div
-        ref={scrollContainerRef}
-        className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain py-3"
-      >
+      <div ref={scrollContainerRef} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain">
         <div ref={topRef} />
 
         {sortedMessages.map((message, index) => {
@@ -180,7 +176,7 @@ function ChatRoom() {
                 </div>
               )}
 
-              <ChatMessageRow isGroup={isGroup} isSameSender={isSameSender} message={message} />
+              <ChatMessageRow isSameSender={isSameSender} message={message} />
             </div>
           );
         })}

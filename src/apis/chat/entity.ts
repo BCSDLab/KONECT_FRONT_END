@@ -2,7 +2,7 @@ import type { PaginationParams, PaginationResponse } from '../common/pagination'
 
 export interface Room {
   roomId: number;
-  chatType: 'DIRECT' | 'GROUP';
+  chatType: 'DIRECT' | 'CLUB_GROUP' | 'GROUP';
   roomName: string;
   roomImageUrl: string;
   lastMessage: string | null;
