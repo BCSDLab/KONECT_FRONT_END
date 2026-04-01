@@ -13,7 +13,7 @@ export default function ChatListHeader() {
       </button>
       <span className="px-2 py-4 font-semibold">채팅방</span>
       <div className="ml-auto flex items-center gap-2">
-        <button type="button" aria-label="검색" className="~shrink-0">
+        <button type="button" aria-label="검색" className="shrink-0">
           <Search />
         </button>
         <button type="button" aria-label="채팅방 추가" className="shrink-0">
