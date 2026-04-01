@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import type { ChatMessage } from '@/apis/chat/entity';
 import SendArrowIcon from '@/assets/svg/chat-send-arrow.svg';
 import LinkifiedText from '@/components/common/LinkifiedText';
-import useKeyboardHeight from '@/utils/hooks/useViewportHeight';
+import useViewportHeightLock from '@/utils/hooks/useViewportHeightLock';
 import { cn } from '@/utils/ts/cn';
 import useChat from './hooks/useChat';
 import useChatRoomScroll from './hooks/useChatRoomScroll';
@@ -46,7 +46,7 @@ function ChatMessageRow({ isGroup, isSameSender, message }: ChatMessageRowProps)
           )}
           <span className="shrink-0 text-[10px] leading-[1.6] font-medium text-indigo-100">{formattedTime}</span>
 
-          <div className="bg-primary-500/80 text-sub4 max-w-[78%] min-w-0 rounded-2xl px-3 py-2 text-white shadow-[0_0_3px_rgba(0,0,0,0.15)]">
+          <div className="bg-primary-500 text-sub4 max-w-[78%] min-w-0 rounded-2xl px-3 py-2 text-white shadow-[0_0_3px_rgba(0,0,0,0.15)]">
             <LinkifiedText
               text={message.content}
               className="wrap-anywhere whitespace-pre-wrap"
@@ -84,8 +84,6 @@ function ChatRoom() {
     useChat(Number(chatRoomId));
   const [value, setValue] = useState('');
 
-  useKeyboardHeight();
-
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseTextareaHeightRef = useRef(0);
   const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
@@ -96,6 +94,8 @@ function ChatRoom() {
     hasNextPage,
     isFetchingNextPage,
   });
+
+  useViewportHeightLock(scrollContainerRef);
 
   const currentRoom = chatRoomList.rooms.find((room) => room.roomId === Number(chatRoomId));
 
@@ -154,7 +154,7 @@ function ChatRoom() {
   }, [value]);
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-white">
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white">
       <div
         ref={scrollContainerRef}
         className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto overscroll-contain py-3"
@@ -186,7 +186,10 @@ function ChatRoom() {
         })}
       </div>
 
-      <form onSubmit={handleSubmit} className="shrink-0 bg-white px-5 pt-3 pb-[calc(22px+var(--sab))]">
+      <form
+        onSubmit={handleSubmit}
+        className="shrink-0 bg-white px-5 pt-3 pb-[calc(12px+var(--effective-bottom-safe-area))]"
+      >
         <div className="bg-text-100 flex min-w-0 items-end gap-3 rounded-[30px] px-4 py-3">
           <textarea
             ref={textareaRef}

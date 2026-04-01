@@ -1,9 +1,7 @@
+import RecommendedClubCard, { RECOMMENDED_CLUB_CARD_WIDTH } from '@/pages/Home/components/RecommendedClubCard';
 import { useInfiniteClubCarousel } from '@/pages/Home/hooks/useInfiniteClubCarousel';
 import type { HomeClubCardItem } from '@/pages/Home/types';
 import { cn } from '@/utils/ts/cn';
-import RecommendedClubCard from './RecommendedClubCard';
-
-const CLUB_CARD_WIDTH = 229;
 
 interface InfiniteClubCarouselProps {
   clubs: HomeClubCardItem[];
@@ -37,15 +35,18 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
     shouldLoop,
     showIndicator,
   } = useInfiniteClubCarousel({ clubs });
+  const centeredPaddingStyle = shouldCenterCard
+    ? { paddingInline: `calc((100% - ${RECOMMENDED_CLUB_CARD_WIDTH}px) / 2)` }
+    : undefined;
 
   return (
     <div>
       <div
         ref={scrollRef}
         onScroll={handleScroll}
+        style={centeredPaddingStyle}
         className={cn(
-          'snap-x snap-mandatory overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
-          shouldCenterCard ? 'px-[calc((100%-229px)/2)]' : ''
+          'snap-x snap-mandatory overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
         )}
       >
         <div className="flex gap-2">
@@ -57,7 +58,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
               <div
                 key={key}
                 className={cn('shrink-0 py-1', shouldCenterCard ? 'snap-center' : 'snap-start px-[3px]')}
-                style={{ width: `${CLUB_CARD_WIDTH}px` }}
+                style={{ width: `${RECOMMENDED_CLUB_CARD_WIDTH}px` }}
               >
                 <RecommendedClubCard
                   club={club}

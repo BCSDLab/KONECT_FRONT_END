@@ -5,13 +5,15 @@ export type HeaderType =
   | 'profile'
   | 'chat'
   | 'none'
+  | 'notification'
+  | 'subpage'
   | 'default'
   | 'normal'
   | 'full'
   | 'signup'
   | 'schedule'
-  | 'council'
-  | 'manager';
+  | 'manager'
+  | 'chatList';
 
 export interface HeaderConfig {
   type: HeaderType;

@@ -1,10 +1,40 @@
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
+import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
+import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import useChat from './hooks/useChat';
 
 const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
+const FIRST_ADVERTISEMENT_ROOM_POSITION = 4;
+const ADVERTISEMENT_INTERVAL = 6;
+
+const getAdvertisementCount = (roomCount: number) => {
+  if (roomCount < FIRST_ADVERTISEMENT_ROOM_POSITION) {
+    return 0;
+  }
+
+  return Math.floor((roomCount - FIRST_ADVERTISEMENT_ROOM_POSITION) / ADVERTISEMENT_INTERVAL) + 1;
+};
+
+const getAdvertisementIndexAfterRoom = (roomIndex: number) => {
+  const roomPosition = roomIndex + 1;
+
+  if (roomPosition < FIRST_ADVERTISEMENT_ROOM_POSITION) {
+    return null;
+  }
+
+  const roomOffsetFromFirstAdvertisement = roomPosition - FIRST_ADVERTISEMENT_ROOM_POSITION;
+
+  if (roomOffsetFromFirstAdvertisement % ADVERTISEMENT_INTERVAL !== 0) {
+    return null;
+  }
+
+  return Math.floor(roomOffsetFromFirstAdvertisement / ADVERTISEMENT_INTERVAL);
+};
 
 const formatTime = (timeString: string) => {
   const timeMatch = timeString.match(/(\d{1,2}):(\d{2})/);
@@ -80,8 +110,12 @@ function ChatRoomListItem({ room }: { room: Room }) {
 
           {hasUnreadMessage && (
             <span className="shrink-0">
-              <span aria-hidden="true" className="bg-primary-500 block size-2 rounded-full" />
-              <span className="sr-only">{`읽지 않은 메시지 ${room.unreadCount}개`}</span>
+              <span
+                aria-hidden="true"
+                className="bg-primary-500 flex h-4 min-w-5 items-center justify-center rounded-full px-1 py-0.5 text-[10px] text-white"
+              >
+                {room.unreadCount > 300 ? '300+' : room.unreadCount}
+              </span>
             </span>
           )}
         </div>
@@ -90,12 +124,81 @@ function ChatRoomListItem({ room }: { room: Room }) {
   );
 }
 
+interface ChatAdvertisementListItemProps {
+  advertisement: Advertisement;
+  onClick: (advertisementId: number) => void;
+}
+
+function ChatAdvertisementListItem({ advertisement, onClick }: ChatAdvertisementListItemProps) {
+  return (
+    <a
+      href={advertisement.linkUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={() => onClick(advertisement.id)}
+      className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
+    >
+      <img
+        src={advertisement.imageUrl}
+        alt={advertisement.title}
+        className="h-12 w-12 shrink-0 rounded-sm object-cover"
+      />
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-center gap-1">
+            <span className="text-text-700 truncate text-[16px] leading-[1.6] font-semibold">
+              {advertisement.title}
+            </span>
+            <span className="bg-primary-500 inline-flex shrink-0 items-center justify-center rounded-[50px] px-1 py-0.5 text-[12px] leading-3 font-medium text-white">
+              광고
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-0.5 flex items-center gap-3">
+          <p className="text-text-500 min-w-0 flex-1 truncate text-[12px] leading-[1.6] font-normal">
+            {advertisement.description}
+          </p>
+        </div>
+      </div>
+    </a>
+  );
+}
+
+function ChatAdvertisementListItemSkeleton() {
+  return (
+    <div aria-hidden="true" className="flex items-center gap-3 bg-white px-5 py-3">
+      <div className="bg-indigo-25 h-12 w-12 shrink-0 animate-pulse rounded-sm" />
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            <div className="bg-indigo-25 h-6 w-32 max-w-full animate-pulse rounded" />
+            <div className="bg-indigo-25 h-5 w-10 shrink-0 animate-pulse rounded-full" />
+          </div>
+        </div>
+
+        <div className="mt-0.5 flex items-center gap-3">
+          <div className="bg-indigo-25 h-5 w-40 max-w-full animate-pulse rounded" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ChatListPage() {
   const { chatRoomList } = useChat();
+  const rooms = chatRoomList.rooms;
+  const advertisementCount = getAdvertisementCount(rooms.length);
+  const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
+    advertisementCount,
+    scope: 'chat-list',
+  });
 
-  if (chatRoomList.rooms.length === 0) {
+  if (rooms.length === 0) {
     return (
-      <div className="bg-indigo-0 flex min-h-0 flex-1 flex-col items-center justify-center px-6 py-3 text-center">
+      <div className="bg-indigo-0 flex min-h-full flex-col items-center justify-center px-6 py-3 text-center">
         <div className="text-sub2 text-text-700">채팅방이 없어요</div>
         <div className="text-body3 text-text-500 mt-1">동아리에 문의하면 채팅이 시작돼요</div>
       </div>
@@ -103,10 +206,27 @@ function ChatListPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col bg-white py-3">
-      {chatRoomList.rooms.map((room) => (
-        <ChatRoomListItem key={room.roomId} room={room} />
-      ))}
+    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-gray-100 px-5 py-[23px]">
+      <div className="h-full [&>*:first-child]:rounded-t-2xl [&>*:last-child]:rounded-b-lg">
+        {rooms.map((room, index) => {
+          const advertisementIndex = getAdvertisementIndexAfterRoom(index);
+          const shouldRenderAdvertisement = advertisementIndex !== null;
+          const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
+
+          return (
+            <Fragment key={room.roomId}>
+              <ChatRoomListItem room={room} />
+              {advertisement && (
+                <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
+              )}
+              {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+                <ChatAdvertisementListItemSkeleton />
+              )}
+            </Fragment>
+          );
+        })}
+        <BottomOverlaySpacer gap={24} />
+      </div>
     </div>
   );
 }

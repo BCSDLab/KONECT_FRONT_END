@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { postAdminChatRoom } from '@/apis/chat';
+import { chatMutations } from '@/apis/chat/mutations';
 
 export const useAdminChatMutation = () => {
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: postAdminChatRoom,
+    ...chatMutations.createAdminRoom(),
     onSuccess: ({ chatRoomId }) => {
       navigate(`/chats/${chatRoomId}`);
     },

@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
+import { clubQueries } from '@/apis/club/queries';
 import useDebouncedCallback from '@/utils/hooks/useDebounce';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import ClubCard from '../ClubList/components/ClubCard';
 import SearchBar from '../ClubList/components/SearchBar';
-import { useGetClubs } from '../ClubList/hooks/useGetClubs';
 
 function ClubSearch() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,9 +29,8 @@ function ClubSearch() {
     updateDebouncedQuery(value);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useGetClubs({
-    limit: 10,
-    query: debouncedQuery || undefined,
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    ...clubQueries.infiniteList({ limit: 10, query: debouncedQuery || undefined, isRecruiting: false }),
     enabled: !!debouncedQuery,
   });
 

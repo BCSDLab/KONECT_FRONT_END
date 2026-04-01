@@ -1,23 +1,31 @@
 import { useEffect } from 'react';
+import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { AppliedClub, Club, JoinClub } from '@/apis/club/entity';
+import { clubQueries } from '@/apis/club/queries';
 import Card from '@/components/common/Card';
 import InfiniteClubCarousel from '@/pages/Home/components/InfiniteClubCarousel';
+import { RECOMMENDED_CLUB_CARD_HEIGHT, RECOMMENDED_CLUB_CARD_WIDTH } from '@/pages/Home/components/RecommendedClubCard';
 import SectionErrorFallback from '@/pages/Home/components/SectionErrorFallback';
 import SectionTitle from '@/pages/Home/components/SectionTitle';
-import { useGetHomeMyClubs, useGetHomeRecruitingClubs } from '@/pages/Home/hooks/useGetHomeClubs';
+import { useGetHomeMyClubs } from '@/pages/Home/hooks/useGetHomeClubs';
 import type { HomeClubCardItem } from '@/pages/Home/types';
 
 const CLUB_CAROUSEL_LIMIT = 20;
 
 function RecommendedClubCardSkeleton() {
   return (
-    <div className="w-[229px] shrink-0 py-1">
-      <div className="flex h-[108px] items-center gap-5 rounded-lg bg-white px-3 py-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
-        <div className="bg-indigo-25 h-[59px] w-[67px] shrink-0 animate-pulse rounded-sm" />
+    <div className="shrink-0 py-1" style={{ width: `${RECOMMENDED_CLUB_CARD_WIDTH}px` }}>
+      <div
+        className="border-indigo-5 flex items-center rounded-lg border bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
+        style={{ height: `${RECOMMENDED_CLUB_CARD_HEIGHT}px` }}
+      >
+        <div className="bg-indigo-25 size-[59px] shrink-0 animate-pulse rounded-sm" />
         <div className="min-w-0 flex-1">
-          <div className="bg-indigo-25 h-4 w-24 animate-pulse rounded" />
-          <div className="bg-indigo-25 mt-3 h-3 w-18 animate-pulse rounded" />
+          <div className="flex flex-col items-end text-right">
+            <div className="bg-indigo-25 h-4 w-24 animate-pulse rounded" />
+            <div className="bg-indigo-25 mt-[5px] h-4 w-14 animate-pulse rounded-full" />
+          </div>
         </div>
       </div>
     </div>
@@ -27,7 +35,10 @@ function RecommendedClubCardSkeleton() {
 function RecommendedClubsSkeleton() {
   return (
     <>
-      <div className="overflow-hidden px-[calc((100%-229px)/2)] pb-1">
+      <div
+        className="overflow-hidden pb-1"
+        style={{ paddingInline: `calc((100% - ${RECOMMENDED_CLUB_CARD_WIDTH}px) / 2)` }}
+      >
         <div className="flex gap-2">
           <RecommendedClubCardSkeleton />
           <RecommendedClubCardSkeleton />
@@ -96,9 +107,9 @@ export function HomeClubSectionErrorFallback() {
 }
 
 function RecruitingClubSection() {
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useGetHomeRecruitingClubs({
-    limit: CLUB_CAROUSEL_LIMIT,
-  });
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useSuspenseInfiniteQuery(
+    clubQueries.infiniteList({ limit: CLUB_CAROUSEL_LIMIT, isRecruiting: true })
+  );
 
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage) {

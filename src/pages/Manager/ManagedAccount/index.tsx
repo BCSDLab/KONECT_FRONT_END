@@ -1,13 +1,19 @@
 import { useState } from 'react';
+import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import BottomModal from '@/components/common/BottomModal';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
-import { isApiError } from '@/interface/error';
-import { useGetBanks, useManagedClubFee, useManagedClubFeeMutation } from '@/pages/Manager/hooks/useManagedFee';
-import { useGetClubSettings, usePatchClubSettings } from '@/pages/Manager/hooks/useManagedSettings';
+import { useToastContext } from '@/contexts/useToastContext';
+import {
+  usePatchManagedClubSettingsMutation,
+  useUpdateManagedClubFeeMutation,
+} from '@/pages/Manager/hooks/useManagedClubMutations';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
+import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';
 const fieldLabelClassName = 'text-body3-strong text-text-700';
@@ -20,12 +26,14 @@ function ManagedAccount() {
   const navigate = useNavigate();
   const location = useLocation();
   const clubIdNumber = Number(clubId);
+  const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
 
-  const { banks } = useGetBanks();
-  const { managedClubFee } = useManagedClubFee(clubIdNumber);
-  const { data: clubSettings } = useGetClubSettings(clubIdNumber);
-  const { mutate, isPending, error } = useManagedClubFeeMutation(clubIdNumber);
-  const { mutate: patchSettings, isPending: isPatchPending } = usePatchClubSettings(clubIdNumber);
+  const { data: banks } = useSuspenseQuery(managedClubQueries.banks());
+  const { data: managedClubFee } = useSuspenseQuery(managedClubQueries.fee(clubIdNumber));
+  const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
+  const { mutate: updateClubFee, isPending, error } = useUpdateManagedClubFeeMutation(clubIdNumber);
+  const { mutate: patchSettings, isPending: isPatchPending } = usePatchManagedClubSettingsMutation(clubIdNumber);
 
   const initialAmount = managedClubFee.amount?.toString() ?? '';
   const initialBankId = banks.find((bank) => bank.name === managedClubFee.bankName)?.id ?? null;
@@ -62,11 +70,26 @@ function ManagedAccount() {
       accountHolder: accountHolder.trim(),
     };
 
-    mutate(payload, {
+    updateClubFee(payload, {
       onSuccess: () => {
         if (location.state?.enableAfterSave) {
-          patchSettings({ isFeeEnabled: true }, { onSuccess: () => navigate(-1) });
+          patchSettings(
+            { isFeeEnabled: true },
+            {
+              onSuccess: () => {
+                showToast('회비가 수정되었습니다');
+                navigate(-1);
+              },
+              onError: (error) => {
+                showApiErrorToast(error, '회비 활성화에 실패했습니다.');
+              },
+            }
+          );
+          return;
         }
+
+        showToast('회비가 수정되었습니다');
+        navigate(-1);
       },
     });
   };
@@ -75,10 +98,7 @@ function ManagedAccount() {
     patchSettings({ isFeeEnabled: enabled });
   };
 
-  const errorMessage =
-    (isApiError(error) ? error.apiError?.fieldErrors?.[0]?.message : undefined) ??
-    error?.message ??
-    '회비 정보 저장에 실패했습니다.';
+  const errorMessage = getApiErrorMessage(error, '회비 정보 저장에 실패했습니다.');
 
   return (
     <div className="bg-background flex min-h-full flex-col px-4 pt-5">

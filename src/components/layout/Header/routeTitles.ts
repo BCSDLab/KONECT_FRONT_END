@@ -52,4 +52,12 @@ export const ROUTE_TITLES: RouteTitle[] = [
     match: (pathname) => pathname === '/council',
     title: '총동아리연합회',
   },
+  {
+    match: (pathname) => /^\/council\/notice\/\d+$/.test(pathname),
+    title: '공지사항',
+  },
+  {
+    match: (pathname) => pathname === '/notifications',
+    title: '알림',
+  },
 ];

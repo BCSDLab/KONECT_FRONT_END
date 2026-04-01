@@ -1,7 +1,6 @@
 import { useInfiniteQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { getMyStudyTimeRanking, getStudyTimeRanking } from '@/apis/studyTime';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
-import { studyTimeQueryKeys } from './useStudyTime';
+import { studyTimeQueries } from '@/apis/studyTime/queries';
 
 interface UseStudyTimeRankingParams {
   limit?: number;
@@ -14,30 +13,11 @@ export const useStudyTimeRanking = ({
   sort = 'MONTHLY',
   type = 'PERSONAL',
 }: UseStudyTimeRankingParams = {}) => {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: studyTimeQueryKeys.ranking({ limit, sort, type }),
-    queryFn: ({ pageParam }) =>
-      getStudyTimeRanking({
-        page: pageParam,
-        limit,
-        sort,
-        type,
-      }),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage) => {
-      return lastPage.currentPage < lastPage.totalPage ? lastPage.currentPage + 1 : undefined;
-    },
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery(
+    studyTimeQueries.ranking({ limit, sort, type })
+  );
 
-  const { data: myRankingData } = useSuspenseQuery({
-    queryKey: studyTimeQueryKeys.myRanking({ sort, type }),
-    queryFn: () => getMyStudyTimeRanking({ sort }),
-    select: (data) => {
-      if (type === 'CLUB') return data.clubRankings;
-      if (type === 'STUDENT_NUMBER') return [data.studentNumberRanking];
-      return [data.personalRanking];
-    },
-  });
+  const { data: myRankingData } = useSuspenseQuery(studyTimeQueries.myRanking({ sort, type }));
 
   const rankings = data?.pages.flatMap((page) => page.rankings) ?? [];
   const myRankings = myRankingData ?? [];

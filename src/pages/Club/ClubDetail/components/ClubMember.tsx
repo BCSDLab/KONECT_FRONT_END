@@ -1,7 +1,8 @@
-import clsx from 'clsx';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import type { ClubMember, PositionType } from '@/apis/club/entity';
-import { useGetClubMembers } from '../hooks/useGetClubMembers';
+import { clubQueries } from '@/apis/club/queries';
+import { cn } from '@/utils/ts/cn';
 
 const POSITION_LABELS: Record<PositionType, string> = {
   PRESIDENT: '회장',
@@ -39,7 +40,7 @@ const ClubMemberCard = (clubMember: ClubMember) => {
           <div className="text-sub2 text-indigo-700">{clubMember.name}</div>
           {clubMember.position !== 'MEMBER' && (
             <div
-              className={clsx(
+              className={cn(
                 'flex items-center rounded-sm px-1 py-0.5 text-[10px] leading-[1.6] font-semibold text-white',
                 POSITION_BADGE_STYLES[clubMember.position]
               )}
@@ -60,9 +61,9 @@ interface ClubMemberTabProps {
 
 function ClubMemberTab({ memberCount }: ClubMemberTabProps) {
   const { clubId } = useParams();
-  const { data: clubMembers } = useGetClubMembers(Number(clubId));
+  const { data: clubMembers } = useSuspenseQuery(clubQueries.members(Number(clubId)));
   const members = clubMembers?.clubMembers ?? [];
-  const totalMembers = clubMembers?.clubMembers.length ?? memberCount;
+  const totalMembers = clubMembers?.clubMembers?.length ?? memberCount;
 
   return (
     <div className="flex flex-col gap-2">

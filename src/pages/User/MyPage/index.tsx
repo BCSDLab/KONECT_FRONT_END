@@ -1,4 +1,6 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
+import { authQueries } from '@/apis/auth/queries';
 import ChatIcon from '@/assets/svg/chat.svg';
 import RightArrowIcon from '@/assets/svg/chevron-right.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
@@ -10,7 +12,6 @@ import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
-import { useMyInfo } from '../Profile/hooks/useMyInfo';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 
@@ -22,7 +23,7 @@ const menuItems = [
 ];
 
 function MyPage() {
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
   const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();
@@ -34,7 +35,12 @@ function MyPage() {
         {menuItems
           .filter(({ to }) => to !== 'manager' || myInfo.isClubManager || myInfo.role === 'ADMIN')
           .map(({ to, icon: Icon, label }) => (
-            <Link key={to} to={to} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
+            <Link
+              key={to}
+              to={to}
+              state={to.startsWith('/legal/') ? { backPath: '/mypage' } : undefined}
+              className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors"
+            >
               <div className="flex items-center justify-between px-3 py-2">
                 <div className="flex items-center gap-4">
                   <Icon />
@@ -65,7 +71,9 @@ function MyPage() {
               <LayersIcon />
               <div className="text-sm leading-4 font-semibold">버전관리</div>
             </div>
-            <div className="text-[13px] leading-4 text-indigo-200">v1.0.3</div>
+            <div className="text-[13px] leading-4 text-indigo-200">
+              {window.APP_VERSION ? `v${window.APP_VERSION}` : '-'}
+            </div>
           </div>
         </div>
         <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={openModal}>

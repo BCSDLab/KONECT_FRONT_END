@@ -1,16 +1,21 @@
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 
+interface AgreementLinkState {
+  backPath?: string;
+}
+
 type AgreementRowProps = {
   checked: boolean;
   onChange: (next: boolean) => void;
   label: string;
   route: string;
+  state?: AgreementLinkState;
   RightIcon?: ComponentType<React.SVGAttributes<SVGElement>>;
   CheckIcon: ComponentType<React.SVGAttributes<SVGElement>>;
 };
 
-function AgreementRow({ checked, onChange, label, route, RightIcon, CheckIcon }: AgreementRowProps) {
+function AgreementRow({ checked, onChange, label, route, state, RightIcon, CheckIcon }: AgreementRowProps) {
   return (
     <div className="flex justify-between">
       <label className="flex cursor-pointer items-center gap-3">
@@ -25,7 +30,7 @@ function AgreementRow({ checked, onChange, label, route, RightIcon, CheckIcon }:
       </label>
 
       {RightIcon ? (
-        <Link to={route}>
+        <Link to={route} state={state} aria-label={`${label} 보기`}>
           <RightIcon className="text-indigo-100" />
         </Link>
       ) : null}

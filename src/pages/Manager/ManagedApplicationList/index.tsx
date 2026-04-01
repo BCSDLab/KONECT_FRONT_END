@@ -4,14 +4,16 @@ import type { ClubApplicationsResponse } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check.svg';
 import CloseIcon from '@/assets/svg/close.svg';
 import PersonIcon from '@/assets/svg/person.svg';
-import UserInfoCard from '@/pages/User/MyPage/components/UserInfoCard';
-import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
-import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/date';
+import { useToastContext } from '@/contexts/useToastContext';
 import {
-  useApproveApplication,
-  useGetManagedApplications,
-  useRejectApplication,
-} from '../hooks/useManagedApplications';
+  useApproveManagedApplicationMutation,
+  useRejectManagedApplicationMutation,
+} from '@/pages/Manager/hooks/useManagedApplicationMutations';
+import { useGetManagedApplications } from '@/pages/Manager/hooks/useManagedApplications';
+import ManagerInfoCard from '@/pages/User/MyPage/components/ManagerInfoCard';
+import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
+import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
 
 type ManagedApplication = ClubApplicationsResponse['applications'][number];
 
@@ -82,14 +84,16 @@ function ManagedApplicationList() {
   const params = useParams();
   const navigate = useNavigate();
   const clubId = Number(params.clubId);
+  const { showToast } = useToastContext();
+  const showApiErrorToast = useApiErrorToast();
 
   const limit = 10;
 
   const { managedClubApplicationList, applications, fetchNextPage, hasNextPage, isFetchingNextPage, hasNoRecruitment } =
     useGetManagedApplications(clubId, { limit });
 
-  const { mutate: approve, isPending: isApproving } = useApproveApplication(clubId);
-  const { mutate: reject, isPending: isRejecting } = useRejectApplication(clubId);
+  const { mutate: approve, isPending: isApproving } = useApproveManagedApplicationMutation(clubId);
+  const { mutate: reject, isPending: isRejecting } = useRejectManagedApplicationMutation(clubId);
   const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
     enabled: !hasNoRecruitment,
   });
@@ -98,12 +102,18 @@ function ManagedApplicationList() {
 
   const handleApprove = (e: MouseEvent<HTMLButtonElement>, applicationId: number) => {
     e.stopPropagation();
-    approve(applicationId);
+    approve(applicationId, {
+      onSuccess: () => showToast('지원이 승인되었습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 승인 처리에 실패했습니다.'),
+    });
   };
 
   const handleReject = (e: MouseEvent<HTMLButtonElement>, applicationId: number) => {
     e.stopPropagation();
-    reject(applicationId);
+    reject(applicationId, {
+      onSuccess: () => showToast('지원이 거절되었습니다'),
+      onError: (error) => showApiErrorToast(error, '지원 거절 처리에 실패했습니다.'),
+    });
   };
 
   const handleDetail = (applicationId: number) => {
@@ -113,7 +123,7 @@ function ManagedApplicationList() {
   if (hasNoRecruitment) {
     return (
       <div className="flex flex-col gap-9 px-[19px] py-[17px]">
-        <UserInfoCard type="detail" />
+        <ManagerInfoCard type="detail" />
         <div className="border-indigo-5 flex items-center justify-center rounded-2xl border bg-white px-4 py-10">
           <p className="text-body2 font-medium text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
         </div>
@@ -123,7 +133,7 @@ function ManagedApplicationList() {
 
   return (
     <div className="flex flex-col gap-9 px-[19px] py-[17px]">
-      <UserInfoCard type="detail" />
+      <ManagerInfoCard type="detail" />
 
       <div className="flex flex-col gap-2">
         <div className="border-indigo-5 rounded-2xl border bg-white px-3 py-3">

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getChatRooms } from '@/apis/chat';
-import { chatQueryKeys } from '@/pages/Chat/hooks/useChat';
+import { chatQueries } from '@/apis/chat/queries';
+import { useAuthStore } from '@/stores/authStore';
 
 const UNREAD_CHAT_COUNT_REFETCH_INTERVAL = 5_000;
 
 function useUnreadChatCount() {
   const [isEnabled, setIsEnabled] = useState(false);
+  const authStatus = useAuthStore((state) => state.authStatus);
 
   useEffect(() => {
     if (typeof window === 'undefined') {
@@ -35,11 +36,10 @@ function useUnreadChatCount() {
   }, []);
 
   const { data } = useQuery({
-    queryKey: chatQueryKeys.rooms(),
-    queryFn: getChatRooms,
-    enabled: isEnabled,
+    ...chatQueries.rooms(),
+    enabled: isEnabled && authStatus === 'authenticated',
     staleTime: UNREAD_CHAT_COUNT_REFETCH_INTERVAL,
-    refetchInterval: isEnabled ? UNREAD_CHAT_COUNT_REFETCH_INTERVAL : false,
+    refetchInterval: isEnabled && authStatus === 'authenticated' ? UNREAD_CHAT_COUNT_REFETCH_INTERVAL : false,
   });
 
   const totalUnreadCount = data?.rooms.reduce((sum, room) => sum + room.unreadCount, 0) ?? 0;

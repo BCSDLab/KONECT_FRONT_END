@@ -1,23 +1,16 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { logout } from '@/apis/auth';
+import { authMutations } from '@/apis/auth/mutations';
 import { useAuthStore } from '@/stores/authStore';
 
 export const useLogoutMutation = () => {
   const navigate = useNavigate();
-  const clearAuth = useAuthStore((state) => state.clearAuth);
+  const clearAuthAndNotifyNative = useAuthStore((state) => state.clearAuthAndNotifyNative);
 
   return useMutation({
-    mutationFn: logout,
+    ...authMutations.logout(),
     onSuccess: () => {
-      try {
-        if (window.ReactNativeWebView) {
-          window.ReactNativeWebView.postMessage(JSON.stringify({ type: 'LOGOUT' }));
-        }
-      } catch {
-        // 브릿지 전달 실패가 로그아웃 흐름을 중단시키지 않도록 무시
-      }
-      clearAuth();
+      clearAuthAndNotifyNative();
       navigate('/');
     },
   });

@@ -1,21 +1,14 @@
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
-import { useMyInfo } from '@/pages/User/Profile/hooks/useMyInfo';
+import { authQueries } from '@/apis/auth/queries';
 import { useAuthStore } from '@/stores/authStore';
 
 function FinishStep() {
   const navigate = useNavigate();
-  const { myInfo } = useMyInfo();
+  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
   const setUser = useAuthStore((state) => state.setUser);
 
-  if (!myInfo) {
-    return null;
-  }
-
   const handleStart = () => {
-    if (!myInfo) {
-      return;
-    }
-
     setUser(myInfo);
     navigate('/guide');
   };

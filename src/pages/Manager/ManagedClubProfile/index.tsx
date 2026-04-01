@@ -1,13 +1,15 @@
 import { type ChangeEvent, type MutableRefObject, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { clubQueries } from '@/apis/club/queries';
 import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
-import { isApiError } from '@/interface/error';
-import { useGetClubDetail } from '@/pages/Club/ClubDetail/hooks/useGetClubDetail';
-import { useUpdateClubInfo } from '@/pages/Manager/hooks/useManagedClubs';
+import { useToastContext } from '@/contexts/useToastContext';
+import { useUpdateManagedClubInfoMutation } from '@/pages/Manager/hooks/useManagedClubMutations';
+import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import useUploadImage from '@/utils/hooks/useUploadImage';
-import { prepareImageFile } from '@/utils/ts/imagePreprocessor';
+import { getApiErrorMessage, getApiErrorMessages } from '@/utils/ts/error/apiErrorMessage';
+import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 
 const DESCRIPTION_MAX_LENGTH = 25;
 
@@ -36,8 +38,10 @@ function clearLocalPreviewUrl(localPreviewUrlRef: MutableRefObject<string | null
 
 function ManagedClubInfo() {
   const { clubId } = useParams<{ clubId: string }>();
+  const navigate = useNavigate();
   const numericClubId = Number(clubId);
-  const { data: clubDetail } = useGetClubDetail(numericClubId);
+  const { showToast } = useToastContext();
+  const { data: clubDetail } = useSuspenseQuery(clubQueries.detail(numericClubId));
 
   const initialDescription = clubDetail.description ?? '';
   const initialLocation = clubDetail.location ?? '';
@@ -57,7 +61,7 @@ function ManagedClubInfo() {
   const localPreviewUrlRef = useRef<string | null>(null);
 
   const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateClubInfo(numericClubId);
+  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateManagedClubInfoMutation(numericClubId);
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);
 
   useEffect(() => {
@@ -113,6 +117,9 @@ function ManagedClubInfo() {
       setImageFile(preparedFile);
       setImagePreview(previewUrl);
       e.target.value = '';
+    } catch {
+      e.target.value = '';
+      showToast('이미지 처리에 실패했습니다');
     } finally {
       setIsPreparingImage(false);
     }
@@ -148,6 +155,9 @@ function ManagedClubInfo() {
         location,
         introduce,
       });
+
+      showToast('클럽 정보가 수정되었습니다');
+      navigate(-1);
     } finally {
       setIsUploading(false);
     }
@@ -267,17 +277,16 @@ function ManagedClubInfo() {
 
         <div className="mt-auto flex flex-col gap-2 pt-3">
           {uploadError && (
-            <p className="text-body3 text-danger-700">{uploadError.message ?? '이미지 업로드에 실패했습니다.'}</p>
+            <p className="text-body3 text-danger-700">
+              {getApiErrorMessage(uploadError, '이미지 업로드에 실패했습니다.')}
+            </p>
           )}
-          {error && isApiError(error) && error.apiError?.fieldErrors?.length
-            ? error.apiError.fieldErrors.map((fieldError) => (
-                <p key={fieldError.field} className="text-body3 text-danger-700">
-                  {fieldError.message}
-                </p>
-              ))
-            : error && (
-                <p className="text-body3 text-danger-700">{error.message ?? '동아리 정보 수정에 실패했습니다.'}</p>
-              )}
+          {error &&
+            getApiErrorMessages(error, '동아리 정보 수정에 실패했습니다.').map((message) => (
+              <p key={message} className="text-body3 text-danger-700">
+                {message}
+              </p>
+            ))}
           <button
             type="button"
             onClick={openSubmitModal}

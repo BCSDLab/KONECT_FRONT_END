@@ -1,84 +1,27 @@
-import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import chatCatHeaderImage from '@/assets/image/chat-cat-header.png';
-import MegaphoneSmIcon from '@/assets/svg/megaphone-sm.svg';
-import useUnreadChatCount from '@/pages/Chat/hooks/useUnreadChatCount';
-import { cn } from '@/utils/ts/cn';
+import { notificationQueries } from '@/apis/notification/queries';
+import NotificationsIcon from '@/assets/svg/notifications.svg';
+import UnreadNotificationIcon from '@/assets/svg/unread-notification.svg';
+import { useAuthStore } from '@/stores/authStore';
 
-const CHAT_TOOLTIP_DISMISSED_STORAGE_KEY = 'chat-tooltip-dismissed:v1';
-
-const readChatTooltipDismissed = () => {
-  if (typeof window === 'undefined') {
-    return false;
-  }
-
-  try {
-    return window.localStorage.getItem(CHAT_TOOLTIP_DISMISSED_STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
-};
-
-interface NotificationBellProps {
-  showTooltip?: boolean;
-}
-
-function NotificationBell({ showTooltip = false }: NotificationBellProps) {
-  const { totalUnreadCount } = useUnreadChatCount();
-  const [isTooltipDismissed, setIsTooltipDismissed] = useState(readChatTooltipDismissed);
-
-  const shouldShowTooltip = showTooltip && !isTooltipDismissed;
-
-  const handleChatButtonClick = () => {
-    if (isTooltipDismissed) {
-      return;
-    }
-
-    setIsTooltipDismissed(true);
-
-    try {
-      window.localStorage.setItem(CHAT_TOOLTIP_DISMISSED_STORAGE_KEY, 'true');
-    } catch {
-      // Ignore storage failures and continue navigation.
-    }
-  };
+function NotificationBell() {
+  const authStatus = useAuthStore((state) => state.authStatus);
+  const { data } = useQuery({
+    ...notificationQueries.inboxUnreadCount(),
+    enabled: authStatus === 'authenticated',
+    staleTime: 30_000,
+  });
+  const unreadCount = data?.unreadCount ?? 0;
 
   return (
-    <div className="relative inline-flex">
-      <Link
-        to={'chats'}
-        aria-label="채팅 열기"
-        onClick={handleChatButtonClick}
-        className={cn('relative inline-flex', shouldShowTooltip && 'chat-tooltip-anchor')}
-      >
-        <img
-          src={chatCatHeaderImage}
-          alt=""
-          aria-hidden="true"
-          width={94}
-          height={78}
-          className="h-[39px] w-[47px] drop-shadow-[0_4px_4px_rgba(0,0,0,0.20)]"
-        />
-        {totalUnreadCount > 0 ? (
-          <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] text-white">
-            {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
-          </span>
-        ) : null}
-      </Link>
-
-      {shouldShowTooltip ? (
-        <div className="chat-tooltip pointer-events-none absolute top-[calc(100%+2px)] right-0 z-10 w-[149px]">
-          <span
-            className="chat-tooltip-arrow absolute -top-1.5 right-[15px] h-3 w-3.5 bg-black/40 [clip-path:polygon(50%_0,0_100%,100%_100%)]"
-            aria-hidden
-          />
-          <div className="mt-1.5 flex items-center gap-1 rounded-[20px] bg-black/40 px-2.5 py-1 text-white">
-            <MegaphoneSmIcon className="text-warning-600 size-[13px] shrink-0" />
-            <span className="text-cap2-strong whitespace-nowrap">채팅방 기능을 사용해보세요!</span>
-          </div>
-        </div>
-      ) : null}
-    </div>
+    <Link
+      to="/notifications"
+      aria-label={unreadCount > 0 ? `읽지 않은 알림 ${unreadCount}개, 알림 목록 열기` : '알림 목록 열기'}
+      className="inline-flex items-center justify-center"
+    >
+      {unreadCount > 0 ? <UnreadNotificationIcon /> : <NotificationsIcon />}
+    </Link>
   );
 }
 
