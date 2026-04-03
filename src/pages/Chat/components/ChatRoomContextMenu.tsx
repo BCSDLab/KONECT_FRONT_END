@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
+import useOutsideTapDismiss from '@/utils/hooks/useOutsideTapDismiss';
 import { cn } from '@/utils/ts/cn';
 
 interface MenuItem {
@@ -18,7 +18,7 @@ interface ChatRoomContextMenuProps {
 
 export default function ChatRoomContextMenu({ x, y, title, items, onClose }: ChatRoomContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
-  useClickTouchOutside(menuRef, onClose);
+  useOutsideTapDismiss(menuRef, onClose);
 
   const menuWidth = 160;
   const menuItemHeight = 44;
