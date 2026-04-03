@@ -92,7 +92,7 @@ function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
     <Link
       {...longPress}
       to={`${room.roomId}`}
-      className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
+      className="active:bg-indigo-5 user-select-none flex touch-pan-y items-center gap-3 bg-white px-5 py-3 transition-colors"
     >
       <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
 
