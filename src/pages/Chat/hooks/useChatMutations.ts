@@ -27,6 +27,17 @@ export const useSendChatMessageMutation = () => {
   });
 };
 
+export const useUpdateChatRoomNameMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.updateRoomName(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
+};
+
 export const useToggleChatMuteMutation = (chatRoomId?: number) => {
   const queryClient = useQueryClient();
 
