@@ -1,5 +1,12 @@
 import { mutationOptions } from '@tanstack/react-query';
-import { patchChatRoomName, postAdminChatRoom, postChatMessage, postChatMute, postChatRooms } from '@/apis/chat';
+import {
+  patchChatRoomName,
+  postAdminChatRoom,
+  postChatMessage,
+  postChatMute,
+  postChatRooms,
+  deleteChatRoom,
+} from '@/apis/chat';
 
 export const chatMutationKeys = {
   createRoom: () => ['chat', 'createRoom'] as const,
@@ -7,6 +14,7 @@ export const chatMutationKeys = {
   sendMessage: () => ['chat', 'sendMessage'] as const,
   toggleMute: (chatRoomId?: number) => ['chat', 'toggleMute', chatRoomId ?? 'unknown'] as const,
   updateRoomName: () => ['chat', 'updateRoomName'] as const,
+  deleteRoom: () => ['chat', 'deleteRoom'] as const,
 };
 
 export const chatMutations = {
@@ -40,5 +48,10 @@ export const chatMutations = {
     mutationOptions({
       mutationKey: chatMutationKeys.updateRoomName(),
       mutationFn: ({ chatRoomId, name }: { chatRoomId: number; name: string }) => patchChatRoomName(chatRoomId, name),
+    }),
+  deleteRoom: () =>
+    mutationOptions({
+      mutationKey: chatMutationKeys.deleteRoom(),
+      mutationFn: (chatRoomId: number) => deleteChatRoom(chatRoomId),
     }),
 };

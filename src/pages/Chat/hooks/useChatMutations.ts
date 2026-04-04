@@ -48,3 +48,14 @@ export const useToggleChatMuteMutation = (chatRoomId?: number) => {
     },
   });
 };
+
+export const useDeleteChatRoomMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.deleteRoom(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
+};

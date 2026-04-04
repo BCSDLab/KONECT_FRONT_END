@@ -6,6 +6,7 @@ import {
   useSendChatMessageMutation,
   useToggleChatMuteMutation,
   useUpdateChatRoomNameMutation,
+  useDeleteChatRoomMutation,
 } from '@/pages/Chat/hooks/useChatMutations';
 
 const useChat = (chatRoomId?: number) => {
@@ -40,6 +41,8 @@ const useChat = (chatRoomId?: number) => {
 
   const updateRoomNameMutation = useUpdateChatRoomNameMutation();
 
+  const deleteChatRoomMutation = useDeleteChatRoomMutation();
+
   return {
     chatRoomList,
     createChatRoom: createChatRoomMutation.mutateAsync,
@@ -56,6 +59,8 @@ const useChat = (chatRoomId?: number) => {
     isTogglingMute: toggleMuteMutation.isPending,
     updateRoomName: updateRoomNameMutation.mutateAsync,
     isUpdatingRoomName: updateRoomNameMutation.isPending,
+    deleteChatRoom: deleteChatRoomMutation.mutateAsync,
+    isDeletingChatRoom: deleteChatRoomMutation.isPending,
   };
 };
 

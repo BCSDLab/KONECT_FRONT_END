@@ -202,7 +202,7 @@ function ChatAdvertisementListItemSkeleton() {
 }
 
 function ChatListPage() {
-  const { chatRoomList, updateRoomName } = useChat();
+  const { chatRoomList, updateRoomName, deleteChatRoom } = useChat();
   const [contextMenu, setContextMenu] = useState<{
     x: number;
     y: number;
@@ -264,7 +264,11 @@ function ChatListPage() {
           <button
             type="button"
             className="bg-primary-500 mr-4 flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
-            onClick={() => setLeaveRoom(null)}
+            onClick={() => {
+              setLeaveRoom(null);
+              if (!leaveRoom) return;
+              deleteChatRoom(leaveRoom.roomId);
+            }}
           >
             나가기
           </button>
