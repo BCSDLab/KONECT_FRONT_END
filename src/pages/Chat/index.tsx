@@ -264,10 +264,14 @@ function ChatListPage() {
           <button
             type="button"
             className="bg-primary-500 mr-4 flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
-            onClick={() => {
+            onClick={async () => {
               setLeaveRoom(null);
               if (!leaveRoom) return;
-              deleteChatRoom(leaveRoom.roomId);
+              try {
+                await deleteChatRoom(leaveRoom.roomId);
+              } catch (error) {
+                console.error('Error leaving chat room:', error);
+              }
             }}
           >
             나가기
@@ -295,8 +299,9 @@ function ChatListPage() {
             onClick={() => {
               if (!changeRoomName) return;
               const roomId = changeRoomName.roomId;
+              const normalizedName = newRoomName.trim();
               setChangeRoomName(null);
-              void updateRoomName({ chatRoomId: roomId, name: newRoomName });
+              void updateRoomName({ chatRoomId: roomId, name: normalizedName });
             }}
           >
             확인

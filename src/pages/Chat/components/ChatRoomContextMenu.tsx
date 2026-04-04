@@ -20,9 +20,11 @@ export default function ChatRoomContextMenu({ x, y, title, items, onClose }: Cha
   const menuRef = useRef<HTMLDivElement>(null);
   useOutsideTapDismiss(menuRef, onClose);
 
-  const menuWidth = 160;
+  const menuWidth = 161;
   const menuItemHeight = 44;
-  const menuHeight = items.length * menuItemHeight;
+  const menuHeaderHeight = 27;
+  const menuVerticalPadding = 24;
+  const menuHeight = menuHeaderHeight + menuVerticalPadding + items.length * menuItemHeight;
 
   const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth : x;
   const adjustedY = y + menuHeight > window.innerHeight ? y - menuHeight : y;
@@ -30,8 +32,8 @@ export default function ChatRoomContextMenu({ x, y, title, items, onClose }: Cha
   return (
     <div
       ref={menuRef}
-      className="bg-text-100/80 fixed z-50 h-[159px] w-[161px] overflow-hidden rounded-xl py-3 shadow-lg"
-      style={{ left: adjustedX, top: adjustedY }}
+      className="bg-text-100/80 fixed z-50 w-[161px] overflow-hidden rounded-xl py-3 shadow-lg"
+      style={{ left: adjustedX, top: adjustedY, height: menuHeight }}
     >
       <div className="truncate px-4 py-3 text-[14px] font-bold text-indigo-900">{title}</div>
       {items.map((item) => (
