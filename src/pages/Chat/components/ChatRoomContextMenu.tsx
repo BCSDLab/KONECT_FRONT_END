@@ -15,18 +15,18 @@ interface ChatRoomContextMenuProps {
   items: MenuItem[];
   onClose: () => void;
 }
+const MENU_WIDTH = 161;
+const MENU_ITEM_HEIGHT = 44;
+const MENU_HEADER_HEIGHT = 27;
+const MENU_VERTICAL_PADDING = 24;
 
 export default function ChatRoomContextMenu({ x, y, title, items, onClose }: ChatRoomContextMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   useOutsideTapDismiss(menuRef, onClose);
 
-  const menuWidth = 161;
-  const menuItemHeight = 44;
-  const menuHeaderHeight = 27;
-  const menuVerticalPadding = 24;
-  const menuHeight = menuHeaderHeight + menuVerticalPadding + items.length * menuItemHeight;
+  const menuHeight = MENU_HEADER_HEIGHT + MENU_VERTICAL_PADDING + items.length * MENU_ITEM_HEIGHT;
 
-  const adjustedX = x + menuWidth > window.innerWidth ? x - menuWidth : x;
+  const adjustedX = x + MENU_WIDTH > window.innerWidth ? x - MENU_WIDTH : x;
   const adjustedY = y + menuHeight > window.innerHeight ? y - menuHeight : y;
 
   return (

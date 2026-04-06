@@ -33,10 +33,10 @@ export const chatMutations = {
       mutationKey: chatMutationKeys.sendMessage(),
       mutationFn: postChatMessage,
     }),
-  toggleMute: (chatRoomId?: number) =>
+  toggleMute: () =>
     mutationOptions({
-      mutationKey: chatMutationKeys.toggleMute(chatRoomId),
-      mutationFn: async () => {
+      mutationKey: chatMutationKeys.toggleMute(),
+      mutationFn: async (chatRoomId?: number) => {
         if (!chatRoomId) {
           throw new Error('chatRoomId is missing');
         }

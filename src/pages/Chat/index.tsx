@@ -201,22 +201,65 @@ function ChatAdvertisementListItemSkeleton() {
   );
 }
 
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  room: Room;
+}
+
 function ChatListPage() {
-  const { chatRoomList, updateRoomName, deleteChatRoom } = useChat();
-  const [contextMenu, setContextMenu] = useState<{
-    x: number;
-    y: number;
-    room: Room;
-  } | null>(null);
-  const [leaveRoom, setLeaveRoom] = useState<Room | null>(null);
-  const [changeRoomName, setChangeRoomName] = useState<Room | null>(null);
-  const [newRoomName, setNewRoomName] = useState('');
+  const { chatRoomList, updateRoomName, deleteChatRoom, toggleMute } = useChat();
   const rooms = chatRoomList.rooms;
   const advertisementCount = getAdvertisementCount(rooms.length);
   const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'chat-list',
   });
+
+  const [contextMenu, setContextMenu] = useState<ContextMenuProps | null>(null);
+  const [leaveRoom, setLeaveRoom] = useState<Room | null>(null);
+  const [changeRoomName, setChangeRoomName] = useState<Room | null>(null);
+  const [newRoomName, setNewRoomName] = useState('');
+
+  const changeName = () => {
+    if (!changeRoomName) return;
+    const roomId = changeRoomName.roomId;
+    const normalizedName = newRoomName.trim();
+    setChangeRoomName(null);
+    void updateRoomName({ chatRoomId: roomId, name: normalizedName });
+  };
+
+  const contextMenuItems = (room: Room) => [
+    {
+      label: '채팅방 이름 변경',
+      onClick: () => {
+        setChangeRoomName(room);
+        setNewRoomName(room.roomName);
+      },
+    },
+    {
+      label: room.isMuted ? '알림 켜기' : '알림 끄기',
+      onClick: () => {
+        toggleMute(room.roomId);
+        setContextMenu(null);
+      },
+    },
+    ...(room.chatType === 'DIRECT'
+      ? [{ label: '채팅방 나가기', onClick: () => setLeaveRoom(room), danger: true }]
+      : []),
+  ];
+
+  const deleteChat = async () => {
+    if (!leaveRoom) return;
+    const roomId = leaveRoom.roomId;
+    setLeaveRoom(null);
+    try {
+      await deleteChatRoom(roomId);
+    } catch (error) {
+      console.error('Error leaving chat room:', error);
+    }
+  };
+
   if (rooms.length === 0) {
     return (
       <div className="bg-indigo-0 flex min-h-full flex-col items-center justify-center px-6 py-3 text-center">
@@ -264,15 +307,7 @@ function ChatListPage() {
           <button
             type="button"
             className="bg-primary-500 mr-4 flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
-            onClick={async () => {
-              setLeaveRoom(null);
-              if (!leaveRoom) return;
-              try {
-                await deleteChatRoom(leaveRoom.roomId);
-              } catch (error) {
-                console.error('Error leaving chat room:', error);
-              }
-            }}
+            onClick={deleteChat}
           >
             나가기
           </button>
@@ -281,7 +316,7 @@ function ChatListPage() {
       <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="h-59">
         <div className="flex items-center px-4 py-4">
           <button type="button" aria-label="닫기" onClick={() => setChangeRoomName(null)}>
-            <ChevronLeftIcon className="size-6" />
+            <ChevronLeftIcon />
           </button>
           <div className="px-30 text-center font-semibold">이름 변경</div>
         </div>
@@ -296,13 +331,7 @@ function ChatListPage() {
           <button
             type="button"
             className="bg-primary-500 w-[343px] flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
-            onClick={() => {
-              if (!changeRoomName) return;
-              const roomId = changeRoomName.roomId;
-              const normalizedName = newRoomName.trim();
-              setChangeRoomName(null);
-              void updateRoomName({ chatRoomId: roomId, name: normalizedName });
-            }}
+            onClick={changeName}
           >
             확인
           </button>
@@ -313,21 +342,7 @@ function ChatListPage() {
           x={contextMenu.x}
           y={contextMenu.y}
           title={contextMenu.room.roomName}
-          items={[
-            {
-              label: '채팅방 이름 변경',
-              onClick: () => {
-                setChangeRoomName(contextMenu.room);
-                setNewRoomName(contextMenu.room.roomName);
-              },
-            },
-            { label: '알림 끄기', onClick: () => {} },
-            {
-              label: '채팅방 나가기',
-              onClick: () => setLeaveRoom(contextMenu.room),
-              danger: true,
-            },
-          ]}
+          items={contextMenuItems(contextMenu.room)}
           onClose={() => setContextMenu(null)}
         />
       )}

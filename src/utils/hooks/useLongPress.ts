@@ -5,7 +5,8 @@ interface LongPressOptions {
   onLongPress: (x: number, y: number) => void;
 }
 
-export function useLongPress({ delay = 500, onLongPress }: LongPressOptions) {
+const LONG_PRESS_TIME = 500;
+export function useLongPress({ delay = LONG_PRESS_TIME, onLongPress }: LongPressOptions) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pointerIdRef = useRef<number | null>(null);
   const startPointRef = useRef<{ x: number; y: number } | null>(null);

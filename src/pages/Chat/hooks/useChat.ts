@@ -37,7 +37,7 @@ const useChat = (chatRoomId?: number) => {
 
   const { data: clubMembersData } = useQuery(clubQueries.members(clubId));
 
-  const toggleMuteMutation = useToggleChatMuteMutation(chatRoomId);
+  const toggleMuteMutation = useToggleChatMuteMutation();
 
   const updateRoomNameMutation = useUpdateChatRoomNameMutation();
 

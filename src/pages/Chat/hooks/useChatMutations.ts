@@ -38,11 +38,11 @@ export const useUpdateChatRoomNameMutation = () => {
   });
 };
 
-export const useToggleChatMuteMutation = (chatRoomId?: number) => {
+export const useToggleChatMuteMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...chatMutations.toggleMute(chatRoomId),
+    ...chatMutations.toggleMute(),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
     },
