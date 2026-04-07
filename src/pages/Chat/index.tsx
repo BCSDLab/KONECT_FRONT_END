@@ -92,7 +92,7 @@ function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
     <Link
       {...longPress}
       to={`${room.roomId}`}
-      className="active:bg-indigo-5 user-select-none flex touch-pan-y items-center gap-3 bg-white px-5 py-3 transition-colors"
+      className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-5 py-3 transition-colors select-none"
     >
       <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
 
@@ -221,12 +221,16 @@ function ChatListPage() {
   const [changeRoomName, setChangeRoomName] = useState<Room | null>(null);
   const [newRoomName, setNewRoomName] = useState('');
 
-  const changeName = () => {
+  const changeName = async () => {
     if (!changeRoomName) return;
     const roomId = changeRoomName.roomId;
     const normalizedName = newRoomName.trim();
+    try {
+      await updateRoomName({ chatRoomId: roomId, name: normalizedName });
+    } catch (error) {
+      console.error('Error updating room name:', error);
+    }
     setChangeRoomName(null);
-    void updateRoomName({ chatRoomId: roomId, name: normalizedName });
   };
 
   const contextMenuItems = (room: Room) => [
