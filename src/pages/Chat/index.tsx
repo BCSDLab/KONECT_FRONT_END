@@ -8,6 +8,7 @@ import PersonIcon from '@/assets/svg/person.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Modal from '@/components/common/Modal';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
+import { isDirectChatType } from '@/pages/Chat/utils/chatType';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import { useLongPress } from '@/utils/hooks/useLongPress';
 import ChatRoomContextMenu from './components/ChatRoomContextMenu';
@@ -240,7 +241,7 @@ function ChatListPage() {
         setContextMenu(null);
       },
     },
-    ...(room.chatType === 'DIRECT'
+    ...(isDirectChatType(room.chatType)
       ? [{ label: '채팅방 나가기', onClick: () => setLeaveRoom(room), danger: true }]
       : []),
   ];

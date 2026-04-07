@@ -24,7 +24,7 @@ const SORT_OPTIONS = [
 
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
-  const { bottomOverlayInset } = useLayoutElementsContext();
+  const { bottomOverlayInsetPx } = useLayoutElementsContext();
   const timerSectionRef = useRef<HTMLDivElement>(null);
 
   const [isPending, startTransition] = useTransition();
@@ -37,7 +37,7 @@ function TimerPage() {
   const isBusy = isStarting || isStopping;
   const { bottomInsetPx, fullSheetTopOffset, halfSheetTopOffset, timerSectionPaddingTopClassName, timerSize } =
     useTimerLayout({
-      bottomOverlayInset,
+      bottomOverlayInsetPx,
       timerSectionRef,
     });
 
@@ -66,7 +66,6 @@ function TimerPage() {
       <BottomSheet
         resizable
         position={sheetPosition}
-        bottomOffset={bottomOverlayInset}
         halfTopOffset={halfSheetTopOffset}
         fullTopOffset={fullSheetTopOffset}
         onPositionChange={handleSheetPositionChange}

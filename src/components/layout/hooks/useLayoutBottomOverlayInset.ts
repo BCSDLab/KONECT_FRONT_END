@@ -1,18 +1,19 @@
 import { useLayoutEffect, useState, type RefObject } from 'react';
-import {
-  DEFAULT_BOTTOM_NAV_OVERLAY_INSET,
-  DEFAULT_BOTTOM_OVERLAY_INSET,
-  getLayoutBottomOverlayInset,
-} from '@/components/layout/bottomOverlay';
+import { getDefaultLayoutBottomOverlayInset, getLayoutBottomOverlayInset } from '@/components/layout/bottomOverlay';
 
 export function useLayoutBottomOverlayInset(showBottomNav: boolean, bottomNavRef: RefObject<HTMLElement | null>) {
-  const [bottomOverlayInset, setBottomOverlayInset] = useState(
-    showBottomNav ? DEFAULT_BOTTOM_NAV_OVERLAY_INSET : DEFAULT_BOTTOM_OVERLAY_INSET
-  );
+  const [bottomOverlayInset, setBottomOverlayInset] = useState(() => getDefaultLayoutBottomOverlayInset(showBottomNav));
 
   useLayoutEffect(() => {
     const measureInset = () => {
-      setBottomOverlayInset(getLayoutBottomOverlayInset(showBottomNav, bottomNavRef.current));
+      const nextInset = getLayoutBottomOverlayInset(showBottomNav, bottomNavRef.current);
+
+      setBottomOverlayInset((previousInset) =>
+        previousInset.bottomOverlayInset === nextInset.bottomOverlayInset &&
+        previousInset.bottomOverlayInsetPx === nextInset.bottomOverlayInsetPx
+          ? previousInset
+          : nextInset
+      );
     };
 
     measureInset();
