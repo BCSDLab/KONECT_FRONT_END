@@ -237,7 +237,6 @@ function ChatListPage() {
       label: room.isMuted ? '알림 켜기' : '알림 끄기',
       onClick: () => {
         toggleMute(room.roomId);
-        setContextMenu(null);
       },
     },
     ...(isDirectChatType(room.chatType)
@@ -266,7 +265,7 @@ function ChatListPage() {
   }
 
   return (
-    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-[#f3f5f8] px-5 pt-[23px]">
+    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-[#f3f5f8] px-5 pt-5.75">
       <div className="rounded-t-2xl bg-white px-0.5 py-2.5 pb-10">
         <div className="flex h-full flex-col gap-2">
           {rooms.map((room, index) => {
@@ -293,10 +292,10 @@ function ChatListPage() {
         <div className="text-text-700 flex flex-col gap-5 text-center text-[15px] leading-[1.6]">
           <p className="font-semibold">채팅방 나가기</p>
           <p className="font-medium">{leaveRoom?.roomName} 채팅방을 나가시겠어요?</p>
-          <div className="flex gap-2 text-[15px] leading-[22px] font-bold">
+          <div className="flex gap-2 text-[15px] leading-5.5 font-bold">
             <button
               type="button"
-              className="border-primary-500 text-primary-500 flex-1 cursor-pointer rounded-[10px] border py-[11px]"
+              className="border-primary-500 text-primary-500 flex-1 cursor-pointer rounded-[10px] border py-2.75"
               onClick={() => setLeaveRoom(null)}
             >
               취소
@@ -313,23 +312,28 @@ function ChatListPage() {
       </Modal>
 
       <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="px-6 py-4">
-        <div className="mb-11 flex items-center">
-          <button className="fixed" type="button" aria-label="닫기" onClick={() => setChangeRoomName(null)}>
+        <div className="relative mb-11 flex items-center justify-center">
+          <button
+            className="absolute left-0 inline-flex items-center justify-center"
+            type="button"
+            aria-label="닫기"
+            onClick={() => setChangeRoomName(null)}
+          >
             <ChevronLeftIcon />
           </button>
-          <div className="text-text-700 w-full text-center leading-[1.6] font-semibold">이름 변경</div>
+          <div className="text-text-700 text-center leading-[1.6] font-semibold">이름 변경</div>
         </div>
         <div className="flex w-full flex-col items-center gap-6">
           <input
             type="text"
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
-            className="text-text-700 w-full rounded-[10px] border-[0.5px] border-indigo-50 py-3.5 text-center"
+            className="text-text-700 w-full rounded-[10px] border-[0.5px] border-indigo-50 py-3.5 text-center text-[13px] leading-[1.6]"
             placeholder="변경할 채팅방명을 입력해주세요."
           />
           <button
             type="button"
-            className="bg-primary-500 border-primary-500 w-full cursor-pointer rounded-[10px] border py-2.5 text-[15px] leading-[22px] font-bold text-white"
+            className="bg-primary-500 border-primary-500 w-full cursor-pointer rounded-[10px] border py-2.5 text-[15px] leading-5.5 font-bold text-white"
             onClick={changeName}
           >
             확인
