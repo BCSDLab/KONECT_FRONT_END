@@ -1,11 +1,15 @@
+import type { Ref } from 'react';
 import { useAuthStore } from '@/stores/authStore';
 import NotificationBell from './NotificationBell';
 
-function InfoHeader() {
+function InfoHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
   const user = useAuthStore((state) => state.user);
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex items-center rounded-b-3xl bg-white px-4 pt-2 pb-3 shadow-[0_2px_2px_0_rgba(0,0,0,0.05)]">
+    <header
+      ref={headerRef}
+      className="fixed top-0 right-0 left-0 z-30 flex items-center rounded-b-3xl bg-white px-4 pt-2 pb-3 shadow-[0_2px_2px_0_rgba(0,0,0,0.05)]"
+    >
       <div className="flex flex-1 flex-col">
         {user ? (
           <>

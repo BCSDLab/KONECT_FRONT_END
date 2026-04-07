@@ -7,7 +7,6 @@ import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import PersonIcon from '@/assets/svg/person.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Modal from '@/components/common/Modal';
-import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { isDirectChatType } from '@/pages/Chat/utils/chatType';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import { useLongPress } from '@/utils/hooks/useLongPress';
@@ -92,7 +91,7 @@ function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
     <Link
       {...longPress}
       to={`${room.roomId}`}
-      className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-5 py-3 transition-colors select-none"
+      className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-4 py-3 transition-colors select-none"
     >
       <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
 
@@ -238,7 +237,6 @@ function ChatListPage() {
       label: room.isMuted ? '알림 켜기' : '알림 끄기',
       onClick: () => {
         toggleMute(room.roomId);
-        setContextMenu(null);
       },
     },
     ...(isDirectChatType(room.chatType)
@@ -267,67 +265,75 @@ function ChatListPage() {
   }
 
   return (
-    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-gray-100 px-5 py-[23px]">
-      <div className="h-full [&>*:first-child]:rounded-t-2xl [&>*:last-child]:rounded-b-lg">
-        {rooms.map((room, index) => {
-          const advertisementIndex = getAdvertisementIndexAfterRoom(index);
-          const shouldRenderAdvertisement = advertisementIndex !== null;
-          const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
+    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-[#f3f5f8] px-5 pt-5.75">
+      <div className="rounded-t-2xl bg-white px-0.5 py-2.5 pb-10">
+        <div className="flex h-full flex-col gap-2">
+          {rooms.map((room, index) => {
+            const advertisementIndex = getAdvertisementIndexAfterRoom(index);
+            const shouldRenderAdvertisement = advertisementIndex !== null;
+            const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
 
-          return (
-            <Fragment key={room.roomId}>
-              <ChatRoomListItem room={room} onLongPress={(x, y, room) => setContextMenu({ x, y, room })} />
-              {advertisement && (
-                <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
-              )}
-              {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
-                <ChatAdvertisementListItemSkeleton />
-              )}
-            </Fragment>
-          );
-        })}
-        <BottomOverlaySpacer gap={24} />
-      </div>
-      <Modal isOpen={leaveRoom !== null} onClose={() => setLeaveRoom(null)} className="h-[172px] w-[341px] rounded-2xl">
-        <div className="px-6 py-6 text-center">
-          <p className="text-text-700 mb-5 text-[16px] font-bold">채팅방 나가기</p>
-          <p className="text-text-500 mt-2 text-[14px]">{leaveRoom?.roomName} 채팅방을 나가시겠어요?</p>
+            return (
+              <Fragment key={room.roomId}>
+                <ChatRoomListItem room={room} onLongPress={(x, y, room) => setContextMenu({ x, y, room })} />
+                {advertisement && (
+                  <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
+                )}
+                {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+                  <ChatAdvertisementListItemSkeleton />
+                )}
+              </Fragment>
+            );
+          })}
         </div>
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="ml-4 h-11 w-37 flex-1 cursor-pointer rounded-[10px] border border-[#69BFDF] py-4 text-[14px] font-bold text-[#69BFDF]"
-            onClick={() => setLeaveRoom(null)}
-          >
-            취소
-          </button>
-          <button
-            type="button"
-            className="bg-primary-500 mr-4 flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
-            onClick={deleteChat}
-          >
-            나가기
-          </button>
+      </div>
+
+      <Modal isOpen={leaveRoom !== null} onClose={() => setLeaveRoom(null)} className="rounded-2xl px-4 py-5">
+        <div className="text-text-700 flex flex-col gap-5 text-center text-[15px] leading-[1.6]">
+          <p className="font-semibold">채팅방 나가기</p>
+          <p className="font-medium">{leaveRoom?.roomName} 채팅방을 나가시겠어요?</p>
+          <div className="flex gap-2 text-[15px] leading-5.5 font-bold">
+            <button
+              type="button"
+              className="border-primary-500 text-primary-500 flex-1 cursor-pointer rounded-[10px] border py-2.75"
+              onClick={() => setLeaveRoom(null)}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className="bg-primary-500 border-primary-500 flex-1 cursor-pointer rounded-[10px] border text-white"
+              onClick={deleteChat}
+            >
+              나가기
+            </button>
+          </div>
         </div>
       </Modal>
-      <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="h-59">
-        <div className="flex items-center px-4 py-4">
-          <button type="button" aria-label="닫기" onClick={() => setChangeRoomName(null)}>
+
+      <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="px-6 py-4">
+        <div className="relative mb-11 flex items-center justify-center">
+          <button
+            className="absolute left-0 inline-flex items-center justify-center"
+            type="button"
+            aria-label="닫기"
+            onClick={() => setChangeRoomName(null)}
+          >
             <ChevronLeftIcon />
           </button>
-          <div className="px-30 text-center font-semibold">이름 변경</div>
+          <div className="text-text-700 text-center leading-[1.6] font-semibold">이름 변경</div>
         </div>
         <div className="flex w-full flex-col items-center gap-6">
           <input
             type="text"
             value={newRoomName}
             onChange={(e) => setNewRoomName(e.target.value)}
-            className="text-text-700 mt-11 h-[50px] w-[343px] rounded-2xl border border-indigo-50 text-center"
+            className="text-text-700 w-full rounded-[10px] border-[0.5px] border-indigo-50 py-3.5 text-center text-[13px] leading-[1.6]"
             placeholder="변경할 채팅방명을 입력해주세요."
           />
           <button
             type="button"
-            className="bg-primary-500 w-[343px] flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
+            className="bg-primary-500 border-primary-500 w-full cursor-pointer rounded-[10px] border py-2.5 text-[15px] leading-5.5 font-bold text-white"
             onClick={changeName}
           >
             확인
