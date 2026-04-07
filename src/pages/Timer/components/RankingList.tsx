@@ -18,12 +18,7 @@ interface RankingListProps {
 }
 
 function getRankingItemKey(prefix: 'my' | 'ranking', item: StudyRanking) {
-  const itemId =
-    'id' in item && (typeof item.id === 'number' || typeof item.id === 'string')
-      ? item.id
-      : `${item.rank}-${item.name}`;
-
-  return `${prefix}-${itemId}`;
+  return `${prefix}-${item.rank}-${item.name}`;
 }
 
 export default function RankingList({

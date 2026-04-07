@@ -51,6 +51,7 @@ export default function BottomSheet({
   const resizableFullHeight = `calc(100% - ${fullTopOffset}px)`;
   const fullHeight = `calc(100% - ${fullTopOffset}px - ${normalizedBottomOffset})`;
   const halfHeightValue = normalizedHalfHeight ?? `calc(100% - ${halfTopOffset}px)`;
+  const nonResizableHalfHeight = normalizedHalfHeight ?? `calc(100% - ${halfTopOffset}px - ${normalizedBottomOffset})`;
 
   const getResizableHeight = () => {
     if (effectivePosition === 'half') {
@@ -109,10 +110,7 @@ export default function BottomSheet({
       )}
       style={{
         bottom: normalizedBottomOffset,
-        height:
-          effectivePosition === 'full'
-            ? fullHeight
-            : (normalizedHalfHeight ?? `calc(100% - ${halfTopOffset}px - ${normalizedBottomOffset})`),
+        height: effectivePosition === 'full' ? fullHeight : nonResizableHalfHeight,
         transform: getTransform(),
       }}
     >

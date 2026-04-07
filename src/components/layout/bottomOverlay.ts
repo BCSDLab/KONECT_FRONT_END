@@ -6,6 +6,7 @@ export type BottomOverlayGap = 16 | 24;
 export const DEFAULT_BOTTOM_OVERLAY_GAP: BottomOverlayGap = 16;
 const DEFAULT_BOTTOM_OVERLAY_INSET_PX = 0;
 const DEFAULT_BOTTOM_NAV_OVERLAY_INSET_PX = 80;
+let cachedProbe: HTMLDivElement | null = null;
 
 export interface LayoutBottomOverlayInset {
   bottomOverlayInset: string;
@@ -16,21 +17,34 @@ function getViewportHeight() {
   return window.visualViewport?.height ?? window.innerHeight;
 }
 
+function getOrCreateProbe() {
+  if (typeof document === 'undefined' || !document.body) {
+    return null;
+  }
+
+  if (cachedProbe?.isConnected) {
+    return cachedProbe;
+  }
+
+  cachedProbe = document.createElement('div');
+  cachedProbe.style.position = 'fixed';
+  cachedProbe.style.pointerEvents = 'none';
+  cachedProbe.style.visibility = 'hidden';
+  document.body.appendChild(cachedProbe);
+
+  return cachedProbe;
+}
+
 function resolveBottomOverlayInsetPx(bottomOverlayInset: string, fallback: number) {
-  if (typeof document === 'undefined') {
+  const probe = getOrCreateProbe();
+
+  if (!probe) {
     return fallback;
   }
 
-  const probe = document.createElement('div');
-  probe.style.position = 'fixed';
-  probe.style.pointerEvents = 'none';
-  probe.style.visibility = 'hidden';
   probe.style.paddingBottom = bottomOverlayInset;
-  document.body.appendChild(probe);
 
   const resolvedInset = window.getComputedStyle(probe).paddingBottom;
-  document.body.removeChild(probe);
-
   const parsedInset = Number.parseFloat(resolvedInset);
 
   return Number.isFinite(parsedInset) ? parsedInset : fallback;
