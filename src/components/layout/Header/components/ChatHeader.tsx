@@ -58,7 +58,7 @@ function ChatHeader() {
             <button
               type="button"
               disabled={isTogglingMute}
-              onClick={() => void toggleMute()}
+              onClick={() => void toggleMute(numericRoomId)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 isMuted ? 'bg-gray-300' : 'bg-primary'
               } disabled:cursor-not-allowed disabled:opacity-60`}

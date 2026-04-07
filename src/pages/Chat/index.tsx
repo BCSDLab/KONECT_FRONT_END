@@ -1,11 +1,16 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
+import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import PersonIcon from '@/assets/svg/person.svg';
+import BottomModal from '@/components/common/BottomModal';
+import Modal from '@/components/common/Modal';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
+import { useLongPress } from '@/utils/hooks/useLongPress';
+import ChatRoomContextMenu from './components/ChatRoomContextMenu';
 import useChat from './hooks/useChat';
 
 const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
@@ -70,14 +75,24 @@ function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
   );
 }
 
-function ChatRoomListItem({ room }: { room: Room }) {
+interface ChatRoomListItemProps {
+  room: Room;
+  onLongPress: (x: number, y: number, room: Room) => void;
+}
+
+function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
+  const isGroup = room.chatType === 'GROUP';
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
+  const longPress = useLongPress({
+    onLongPress: (x: number, y: number) => onLongPress(x, y, room),
+  });
 
   return (
     <Link
+      {...longPress}
       to={`${room.roomId}`}
-      className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
+      className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-5 py-3 transition-colors select-none"
     >
       <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
 
@@ -179,14 +194,68 @@ function ChatAdvertisementListItemSkeleton() {
   );
 }
 
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  room: Room;
+}
+
 function ChatListPage() {
-  const { chatRoomList } = useChat();
+  const { chatRoomList, updateRoomName, deleteChatRoom, toggleMute } = useChat();
   const rooms = chatRoomList.rooms;
   const advertisementCount = getAdvertisementCount(rooms.length);
   const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'chat-list',
   });
+
+  const [contextMenu, setContextMenu] = useState<ContextMenuProps | null>(null);
+  const [leaveRoom, setLeaveRoom] = useState<Room | null>(null);
+  const [changeRoomName, setChangeRoomName] = useState<Room | null>(null);
+  const [newRoomName, setNewRoomName] = useState('');
+
+  const changeName = async () => {
+    if (!changeRoomName) return;
+    const roomId = changeRoomName.roomId;
+    const normalizedName = newRoomName.trim();
+    try {
+      await updateRoomName({ chatRoomId: roomId, name: normalizedName });
+    } catch (error) {
+      console.error('Error updating room name:', error);
+    }
+    setChangeRoomName(null);
+  };
+
+  const contextMenuItems = (room: Room) => [
+    {
+      label: '채팅방 이름 변경',
+      onClick: () => {
+        setChangeRoomName(room);
+        setNewRoomName(room.roomName);
+      },
+    },
+    {
+      label: room.isMuted ? '알림 켜기' : '알림 끄기',
+      onClick: () => {
+        toggleMute(room.roomId);
+        setContextMenu(null);
+      },
+    },
+    ...(room.chatType === 'DIRECT'
+      ? [{ label: '채팅방 나가기', onClick: () => setLeaveRoom(room), danger: true }]
+      : []),
+  ];
+
+  const deleteChat = async () => {
+    if (!leaveRoom) return;
+    const roomId = leaveRoom.roomId;
+    setLeaveRoom(null);
+    try {
+      await deleteChatRoom(roomId);
+    } catch (error) {
+      console.error('Error leaving chat room:', error);
+    }
+  };
 
   if (rooms.length === 0) {
     return (
@@ -207,7 +276,7 @@ function ChatListPage() {
 
           return (
             <Fragment key={room.roomId}>
-              <ChatRoomListItem room={room} />
+              <ChatRoomListItem room={room} onLongPress={(x, y, room) => setContextMenu({ x, y, room })} />
               {advertisement && (
                 <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
               )}
@@ -219,6 +288,61 @@ function ChatListPage() {
         })}
         <BottomOverlaySpacer gap={24} />
       </div>
+      <Modal isOpen={leaveRoom !== null} onClose={() => setLeaveRoom(null)} className="h-[172px] w-[341px] rounded-2xl">
+        <div className="px-6 py-6 text-center">
+          <p className="text-text-700 mb-5 text-[16px] font-bold">채팅방 나가기</p>
+          <p className="text-text-500 mt-2 text-[14px]">{leaveRoom?.roomName} 채팅방을 나가시겠어요?</p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            className="ml-4 h-11 w-37 flex-1 cursor-pointer rounded-[10px] border border-[#69BFDF] py-4 text-[14px] font-bold text-[#69BFDF]"
+            onClick={() => setLeaveRoom(null)}
+          >
+            취소
+          </button>
+          <button
+            type="button"
+            className="bg-primary-500 mr-4 flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
+            onClick={deleteChat}
+          >
+            나가기
+          </button>
+        </div>
+      </Modal>
+      <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="h-59">
+        <div className="flex items-center px-4 py-4">
+          <button type="button" aria-label="닫기" onClick={() => setChangeRoomName(null)}>
+            <ChevronLeftIcon />
+          </button>
+          <div className="px-30 text-center font-semibold">이름 변경</div>
+        </div>
+        <div className="flex w-full flex-col items-center gap-6">
+          <input
+            type="text"
+            value={newRoomName}
+            onChange={(e) => setNewRoomName(e.target.value)}
+            className="text-text-700 mt-11 h-[50px] w-[343px] rounded-2xl border border-indigo-50 text-center"
+            placeholder="변경할 채팅방명을 입력해주세요."
+          />
+          <button
+            type="button"
+            className="bg-primary-500 w-[343px] flex-1 cursor-pointer rounded-[10px] py-4 text-[14px] font-medium text-white"
+            onClick={changeName}
+          >
+            확인
+          </button>
+        </div>
+      </BottomModal>
+      {contextMenu && (
+        <ChatRoomContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          title={contextMenu.room.roomName}
+          items={contextMenuItems(contextMenu.room)}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 }
