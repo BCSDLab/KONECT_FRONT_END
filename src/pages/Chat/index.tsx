@@ -81,7 +81,6 @@ interface ChatRoomListItemProps {
 }
 
 function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
-  const isGroup = room.chatType === 'GROUP';
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
   const longPress = useLongPress({
