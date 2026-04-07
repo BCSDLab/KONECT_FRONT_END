@@ -51,7 +51,7 @@ function TimerPage() {
 
   return (
     <div className={cn('bg-indigo-5 relative min-h-full overflow-hidden', timerSectionPaddingTopClassName)}>
-      <div ref={timerSectionRef} className="mx-auto w-full max-w-[390px] px-6">
+      <div ref={timerSectionRef} className="mx-auto w-full max-w-97.5 px-6">
         <div className={cn(isBusy && 'pointer-events-none opacity-80')}>
           <TimerButton
             todayAccumulatedSeconds={todayAccumulatedSeconds}

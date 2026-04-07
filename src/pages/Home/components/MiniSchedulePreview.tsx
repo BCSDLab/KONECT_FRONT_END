@@ -7,7 +7,7 @@ import { dateUtils } from '@/utils/hooks/useSchedule';
 
 export function MiniSchedulePreviewSkeleton() {
   return (
-    <div className="h-[193px] rounded-[20px] bg-white p-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
+    <div className="h-48.25 rounded-[20px] bg-white p-3 shadow-[0_0_3px_rgba(0,0,0,0.2)]">
       <div className="grid grid-cols-7 gap-2">
         {SCHEDULE_DAYS.map((day) => (
           <div key={day} className="bg-indigo-25 h-5 rounded" />
@@ -23,7 +23,7 @@ export function MiniSchedulePreviewSkeleton() {
 
 export function MiniSchedulePreviewErrorFallback() {
   return (
-    <div className="flex h-[193px] items-center justify-center rounded-[20px] bg-white px-4 text-center shadow-[0_0_3px_rgba(0,0,0,0.2)]">
+    <div className="flex h-48.25 items-center justify-center rounded-[20px] bg-white px-4 text-center shadow-[0_0_3px_rgba(0,0,0,0.2)]">
       <span className="text-sub2 text-indigo-300">일정을 불러오는 중 오류가 발생했어요</span>
     </div>
   );

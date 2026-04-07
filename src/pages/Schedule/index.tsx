@@ -94,7 +94,7 @@ function Schedule() {
     <div className="relative flex h-[calc(var(--viewport-height)-44px)] flex-col overflow-hidden bg-white">
       <div className="overflow-y-auto" style={{ maxHeight: `calc(100% - ${PEEK_HEIGHT}px)` }}>
         <main
-          className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-[23px]"
+          className="flex w-full shrink-0 touch-pan-y flex-col bg-white pt-5.75"
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >

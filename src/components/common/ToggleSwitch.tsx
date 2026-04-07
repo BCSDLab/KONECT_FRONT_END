@@ -75,7 +75,7 @@ function ToggleSwitch({
         onClick={() => onChange(!enabled)}
         className={twMerge(
           isManager
-            ? 'relative h-5 w-[37px] rounded-full transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60'
+            ? 'relative h-5 w-9.25 rounded-full transition-colors focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60'
             : 'relative touch-manipulation rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-indigo-300 focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60',
           isManager
             ? enabled
@@ -90,7 +90,7 @@ function ToggleSwitch({
           <span
             className={twMerge(
               'absolute top-0.5 left-0.5 size-4 rounded-full bg-white shadow-[0_0_3px_rgba(0,0,0,0.15)] transition-transform',
-              enabled ? 'translate-x-[17px]' : 'translate-x-0'
+              enabled ? 'translate-x-4.25' : 'translate-x-0'
             )}
           />
         ) : isHorizontal ? (
@@ -104,7 +104,7 @@ function ToggleSwitch({
           <span
             className={twMerge(
               'absolute top-0.5 h-4 w-4 rounded-full bg-white transition-all',
-              enabled ? 'left-[18px]' : 'left-0.5'
+              enabled ? 'left-4.5' : 'left-0.5'
             )}
           />
         )}

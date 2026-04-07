@@ -20,11 +20,11 @@ function RecommendedClubCardSkeleton() {
         className="border-indigo-5 flex items-center rounded-lg border bg-white px-4 shadow-[0_0_3px_rgba(0,0,0,0.2)]"
         style={{ height: `${RECOMMENDED_CLUB_CARD_HEIGHT}px` }}
       >
-        <div className="bg-indigo-25 size-[59px] shrink-0 animate-pulse rounded-sm" />
+        <div className="bg-indigo-25 size-14.75 shrink-0 animate-pulse rounded-sm" />
         <div className="min-w-0 flex-1">
           <div className="flex flex-col items-end text-right">
             <div className="bg-indigo-25 h-4 w-24 animate-pulse rounded" />
-            <div className="bg-indigo-25 mt-[5px] h-4 w-14 animate-pulse rounded-full" />
+            <div className="bg-indigo-25 mt-1.25 h-4 w-14 animate-pulse rounded-full" />
           </div>
         </div>
       </div>
@@ -45,7 +45,7 @@ function RecommendedClubsSkeleton() {
           <RecommendedClubCardSkeleton />
         </div>
       </div>
-      <div className="mx-auto h-[5px] w-[60px] rounded-[40px] bg-[#d9d9d9]" />
+      <div className="mx-auto h-1.25 w-15 rounded-[40px] bg-[#d9d9d9]" />
     </>
   );
 }

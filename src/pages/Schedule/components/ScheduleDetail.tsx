@@ -52,7 +52,7 @@ function ScheduleDetail({ year, month, day, schedules, onItemClick }: ScheduleDe
               ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
               key={title + startedAt}
               className={cn(
-                'border-indigo-5 flex h-[70px] shrink-0 cursor-pointer items-stretch self-stretch overflow-hidden rounded-lg border bg-white transition-opacity',
+                'border-indigo-5 flex h-17.5 shrink-0 cursor-pointer items-stretch self-stretch overflow-hidden rounded-lg border bg-white transition-opacity',
                 !highlighted && 'opacity-40'
               )}
               onClick={onItemClick}
@@ -71,7 +71,7 @@ function ScheduleDetail({ year, month, day, schedules, onItemClick }: ScheduleDe
         })
       ) : (
         <div className="border-indigo-5 flex h-34 items-center justify-center gap-3 self-stretch rounded-lg border bg-white p-3">
-          <div className="text-[15px] leading-[17px] font-bold text-indigo-200">일정이 없습니다!</div>
+          <div className="text-[15px] leading-4.25 font-bold text-indigo-200">일정이 없습니다!</div>
         </div>
       )}
     </div>

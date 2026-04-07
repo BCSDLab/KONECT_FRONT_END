@@ -3,7 +3,7 @@ import { licenses } from '@/constants/licenses';
 function LicensePage() {
   return (
     <div className="bg-indigo-0 py-3">
-      <div className="space-x-[-0.2px] px-4 text-[20px] leading-[30px] font-semibold">오픈소스 라이선스</div>
+      <div className="space-x-[-0.2px] px-4 text-[20px] leading-7.5 font-semibold">오픈소스 라이선스</div>
       {licenses.map(({ name, url, license }) => (
         <div key={name} className="px-6 py-3">
           <div className="text-[15px] leading-6 font-medium">

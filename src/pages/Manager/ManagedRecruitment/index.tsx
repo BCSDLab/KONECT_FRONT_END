@@ -38,7 +38,7 @@ function ManagedRecruitment() {
   ];
 
   return (
-    <div className="flex h-full flex-col gap-9 px-[19px] py-[17px]">
+    <div className="flex h-full flex-col gap-9 px-4.75 py-4.25">
       <ManagerInfoCard type="detail" />
       <Card className="gap-5 rounded-2xl px-4 py-3">
         {rows.map(({ icon, title, content, to }) => (
