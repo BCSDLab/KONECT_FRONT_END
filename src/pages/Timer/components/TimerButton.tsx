@@ -42,8 +42,8 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
       className={cn(
         'mx-auto flex shrink-0 flex-col items-center justify-center gap-1 rounded-full px-3 py-6 text-center transition-colors',
         isRunning
-          ? 'border border-white bg-[#7ECFED] text-white'
-          : 'bg-white text-[#5A6B7F] shadow-[0_0_20px_0_rgba(0,0,0,0.03)]'
+          ? 'bg-primary-300 border border-white text-white'
+          : 'text-text-500 bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)]'
       )}
     >
       <div
@@ -51,7 +51,7 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
           fontSize: `${titleFontSize}px`,
           lineHeight: `${Math.round(titleFontSize * 1.15)}px`,
         }}
-        className={cn('font-medium', isRunning ? 'text-white' : 'text-[#5A6B7F]')}
+        className={cn('font-medium', isRunning ? 'text-white' : 'text-text-500')}
       >
         오늘의 누적 시간
       </div>
@@ -60,7 +60,7 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
           fontSize: `${timeFontSize}px`,
           lineHeight: `${Math.round(timeFontSize * 1.06)}px`,
         }}
-        className={cn('font-semibold', isRunning ? 'text-white' : 'text-[#69BFDF]')}
+        className={cn('font-semibold', isRunning ? 'text-white' : 'text-primary-500')}
       >
         {formatTime(time)}
       </div>
@@ -69,7 +69,7 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
           fontSize: `${helperFontSize}px`,
           lineHeight: `${Math.round(helperFontSize * 1.15)}px`,
         }}
-        className={cn('px-2 font-medium', isRunning ? 'text-white' : 'text-[#5A6B7F]')}
+        className={cn('px-2 font-medium', isRunning ? 'text-white' : 'text-text-500')}
       >
         {isRunning ? '타이머가 작동중입니다!' : '화면을 클릭해 타이머를 작동시키세요!'}
       </div>

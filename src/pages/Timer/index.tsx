@@ -1,12 +1,13 @@
-import { useEffect, useRef, useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
-import BottomSheet from '@/components/common/BottomSheet';
+import BottomSheet, { type SheetPosition } from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
+import RankingList from '@/pages/Timer/components/RankingList';
+import TimerButton from '@/pages/Timer/components/TimerButton';
+import { useStudyTimer } from '@/pages/Timer/hooks/useStudyTimer';
+import { useTimerLayout } from '@/pages/Timer/hooks/useTimerLayout';
 import { cn } from '@/utils/ts/cn';
-import { RankingList } from './components/RankingItem';
-import TimerButton from './components/TimerButton';
-import { useStudyTimer } from './hooks/useStudyTimer';
 
 type TabType = '동아리' | '학번' | '개인';
 
@@ -21,20 +22,6 @@ const SORT_OPTIONS = [
   { value: 'DAILY', label: '일간' },
 ] as const;
 
-function getBottomInsetPx(bottomOverlayInset: string) {
-  const matchedInset = bottomOverlayInset.match(/(\d+(?:\.\d+)?)px/);
-
-  return matchedInset ? Number.parseFloat(matchedInset[1]) : 80;
-}
-
-function getViewportHeight() {
-  return window.visualViewport?.height ?? window.innerHeight;
-}
-
-function getViewportWidth() {
-  return window.visualViewport?.width ?? window.innerWidth;
-}
-
 function TimerPage() {
   const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
   const { bottomOverlayInset } = useLayoutElementsContext();
@@ -43,38 +30,27 @@ function TimerPage() {
   const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
   const [sort, setSort] = useState<StudyRankingParams['sort']>('MONTHLY');
-  const [viewportHeight, setViewportHeight] = useState(() => getViewportHeight());
-  const [viewportWidth, setViewportWidth] = useState(() => getViewportWidth());
-  const [timerSectionTop, setTimerSectionTop] = useState(0);
+  const [sheetPosition, setSheetPosition] = useState<SheetPosition>('half');
+  const [autoExpandResetKey, setAutoExpandResetKey] = useState(0);
 
   const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
-  const bottomInsetPx = getBottomInsetPx(bottomOverlayInset);
-  const halfSheetHeight = Math.max(220, Math.round((viewportHeight - 105 - bottomInsetPx) * 0.45));
-  const preferredTimerSize = Math.min(312, viewportWidth - 48);
-  const availableTimerHeight = viewportHeight - bottomInsetPx - halfSheetHeight - timerSectionTop - 16;
-  const timerSize = Math.max(0, Math.min(preferredTimerSize, availableTimerHeight));
+  const { bottomInsetPx, fullSheetTopOffset, halfSheetTopOffset, timerSectionPaddingTopClassName, timerSize } =
+    useTimerLayout({
+      bottomOverlayInset,
+      timerSectionRef,
+    });
 
-  useEffect(() => {
-    const updateLayout = () => {
-      setViewportHeight(getViewportHeight());
-      setViewportWidth(getViewportWidth());
-      setTimerSectionTop(timerSectionRef.current?.getBoundingClientRect().top ?? 0);
-    };
+  const handleSheetPositionChange = (nextPosition: SheetPosition) => {
+    if (sheetPosition === 'full' && nextPosition === 'half') {
+      setAutoExpandResetKey((prev) => prev + 1);
+    }
 
-    updateLayout();
-
-    window.addEventListener('resize', updateLayout);
-    window.visualViewport?.addEventListener('resize', updateLayout);
-
-    return () => {
-      window.removeEventListener('resize', updateLayout);
-      window.visualViewport?.removeEventListener('resize', updateLayout);
-    };
-  }, []);
+    setSheetPosition(nextPosition);
+  };
 
   return (
-    <div className="relative min-h-full overflow-hidden bg-[#f4f6f9] pt-5">
+    <div className={cn('bg-indigo-5 relative min-h-full overflow-hidden', timerSectionPaddingTopClassName)}>
       <div ref={timerSectionRef} className="mx-auto w-full max-w-[390px] px-6">
         <div className={cn(isBusy && 'pointer-events-none opacity-80')}>
           <TimerButton
@@ -89,12 +65,13 @@ function TimerPage() {
 
       <BottomSheet
         resizable
+        position={sheetPosition}
         bottomOffset={bottomOverlayInset}
-        halfTopOffset={105}
-        halfHeight={halfSheetHeight}
-        fullTopOffset={80}
+        halfTopOffset={halfSheetTopOffset}
+        fullTopOffset={fullSheetTopOffset}
+        onPositionChange={handleSheetPositionChange}
       >
-        {() => (
+        {(position) => (
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="relative shrink-0 px-5">
               <div className="text-text-700 text-center text-[16px] leading-[1.6] font-bold">랭킹</div>
@@ -114,7 +91,7 @@ function TimerPage() {
                   onClick={() => startTransition(() => setActiveTab(tab))}
                   className={cn(
                     'flex-1 border-b-[1.4px] px-0 py-1.5 text-center text-[14px] leading-[1.6] font-medium text-indigo-200',
-                    activeTab === tab && 'border-[#8EC2FC] font-bold text-[#69BFDF]',
+                    activeTab === tab && 'text-primary-500 border-blue-200 font-bold',
                     activeTab !== tab && 'border-transparent'
                   )}
                 >
@@ -124,7 +101,14 @@ function TimerPage() {
             </div>
 
             <div className={cn('min-h-0 flex-1 overflow-hidden px-5', isPending && 'opacity-60 transition-opacity')}>
-              <RankingList type={TAB_TO_TYPE[activeTab]} sort={sort} />
+              <RankingList
+                type={TAB_TO_TYPE[activeTab]}
+                sort={sort}
+                sheetPosition={position}
+                hiddenBottomInsetPx={bottomInsetPx}
+                autoExpandResetKey={autoExpandResetKey}
+                onRequestExpand={() => setSheetPosition('full')}
+              />
             </div>
           </div>
         )}
