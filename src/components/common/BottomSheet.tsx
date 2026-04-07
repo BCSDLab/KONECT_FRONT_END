@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
 import { useBottomSheet, type SheetPosition } from '@/utils/hooks/useBottomSheet';
+import { cn } from '@/utils/ts/cn';
 
 export type { SheetPosition } from '@/utils/hooks/useBottomSheet';
 
@@ -13,7 +13,7 @@ interface BottomSheetProps {
   defaultPosition?: SheetPosition;
   /** 외부 제어 위치 */
   position?: SheetPosition;
-  /** 하단 오프셋 (px) */
+  /** 하단 오프셋 (px, resizable=false일 때만 적용) */
   bottomOffset?: number | string;
   /** half 상태일 때 상단 오프셋 (px) */
   halfTopOffset?: number;
@@ -76,11 +76,12 @@ export default function BottomSheet({
         role="region"
         aria-label="Bottom Sheet"
         ref={sheetRef}
-        className={clsx(
+        className={cn(
           'fixed inset-x-0 bottom-0 z-20 flex flex-col overflow-hidden rounded-t-3xl bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)] will-change-[height]',
           className
         )}
         style={{
+          // resizable 바텀시트는 화면 하단에 고정하고, safe area 처리는 내부 레이아웃에서 담당한다.
           bottom: 0,
           height: getResizableHeight(),
           transition: isDragging ? 'none' : 'height 300ms cubic-bezier(0, 0, 0.2, 1)',
@@ -102,9 +103,8 @@ export default function BottomSheet({
       role="region"
       aria-label="Bottom Sheet"
       ref={sheetRef}
-      className={clsx(
+      className={cn(
         'fixed inset-x-0 z-20 flex flex-col rounded-t-3xl bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)] transition-transform duration-300 ease-out will-change-transform',
-        resizable && isDragging && 'transition-none',
         className
       )}
       style={{

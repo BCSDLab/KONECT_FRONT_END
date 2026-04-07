@@ -1,5 +1,5 @@
 import { useEffect, useRef, type TouchEvent, type UIEvent } from 'react';
-import type { StudyRankingParams } from '@/apis/studyTime/entity';
+import type { StudyRanking, StudyRankingParams } from '@/apis/studyTime/entity';
 import { type SheetPosition } from '@/components/common/BottomSheet';
 import RankingItem from '@/pages/Timer/components/RankingItem';
 import { useStudyTimeRanking } from '@/pages/Timer/hooks/useStudyTimeRanking';
@@ -15,6 +15,15 @@ interface RankingListProps {
   hiddenBottomInsetPx: number;
   autoExpandResetKey: number;
   onRequestExpand: () => void;
+}
+
+function getRankingItemKey(prefix: 'my' | 'ranking', item: StudyRanking) {
+  const itemId =
+    'id' in item && (typeof item.id === 'number' || typeof item.id === 'string')
+      ? item.id
+      : `${item.rank}-${item.name}`;
+
+  return `${prefix}-${itemId}`;
 }
 
 export default function RankingList({
@@ -111,11 +120,11 @@ export default function RankingList({
       }}
       className="scrollbar-hidden h-full overflow-y-auto"
     >
-      {pinnedRankings.map((item, index) => (
-        <RankingItem key={`my-${index}-${item.rank}-${item.name}`} item={item} isMe sort={sort} type={type} />
+      {pinnedRankings.map((item) => (
+        <RankingItem key={getRankingItemKey('my', item)} item={item} isMe sort={sort} type={type} />
       ))}
-      {rankings.map((item, index) => (
-        <RankingItem key={`ranking-${index}-${item.rank}-${item.name}`} item={item} sort={sort} type={type} />
+      {rankings.map((item) => (
+        <RankingItem key={getRankingItemKey('ranking', item)} item={item} sort={sort} type={type} />
       ))}
       {hasNextPage && <div ref={observerRef} className="flex h-20 items-center justify-center" />}
     </div>
