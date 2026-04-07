@@ -27,11 +27,33 @@ export const useSendChatMessageMutation = () => {
   });
 };
 
-export const useToggleChatMuteMutation = (chatRoomId?: number) => {
+export const useUpdateChatRoomNameMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    ...chatMutations.toggleMute(chatRoomId),
+    ...chatMutations.updateRoomName(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
+};
+
+export const useToggleChatMuteMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.toggleMute(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
+};
+
+export const useDeleteChatRoomMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.deleteRoom(),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
     },
