@@ -85,7 +85,7 @@ function OAuthLinkButton({ linked, onLink, provider }: OAuthLinkButtonProps) {
       onClick={() => onLink(provider)}
       aria-label={linked ? `${label} 연동 완료` : `${label} 연동하기`}
       className={cn(
-        'flex h-[52px] w-[52px] items-center justify-center rounded-full transition-colors disabled:cursor-default disabled:opacity-100',
+        'flex h-13 w-13 items-center justify-center rounded-full transition-colors disabled:cursor-default disabled:opacity-100',
         linked ? linkedButtonClassName : 'bg-indigo-25'
       )}
     >
@@ -133,7 +133,7 @@ function Profile() {
         </div>
       </div>
 
-      <div className="mt-auto flex flex-col gap-[50px]">
+      <div className="mt-auto flex flex-col gap-12.5">
         <div className="flex justify-center gap-5">
           {oauthLinks.map(({ provider, linked }) => (
             <OAuthLinkButton key={provider} linked={linked} onLink={handleOAuthLink} provider={provider} />

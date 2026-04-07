@@ -45,14 +45,14 @@ export default function Dropdown<T extends string>({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'inline-flex h-[29px] items-center justify-center overflow-hidden rounded-full bg-[#69BFDF] px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
+          'inline-flex h-7.25 items-center justify-center overflow-hidden rounded-full bg-[#69BFDF] px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
           isOpen && 'opacity-95'
         )}
       >
         <span>{selectedOption?.label}</span>
         <ChevronDownIcon
           aria-hidden="true"
-          className={cn('ml-px h-[18px] w-[18px] transition-transform duration-200', isOpen && 'rotate-180')}
+          className={cn('ml-px h-4.5 w-4.5 transition-transform duration-200', isOpen && 'rotate-180')}
         />
       </button>
 

@@ -38,14 +38,14 @@ function ManagerDetailInfoCard() {
   return (
     <Card
       onClick={handleClick}
-      className="active:bg-indigo-5/50 cursor-pointer rounded-2xl border-0 px-3 py-[21px] shadow-[0px_0px_3px_0px_rgba(0,0,0,0.15)]"
+      className="active:bg-indigo-5/50 cursor-pointer rounded-2xl border-0 px-3 py-5.25 shadow-[0px_0px_3px_0px_rgba(0,0,0,0.15)]"
     >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img className="h-12 w-12 rounded" src={managedClub?.imageUrl} alt={`${currentClub?.name} 동아리 사진`} />
           <div>
-            <div className="text-[16px] leading-[1.6] font-bold text-indigo-700">{currentClub?.name} 정보</div>
-            <div className="text-[11px] leading-[15px] font-medium text-indigo-300">
+            <div className="leading-[1.6] font-bold text-indigo-700">{currentClub?.name} 정보</div>
+            <div className="text-[11px] leading-3.75 font-medium text-indigo-300">
               {myInfo.studentNumber} / {myInfo.universityName} / {currentClub?.position}
             </div>
           </div>

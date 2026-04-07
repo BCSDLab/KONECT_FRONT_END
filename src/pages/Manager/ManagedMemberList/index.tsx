@@ -72,14 +72,14 @@ function RoleManageSelector({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="border-text-300 flex h-[29px] min-w-[72px] items-center rounded-full border bg-white pr-2 pl-[18px]"
+        className="border-text-300 flex h-7.25 min-w-18 items-center rounded-full border bg-white pr-2 pl-4.5"
       >
         <span className="text-sub2 text-text-600">{selectedOption?.label}</span>
         <RoleSelectorArrowDownIcon className="text-text-600 ml-0.5 h-[29.5px] w-[29.5px]" />
       </button>
 
       {isOpen && (
-        <div className="border-text-300 absolute top-[31px] left-0 z-10 w-[72px] overflow-hidden rounded-[10px] border bg-white">
+        <div className="border-text-300 absolute top-7.75 left-0 z-10 w-18 overflow-hidden rounded-[10px] border bg-white">
           {ROLE_OPTIONS.map((option, index) => (
             <button
               key={option.value}
@@ -88,7 +88,7 @@ function RoleManageSelector({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`text-sub2 text-text-600 w-full px-3 py-[3px] text-left ${
+              className={`text-sub2 text-text-600 w-full px-3 py-0.75 text-left ${
                 index !== ROLE_OPTIONS.length - 1 ? 'border-text-200 border-b' : ''
               }`}
             >
@@ -149,7 +149,7 @@ function MemberCard({
           aria-label={`${name} 관리`}
           className="ml-3 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-indigo-300 disabled:opacity-50"
         >
-          <MoreHorizontalIcon className="h-2 w-[13px]" />
+          <MoreHorizontalIcon className="h-2 w-3.25" />
         </button>
       )}
     </div>
@@ -185,7 +185,7 @@ function ActionPopupMenu({
         <div
           role="menu"
           aria-orientation="vertical"
-          className="border-text-200 fixed w-[195px] overflow-hidden rounded-[10px] border bg-white p-3"
+          className="border-text-200 fixed w-48.75 overflow-hidden rounded-[10px] border bg-white p-3"
           style={{ left, top }}
           onClick={(event) => event.stopPropagation()}
           onMouseDown={(event) => event.stopPropagation()}
@@ -491,7 +491,7 @@ function ManagedMemberList() {
   };
 
   return (
-    <div className="flex flex-col gap-9 px-[19px] py-[17px]">
+    <div className="flex flex-col gap-9 px-4.75 py-4.25">
       <ManagerInfoCard type="detail" />
 
       <div className="flex flex-col gap-5">
@@ -623,19 +623,19 @@ function ManagedMemberList() {
       <BottomModal
         isOpen={isRoleManageOpen}
         onClose={closeRoleManage}
-        className="h-[660px] max-h-[calc(var(--viewport-height)-184px)] rounded-t-4xl bg-white shadow-[0px_8px_20px_0px_rgba(0,0,0,0.06),0px_24px_60px_0px_rgba(0,0,0,0.12)]"
+        className="h-165 max-h-[calc(var(--viewport-height)-184px)] rounded-t-4xl bg-white shadow-[0px_8px_20px_0px_rgba(0,0,0,0.06),0px_24px_60px_0px_rgba(0,0,0,0.12)]"
         overlayClassName="bg-black/50"
       >
         <div className="flex h-full flex-col">
-          <div className="border-indigo-25 border-b px-[27px] py-[18px]">
+          <div className="border-indigo-25 border-b px-6.75 py-4.5">
             <h2 className="text-text-700 text-[16px] leading-[1.6] font-semibold">직책 변경</h2>
           </div>
 
-          <div className="px-5 pt-[18px]">
+          <div className="px-5 pt-4.5">
             <RoleManageSelector value={roleManageTarget} onChange={handleChangeRoleManageTarget} />
           </div>
 
-          <div className="flex min-h-0 flex-1 flex-col px-6 pt-[34px]">
+          <div className="flex min-h-0 flex-1 flex-col px-6 pt-8.5">
             <div className="flex min-h-0 flex-1 flex-col gap-3.5 overflow-auto">
               {roleManageMembers.map((member) => {
                 const isSelected = selectedRoleUserIds.has(member.userId);
@@ -653,13 +653,13 @@ function ManagedMemberList() {
                         {member.name} ({member.studentNumber})
                       </div>
                     </div>
-                    {isSelected && <CheckIcon className="text-primary-500 h-[26px] w-[26px]" />}
+                    {isSelected && <CheckIcon className="text-primary-500 h-6.5 w-6.5" />}
                   </button>
                 );
               })}
             </div>
 
-            <div className="px-[18px] pt-6 pb-5">
+            <div className="px-4.5 pt-6 pb-5">
               <button
                 type="button"
                 onClick={() => void handleSubmitRoleManage()}
@@ -679,22 +679,22 @@ function ManagedMemberList() {
         className="rounded-t-4xl bg-white shadow-[0px_8px_20px_0px_rgba(0,0,0,0.06),0px_24px_60px_0px_rgba(0,0,0,0.12)]"
         overlayClassName="bg-black/50"
       >
-        <div className="flex flex-col pb-[15px]">
-          <div className="border-indigo-25 border-b px-[27px] py-[18px]">
+        <div className="flex flex-col pb-3.75">
+          <div className="border-indigo-25 border-b px-6.75 py-4.5">
             <h2 className="text-text-700 text-[16px] leading-[1.6] font-semibold">부원 삭제</h2>
           </div>
 
-          <div className="px-[27px] pt-5">
+          <div className="px-6.75 pt-5">
             <p className="text-text-700 text-[15px] leading-[1.6] font-medium">
               정말 {selectedMember?.name}님을 삭제하시겠어요?
             </p>
           </div>
 
-          <div className="flex gap-3 px-[21px] pt-[22px]">
+          <div className="flex gap-3 px-5.25 pt-5.5">
             <button
               type="button"
               onClick={closeRemove}
-              className="border-primary-500 text-primary-500 h-[55px] flex-1 rounded-2xl border text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px]"
+              className="border-primary-500 text-primary-500 h-13.75 flex-1 rounded-2xl border text-center text-[16px] leading-5.5 font-bold tracking-[-0.408px]"
             >
               취소
             </button>
@@ -702,7 +702,7 @@ function ManagedMemberList() {
               type="button"
               onClick={handleRemoveMember}
               disabled={isPending}
-              className="border-primary-500 bg-primary-500 h-[55px] flex-1 rounded-2xl border text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px] text-white disabled:opacity-50"
+              className="border-primary-500 bg-primary-500 h-13.75 flex-1 rounded-2xl border text-center text-[16px] leading-5.5 font-bold tracking-[-0.408px] text-white disabled:opacity-50"
             >
               {isRemoving ? '삭제 중...' : '삭제'}
             </button>
@@ -757,7 +757,7 @@ function ManagedMemberList() {
             </div>
           </div>
 
-          <div className="px-[18px] pt-6">
+          <div className="px-4.5 pt-6">
             <button
               type="button"
               onClick={handleAddMember}

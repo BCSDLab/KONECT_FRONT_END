@@ -40,7 +40,7 @@ export default function DatePicker({ selectedDate, onChange, triggerType, render
             type="button"
             onClick={toggleOpen}
             className={cn(
-              'w-[120px] max-w-[120px] rounded-lg border border-[#e1e1e1] bg-[#fafafa] px-3 py-2',
+              'w-30 max-w-30 rounded-lg border border-[#e1e1e1] bg-[#fafafa] px-3 py-2',
               'font-[pretendard,sans-serif] text-[16px] leading-[160%] font-medium',
               'shadow-[0_2px_4px_rgba(0,0,0,0.40),0_1px_1px_rgba(0,0,0,0.10)]'
             )}
@@ -59,7 +59,7 @@ export default function DatePicker({ selectedDate, onChange, triggerType, render
         <>
           <div className="fixed inset-0 z-40 bg-black/50" onClick={closeModal} />
           <div className="fixed top-1/2 left-1/2 z-50 w-[80%] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-[#ccc] bg-white p-2.5">
-            <div className="mb-2 flex items-center justify-between px-[30px] font-bold">
+            <div className="mb-2 flex items-center justify-between px-7.5 font-bold">
               <button
                 type="button"
                 aria-label="이전 달"

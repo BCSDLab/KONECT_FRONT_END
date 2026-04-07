@@ -72,7 +72,7 @@ function ClubCard({ club, itemRef }: ClubCardProps) {
         <div className="flex items-center justify-between">
           <div className="flex min-w-0 items-center gap-1.5">
             <div className="text-h3 truncate text-indigo-700">{club.name}</div>
-            <div className="shrink-0 text-[11px] leading-[15px] text-indigo-300">{club.categoryName}</div>
+            <div className="shrink-0 text-[11px] leading-3.75 text-indigo-300">{club.categoryName}</div>
           </div>
           {clubTag && (
             <div

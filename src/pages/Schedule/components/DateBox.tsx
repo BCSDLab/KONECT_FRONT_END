@@ -14,7 +14,7 @@ function DateBox({ date, isCurrentMonth, isSelected, isSunday, onClick }: DateBo
       type="button"
       disabled={!isCurrentMonth}
       onClick={() => onClick(date)}
-      className="flex h-[35px] w-full items-center justify-center"
+      className="flex h-8.75 w-full items-center justify-center"
     >
       <span
         className={cn(

@@ -40,22 +40,22 @@ function RecommendedClubCard({
         loading={imageLoading}
         decoding="async"
         fetchPriority={imageFetchPriority}
-        className={cn('bg-indigo-5 size-[59px] shrink-0 rounded-sm object-cover')}
+        className={cn('bg-indigo-5 size-14.75 shrink-0 rounded-sm object-cover')}
       />
       <div className="min-w-0 flex-1">
         <div className="flex flex-col items-end text-right">
-          <div className="max-h-9 w-full overflow-hidden text-right leading-[18px] font-extrabold break-keep text-indigo-700">
+          <div className="max-h-9 w-full overflow-hidden text-right leading-4.5 font-extrabold break-keep text-indigo-700">
             {club.name}
           </div>
           {club.badgeLabel && (
-            <div className="mt-[5px]">
+            <div className="mt-1.25">
               <div className="bg-text-100/90 text-text-500 inline-flex shrink-0 items-center rounded-full px-2 py-1 text-[10px] leading-none font-semibold">
                 {club.badgeLabel}
               </div>
             </div>
           )}
           {!club.badgeLabel && club.subLabel && (
-            <div className="mt-[5px] w-full truncate text-right text-[12px] leading-[18px] font-medium whitespace-nowrap text-[#5a6b7f]">
+            <div className="mt-1.25 w-full truncate text-right text-[12px] leading-4.5 font-medium whitespace-nowrap text-[#5a6b7f]">
               {club.subLabel}
             </div>
           )}

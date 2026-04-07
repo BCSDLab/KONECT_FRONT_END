@@ -13,7 +13,7 @@ const menuItems = [
 
 function ManagedClubDetail() {
   return (
-    <div className="flex flex-col gap-9 px-[19px] py-[17px]">
+    <div className="flex flex-col gap-9 px-4.75 py-4.25">
       <ManagerInfoCard type="detail" />
       <div className="border-background flex flex-col gap-5 rounded-2xl border bg-white px-4 py-3">
         {menuItems.map(({ to, icon, size, label }) => (

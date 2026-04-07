@@ -14,7 +14,7 @@ function RankingItem({ item, isMe, sort, type }: RankingItemProps) {
   const displayName = `${item.name}${type === 'STUDENT_NUMBER' ? '학번' : ''}${isMe ? ' (나)' : ''}`;
 
   return (
-    <div className={cn('mx-auto flex w-full max-w-[334px] items-center gap-5 py-3', isMe && 'bg-transparent')}>
+    <div className={cn('mx-auto flex w-full max-w-83.5 items-center gap-5 py-3', isMe && 'bg-transparent')}>
       <div className="flex size-7 shrink-0 items-center justify-center">
         {item.rank <= 3 ? (
           <span

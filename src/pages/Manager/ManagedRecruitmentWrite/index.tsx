@@ -345,16 +345,16 @@ function ManagedRecruitmentWrite() {
               <div className="flex flex-col gap-3">
                 <div className={cn(dateFieldContainerStyle, hasDateError && 'border-red-300')}>
                   <div className="flex items-center gap-4">
-                    <span className="bg-primary-100 text-primary-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
+                    <span className="bg-primary-100 text-primary-900 flex h-5.75 min-w-11 items-center justify-center rounded-full px-3.25 text-[12px] leading-[1.6] font-medium">
                       시작
                     </span>
-                    <div className="ml-auto flex w-full max-w-[180px] flex-col gap-[11px]">
+                    <div className="ml-auto flex w-full max-w-45 flex-col gap-2.75">
                       <DatePicker
                         selectedDate={startDate}
                         onChange={setStartDate}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex min-w-0 items-center gap-[5px]">
+                            <span className="flex min-w-0 items-center gap-1.25">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
                               <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(startDate)}</span>
                             </span>
@@ -371,7 +371,7 @@ function ManagedRecruitmentWrite() {
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex items-center gap-[5px]">
+                            <span className="flex items-center gap-1.25">
                               <ClockIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
                               <span className={compactButtonTextStyle}>{startTime}</span>
                             </span>
@@ -385,21 +385,21 @@ function ManagedRecruitmentWrite() {
                     </div>
                   </div>
 
-                  <div className="my-[15px]">
+                  <div className="my-3.75">
                     <div className={sectionDividerStyle} />
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <span className="bg-sub-100 text-sub-900 flex h-[23px] min-w-11 items-center justify-center rounded-full px-[13px] text-[12px] leading-[1.6] font-medium">
+                    <span className="bg-sub-100 text-sub-900 flex h-5.75 min-w-11 items-center justify-center rounded-full px-3.25 text-[12px] leading-[1.6] font-medium">
                       종료
                     </span>
-                    <div className="ml-auto flex w-full max-w-[180px] flex-col gap-[11px]">
+                    <div className="ml-auto flex w-full max-w-45 flex-col gap-2.75">
                       <DatePicker
                         selectedDate={endDate}
                         onChange={setEndDate}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex min-w-0 items-center gap-[5px]">
+                            <span className="flex min-w-0 items-center gap-1.25">
                               <CalendarIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
                               <span className={cn(compactButtonTextStyle, 'truncate')}>{formatDateDot(endDate)}</span>
                             </span>
@@ -416,7 +416,7 @@ function ManagedRecruitmentWrite() {
                         minuteStep={TIME_MINUTE_STEP}
                         renderTrigger={(toggle) => (
                           <button type="button" onClick={toggle} className={compactButtonStyle}>
-                            <span className="flex items-center gap-[5px]">
+                            <span className="flex items-center gap-1.25">
                               <ClockIcon aria-hidden="true" className="h-4 w-4 shrink-0 text-indigo-300" />
                               <span className={compactButtonTextStyle}>{endTime}</span>
                             </span>
@@ -449,7 +449,7 @@ function ManagedRecruitmentWrite() {
               value={content}
               onChange={handleContentChange}
               rows={6}
-              className="border-text-200 placeholder:text-text-300 text-text-700 mt-3 min-h-[226px] w-full resize-none overflow-hidden rounded-[20px] border-[0.7px] bg-white px-4 py-4 text-[15px] leading-[1.6] font-medium focus:outline-none"
+              className="border-text-200 placeholder:text-text-300 text-text-700 mt-3 min-h-56.5 w-full resize-none overflow-hidden rounded-[20px] border-[0.7px] bg-white px-4 py-4 text-[15px] leading-[1.6] font-medium focus:outline-none"
               placeholder="모집 공고 내용을 작성해주세요"
             />
           </section>
@@ -470,16 +470,16 @@ function ManagedRecruitmentWrite() {
                 type="button"
                 onClick={handleImageClick}
                 disabled={isPreparingImages}
-                className="border-text-200 mt-3 flex h-[226px] w-full flex-col items-center justify-center gap-2 rounded-[20px] border-[0.7px] bg-white text-[#5a6b7f]"
+                className="border-text-200 mt-3 flex h-56.5 w-full flex-col items-center justify-center gap-2 rounded-[20px] border-[0.7px] bg-white text-[#5a6b7f]"
               >
-                <AddPhotoAlternateIcon aria-hidden="true" className="h-[60px] w-[60px]" />
+                <AddPhotoAlternateIcon aria-hidden="true" className="size-15" />
                 <p className="text-center text-[16px] leading-[1.6] font-semibold">
                   {isPreparingImages ? '이미지를 준비하고 있어요' : '이미지를 추가해주세요'}
                 </p>
               </button>
             ) : (
               <div className="mt-3 flex flex-col gap-3">
-                <div className="border-text-200 relative h-[226px] overflow-hidden rounded-[20px] border-[0.7px] bg-white">
+                <div className="border-text-200 relative h-56.5 overflow-hidden rounded-[20px] border-[0.7px] bg-white">
                   <img
                     key={images[currentImageIndex].previewUrl}
                     src={images[currentImageIndex].previewUrl}
@@ -588,8 +588,8 @@ function ManagedRecruitmentWrite() {
         className="overflow-hidden rounded-t-[30px]"
         overlayClassName="bg-black/30"
       >
-        <div className="px-[19px] pt-3.5 pb-[calc(14px+var(--sab))]">
-          <div className="flex flex-col items-center gap-[13px] px-3 py-2">
+        <div className="px-4.75 pt-3.5 pb-[calc(14px+var(--sab))]">
+          <div className="flex flex-col items-center gap-3.25 px-3 py-2">
             <div className="text-text-700 text-center text-[20px] leading-[1.6] font-semibold whitespace-pre-line">
               {'임시저장된 모집 공고가 있습니다.\n불러와서 수정할까요?'}
             </div>

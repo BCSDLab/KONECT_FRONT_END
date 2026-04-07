@@ -102,7 +102,7 @@ function ManagedAccount() {
 
   return (
     <div className="bg-background flex min-h-full flex-col px-4 pt-5">
-      <div className="mx-auto flex w-full max-w-[352px] flex-1 flex-col gap-4 pb-[calc(40px+var(--sab))]">
+      <div className="mx-auto flex w-full max-w-88 flex-1 flex-col gap-4 pb-[calc(40px+var(--sab))]">
         <div className="flex justify-end">
           <ToggleSwitch
             variant="manager"
@@ -119,7 +119,7 @@ function ManagedAccount() {
           <div className="flex flex-col gap-4">
             <div className="flex items-end justify-between">
               <h2 className="text-h3 text-indigo-700">회비정보</h2>
-              <div className="h-[22px] w-0" aria-hidden="true" />
+              <div className="h-5.5 w-0" aria-hidden="true" />
             </div>
 
             <div className="flex flex-col gap-1">

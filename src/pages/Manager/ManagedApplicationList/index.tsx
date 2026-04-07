@@ -63,7 +63,7 @@ function ApplicationCard({ application, disabled, onApprove, onReject, onDetail 
           aria-label={`${application.name} 지원 승인`}
           className="flex h-6 w-6 items-center justify-center text-[#69BFDF] disabled:opacity-50"
         >
-          <CheckIcon className="h-[26px] w-[26px]" />
+          <CheckIcon className="size-6.5" />
         </button>
 
         <button
@@ -73,7 +73,7 @@ function ApplicationCard({ application, disabled, onApprove, onReject, onDetail 
           aria-label={`${application.name} 지원 거절`}
           className="flex h-6 w-6 items-center justify-center text-indigo-300 disabled:opacity-50"
         >
-          <CloseIcon className="h-6 w-6" />
+          <CloseIcon className="size-6" />
         </button>
       </div>
     </div>
@@ -122,7 +122,7 @@ function ManagedApplicationList() {
 
   if (hasNoRecruitment) {
     return (
-      <div className="flex flex-col gap-9 px-[19px] py-[17px]">
+      <div className="flex flex-col gap-9 px-4.75 py-4.25">
         <ManagerInfoCard type="detail" />
         <div className="border-indigo-5 flex items-center justify-center rounded-2xl border bg-white px-4 py-10">
           <p className="text-body2 font-medium text-indigo-300">현재 진행 중인 모집 공고가 없습니다.</p>
@@ -132,7 +132,7 @@ function ManagedApplicationList() {
   }
 
   return (
-    <div className="flex flex-col gap-9 px-[19px] py-[17px]">
+    <div className="flex flex-col gap-9 px-4.75 py-4.25">
       <ManagerInfoCard type="detail" />
 
       <div className="flex flex-col gap-2">
