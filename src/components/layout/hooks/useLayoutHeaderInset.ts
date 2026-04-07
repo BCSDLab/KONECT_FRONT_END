@@ -8,6 +8,7 @@ interface UseLayoutHeaderInsetParams {
 
 export function useLayoutHeaderInset({ hasHeader, headerRef, pathname }: UseLayoutHeaderInsetParams) {
   const [headerInset, setHeaderInset] = useState('0px');
+  const resolvedHeaderInset = hasHeader ? headerInset : '0px';
 
   useLayoutEffect(() => {
     if (!hasHeader) {
@@ -42,5 +43,5 @@ export function useLayoutHeaderInset({ hasHeader, headerRef, pathname }: UseLayo
     };
   }, [hasHeader, headerRef, pathname]);
 
-  return headerInset;
+  return resolvedHeaderInset;
 }
