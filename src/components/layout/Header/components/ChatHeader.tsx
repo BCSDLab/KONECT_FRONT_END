@@ -2,6 +2,7 @@ import { useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
+import { isGroupChatType } from '@/pages/Chat/utils/chatType';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import { cn } from '@/utils/ts/cn';
@@ -16,7 +17,7 @@ function ChatHeader() {
   const { value: open, setTrue: openSidebar, setFalse: closeSidebar } = useBooleanState();
 
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
-  const isGroup = chatRoom?.chatType === 'GROUP';
+  const isGroup = isGroupChatType(chatRoom?.chatType);
   const isMuted = chatRoom?.isMuted ?? false;
 
   return (

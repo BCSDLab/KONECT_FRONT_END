@@ -20,7 +20,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
   const { contentPaddingClassName, hasHeader } = getHeaderPresentation(pathname);
   const isChatRoomPage = pathname.startsWith('/chats/') && pathname !== '/chats';
   const mainBackgroundClassName = 'bg-background';
-  const { bottomNavRef, bottomOverlayInset, handleLayoutElement, layoutElement, mainRef } =
+  const { bottomNavRef, bottomOverlayInset, bottomOverlayInsetPx, handleLayoutElement, layoutElement, mainRef } =
     useLayoutElements(showBottomNav);
   const layoutElements = useMemo(
     () => ({
@@ -28,8 +28,9 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
       mainRef,
       bottomNavRef,
       bottomOverlayInset,
+      bottomOverlayInsetPx,
     }),
-    [bottomNavRef, bottomOverlayInset, layoutElement, mainRef]
+    [bottomNavRef, bottomOverlayInset, bottomOverlayInsetPx, layoutElement, mainRef]
   );
   const layoutStyle = {
     height: 'var(--viewport-height)',
@@ -49,7 +50,7 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
           ref={mainRef}
           style={mainStyle}
           className={cn(
-            'box-border flex min-h-0 flex-1 flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            'scrollbar-hidden box-border flex min-h-0 flex-1 flex-col',
             isChatRoomPage ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain',
             mainBackgroundClassName,
             hasHeader && contentPaddingClassName,

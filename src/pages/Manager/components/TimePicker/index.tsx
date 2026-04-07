@@ -162,7 +162,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
               <div
                 ref={hourRef}
                 onScroll={createScrollHandler(hourOptions, setDraftHour)}
-                className="h-full snap-y snap-mandatory overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="scrollbar-hidden h-full snap-y snap-mandatory overflow-y-auto"
               >
                 <div style={{ height: PADDING_HEIGHT }} />
                 {hourOptions.map((hour) => {
@@ -191,7 +191,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
               <div
                 ref={minuteRef}
                 onScroll={createScrollHandler(minuteOptions, setDraftMinute)}
-                className="h-full snap-y snap-mandatory overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="scrollbar-hidden h-full snap-y snap-mandatory overflow-y-auto"
               >
                 <div style={{ height: PADDING_HEIGHT }} />
                 {minuteOptions.map((minute) => {

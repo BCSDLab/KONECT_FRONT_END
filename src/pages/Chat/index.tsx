@@ -8,6 +8,7 @@ import PersonIcon from '@/assets/svg/person.svg';
 import BottomModal from '@/components/common/BottomModal';
 import Modal from '@/components/common/Modal';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
+import { isDirectChatType } from '@/pages/Chat/utils/chatType';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
 import { useLongPress } from '@/utils/hooks/useLongPress';
 import ChatRoomContextMenu from './components/ChatRoomContextMenu';
@@ -81,7 +82,6 @@ interface ChatRoomListItemProps {
 }
 
 function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
-  const isGroup = room.chatType === 'GROUP';
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
   const longPress = useLongPress({
@@ -100,13 +100,6 @@ function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-1">
             <span className="text-text-700 truncate text-[16px] leading-[1.6] font-semibold">{room.roomName}</span>
-
-            {isGroup && (
-              <span className="bg-primary-500 inline-flex shrink-0 items-center justify-center rounded-[50px] px-1 py-0.5 text-[12px] leading-3 font-medium text-white">
-                단체
-              </span>
-            )}
-
             {room.isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
           </div>
 
@@ -248,7 +241,7 @@ function ChatListPage() {
         setContextMenu(null);
       },
     },
-    ...(room.chatType === 'DIRECT'
+    ...(isDirectChatType(room.chatType)
       ? [{ label: '채팅방 나가기', onClick: () => setLeaveRoom(room), danger: true }]
       : []),
   ];

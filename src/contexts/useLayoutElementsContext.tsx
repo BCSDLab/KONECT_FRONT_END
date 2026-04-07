@@ -5,6 +5,7 @@ export interface LayoutElementsContextType {
   mainRef: RefObject<HTMLElement | null>;
   bottomNavRef: RefObject<HTMLElement | null>;
   bottomOverlayInset: string;
+  bottomOverlayInsetPx: number;
 }
 
 export const LayoutElementsContext = createContext<LayoutElementsContextType | undefined>(undefined);
