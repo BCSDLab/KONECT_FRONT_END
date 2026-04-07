@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 
 export type HeaderType =
   | 'info'
@@ -24,6 +24,7 @@ export interface HeaderRenderContext {
   title: string;
   onBack?: () => void;
   showNotificationBell?: boolean;
+  headerRef: Ref<HTMLElement>;
 }
 
 export type HeaderRenderer = (ctx: HeaderRenderContext) => ReactNode;

@@ -1,3 +1,4 @@
+import type { Ref } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ChatHeader from './components/ChatHeader';
 import ChatListHeader from './components/ChatListHeader';
@@ -11,31 +12,35 @@ import SubpageHeader from './components/SubpageHeader';
 import { getHeaderPresentation } from './presentation';
 import type { HeaderType, HeaderRenderer } from './types';
 
-function Header() {
+interface HeaderProps {
+  headerRef: Ref<HTMLElement>;
+}
+
+function Header({ headerRef }: HeaderProps) {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { title, type: headerType } = getHeaderPresentation(pathname);
 
   const HEADER_RENDERERS: Record<HeaderType, HeaderRenderer> = {
-    profile: () => <ProfileHeader />,
-    info: () => <InfoHeader />,
-    chatList: () => <ChatListHeader />,
-    chat: () => <ChatHeader />,
+    profile: ({ headerRef }) => <ProfileHeader headerRef={headerRef} />,
+    info: ({ headerRef }) => <InfoHeader headerRef={headerRef} />,
+    chatList: ({ title, headerRef }) => <ChatListHeader title={title} headerRef={headerRef} />,
+    chat: ({ headerRef }) => <ChatHeader headerRef={headerRef} />,
     none: () => null,
-    notification: ({ title }) => <SubpageHeader title={title} />,
-    subpage: ({ title }) => <PlainSubpageHeader title={title} />,
-    schedule: () => <ScheduleHeader />,
-    normal: ({ title }) => <DefaultHeader title={title} showBackButton={false} />,
-    full: ({ title }) => <DefaultHeader title={title} showNotificationBell={true} />,
-    signup: ({ title, onBack }) => <DefaultHeader title={title} onBack={onBack} />,
-    default: ({ title }) => <DefaultHeader title={title} />,
-    manager: ({ title }) => <ManagerHeader fallbackTitle={title} />,
+    notification: ({ title, headerRef }) => <SubpageHeader title={title} headerRef={headerRef} />,
+    subpage: ({ title, headerRef }) => <PlainSubpageHeader title={title} headerRef={headerRef} />,
+    schedule: ({ headerRef }) => <ScheduleHeader headerRef={headerRef} />,
+    normal: ({ title, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} showBackButton={false} />,
+    full: ({ title, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} showNotificationBell={true} />,
+    signup: ({ title, onBack, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} onBack={onBack} />,
+    default: ({ title, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} />,
+    manager: ({ title, headerRef }) => <ManagerHeader fallbackTitle={title} headerRef={headerRef} />,
   };
 
   const onBack = headerType === 'signup' ? () => navigate('/') : undefined;
   const renderer = HEADER_RENDERERS[headerType];
 
-  return <>{renderer({ title, onBack })}</>;
+  return <>{renderer({ title, onBack, headerRef })}</>;
 }
 
 export default Header;

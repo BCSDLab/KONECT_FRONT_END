@@ -1,3 +1,4 @@
+import type { Ref } from 'react';
 import { useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import HamburgerIcon from '@/assets/svg/hamburger.svg';
@@ -7,7 +8,7 @@ import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import { cn } from '@/utils/ts/cn';
 
-function ChatHeader() {
+function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
   const smartBack = useSmartBack();
   const { chatRoomId } = useParams();
   const numericRoomId = Number(chatRoomId);
@@ -22,7 +23,7 @@ function ChatHeader() {
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 z-30 flex h-13 items-center bg-white px-4 py-2">
+      <header ref={headerRef} className="fixed top-0 right-0 left-0 z-30 flex h-13 items-center bg-white px-4 py-2">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <button type="button" aria-label="뒤로가기" onClick={smartBack} className="shrink-0">
             <ChevronLeftIcon />
