@@ -1,8 +1,10 @@
 import type { PaginationParams, PaginationResponse } from '../common/pagination';
 
+export type ChatType = 'DIRECT' | 'CLUB_GROUP' | 'GROUP' | 'INQUIRY';
+
 export interface Room {
   roomId: number;
-  chatType: 'DIRECT' | 'CLUB_GROUP' | 'GROUP';
+  chatType: ChatType;
   roomName: string;
   roomImageUrl: string;
   lastMessage: string | null;
