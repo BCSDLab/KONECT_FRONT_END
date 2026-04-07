@@ -240,6 +240,15 @@
   .animate-fade-in-down {
     animation: fade-in-down 0.2s ease-out;
   }
+
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* MonthPicker clear button 제거 */

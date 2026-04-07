@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import type { Schedule } from '@/apis/schedule/entity';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
+import { cn } from '@/utils/ts/cn';
 import { parseDateDot } from '@/utils/ts/datetime/date';
 
 type ScheduleDetailProps = {
@@ -50,7 +51,10 @@ function ScheduleDetail({ year, month, day, schedules, onItemClick }: ScheduleDe
             <div
               ref={index === firstHighlightedIndex ? firstHighlightedRef : undefined}
               key={title + startedAt}
-              className={`flex h-[70px] shrink-0 cursor-pointer items-stretch self-stretch overflow-hidden rounded-lg border border-[#F4F6F9] bg-white transition-opacity ${!highlighted ? 'opacity-40' : ''}`}
+              className={cn(
+                'border-indigo-5 flex h-[70px] shrink-0 cursor-pointer items-stretch self-stretch overflow-hidden rounded-lg border bg-white transition-opacity',
+                !highlighted && 'opacity-40'
+              )}
               onClick={onItemClick}
             >
               <div className="w-1 shrink-0" style={{ backgroundColor: SCHEDULE_COLOR[scheduleCategory] }} />
@@ -66,7 +70,7 @@ function ScheduleDetail({ year, month, day, schedules, onItemClick }: ScheduleDe
           );
         })
       ) : (
-        <div className="flex h-34 items-center justify-center gap-3 self-stretch rounded-lg border border-[#F4F6F9] bg-white p-3">
+        <div className="border-indigo-5 flex h-34 items-center justify-center gap-3 self-stretch rounded-lg border bg-white p-3">
           <div className="text-[15px] leading-[17px] font-bold text-indigo-200">일정이 없습니다!</div>
         </div>
       )}
