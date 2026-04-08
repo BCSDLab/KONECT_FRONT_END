@@ -13,6 +13,7 @@ import {
   putClubInfo,
   putClubQuestions,
   putClubRecruitment,
+  putClubSheet,
 } from '@/apis/club';
 import type {
   AddPreMemberRequest,
@@ -22,6 +23,7 @@ import type {
   ClubInfoRequest,
   ClubQuestionsRequest,
   ClubRecruitmentRequest,
+  ClubSheetRequest,
   ClubSettingsPatchRequest,
   TransferPresidentRequest,
 } from '@/apis/club/entity';
@@ -40,6 +42,7 @@ export const managedClubMutationKeys = {
   removeMember: (clubId: number) => ['clubs', 'managed', 'removeMember', clubId] as const,
   addPreMember: (clubId: number) => ['clubs', 'managed', 'addPreMember', clubId] as const,
   deletePreMember: (clubId: number) => ['clubs', 'managed', 'deletePreMember', clubId] as const,
+  upsertSheet: (clubId: number) => ['clubs', 'managed', 'upsertSheet', clubId] as const,
 };
 
 export const managedClubMutations = {
@@ -108,5 +111,10 @@ export const managedClubMutations = {
     mutationOptions({
       mutationKey: managedClubMutationKeys.deletePreMember(clubId),
       mutationFn: (preMemberId: number) => deletePreMember(clubId, preMemberId),
+    }),
+  upsertSheet: (clubId: number) =>
+    mutationOptions({
+      mutationKey: managedClubMutationKeys.upsertSheet(clubId),
+      mutationFn: (data: ClubSheetRequest) => putClubSheet(clubId, data),
     }),
 };

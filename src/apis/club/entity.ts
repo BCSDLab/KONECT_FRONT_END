@@ -137,6 +137,7 @@ export interface AppliedClubResponse {
 //========================== Club Manager Entities =========================//
 interface Application {
   id: number;
+  userId: number;
   studentNumber: string;
   name: string;
   imageUrl: string;
@@ -293,6 +294,10 @@ export interface PreMembersList {
 export interface PreMemberDeleteRequest {
   clubId: number;
   preMemberId: number;
+}
+
+export interface ClubSheetRequest {
+  spreadsheetUrl: string;
 }
 
 //========================== Club Settings Entities =========================//

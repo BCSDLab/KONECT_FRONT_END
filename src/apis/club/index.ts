@@ -1,37 +1,38 @@
 import { apiClient } from '../client';
-import {
-  type ClubApplyResponse,
-  type ClubApplyRequest,
-  type ClubDetailResponse,
-  type ClubMembersResponse,
-  type ClubQuestionsResponse,
-  type ClubQuestionsRequest,
-  type ClubRequestParams,
-  type ClubResponse,
-  type JoinClubResponse,
-  type ClubRecruitment,
-  type AppliedClubResponse,
-  type ClubApplicationsResponse,
-  type ClubApplicationDetailResponse,
-  type ClubRecruitmentRequest,
-  type ClubInfoRequest,
-  type ManagedClubResponse,
-  type Bank,
-  type ClubFeeRequest,
-  type ClubFeeResponse,
-  type TransferPresidentRequest,
-  type TransferPresidentResponse,
-  type ChangeVicePresidentRequest,
-  type ChangeVicePresidentResponse,
-  type ChangeMemberPositionRequest,
-  type ChangeMemberPositionResponse,
-  type AddPreMemberRequest,
-  type AddPreMemberResponse,
-  type PositionType,
-  type PreMembersList,
-  type ClubSettingsResponse,
-  type ClubSettingsPatchRequest,
-  type ClubApplicationsParams,
+import type {
+  ClubApplyResponse,
+  ClubApplyRequest,
+  ClubDetailResponse,
+  ClubMembersResponse,
+  ClubQuestionsResponse,
+  ClubQuestionsRequest,
+  ClubRequestParams,
+  ClubResponse,
+  JoinClubResponse,
+  ClubRecruitment,
+  AppliedClubResponse,
+  ClubApplicationsResponse,
+  ClubApplicationDetailResponse,
+  ClubRecruitmentRequest,
+  ClubInfoRequest,
+  ManagedClubResponse,
+  Bank,
+  ClubFeeRequest,
+  ClubFeeResponse,
+  TransferPresidentRequest,
+  TransferPresidentResponse,
+  ChangeVicePresidentRequest,
+  ChangeVicePresidentResponse,
+  ChangeMemberPositionRequest,
+  ChangeMemberPositionResponse,
+  AddPreMemberRequest,
+  AddPreMemberResponse,
+  PositionType,
+  PreMembersList,
+  ClubSettingsResponse,
+  ClubSettingsPatchRequest,
+  ClubApplicationsParams,
+  ClubSheetRequest,
 } from './entity';
 
 export const getClubs = async (params: ClubRequestParams) => {
@@ -231,6 +232,14 @@ export const getPreMembers = async (clubId: number) => {
 
 export const deletePreMember = async (clubId: number, preMemberId: number) => {
   const response = await apiClient.delete<void>(`clubs/${clubId}/pre-members/${preMemberId}`, { requiresAuth: true });
+  return response;
+};
+
+export const putClubSheet = async (clubId: number, data: ClubSheetRequest) => {
+  const response = await apiClient.put<void>(`clubs/${clubId}/sheet`, {
+    body: data,
+    requiresAuth: true,
+  });
   return response;
 };
 

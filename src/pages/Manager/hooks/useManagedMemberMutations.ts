@@ -28,20 +28,8 @@ export const useChangeManagedVicePresidentMutation = (clubId: number) => {
   });
 };
 
-export const useChangeManagedMemberPositionMutation = (
-  clubId: number,
-  { invalidateOnSuccess = true }: { invalidateOnSuccess?: boolean } = {}
-) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    ...managedClubMutations.changeMemberPosition(clubId),
-    onSuccess: async () => {
-      if (invalidateOnSuccess) {
-        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
-      }
-    },
-  });
+export const useChangeManagedMemberPositionMutation = (clubId: number) => {
+  return useMutation(managedClubMutations.changeMemberPosition(clubId));
 };
 
 export const useRemoveManagedMemberMutation = (clubId: number) => {
@@ -78,4 +66,8 @@ export const useDeleteManagedPreMemberMutation = (clubId: number) => {
       await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) });
     },
   });
+};
+
+export const useUpsertManagedClubSheetMutation = (clubId: number) => {
+  return useMutation(managedClubMutations.upsertSheet(clubId));
 };
