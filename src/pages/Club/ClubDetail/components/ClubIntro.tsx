@@ -20,6 +20,12 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
     navigate(`/chats/${response.chatRoomId}`);
   };
 
+  const clubInfoItems = [
+    { icon: <HumanIcon />, label: '회원수', value: `${clubDetail.memberCount}명` },
+    { icon: <LocationIcon />, label: '동아리방 위치', value: clubDetail.location },
+    { icon: <UserCircleIcon />, label: '대표자', value: clubDetail.presidentName },
+  ];
+
   return (
     <>
       <Card>
@@ -29,27 +35,15 @@ function ClubIntro({ clubDetail }: ClubIntroProps) {
       <Card>
         <div className="text-h4 text-indigo-700">위치 및 회원 수</div>
         <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <HumanIcon />
-            <div className="flex flex-col gap-1">
-              <div className="text-caption2 text-indigo-300">회원수</div>
-              <div className="text-h5 text-indigo-700">{clubDetail.memberCount}명</div>
+          {clubInfoItems.map((item) => (
+            <div key={item.label} className="flex items-center gap-2">
+              {item.icon}
+              <div className="flex flex-col gap-1">
+                <div className="text-caption2 text-indigo-300">{item.label}</div>
+                <div className="text-h5 text-indigo-700">{item.value}</div>
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <LocationIcon />
-            <div className="flex flex-col gap-1">
-              <div className="text-caption2 text-indigo-300">동아리방 위치</div>
-              <div className="text-h5 text-indigo-700">{clubDetail.location}</div>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <UserCircleIcon />
-            <div className="flex flex-col gap-1">
-              <div className="text-caption2 text-indigo-300">대표자</div>
-              <div className="text-h5 text-indigo-700">{clubDetail.presidentName}</div>
-            </div>
-          </div>
+          ))}
         </div>
       </Card>
       <Card>
