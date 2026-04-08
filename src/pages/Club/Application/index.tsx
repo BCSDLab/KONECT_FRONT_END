@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type SubmitEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import BottomModal from '@/components/common/BottomModal';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
@@ -24,7 +24,7 @@ function ApplicationPage() {
     target.style.height = `${target.scrollHeight}px`;
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     openConfirm();
   };

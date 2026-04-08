@@ -112,7 +112,7 @@ function ChatRoom() {
     textareaRef.current.style.height = `${baseHeight}px`;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const message = value.trim();

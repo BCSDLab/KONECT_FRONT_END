@@ -1,4 +1,4 @@
-import { type FormEvent } from 'react';
+import { type SubmitEvent } from 'react';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@/assets/svg/search.svg';
 
@@ -8,7 +8,7 @@ interface SearchBarProps {
   isButton?: boolean;
   value?: string;
   onChange?: (value: string) => void;
-  onSubmit?: (e: FormEvent<HTMLFormElement>) => void;
+  onSubmit?: (e: SubmitEvent<HTMLFormElement>) => void;
   autoFocus?: boolean;
 }
 

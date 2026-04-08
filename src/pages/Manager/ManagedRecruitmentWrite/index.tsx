@@ -255,7 +255,7 @@ function ManagedRecruitmentWrite() {
     setIsRecruitmentEnabled(enabled);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setIsUploading(true);
