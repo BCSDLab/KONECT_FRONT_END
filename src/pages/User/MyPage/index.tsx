@@ -29,7 +29,7 @@ function MyPage() {
   const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();
 
   return (
-    <div className="flex flex-col gap-2 p-3 pt-7">
+    <div className="flex flex-col gap-2 p-3 pt-3">
       <UserInfoCard />
       <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
         {menuItems

@@ -3,7 +3,7 @@ import type { ClubApplicationDetailResponse } from '@/apis/club/entity';
 import Portal from '@/components/common/Portal';
 import { useBottomOverlayOffset } from '@/components/layout/bottomOverlay';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
+import { formatIsoDateToYyyyMmDdHhMm } from '@/utils/ts/datetime/date';
 
 type ApplicationAnswer = ClubApplicationDetailResponse['answers'][number];
 
@@ -23,7 +23,7 @@ function ApplicantSummaryCard({
             {name} ({studentNumber})
           </div>
           <div className="text-[13px] leading-[1.6] font-medium text-[#5A6B7F]">
-            지원일: {formatIsoDateToYYYYMMDDHHMM(appliedAt)}
+            지원일: {formatIsoDateToYyyyMmDdHhMm(appliedAt)}
           </div>
         </div>
       </div>
