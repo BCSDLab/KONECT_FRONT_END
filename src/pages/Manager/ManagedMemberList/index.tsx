@@ -1,7 +1,6 @@
 import type { PositionType } from '@/apis/club/entity';
 import ManagerInfoCard from '@/pages/User/MyPage/components/ManagerInfoCard';
-
-import ActionPopupMenu from './components/ActionPopupMenu';
+import ActionPopupMenu, { type PopupMenuItem } from './components/ActionPopupMenu';
 import AddMemberModal from './components/AddMemberModal';
 import DeletePreMemberModal from './components/DeletePreMemberModal';
 import MemberCard from './components/MemberCard';
@@ -31,12 +30,23 @@ function ManagedMemberList() {
     memberAction,
     memberSheetImport,
     preMemberAction,
+    handleCreateChatRoom,
   } = useManagedMemberList();
 
   const memberActions = [
     { label: '직책 변경', onClick: roleManage.handleOpen },
     { label: '부원 추가', onClick: addMember.open },
     { label: '인명부 불러오기', onClick: memberSheetImport.open },
+  ];
+
+  const memberMenuItems: PopupMenuItem[] = [
+    { label: '지원서 보기', onClick: memberAction.handleOpenApplication },
+    { label: '채팅하기', onClick: handleCreateChatRoom },
+    { label: '부원 삭제', onClick: memberAction.handleOpenRemove, tone: 'danger' },
+  ];
+
+  const preMemberMenuItems: PopupMenuItem[] = [
+    { label: '사전 등록 삭제', onClick: preMemberAction.handleOpenDelete, tone: 'danger' },
   ];
 
   return (
@@ -132,17 +142,14 @@ function ManagedMemberList() {
         anchor={memberAction.actionMenuAnchor}
         isOpen={memberAction.isActionOpen}
         onClose={memberAction.handleCloseAction}
-        items={[
-          { label: '지원서 보기', onClick: memberAction.handleOpenApplication },
-          { label: '부원 삭제', onClick: memberAction.handleOpenRemove, tone: 'danger' },
-        ]}
+        items={memberMenuItems}
       />
 
       <ActionPopupMenu
         anchor={preMemberAction.actionMenuAnchor}
         isOpen={preMemberAction.isActionOpen}
         onClose={preMemberAction.handleCloseAction}
-        items={[{ label: '사전 등록 삭제', onClick: preMemberAction.handleOpenDelete, tone: 'danger' }]}
+        items={preMemberMenuItems}
       />
 
       <RoleManageModal

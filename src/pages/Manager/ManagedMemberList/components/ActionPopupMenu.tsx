@@ -1,6 +1,7 @@
 import Portal from '@/components/common/Portal';
+import { cn } from '@/utils/ts/cn';
 
-const ACTION_MENU_WIDTH = 195;
+const ACTION_MENU_WIDTH = 148;
 const ACTION_MENU_OFFSET = 8;
 const ACTION_MENU_MARGIN = 16;
 
@@ -16,17 +17,14 @@ export interface PopupMenuItem {
   tone?: 'danger' | 'default';
 }
 
-export default function ActionPopupMenu({
-  anchor,
-  isOpen,
-  items,
-  onClose,
-}: {
+interface ActionPopupMenuProps {
   anchor: MenuAnchor | null;
   isOpen: boolean;
   items: PopupMenuItem[];
   onClose: () => void;
-}) {
+}
+
+export default function ActionPopupMenu({ anchor, isOpen, items, onClose }: ActionPopupMenuProps) {
   if (!isOpen || !anchor) return null;
 
   const popupHeight = 24 + items.length * 22 + Math.max(0, items.length - 1) * 8;
@@ -45,20 +43,23 @@ export default function ActionPopupMenu({
         <div
           role="menu"
           aria-orientation="vertical"
-          className="border-text-200 fixed w-48.75 overflow-hidden rounded-[10px] border bg-white p-3"
+          className="border-text-200 fixed w-37 overflow-hidden rounded-[10px] border bg-white p-3"
           style={{ left, top }}
           onClick={(event) => event.stopPropagation()}
           onMouseDown={(event) => event.stopPropagation()}
           onTouchStart={(event) => event.stopPropagation()}
         >
-          <div className="flex flex-col gap-2 pl-0.5">
+          <div className="flex flex-col gap-2">
             {items.map(({ label, onClick, tone = 'default' }) => (
               <button
                 key={label}
                 type="button"
                 role="menuitem"
                 onClick={onClick}
-                className={`text-sub2 text-left ${tone === 'danger' ? 'text-danger-600' : 'text-text-600'}`}
+                className={cn(
+                  'text-sub2 text-left leading-[1.6]',
+                  tone === 'danger' ? 'text-danger-600' : 'text-text-600'
+                )}
               >
                 {label}
               </button>

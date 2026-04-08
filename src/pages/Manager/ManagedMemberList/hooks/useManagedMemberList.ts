@@ -1,10 +1,10 @@
 import { useMemo } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import type { PositionType } from '@/apis/club/entity';
 import { managedClubQueries } from '@/apis/club/managedQueries';
-
+import { useCreateChatRoomMutation } from '@/pages/Chat/hooks/useChatMutations';
 import useAddMember from './useAddMember';
 import useMemberAction from './useMemberAction';
 import useMemberSheetImport from './useMemberSheetImport';
@@ -16,9 +16,11 @@ const PROTECTED_POSITIONS = new Set<PositionType>(['PRESIDENT', 'VICE_PRESIDENT'
 export default function useManagedMemberList() {
   const params = useParams();
   const clubId = Number(params.clubId);
+  const navigate = useNavigate();
 
   const { data: managedMemberList } = useSuspenseQuery(managedClubQueries.members(clubId));
   const { data: preMembersList } = useSuspenseQuery(managedClubQueries.preMembers(clubId));
+  const { mutateAsync: createChatRoom, isPending: isCreatingChatRoom } = useCreateChatRoomMutation();
 
   const members = managedMemberList.clubMembers;
 
@@ -33,11 +35,18 @@ export default function useManagedMemberList() {
     memberAction.isRemoving ||
     addMember.isAdding ||
     memberSheetImport.isSubmitting ||
-    preMemberAction.isDeletingPreMember;
+    preMemberAction.isDeletingPreMember ||
+    isCreatingChatRoom;
 
   const total = members.length;
   const protectedMembers = useMemo(() => members.filter((m) => PROTECTED_POSITIONS.has(m.position)), [members]);
   const generalMembers = useMemo(() => members.filter((m) => m.position === 'MEMBER'), [members]);
+
+  const handleCreateChatRoom = async () => {
+    if (!memberAction.selectedMember) return;
+    const { chatRoomId } = await createChatRoom(memberAction.selectedMember.userId);
+    navigate(`/chats/${chatRoomId}`);
+  };
 
   return {
     total,
@@ -51,5 +60,6 @@ export default function useManagedMemberList() {
     memberAction,
     memberSheetImport,
     preMemberAction,
+    handleCreateChatRoom,
   } as const;
 }
