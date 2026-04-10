@@ -13,6 +13,7 @@ import {
   getManagedClubMemberApplications,
   getManagedClubs,
   getPreMembers,
+  postClubSheetImportPreview,
 } from '@/apis/club';
 import { isApiError } from '@/utils/ts/error/apiError';
 
@@ -47,6 +48,7 @@ export const managedClubQueryKeys = {
   settings: (clubId: number) => [...managedClubQueryKeys.all, 'settings', clubId] as const,
   members: (clubId: number) => [...managedClubQueryKeys.all, 'members', clubId] as const,
   preMembers: (clubId: number) => [...managedClubQueryKeys.all, 'preMembers', clubId] as const,
+  sheetImportPreview: (clubId: number) => [...managedClubQueryKeys.all, 'sheetImportPreview', clubId] as const,
 };
 
 export const managedClubQueries = {
@@ -155,5 +157,10 @@ export const managedClubQueries = {
     queryOptions({
       queryKey: managedClubQueryKeys.preMembers(clubId),
       queryFn: () => getPreMembers(clubId),
+    }),
+  sheetImportPreview: (clubId: number) =>
+    queryOptions({
+      queryKey: managedClubQueryKeys.sheetImportPreview(clubId),
+      queryFn: () => postClubSheetImportPreview(clubId),
     }),
 };

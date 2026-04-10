@@ -5,6 +5,7 @@ import AddMemberModal from './components/AddMemberModal';
 import DeletePreMemberModal from './components/DeletePreMemberModal';
 import MemberCard from './components/MemberCard';
 import MemberSection from './components/MemberSection';
+import MemberSheetImportLoadingOverlay from './components/MemberSheetImportLoadingOverlay';
 import MemberSheetImportModal from './components/MemberSheetImportModal';
 import RemoveMemberModal from './components/RemoveMemberModal';
 import RoleManageModal from './components/RoleManageModal';
@@ -203,6 +204,8 @@ function ManagedMemberList() {
         onSubmit={memberSheetImport.handleSubmit}
         spreadsheetUrl={memberSheetImport.spreadsheetUrl}
       />
+
+      <MemberSheetImportLoadingOverlay isOpen={memberSheetImport.isSubmitting} />
     </div>
   );
 }

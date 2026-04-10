@@ -1,6 +1,5 @@
 import { useState } from 'react';
-
-import { useToastContext } from '@/contexts/useToastContext';
+import { useNavigate } from 'react-router-dom';
 import { useUpsertManagedClubSheetMutation } from '@/pages/Manager/hooks/useManagedMemberMutations';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
@@ -35,7 +34,7 @@ function normalizeSpreadsheetUrl(input: string) {
 }
 
 export default function useMemberSheetImport(clubId: number) {
-  const { showToast } = useToastContext();
+  const navigate = useNavigate();
   const showApiErrorToast = useApiErrorToast();
   const { mutate: upsertClubSheet, isPending: isSubmitting } = useUpsertManagedClubSheetMutation(clubId);
   const { value: isOpen, setTrue: setOpen, setFalse: setClose } = useBooleanState(false);
@@ -87,8 +86,8 @@ export default function useMemberSheetImport(clubId: number) {
       { spreadsheetUrl: normalizedSpreadsheetUrl },
       {
         onSuccess: () => {
-          showToast('구글 시트가 등록되었습니다');
           close();
+          navigate(`/mypage/manager/${clubId}/members/sheet/preview`);
         },
         onError: (error) => {
           if (isApiError(error) && error.apiError) {

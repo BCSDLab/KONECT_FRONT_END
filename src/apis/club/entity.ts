@@ -300,6 +300,35 @@ export interface ClubSheetRequest {
   spreadsheetUrl: string;
 }
 
+export interface ClubSheetImportMember {
+  studentNumber: string;
+  name: string;
+  clubPosition: PositionType;
+  enabled: boolean;
+}
+
+export interface ClubSheetImportConfirmRequest {
+  members: ClubSheetImportMember[];
+}
+
+export interface ClubSheetImportConfirmResponse {
+  importedCount: number;
+  autoRegisteredCount: number;
+  warnings: string[];
+}
+
+export interface ClubSheetPreviewMember extends ClubSheetImportMember {
+  isDirectMember: boolean;
+}
+
+export interface ClubSheetPreviewResponse {
+  previewCount: number;
+  autoRegisteredCount: number;
+  preRegisteredCount: number;
+  members: ClubSheetPreviewMember[];
+  warnings: string[];
+}
+
 //========================== Club Settings Entities =========================//
 
 type ClubSettingsRecruitment =

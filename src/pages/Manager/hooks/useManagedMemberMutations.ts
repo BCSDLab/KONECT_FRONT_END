@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { managedClubMutations } from '@/apis/club/managedMutations';
 import { managedClubQueryKeys } from '@/apis/club/managedQueries';
+import { clubQueryKeys } from '@/apis/club/queries';
 
 export const useTransferManagedPresidentMutation = (clubId: number) => {
   const queryClient = useQueryClient();
@@ -70,4 +71,22 @@ export const useDeleteManagedPreMemberMutation = (clubId: number) => {
 
 export const useUpsertManagedClubSheetMutation = (clubId: number) => {
   return useMutation(managedClubMutations.upsertSheet(clubId));
+};
+
+export const useConfirmManagedClubSheetImportMutation = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...managedClubMutations.confirmSheetImport(clubId),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.club(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.sheetImportPreview(clubId) }),
+        queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) }),
+        queryClient.invalidateQueries({ queryKey: clubQueryKeys.members(clubId) }),
+      ]);
+    },
+  });
 };

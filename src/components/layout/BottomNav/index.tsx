@@ -61,14 +61,14 @@ function BottomNavItem({ item, isSelected, unreadCount = 0 }: BottomNavItemProps
       to={to}
       aria-current={isSelected ? 'page' : undefined}
       aria-label={hasUnreadCount ? `${label}, 읽지 않은 메시지 ${unreadCount}개` : undefined}
-      className="relative h-[46px] w-10 shrink-0 overflow-visible"
+      className="relative h-11.5 w-10 shrink-0 overflow-visible"
     >
       {floatingImageSrc ? (
         <img
           src={floatingImageSrc}
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute top-[-26px] left-[-11px] z-10 h-[54px] w-[65px] max-w-none filter-[drop-shadow(0_3px_10px_rgba(0,0,0,0.10))]"
+          className="pointer-events-none absolute -top-6.5 -left-2.75 z-10 h-13.5 w-16.25 max-w-none filter-[drop-shadow(0_3px_10px_rgba(0,0,0,0.10))]"
         />
       ) : Icon ? (
         <div className="absolute top-0 left-1/2 size-7 -translate-x-1/2">

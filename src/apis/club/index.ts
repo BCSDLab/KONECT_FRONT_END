@@ -32,6 +32,9 @@ import type {
   ClubSettingsResponse,
   ClubSettingsPatchRequest,
   ClubApplicationsParams,
+  ClubSheetImportConfirmRequest,
+  ClubSheetImportConfirmResponse,
+  ClubSheetPreviewResponse,
   ClubSheetRequest,
 } from './entity';
 
@@ -237,6 +240,21 @@ export const deletePreMember = async (clubId: number, preMemberId: number) => {
 
 export const putClubSheet = async (clubId: number, data: ClubSheetRequest) => {
   const response = await apiClient.put<void>(`clubs/${clubId}/sheet`, {
+    body: data,
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const postClubSheetImportPreview = async (clubId: number) => {
+  const response = await apiClient.post<ClubSheetPreviewResponse>(`clubs/${clubId}/sheet/import/preview`, {
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const postClubSheetImportConfirm = async (clubId: number, data: ClubSheetImportConfirmRequest) => {
+  const response = await apiClient.post<ClubSheetImportConfirmResponse>(`clubs/${clubId}/sheet/import/confirm`, {
     body: data,
     requiresAuth: true,
   });
