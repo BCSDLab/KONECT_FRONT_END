@@ -2,10 +2,12 @@ import { useRef, useState, useTransition } from 'react';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import BottomSheet, { type SheetPosition } from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
+import Modal from '@/components/common/Modal';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
 import RankingList from '@/pages/Timer/components/RankingList';
 import TimerButton from '@/pages/Timer/components/TimerButton';
 import { useStudyTimer } from '@/pages/Timer/hooks/useStudyTimer';
+import { useTimerExitGuard } from '@/pages/Timer/hooks/useTimerExitGuard';
 import { useTimerLayout } from '@/pages/Timer/hooks/useTimerLayout';
 import { cn } from '@/utils/ts/cn';
 
@@ -23,7 +25,7 @@ const SORT_OPTIONS = [
 ] as const;
 
 function TimerPage() {
-  const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, isStarting, isStopping } = useStudyTimer();
+  const { todayAccumulatedSeconds, sessionStartMs, isRunning, toggle, stop, isStarting, isStopping } = useStudyTimer();
   const { bottomOverlayInsetPx } = useLayoutElementsContext();
   const timerSectionRef = useRef<HTMLDivElement>(null);
 
@@ -32,6 +34,7 @@ function TimerPage() {
   const [sort, setSort] = useState<StudyRankingParams['sort']>('MONTHLY');
   const [sheetPosition, setSheetPosition] = useState<SheetPosition>('half');
   const [autoExpandResetKey, setAutoExpandResetKey] = useState(0);
+  const { isExitConfirmOpen, closeExitConfirm, confirmExit } = useTimerExitGuard({ isRunning, stop });
 
   const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
@@ -112,6 +115,31 @@ function TimerPage() {
           </div>
         )}
       </BottomSheet>
+
+      <Modal isOpen={isExitConfirmOpen} onClose={closeExitConfirm} className="rounded-2xl px-4 py-5">
+        <div className="text-text-700 flex flex-col gap-5 text-center text-[15px] leading-[1.6]">
+          <p className="font-semibold">타이머 종료</p>
+          <p className="font-medium">타이머를 종료하고 페이지를 이동할까요?</p>
+          <div className="flex gap-2 text-[15px] leading-5.5 font-bold">
+            <button
+              type="button"
+              className="border-primary-500 text-primary-500 flex-1 cursor-pointer rounded-[10px] border py-2.75"
+              onClick={closeExitConfirm}
+              disabled={isStopping}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className="bg-primary-500 border-primary-500 flex-1 cursor-pointer rounded-[10px] border text-white disabled:opacity-60"
+              onClick={() => void confirmExit()}
+              disabled={isStopping}
+            >
+              종료
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }
