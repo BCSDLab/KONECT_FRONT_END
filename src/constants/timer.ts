@@ -2,7 +2,7 @@ type TimerDisplayPlatform = 'android' | 'ios' | 'web';
 
 const TIMER_BRIGHTNESS_LEVEL_BY_PLATFORM: Partial<Record<TimerDisplayPlatform, number>> = {
   android: 0.1,
-  ios: 0.35,
+  ios: 0.1,
 };
 
 function isBrowserEnvironment(): boolean {
