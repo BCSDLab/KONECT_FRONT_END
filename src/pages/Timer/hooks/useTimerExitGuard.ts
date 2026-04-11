@@ -66,7 +66,7 @@ export function useTimerExitGuard({ isRunning, stop }: UseTimerExitGuardParams) 
     await stopRef.current();
 
     if (pendingNavigation.type === 'href') {
-      await Promise.resolve(navigate(pendingNavigation.nextHref, { replace: pendingNavigation.replace }));
+      navigate(pendingNavigation.nextHref, { replace: pendingNavigation.replace });
       return;
     }
 
@@ -121,6 +121,12 @@ export function useTimerExitGuard({ isRunning, stop }: UseTimerExitGuardParams) 
       const currentHref = currentHrefRef.current;
 
       if (nextHref === currentHref) return;
+
+      if (pendingNavigationRef.current) {
+        allowNextPopStateRef.current = true;
+        window.history.go(1);
+        return;
+      }
 
       window.history.pushState(window.history.state, '', currentHref);
       openExitConfirm({ type: 'href', nextHref, replace: true });
