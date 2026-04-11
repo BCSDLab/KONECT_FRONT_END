@@ -1,5 +1,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { getTimerDisplayMode } from '@/constants/timer';
 import { useStudyTime } from '@/pages/Timer/hooks/useStudyTime';
+import { syncTimerDisplayMode } from '@/utils/ts/nativeBridge';
+
+const TIMER_DISPLAY_MODE = getTimerDisplayMode();
 
 export const useStudyTimer = () => {
   const { studyTime, startStudyTimer, stopStudyTimer, isStarting, isStopping } = useStudyTime();
@@ -68,6 +72,16 @@ export const useStudyTimer = () => {
       window.removeEventListener('blur', stopIfRunning);
     };
   }, []);
+
+  useEffect(() => {
+    syncTimerDisplayMode(isRunning, TIMER_DISPLAY_MODE);
+
+    if (!isRunning) return;
+
+    return () => {
+      syncTimerDisplayMode(false, TIMER_DISPLAY_MODE);
+    };
+  }, [isRunning]);
 
   useEffect(() => {
     if (studyTime?.todayStudyTime != null) {
