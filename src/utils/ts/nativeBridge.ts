@@ -8,7 +8,8 @@ type BridgeMessage =
       dimScreen: boolean;
       brightnessLevel?: number;
     }
-  | { type: 'TIMER_INACTIVE' };
+  | { type: 'TIMER_INACTIVE' }
+  | { type: 'NAVIGATE_BACK' };
 
 interface TimerDisplayModeOptions {
   brightnessLevel?: number;
@@ -36,4 +37,8 @@ export function syncTimerDisplayMode(isRunning: boolean, options: TimerDisplayMo
   }
 
   postNativeMessage({ type: 'TIMER_INACTIVE' });
+}
+
+export function requestNativeBackNavigation(): void {
+  postNativeMessage({ type: 'NAVIGATE_BACK' });
 }

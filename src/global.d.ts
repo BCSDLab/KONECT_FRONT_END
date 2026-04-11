@@ -5,6 +5,10 @@ interface Window {
   APP_VERSION?: string;
 }
 
+interface WindowEventMap {
+  KONECT_NATIVE_BACK_REQUEST: Event;
+}
+
 interface ImportMetaEnv {
   readonly VITE_API_PATH: string;
   readonly VITE_SENTRY_DSN?: string;
