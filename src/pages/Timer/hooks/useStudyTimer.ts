@@ -74,9 +74,9 @@ export const useStudyTimer = () => {
   }, []);
 
   useEffect(() => {
-    syncTimerDisplayMode(isRunning, TIMER_DISPLAY_MODE);
-
     if (!isRunning) return;
+
+    syncTimerDisplayMode(true, TIMER_DISPLAY_MODE);
 
     return () => {
       syncTimerDisplayMode(false, TIMER_DISPLAY_MODE);

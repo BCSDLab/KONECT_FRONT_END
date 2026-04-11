@@ -1,10 +1,18 @@
 type TimerDisplayPlatform = 'android' | 'ios' | 'web';
 
-const IOS_TIMER_BRIGHTNESS_LEVEL = 0.35;
-const ANDROID_TIMER_BRIGHTNESS_LEVEL = 0.28;
+const TIMER_BRIGHTNESS_LEVEL_BY_PLATFORM: Partial<Record<TimerDisplayPlatform, number>> = {
+  android: 0.28,
+  ios: 0.35,
+};
 
-function getTimerDisplayPlatform(userAgent = navigator.userAgent): TimerDisplayPlatform {
-  if (!window.ReactNativeWebView) return 'web';
+function isBrowserEnvironment(): boolean {
+  return typeof window !== 'undefined' && typeof navigator !== 'undefined';
+}
+
+function getTimerDisplayPlatform(): TimerDisplayPlatform {
+  if (!isBrowserEnvironment() || !window.ReactNativeWebView) return 'web';
+
+  const { userAgent } = navigator;
 
   if (/Android/i.test(userAgent)) {
     return 'android';
@@ -23,6 +31,6 @@ export function getTimerDisplayMode() {
   return {
     keepAwake: true,
     dimScreen: true,
-    brightnessLevel: platform === 'android' ? ANDROID_TIMER_BRIGHTNESS_LEVEL : IOS_TIMER_BRIGHTNESS_LEVEL,
+    brightnessLevel: TIMER_BRIGHTNESS_LEVEL_BY_PLATFORM[platform],
   } as const;
 }
