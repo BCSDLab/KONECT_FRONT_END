@@ -9,7 +9,7 @@ interface UseTimerExitGuardParams {
   stop: () => Promise<void>;
 }
 
-type PendingNavigation = { type: 'href'; nextHref: string; replace?: boolean } | { type: 'native-back' };
+type PendingNavigation = { type: 'href'; nextHref: string } | { type: 'history-back' } | { type: 'native-back' };
 
 function getNavigationHref(anchor: HTMLAnchorElement): string | null {
   if (!anchor.href || anchor.target === '_blank' || anchor.hasAttribute('download')) {
@@ -66,7 +66,13 @@ export function useTimerExitGuard({ isRunning, stop }: UseTimerExitGuardParams) 
     await stopRef.current();
 
     if (pendingNavigation.type === 'href') {
-      navigate(pendingNavigation.nextHref, { replace: pendingNavigation.replace });
+      navigate(pendingNavigation.nextHref);
+      return;
+    }
+
+    if (pendingNavigation.type === 'history-back') {
+      allowNextPopStateRef.current = true;
+      window.history.back();
       return;
     }
 
@@ -129,7 +135,7 @@ export function useTimerExitGuard({ isRunning, stop }: UseTimerExitGuardParams) 
       }
 
       window.history.pushState(window.history.state, '', currentHref);
-      openExitConfirm({ type: 'href', nextHref, replace: true });
+      openExitConfirm({ type: 'history-back' });
     };
 
     window.addEventListener('popstate', handlePopState);
