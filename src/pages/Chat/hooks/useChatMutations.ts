@@ -13,6 +13,17 @@ export const useCreateChatRoomMutation = () => {
   });
 };
 
+export const useCreateChatRoomGroupMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.createRoomGroup(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() });
+    },
+  });
+};
+
 export const useSendChatMessageMutation = () => {
   const queryClient = useQueryClient();
 

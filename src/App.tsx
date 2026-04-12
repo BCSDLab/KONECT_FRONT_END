@@ -17,6 +17,8 @@ const StudentIdStep = lazy(() => import('./pages/Auth/SignUp/StudentIdStep'));
 const TermStep = lazy(() => import('./pages/Auth/SignUp/TermStep'));
 const UniversityStep = lazy(() => import('./pages/Auth/SignUp/UniversityStep'));
 const ChatListPage = lazy(() => import('./pages/Chat'));
+const ChatSearch = lazy(() => import('./pages/Chat/ChatSearch'));
+const ChatAdd = lazy(() => import('./pages/Chat/AddChatRoom'));
 const ChatRoom = lazy(() => import('./pages/Chat/ChatRoom'));
 const ApplicationPage = lazy(() => import('./pages/Club/Application'));
 const ApplyCompletePage = lazy(() => import('./pages/Club/Application/applyCompletePage'));
@@ -120,6 +122,8 @@ function App() {
               <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
               <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="chats/search" element={<ChatSearch />} />
+              <Route path="chats/add" element={<ChatAdd />} />
               <Route path="chats/:chatRoomId" element={<ChatRoom />} />
             </Route>
           </Route>

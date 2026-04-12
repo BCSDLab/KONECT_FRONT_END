@@ -1,4 +1,5 @@
 import type { Ref } from 'react';
+import { useNavigate } from 'react-router-dom';
 import AddCircle from '@/assets/svg/add_circle.svg';
 import Search from '@/assets/svg/big-search-icon.svg';
 import BackTitleHeader from '@/components/layout/Header/components/BackTitleHeader';
@@ -9,12 +10,13 @@ interface ChatListHeaderProps {
 }
 
 export default function ChatListHeader({ title, headerRef }: ChatListHeaderProps) {
+  const navigate = useNavigate();
   const rightSlot = (
     <div className="flex gap-4">
-      <button type="button" aria-label="검색" className="shrink-0">
+      <button type="button" aria-label="검색" className="shrink-0" onClick={() => navigate('/chats/search')}>
         <Search />
       </button>
-      <button type="button" aria-label="채팅방 추가" className="shrink-0">
+      <button type="button" aria-label="채팅방 추가" className="shrink-0" onClick={() => navigate('/chats/add')}>
         <AddCircle />
       </button>
     </div>
