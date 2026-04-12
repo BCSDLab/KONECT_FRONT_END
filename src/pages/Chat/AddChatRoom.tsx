@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import type { User, Section, SortBy } from '@/apis/chat/entity';
 import { chatQueries } from '@/apis/chat/queries';
@@ -7,8 +7,10 @@ import Search from '@/assets/svg/big-search-icon.svg';
 import Check from '@/assets/svg/check_color.svg';
 import Dropdown from '@/components/common/Dropdown';
 import ChatAddHeader from '@/components/layout/Header/components/ChatAddHeader';
+import useChat from '@/pages/Chat/hooks/useChat';
 import useDebouncedCallback from '@/utils/hooks/useDebounce';
-import useChat from './hooks/useChat';
+import { isApiError } from '@/utils/ts/error/apiError';
+import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 
 type UserListProps = {
   onToggle: (userId: number) => void;
@@ -66,7 +68,7 @@ export default function AddChatRoom() {
 
   const navigate = useNavigate();
   const { createRoomGroup } = useChat();
-  const { data } = useQuery({
+  const { data } = useSuspenseQuery({
     ...chatQueries.invite(debouncedQuery, sortBy),
   });
 
@@ -95,8 +97,14 @@ export default function AddChatRoom() {
       <ChatAddHeader
         title={title}
         onConfirm={async () => {
-          const result = await createRoomGroup(Array.from(selectedUserIds));
-          navigate(`/chats/${result.chatRoomId}`);
+          try {
+            const result = await createRoomGroup(Array.from(selectedUserIds));
+            navigate(`/chats/${result.chatRoomId}`);
+          } catch (error) {
+            if (isApiError(error) && isServerErrorStatus(error.status)) {
+              redirectToServerErrorPage();
+            }
+          }
         }}
       />
       <label className="flex h-13 w-87.5 items-center overflow-hidden rounded-full bg-white px-3">
@@ -113,7 +121,7 @@ export default function AddChatRoom() {
         <div className="flex w-full px-5 py-4">
           <span className="text-#344352 flex-1 translate-y-2 text-[15px]">친구 선택({data?.currentCount})</span>
           <Dropdown
-            className="text=[13px] h-7.25 w-19 font-medium"
+            className="h-7.25 w-19 text-[13px] font-medium"
             options={SORT_OPTIONS}
             value={sortBy}
             onChange={(value) => setSortBy(value)}

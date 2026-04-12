@@ -1,5 +1,5 @@
 import { useState, Fragment } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import type { Messages, Room } from '@/apis/chat/entity';
 import { chatQueries } from '@/apis/chat/queries';
@@ -121,6 +121,21 @@ function MessageListItem({ message, keyword }: { message: Messages; keyword: str
   );
 }
 
+function ChatSearchResults({ keyword }: { keyword: string }) {
+  const { data } = useSuspenseQuery(chatQueries.search(keyword));
+
+  return (
+    <div className="mt-6 h-full w-87.5 overflow-hidden rounded-t-2xl bg-white py-4">
+      {data?.roomMatches?.rooms?.map((room) => (
+        <RoomListItem key={room.roomId} room={room} />
+      ))}
+      {data?.messageMatches?.messages?.map((message, index) => (
+        <MessageListItem key={`${message.roomId}-${index}`} message={message} keyword={keyword} />
+      ))}
+    </div>
+  );
+}
+
 export default function ChatSearch() {
   const [keyword, setKeyword] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
@@ -134,11 +149,6 @@ export default function ChatSearch() {
     setKeyword(value);
     updateDebouncedQuery(value);
   };
-
-  const { data } = useQuery({
-    ...chatQueries.search(debouncedQuery),
-    enabled: !!debouncedQuery,
-  });
 
   const title = '채팅방 검색';
   return (
@@ -154,16 +164,7 @@ export default function ChatSearch() {
         />
         <Search />
       </label>
-      {debouncedQuery && (
-        <div className="mt-6 h-full w-87.5 overflow-hidden rounded-t-2xl bg-white py-4">
-          {data?.roomMatches?.rooms?.map((room) => (
-            <RoomListItem key={room.roomId} room={room} />
-          ))}
-          {data?.messageMatches?.messages?.map((message, index) => (
-            <MessageListItem key={`${message.roomId}-${index}`} message={message} keyword={debouncedQuery} />
-          ))}
-        </div>
-      )}
+      {debouncedQuery && <ChatSearchResults keyword={debouncedQuery} />}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import type { PaginationParams, PaginationResponse } from '../common/pagination';
+import type { PaginationParams, PaginationResponse } from '@/apis/common/pagination';
 
 export type ChatType = 'DIRECT' | 'CLUB_GROUP' | 'GROUP' | 'INQUIRY';
 export type SortBy = 'CLUB' | 'NAME';

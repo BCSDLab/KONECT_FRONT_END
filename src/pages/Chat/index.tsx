@@ -224,7 +224,7 @@ function ChatListPage() {
     }
     setChangeRoomName(null);
   };
-  console.log(rooms);
+
   const contextMenuItems = (room: Room) => [
     {
       label: '채팅방 이름 변경',

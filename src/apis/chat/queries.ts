@@ -1,6 +1,6 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import type { ChatMessagesResponse, SortBy } from './entity';
-import { getChatMessages, getChatRooms, getSearchChat, getInvitableFriends } from '.';
+import { getChatMessages, getChatRooms, getSearchChat, getInvitableFriends } from '@/apis/chat';
+import type { ChatMessagesResponse, SortBy } from '@/apis/chat/entity';
 
 export const chatQueryKeys = {
   all: ['chat'] as const,
