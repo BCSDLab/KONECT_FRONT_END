@@ -6,6 +6,7 @@ import { managedClubQueries } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import PersonAddIcon from '@/assets/svg/person-add-icon.svg';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
+import { useInAppNotificationToastContext } from '@/contexts/useInAppNotificationToastContext';
 import { useToastContext } from '@/contexts/useToastContext';
 import { useConfirmManagedClubSheetImportMutation } from '@/pages/Manager/hooks/useManagedMemberMutations';
 import { MemberAvatar } from '@/pages/Manager/ManagedMemberList/components/MemberCard';
@@ -24,6 +25,7 @@ function ManagedSheetImportPreview() {
   const navigate = useNavigate();
   const { clubId } = useParams<{ clubId: string }>();
   const clubIdNumber = Number(clubId);
+  const { showInAppNotificationToast } = useInAppNotificationToastContext();
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
   const { data: preview } = useSuspenseQuery(managedClubQueries.sheetImportPreview(clubIdNumber));
@@ -64,13 +66,11 @@ function ManagedSheetImportPreview() {
     confirmSheetImport(
       { members },
       {
-        onSuccess: ({ importedCount, warnings }) => {
-          const successMessage =
-            warnings.length > 0
-              ? `${importedCount}명의 부원이 등록되었습니다. 일부 항목을 확인해주세요.`
-              : `${importedCount}명의 부원이 등록되었습니다.`;
-
-          showToast(successMessage);
+        onSuccess: () => {
+          showInAppNotificationToast({
+            message: '인명부 등록이 완료되었어요',
+            variant: 'approved',
+          });
           navigate(`/mypage/manager/${clubIdNumber}/members`);
         },
         onError: (error) => showApiErrorToast(error, '부원 등록에 실패했습니다.'),

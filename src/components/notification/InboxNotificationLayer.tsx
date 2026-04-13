@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { type InfiniteData, useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { incrementInboxUnreadCount, prependInboxNotification } from '@/apis/notification/cache';
@@ -8,13 +8,17 @@ import type {
   InboxNotificationUnreadCountResponse,
 } from '@/apis/notification/entity';
 import { notificationQueryKeys } from '@/apis/notification/queries';
+import { useInAppNotificationToastContext } from '@/contexts/useInAppNotificationToastContext';
 import { useAuthStore } from '@/stores/authStore';
-import { normalizeInboxNotificationPath } from '@/utils/ts/notification';
+import {
+  getInboxNotificationMessage,
+  getInboxNotificationToastVariant,
+  normalizeInboxNotificationPath,
+} from '@/utils/ts/notification';
 import { useMarkInboxNotificationAsReadMutation } from './hooks/useInboxNotificationMutations';
 import { useInboxNotificationStream } from './hooks/useInboxNotificationStream';
 import InAppNotificationToast from './InAppNotificationToast';
 
-const IN_APP_NOTIFICATION_TOAST_DURATION = 4_500;
 const MAX_SEEN_NOTIFICATION_COUNT = 50;
 const INBOX_RECONNECT_RESYNC_THROTTLE_MS = 10_000;
 
@@ -26,9 +30,10 @@ function InboxNotificationLayer() {
   const authStatus = useAuthStore((state) => state.authStatus);
   const lastReconnectResyncAtRef = useRef(0);
   const seenNotificationIdsRef = useRef<number[]>([]);
-  const [notificationQueue, setNotificationQueue] = useState<InboxNotification[]>([]);
+  const { clearInAppNotificationToasts, dismissInAppNotificationToast, showInAppNotificationToast, toastQueue } =
+    useInAppNotificationToastContext();
   const { mutateAsync: markAsRead } = useMarkInboxNotificationAsReadMutation();
-  const activeNotification = notificationQueue[0] ?? null;
+  const activeToast = toastQueue[0] ?? null;
 
   const enqueueNotification = (notification: InboxNotification) => {
     if (seenNotificationIdsRef.current.includes(notification.id)) {
@@ -54,8 +59,24 @@ function InboxNotificationLayer() {
       return;
     }
 
-    startTransition(() => {
-      setNotificationQueue((previousQueue) => [...previousQueue, notification]);
+    showInAppNotificationToast({
+      message: getInboxNotificationMessage(notification),
+      variant: getInboxNotificationToastVariant(notification),
+      onAction: async () => {
+        const targetPath = normalizeInboxNotificationPath(notification.path);
+
+        if (!notification.isRead) {
+          try {
+            await markAsRead({ notificationId: notification.id });
+          } catch {
+            void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+          }
+        }
+
+        if (targetPath) {
+          navigate(targetPath);
+        }
+      },
     });
   };
 
@@ -66,35 +87,30 @@ function InboxNotificationLayer() {
 
     lastReconnectResyncAtRef.current = 0;
     seenNotificationIdsRef.current = [];
-
-    startTransition(() => {
-      setNotificationQueue([]);
-    });
-  }, [authStatus]);
+    clearInAppNotificationToasts();
+  }, [authStatus, clearInAppNotificationToasts]);
 
   useEffect(() => {
     if (!isNotificationListPage) {
       return;
     }
 
-    startTransition(() => {
-      setNotificationQueue([]);
-    });
-  }, [isNotificationListPage]);
+    clearInAppNotificationToasts();
+  }, [clearInAppNotificationToasts, isNotificationListPage]);
 
   useEffect(() => {
-    if (!activeNotification) {
+    if (!activeToast) {
       return;
     }
 
     const timeoutId = window.setTimeout(() => {
-      setNotificationQueue((previousQueue) => previousQueue.slice(1));
-    }, IN_APP_NOTIFICATION_TOAST_DURATION);
+      dismissInAppNotificationToast(activeToast.id);
+    }, activeToast.durationMs);
 
     return () => {
       window.clearTimeout(timeoutId);
     };
-  }, [activeNotification]);
+  }, [activeToast, dismissInAppNotificationToast]);
 
   const handleStreamReconnect = () => {
     const now = Date.now();
@@ -110,23 +126,14 @@ function InboxNotificationLayer() {
   useInboxNotificationStream(enqueueNotification, { onReconnect: handleStreamReconnect });
 
   const handleNotificationAction = async () => {
-    if (!activeNotification) {
+    if (!activeToast) {
       return;
     }
 
-    const targetPath = normalizeInboxNotificationPath(activeNotification.path);
-    setNotificationQueue((previousQueue) => previousQueue.slice(1));
+    dismissInAppNotificationToast(activeToast.id);
 
-    if (!activeNotification.isRead) {
-      try {
-        await markAsRead({ notificationId: activeNotification.id });
-      } catch {
-        void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
-      }
-    }
-
-    if (targetPath) {
-      navigate(targetPath);
+    if (activeToast.onAction) {
+      await activeToast.onAction();
     }
   };
 
@@ -134,7 +141,7 @@ function InboxNotificationLayer() {
     return null;
   }
 
-  return <InAppNotificationToast notification={activeNotification} onAction={() => void handleNotificationAction()} />;
+  return <InAppNotificationToast toast={activeToast} onAction={() => void handleNotificationAction()} />;
 }
 
 export default InboxNotificationLayer;
