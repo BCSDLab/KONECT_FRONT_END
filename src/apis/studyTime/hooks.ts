@@ -9,7 +9,11 @@ export const useStopStudyTimerMutation = () => {
   return useMutation({
     ...studyTimeMutations.stopTimer(),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() });
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() }),
+        queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.rankings() }),
+        queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.myRankings() }),
+      ]);
     },
   });
 };

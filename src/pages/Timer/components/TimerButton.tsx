@@ -41,9 +41,7 @@ function TimerButton({ todayAccumulatedSeconds, sessionStartMs, isRunning, onTog
       }}
       className={cn(
         'mx-auto flex shrink-0 flex-col items-center justify-center gap-1 rounded-full px-3 py-6 text-center transition-colors',
-        isRunning
-          ? 'bg-primary-300 border border-white text-white'
-          : 'text-text-500 bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)]'
+        isRunning ? 'bg-primary-300 text-white' : 'text-text-500 bg-white shadow-[0_0_20px_0_rgba(0,0,0,0.03)]'
       )}
     >
       <div
