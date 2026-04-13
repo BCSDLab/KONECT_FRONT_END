@@ -7,6 +7,7 @@ interface SubpageHeaderProps {
   headerRef?: Ref<HTMLElement>;
   rightSlot?: ReactNode;
   shadowClassName?: string;
+  headerClassName?: string;
 }
 
 function SubpageHeader({
@@ -14,10 +15,11 @@ function SubpageHeader({
   headerRef,
   rightSlot,
   shadowClassName = 'shadow-[0_0_20px_rgba(0,0,0,0.03)]',
+  headerClassName,
 }: SubpageHeaderProps) {
-  const headerStyle = {
-    minHeight: 'var(--subpage-header-height)',
-  } as CSSProperties;
+  const headerStyle = headerClassName
+    ? undefined
+    : ({ minHeight: 'var(--subpage-header-height)' } as CSSProperties);
 
   return (
     <BackTitleHeader
@@ -25,7 +27,7 @@ function SubpageHeader({
       headerRef={headerRef}
       rightSlot={rightSlot}
       reserveRightSlot
-      headerClassName={cn('justify-between rounded-b-3xl px-4 py-3', shadowClassName)}
+      headerClassName={cn('justify-between rounded-b-3xl px-4 py-3', shadowClassName, headerClassName)}
       titleClassName="text-sub1 text-indigo-700"
       style={headerStyle}
     />

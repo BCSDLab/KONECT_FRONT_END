@@ -64,4 +64,12 @@ export const ROUTE_TITLES: RouteTitle[] = [
     match: (pathname) => pathname === '/chats',
     title: '채팅방',
   },
+  {
+    match: (pathname) => pathname === '/chats/add',
+    title: '채팅방 추가',
+  },
+  {
+    match: (pathname) => pathname === '/chats/search',
+    title: '채팅방 검색',
+  },
 ];
