@@ -7,6 +7,7 @@ import { isNetworkError, isTimeoutError } from '@/utils/ts/error/apiError';
 import { SERVER_ERROR_PATH } from '@/utils/ts/error/errorRedirect';
 import './index.css';
 import { initSentry } from './config/sentry.ts';
+import InAppNotificationToastProvider from './contexts/InAppNotificationToastContext';
 import ToastProvider from './contexts/ToastContext';
 import { installViewportVars } from './utils/ts/viewport.ts';
 
@@ -58,7 +59,9 @@ async function bootstrap() {
       >
         <QueryClientProvider client={queryClient}>
           <ToastProvider>
-            <App />
+            <InAppNotificationToastProvider>
+              <App />
+            </InAppNotificationToastProvider>
           </ToastProvider>
         </QueryClientProvider>
       </Sentry.ErrorBoundary>
