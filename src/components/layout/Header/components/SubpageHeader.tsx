@@ -17,9 +17,7 @@ function SubpageHeader({
   shadowClassName = 'shadow-[0_0_20px_rgba(0,0,0,0.03)]',
   headerClassName,
 }: SubpageHeaderProps) {
-  const headerStyle = headerClassName
-    ? undefined
-    : ({ minHeight: 'var(--subpage-header-height)' } as CSSProperties);
+  const headerStyle = headerClassName ? undefined : ({ minHeight: 'var(--subpage-header-height)' } as CSSProperties);
 
   return (
     <BackTitleHeader
