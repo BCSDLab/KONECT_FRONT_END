@@ -16,9 +16,11 @@ interface MyStudyTimeRankingKeyParams {
 export const studyTimeQueryKeys = {
   all: ['studyTime'] as const,
   summary: () => [...studyTimeQueryKeys.all, 'summary'] as const,
+  rankings: () => [...studyTimeQueryKeys.all, 'ranking'] as const,
   ranking: (params: StudyTimeRankingKeyParams) =>
-    [...studyTimeQueryKeys.all, 'ranking', params.limit, params.sort, params.type] as const,
-  myRanking: (params: MyStudyTimeRankingKeyParams) => [...studyTimeQueryKeys.all, 'myRanking', params.sort] as const,
+    [...studyTimeQueryKeys.rankings(), params.limit, params.sort, params.type] as const,
+  myRankings: () => [...studyTimeQueryKeys.all, 'myRanking'] as const,
+  myRanking: (params: MyStudyTimeRankingKeyParams) => [...studyTimeQueryKeys.myRankings(), params.sort] as const,
 };
 
 export const studyTimeQueries = {
