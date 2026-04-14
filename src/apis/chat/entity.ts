@@ -36,6 +36,7 @@ export interface SendChatMessageRequest {
 
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
+  messageId?: number;
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {
@@ -54,6 +55,7 @@ export interface Messages {
   roomImageUrl: string;
   matchedMessage: string;
   matchedMessageSentAt: string;
+  matchedMessageId: number;
 }
 
 export interface RoomMatched extends PaginationResponse {

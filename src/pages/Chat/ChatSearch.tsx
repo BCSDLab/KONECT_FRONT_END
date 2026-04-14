@@ -12,7 +12,7 @@ function MessageListItem({ message, keyword }: { message: Messages; keyword: str
   const parts = message.matchedMessage.split(keyword);
   return (
     <Link
-      to={`/chats/${message.roomId}`}
+      to={`/chats/${message.roomId}?messageId=${message.matchedMessageId}`}
       className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-4 py-3 transition-colors select-none"
     >
       <ChatRoomAvatar roomImageUrl={message.roomImageUrl} />

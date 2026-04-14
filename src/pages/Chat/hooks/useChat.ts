@@ -10,7 +10,7 @@ import {
   useDeleteChatRoomMutation,
 } from '@/pages/Chat/hooks/useChatMutations';
 
-const useChat = (chatRoomId?: number) => {
+const useChat = (chatRoomId?: number, messageId?: number) => {
   const { data: chatRoomList } = useSuspenseQuery({
     ...chatQueries.rooms(),
     refetchInterval: 5000,
@@ -26,7 +26,7 @@ const useChat = (chatRoomId?: number) => {
     hasNextPage,
     isFetchingNextPage,
   } = useInfiniteQuery({
-    ...chatQueries.messages(chatRoomId),
+    ...chatQueries.messages(chatRoomId, messageId),
     refetchInterval: 1000,
   });
 

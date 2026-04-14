@@ -17,12 +17,13 @@ export const chatQueries = {
       queryKey: chatQueryKeys.rooms(),
       queryFn: getChatRooms,
     }),
-  messages: (chatRoomId?: number, limit = 20) =>
+  messages: (chatRoomId?: number, messageId?: number, limit = 20) =>
     infiniteQueryOptions({
       queryKey: chatRoomId ? chatQueryKeys.messages(chatRoomId) : chatQueryKeys.disabledMessages(),
       queryFn: ({ pageParam }) =>
         getChatMessages({
           chatRoomId: chatRoomId!,
+          messageId: messageId,
           page: pageParam,
           limit,
         }),
