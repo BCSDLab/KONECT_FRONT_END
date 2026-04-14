@@ -81,7 +81,9 @@ export default function AddChatRoom() {
     } catch (error) {
       if (isApiError(error) && isServerErrorStatus(error.status)) {
         redirectToServerErrorPage();
+        return;
       }
+      throw error;
     }
   };
 
