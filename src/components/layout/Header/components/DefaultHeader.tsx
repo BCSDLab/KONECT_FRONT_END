@@ -1,21 +1,32 @@
+import type { Ref } from 'react';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import NotificationBell from './NotificationBell';
 
 interface DefaultHeaderProps {
   title: string;
+  headerRef?: Ref<HTMLElement>;
   showBackButton?: boolean;
   showNotificationBell?: boolean;
   onBack?: () => void;
 }
 
-function DefaultHeader({ title, showBackButton = true, showNotificationBell = false, onBack }: DefaultHeaderProps) {
+function DefaultHeader({
+  title,
+  headerRef,
+  showBackButton = true,
+  showNotificationBell = false,
+  onBack,
+}: DefaultHeaderProps) {
   const smartBack = useSmartBack();
 
   const handleBack = onBack ?? smartBack;
 
   return (
-    <header className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2">
+    <header
+      ref={headerRef}
+      className="fixed top-0 right-0 left-0 z-30 flex h-11 items-center justify-center bg-white px-4 py-2"
+    >
       {showBackButton && (
         <button
           type="button"

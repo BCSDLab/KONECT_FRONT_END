@@ -137,6 +137,7 @@ export interface AppliedClubResponse {
 //========================== Club Manager Entities =========================//
 interface Application {
   id: number;
+  userId: number;
   studentNumber: string;
   name: string;
   imageUrl: string;
@@ -293,6 +294,39 @@ export interface PreMembersList {
 export interface PreMemberDeleteRequest {
   clubId: number;
   preMemberId: number;
+}
+
+export interface ClubSheetRequest {
+  spreadsheetUrl: string;
+}
+
+export interface ClubSheetImportMember {
+  studentNumber: string;
+  name: string;
+  clubPosition: PositionType;
+  enabled: boolean;
+}
+
+export interface ClubSheetImportConfirmRequest {
+  members: ClubSheetImportMember[];
+}
+
+export interface ClubSheetImportConfirmResponse {
+  importedCount: number;
+  autoRegisteredCount: number;
+  warnings: string[];
+}
+
+export interface ClubSheetPreviewMember extends ClubSheetImportMember {
+  isDirectMember: boolean;
+}
+
+export interface ClubSheetPreviewResponse {
+  previewCount: number;
+  autoRegisteredCount: number;
+  preRegisteredCount: number;
+  members: ClubSheetPreviewMember[];
+  warnings: string[];
 }
 
 //========================== Club Settings Entities =========================//

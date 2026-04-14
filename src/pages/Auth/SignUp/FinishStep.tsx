@@ -15,15 +15,15 @@ function FinishStep() {
 
   return (
     <div
-      className="flex min-h-full flex-1 flex-col justify-between px-8 pt-[72px]"
+      className="flex min-h-full flex-1 flex-col justify-between px-8 pt-18"
       style={{ paddingBottom: 'calc(32px + var(--sab))' }}
     >
       <div className="flex flex-col items-center gap-8 text-center">
-        <div className="bg-primary-500 flex size-[100px] items-center justify-center rounded-full">
+        <div className="bg-primary-500 flex size-25 items-center justify-center rounded-full">
           <svg
             aria-hidden="true"
             viewBox="5.5 8 18.5 13"
-            className="text-indigo-0 h-[34px] w-[50px]"
+            className="text-indigo-0 h-8.5 w-12.5"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
           >

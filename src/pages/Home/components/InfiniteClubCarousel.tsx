@@ -45,9 +45,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
         ref={scrollRef}
         onScroll={handleScroll}
         style={centeredPaddingStyle}
-        className={cn(
-          'snap-x snap-mandatory overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
-        )}
+        className={cn('scrollbar-hidden snap-x snap-mandatory overflow-x-auto pb-1')}
       >
         <div className="flex gap-2">
           {displayClubs.map(({ club, key }, index) => {
@@ -57,7 +55,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
             return (
               <div
                 key={key}
-                className={cn('shrink-0 py-1', shouldCenterCard ? 'snap-center' : 'snap-start px-[3px]')}
+                className={cn('shrink-0 py-1', shouldCenterCard ? 'snap-center' : 'snap-start px-0.75')}
                 style={{ width: `${RECOMMENDED_CLUB_CARD_WIDTH}px` }}
               >
                 <RecommendedClubCard
@@ -74,7 +72,7 @@ function InfiniteClubCarousel({ clubs }: InfiniteClubCarouselProps) {
         </div>
       </div>
       {showIndicator && (
-        <div className="mx-auto h-[5px] w-[60px] rounded-[40px] bg-[#d9d9d9]">
+        <div className="mx-auto h-1.25 w-15 rounded-[40px] bg-[#d9d9d9]">
           <div
             className="h-full rounded-[40px] bg-[#b4b4b4] transition-transform duration-200 ease-out"
             style={{

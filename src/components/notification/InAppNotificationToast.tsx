@@ -1,20 +1,17 @@
-import type { InboxNotification } from '@/apis/notification/entity';
 import NotificationToastApprovedImage from '@/assets/image/notification-toast-approved.png';
 import NotificationToastGeneralImage from '@/assets/image/notification-toast-general.png';
 import Portal from '@/components/common/Portal';
 import { useBottomOverlayOffset } from '@/components/layout/bottomOverlay';
+import type { InAppNotificationToastItem } from '@/contexts/useInAppNotificationToastContext';
 import { useLayoutElementsContext } from '@/contexts/useLayoutElementsContext';
-import { getInboxNotificationMessage, getInboxNotificationToastVariant } from '@/utils/ts/notification';
 
 interface InAppNotificationToastProps {
-  notification: InboxNotification | null;
+  toast: InAppNotificationToastItem | null;
   onAction: () => void;
 }
 
-function NotificationToneIcon({ notification }: { notification: InboxNotification }) {
-  const toastVariant = getInboxNotificationToastVariant(notification);
-
-  if (toastVariant === 'approved') {
+function NotificationToneIcon({ variant }: { variant: InAppNotificationToastItem['variant'] }) {
+  if (variant === 'approved') {
     return (
       <img src={NotificationToastApprovedImage} alt="" aria-hidden="true" className="h-9 w-9 shrink-0 object-contain" />
     );
@@ -25,15 +22,13 @@ function NotificationToneIcon({ notification }: { notification: InboxNotificatio
   );
 }
 
-function InAppNotificationToast({ notification, onAction }: InAppNotificationToastProps) {
+function InAppNotificationToast({ toast, onAction }: InAppNotificationToastProps) {
   const { layoutElement } = useLayoutElementsContext();
   const bottomPosition = useBottomOverlayOffset();
 
-  if (!notification) {
+  if (!toast) {
     return null;
   }
-
-  const message = getInboxNotificationMessage(notification);
 
   return (
     <Portal container={layoutElement}>
@@ -44,13 +39,13 @@ function InAppNotificationToast({ notification, onAction }: InAppNotificationToa
         <div
           role="status"
           aria-live="polite"
-          className="animate-fade-in-up pointer-events-auto flex w-full max-w-[315px] items-center gap-4 rounded-2xl bg-[rgba(231,235,239,0.9)] px-3 py-4 shadow-[0_0_20px_rgba(0,0,0,0.03)]"
+          className="animate-fade-in-up pointer-events-auto flex w-full max-w-78.75 items-center gap-4 rounded-2xl bg-[rgba(231,235,239,0.9)] px-3 py-4 shadow-[0_0_20px_rgba(0,0,0,0.03)]"
         >
-          <NotificationToneIcon notification={notification} />
+          <NotificationToneIcon variant={toast.variant} />
 
           <div className="min-w-0 flex-1">
             <p className="text-text-700 text-[16px] leading-[1.6] font-bold break-keep whitespace-pre-line">
-              {message}
+              {toast.message}
             </p>
           </div>
 
@@ -59,7 +54,7 @@ function InAppNotificationToast({ notification, onAction }: InAppNotificationToa
             onClick={onAction}
             className="shrink-0 rounded-[60px] bg-white px-2 py-1 text-[13px] leading-[1.6] font-semibold text-[#5A6B7F] transition-colors active:bg-[#F4F6F9]"
           >
-            확인하기
+            {toast.actionLabel}
           </button>
         </div>
       </div>

@@ -1,9 +1,9 @@
-import { useRef } from 'react';
+import { useRef, type Ref } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 
-function ScheduleHeader() {
+function ScheduleHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -28,7 +28,7 @@ function ScheduleHeader() {
   };
 
   return (
-    <header className="fixed z-30 flex h-11 w-full items-center bg-white px-4 py-2">
+    <header ref={headerRef} className="fixed z-30 flex h-11 w-full items-center bg-white px-4 py-2">
       <button type="button" aria-label="뒤로가기" onClick={handleBack}>
         <ChevronLeftIcon />
       </button>

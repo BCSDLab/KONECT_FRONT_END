@@ -17,6 +17,10 @@ export const ROUTE_TITLES: RouteTitle[] = [
     title: '지원서 보기',
   },
   {
+    match: (pathname) => /^\/mypage\/manager\/\d+\/members\/sheet\/preview$/.test(pathname),
+    title: '부원관리',
+  },
+  {
     match: (pathname) => /^\/mypage\/manager\/\d+\/info$/.test(pathname),
     title: '정보 수정하기',
   },
@@ -59,5 +63,9 @@ export const ROUTE_TITLES: RouteTitle[] = [
   {
     match: (pathname) => pathname === '/notifications',
     title: '알림',
+  },
+  {
+    match: (pathname) => pathname === '/chats',
+    title: '채팅방',
   },
 ];

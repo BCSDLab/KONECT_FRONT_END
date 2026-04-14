@@ -8,7 +8,7 @@ function ManagedClubList() {
   const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
 
   return (
-    <div className="flex flex-col gap-7 p-[19px]">
+    <div className="flex flex-col gap-7 p-4.75">
       <ManagerInfoCard />
       <div className="flex flex-col gap-3">
         <p className="text-sub1 text-indigo-700">동아리 목록</p>

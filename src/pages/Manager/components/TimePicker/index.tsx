@@ -152,7 +152,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
         <div className="px-5 pt-6 pb-[calc(20px+var(--sab))]">
           <div className="text-h3 text-center text-indigo-700">시간 선택</div>
           <p className="text-caption1 mt-1 text-center text-indigo-300">스크롤해서 시간을 선택하세요</p>
-          <div className="bg-indigo-0 relative mt-4 h-[200px] overflow-hidden rounded-2xl border border-indigo-50">
+          <div className="bg-indigo-0 relative mt-4 h-50 overflow-hidden rounded-2xl border border-indigo-50">
             <div className="pointer-events-none absolute inset-x-0 top-0 z-2 h-20 bg-linear-to-b from-[#F8FAFF] to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 z-2 h-20 bg-linear-to-t from-[#F8FAFF] to-transparent" />
             <div className="pointer-events-none absolute inset-y-5 left-1/2 z-2 w-px -translate-x-1/2 bg-indigo-50" />
@@ -162,7 +162,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
               <div
                 ref={hourRef}
                 onScroll={createScrollHandler(hourOptions, setDraftHour)}
-                className="h-full snap-y snap-mandatory overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="scrollbar-hidden h-full snap-y snap-mandatory overflow-y-auto"
               >
                 <div style={{ height: PADDING_HEIGHT }} />
                 {hourOptions.map((hour) => {
@@ -191,7 +191,7 @@ export default function TimePicker({ value, onChange, minuteStep = 5, renderTrig
               <div
                 ref={minuteRef}
                 onScroll={createScrollHandler(minuteOptions, setDraftMinute)}
-                className="h-full snap-y snap-mandatory overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                className="scrollbar-hidden h-full snap-y snap-mandatory overflow-y-auto"
               >
                 <div style={{ height: PADDING_HEIGHT }} />
                 {minuteOptions.map((minute) => {

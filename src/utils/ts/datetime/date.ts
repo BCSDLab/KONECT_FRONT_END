@@ -1,4 +1,4 @@
-export const formatIsoDateToYYYYMMDDHHMM = (value: string): string => {
+export const formatIsoDateToYyyyMmDdHhMm = (value: string): string => {
   if (!value) return '';
 
   const [datePart, timePart] = value.split('T');
@@ -13,7 +13,7 @@ export const formatIsoDateToYYYYMMDDHHMM = (value: string): string => {
   return `${date} ${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`;
 };
 
-export const formatIsoDateToYYYYMMDD = (value: string): string => {
+export const formatIsoDateToYyyyMmDd = (value: string): string => {
   if (!value) return '';
 
   const [datePart] = value.split('T');

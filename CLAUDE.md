@@ -84,7 +84,7 @@ src/
 
 ### Styling
 
-- 색상: `src/styles/theme.css` 토큰 우선 (`indigo-*`, `blue-*`, `background`, `primary`)
+- 색상: `src/styles/colors.css` 토큰 우선 (`indigo-*`, `blue-*`, `background`, `primary`)
 - 타이포그래피: `text-h1`~`text-h5`, `text-sub1`~`text-sub4`, `text-body1`~`text-body3`, `text-cap1`~`text-cap2`
 - 클래스 병합: `cn()` 유틸 사용
 - 모바일 웹뷰 대응 (`--viewport-height`, safe area 변수) 패턴 유지

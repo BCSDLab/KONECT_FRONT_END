@@ -5,7 +5,7 @@ export function useLayoutElements(showBottomNav: boolean) {
   const [layoutElement, setLayoutElement] = useState<HTMLDivElement | null>(null);
   const mainRef = useRef<HTMLElement>(null);
   const bottomNavRef = useRef<HTMLElement>(null);
-  const bottomOverlayInset = useLayoutBottomOverlayInset(showBottomNav, bottomNavRef);
+  const { bottomOverlayInset, bottomOverlayInsetPx } = useLayoutBottomOverlayInset(showBottomNav, bottomNavRef);
   const handleLayoutElement = useCallback((node: HTMLDivElement | null) => {
     setLayoutElement(node);
   }, []);
@@ -16,5 +16,6 @@ export function useLayoutElements(showBottomNav: boolean) {
     mainRef,
     bottomNavRef,
     bottomOverlayInset,
+    bottomOverlayInsetPx,
   };
 }

@@ -42,6 +42,7 @@ const ManagedMemberList = lazy(() => import('./pages/Manager/ManagedMemberList')
 const ManagedRecruitment = lazy(() => import('./pages/Manager/ManagedRecruitment'));
 const ManagedRecruitmentForm = lazy(() => import('./pages/Manager/ManagedRecruitmentForm'));
 const ManagedRecruitmentWrite = lazy(() => import('./pages/Manager/ManagedRecruitmentWrite'));
+const ManagedSheetImportPreview = lazy(() => import('./pages/Manager/ManagedSheetImportPreview'));
 const NotificationsPage = lazy(() => import('./pages/Notifications'));
 const Schedule = lazy(() => import('./pages/Schedule'));
 const Timer = lazy(() => import('./pages/Timer'));
@@ -119,6 +120,7 @@ function App() {
               <Route path="mypage/manager/:clubId/recruitment/form" element={<ManagedRecruitmentForm />} />
               <Route path="mypage/manager/:clubId/recruitment/write" element={<ManagedRecruitmentWrite />} />
               <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
+              <Route path="mypage/manager/:clubId/members/sheet/preview" element={<ManagedSheetImportPreview />} />
               <Route path="profile" element={<Profile />} />
               <Route path="chats/:chatRoomId" element={<ChatRoom />} />
             </Route>

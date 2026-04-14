@@ -240,6 +240,24 @@
   .animate-fade-in-down {
     animation: fade-in-down 0.2s ease-out;
   }
+
+  @keyframes ios-spinner-fade {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.15;
+    }
+  }
+
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 /* MonthPicker clear button 제거 */

@@ -60,7 +60,7 @@ function ClubDetail() {
             alt={clubDetail.name}
           />
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <div className="truncate text-[20px] leading-[22px] font-extrabold text-black">{clubDetail.name}</div>
+            <div className="truncate text-[20px] leading-5.5 font-extrabold text-black">{clubDetail.name}</div>
             <div className="text-body3 text-black">{clubDetail.categoryName}</div>
             <div className="text-sub2 truncate text-black">{clubDetail.description}</div>
           </div>
@@ -72,7 +72,7 @@ function ClubDetail() {
               type="button"
               onClick={() => handleTabClick(tab.key)}
               className={clsx(
-                'text-sub2 h-[38px] border-b-[1.6px] px-3 transition-colors',
+                'text-sub2 h-9.5 border-b-[1.6px] px-3 transition-colors',
                 currentTab === tab.key ? 'border-[#69BFDF] text-[#69BFDF]' : 'border-transparent text-indigo-300'
               )}
             >

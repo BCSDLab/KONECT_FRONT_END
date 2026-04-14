@@ -170,10 +170,10 @@ function ManagedClubInfo() {
 
   return (
     <div className="bg-background flex min-h-full flex-col px-4 pt-5">
-      <div className="mx-auto flex w-full max-w-[352px] flex-1 flex-col gap-5 pb-[calc(40px+var(--sab))]">
+      <div className="mx-auto flex w-full max-w-88 flex-1 flex-col gap-5 pb-[calc(40px+var(--sab))]">
         <section className="flex justify-center">
           <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-          <div className={`${cardClassName} relative size-[250px] p-3`}>
+          <div className={`${cardClassName} relative size-62.5 p-3`}>
             {!imagePreview ? (
               <button
                 type="button"
@@ -215,7 +215,7 @@ function ManagedClubInfo() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <h2 className="text-h3 text-indigo-700">정보 수정</h2>
-              <div className="h-[22px] w-0" aria-hidden="true" />
+              <div className="h-5.5 w-0" aria-hidden="true" />
             </div>
 
             {readOnlyFields.map(({ id, label, value }) => (

@@ -1,6 +1,7 @@
+import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
@@ -16,7 +17,9 @@ const shouldUploadSourcemaps = Boolean(sentryOrg && sentryProject && sentryAuthT
 // https://vite.dev/config/
 export default defineConfig({
   build: {
-    rollupOptions: {
+    // Preserve the Vite 7 browser baseline until we intentionally drop older WebViews.
+    target: ['chrome107', 'edge107', 'firefox104', 'safari16'],
+    rolldownOptions: {
       plugins: shouldAnalyzeBundle
         ? [
             visualizer({
@@ -32,10 +35,9 @@ export default defineConfig({
     sourcemap: shouldUploadSourcemaps ? 'hidden' : false,
   },
   plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
-      },
+    react(),
+    babel({
+      presets: [reactCompilerPreset()],
     }),
     tailwindcss(),
     svgr({ include: '**/*.svg' }),

@@ -1,11 +1,16 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { Link } from 'react-router-dom';
 import type { Advertisement } from '@/apis/advertisement/entity';
 import type { Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
+import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import PersonIcon from '@/assets/svg/person.svg';
-import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
+import BottomModal from '@/components/common/BottomModal';
+import Modal from '@/components/common/Modal';
+import { isDirectChatType } from '@/pages/Chat/utils/chatType';
 import { useAdvertisements } from '@/utils/hooks/useAdvertisements';
+import { useLongPress } from '@/utils/hooks/useLongPress';
+import ChatRoomContextMenu from './components/ChatRoomContextMenu';
 import useChat from './hooks/useChat';
 
 const DEFAULT_LAST_MESSAGE = '동아리에 궁금한 점을 물어보세요';
@@ -70,15 +75,23 @@ function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
   );
 }
 
-function ChatRoomListItem({ room }: { room: Room }) {
-  const isGroup = room.chatType === 'GROUP';
+interface ChatRoomListItemProps {
+  room: Room;
+  onLongPress: (x: number, y: number, room: Room) => void;
+}
+
+function ChatRoomListItem({ room, onLongPress }: ChatRoomListItemProps) {
   const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || DEFAULT_LAST_MESSAGE;
+  const longPress = useLongPress({
+    onLongPress: (x: number, y: number) => onLongPress(x, y, room),
+  });
 
   return (
     <Link
+      {...longPress}
       to={`${room.roomId}`}
-      className="active:bg-indigo-5 flex items-center gap-3 bg-white px-5 py-3 transition-colors"
+      className="active:bg-indigo-5 flex touch-pan-y items-center gap-3 bg-white px-4 py-3 transition-colors select-none"
     >
       <ChatRoomAvatar roomImageUrl={room.roomImageUrl} />
 
@@ -86,13 +99,6 @@ function ChatRoomListItem({ room }: { room: Room }) {
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-1">
             <span className="text-text-700 truncate text-[16px] leading-[1.6] font-semibold">{room.roomName}</span>
-
-            {isGroup && (
-              <span className="bg-primary-500 inline-flex shrink-0 items-center justify-center rounded-[50px] px-1 py-0.5 text-[12px] leading-3 font-medium text-white">
-                단체
-              </span>
-            )}
-
             {room.isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
           </div>
 
@@ -187,14 +193,67 @@ function ChatAdvertisementListItemSkeleton() {
   );
 }
 
+interface ContextMenuProps {
+  x: number;
+  y: number;
+  room: Room;
+}
+
 function ChatListPage() {
-  const { chatRoomList } = useChat();
+  const { chatRoomList, updateRoomName, deleteChatRoom, toggleMute } = useChat();
   const rooms = chatRoomList.rooms;
   const advertisementCount = getAdvertisementCount(rooms.length);
   const { advertisements, isLoadingAdvertisements, trackAdvertisementClick } = useAdvertisements({
     advertisementCount,
     scope: 'chat-list',
   });
+
+  const [contextMenu, setContextMenu] = useState<ContextMenuProps | null>(null);
+  const [leaveRoom, setLeaveRoom] = useState<Room | null>(null);
+  const [changeRoomName, setChangeRoomName] = useState<Room | null>(null);
+  const [newRoomName, setNewRoomName] = useState('');
+
+  const changeName = async () => {
+    if (!changeRoomName) return;
+    const roomId = changeRoomName.roomId;
+    const normalizedName = newRoomName.trim();
+    try {
+      await updateRoomName({ chatRoomId: roomId, name: normalizedName });
+    } catch (error) {
+      console.error('Error updating room name:', error);
+    }
+    setChangeRoomName(null);
+  };
+
+  const contextMenuItems = (room: Room) => [
+    {
+      label: '채팅방 이름 변경',
+      onClick: () => {
+        setChangeRoomName(room);
+        setNewRoomName(room.roomName);
+      },
+    },
+    {
+      label: room.isMuted ? '알림 켜기' : '알림 끄기',
+      onClick: () => {
+        toggleMute(room.roomId);
+      },
+    },
+    ...(isDirectChatType(room.chatType)
+      ? [{ label: '채팅방 나가기', onClick: () => setLeaveRoom(room), danger: true }]
+      : []),
+  ];
+
+  const deleteChat = async () => {
+    if (!leaveRoom) return;
+    const roomId = leaveRoom.roomId;
+    setLeaveRoom(null);
+    try {
+      await deleteChatRoom(roomId);
+    } catch (error) {
+      console.error('Error leaving chat room:', error);
+    }
+  };
 
   if (rooms.length === 0) {
     return (
@@ -206,27 +265,90 @@ function ChatListPage() {
   }
 
   return (
-    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-gray-100 px-5 py-[23px]">
-      <div className="h-full [&>*:first-child]:rounded-t-2xl [&>*:last-child]:rounded-b-lg">
-        {rooms.map((room, index) => {
-          const advertisementIndex = getAdvertisementIndexAfterRoom(index);
-          const shouldRenderAdvertisement = advertisementIndex !== null;
-          const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
+    <div className="flex min-h-full min-w-full flex-col overflow-y-auto bg-[#f3f5f8] px-5 pt-5.75">
+      <div className="rounded-t-2xl bg-white px-0.5 py-2.5 pb-10">
+        <div className="flex h-full flex-col gap-2">
+          {rooms.map((room, index) => {
+            const advertisementIndex = getAdvertisementIndexAfterRoom(index);
+            const shouldRenderAdvertisement = advertisementIndex !== null;
+            const advertisement = advertisementIndex !== null ? advertisements[advertisementIndex] : undefined;
 
-          return (
-            <Fragment key={room.roomId}>
-              <ChatRoomListItem room={room} />
-              {advertisement && (
-                <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
-              )}
-              {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
-                <ChatAdvertisementListItemSkeleton />
-              )}
-            </Fragment>
-          );
-        })}
-        <BottomOverlaySpacer gap={24} />
+            return (
+              <Fragment key={room.roomId}>
+                <ChatRoomListItem room={room} onLongPress={(x, y, room) => setContextMenu({ x, y, room })} />
+                {advertisement && (
+                  <ChatAdvertisementListItem advertisement={advertisement} onClick={trackAdvertisementClick} />
+                )}
+                {!advertisement && shouldRenderAdvertisement && isLoadingAdvertisements && (
+                  <ChatAdvertisementListItemSkeleton />
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
       </div>
+
+      <Modal isOpen={leaveRoom !== null} onClose={() => setLeaveRoom(null)} className="rounded-2xl px-4 py-5">
+        <div className="text-text-700 flex flex-col gap-5 text-center text-[15px] leading-[1.6]">
+          <p className="font-semibold">채팅방 나가기</p>
+          <p className="font-medium">{leaveRoom?.roomName} 채팅방을 나가시겠어요?</p>
+          <div className="flex gap-2 text-[15px] leading-5.5 font-bold">
+            <button
+              type="button"
+              className="border-primary-500 text-primary-500 flex-1 cursor-pointer rounded-[10px] border py-2.75"
+              onClick={() => setLeaveRoom(null)}
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              className="bg-primary-500 border-primary-500 flex-1 cursor-pointer rounded-[10px] border text-white"
+              onClick={deleteChat}
+            >
+              나가기
+            </button>
+          </div>
+        </div>
+      </Modal>
+
+      <BottomModal isOpen={changeRoomName !== null} onClose={() => setChangeRoomName(null)} className="px-6 py-4">
+        <div className="relative mb-11 flex items-center justify-center">
+          <button
+            className="absolute left-0 inline-flex items-center justify-center"
+            type="button"
+            aria-label="닫기"
+            onClick={() => setChangeRoomName(null)}
+          >
+            <ChevronLeftIcon />
+          </button>
+          <div className="text-text-700 text-center leading-[1.6] font-semibold">이름 변경</div>
+        </div>
+        <div className="flex w-full flex-col items-center gap-6">
+          <input
+            type="text"
+            value={newRoomName}
+            onChange={(e) => setNewRoomName(e.target.value)}
+            className="text-text-700 w-full rounded-[10px] border-[0.5px] border-indigo-50 py-3.5 text-center text-[13px] leading-[1.6]"
+            placeholder="변경할 채팅방명을 입력해주세요."
+          />
+          <button
+            type="button"
+            className="bg-primary-500 border-primary-500 w-full cursor-pointer rounded-[10px] border py-2.5 text-[15px] leading-5.5 font-bold text-white"
+            onClick={changeName}
+          >
+            확인
+          </button>
+        </div>
+      </BottomModal>
+      {contextMenu && (
+        <ChatRoomContextMenu
+          x={contextMenu.x}
+          y={contextMenu.y}
+          title={contextMenu.room.roomName}
+          items={contextMenuItems(contextMenu.room)}
+          onClose={() => setContextMenu(null)}
+        />
+      )}
     </div>
   );
 }

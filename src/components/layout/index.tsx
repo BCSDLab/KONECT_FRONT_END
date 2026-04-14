@@ -1,4 +1,4 @@
-import { Suspense, useMemo, type CSSProperties } from 'react';
+import { Suspense, useMemo, useRef, type CSSProperties } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
 import InboxNotificationLayer from '@/components/notification/InboxNotificationLayer';
@@ -9,6 +9,7 @@ import Header from './Header';
 import { SUBPAGE_HEADER_HEIGHT } from './Header/constants';
 import { getHeaderPresentation } from './Header/presentation';
 import { useLayoutElements } from './hooks/useLayoutElements';
+import { useLayoutHeaderInset } from './hooks/useLayoutHeaderInset';
 
 interface LayoutProps {
   showBottomNav?: boolean;
@@ -17,19 +18,22 @@ interface LayoutProps {
 
 export default function Layout({ showBottomNav = false, contentClassName }: LayoutProps) {
   const { pathname } = useLocation();
-  const { contentPaddingClassName, hasHeader } = getHeaderPresentation(pathname);
+  const { hasHeader } = getHeaderPresentation(pathname);
   const isChatRoomPage = pathname.startsWith('/chats/') && pathname !== '/chats';
   const mainBackgroundClassName = 'bg-background';
-  const { bottomNavRef, bottomOverlayInset, handleLayoutElement, layoutElement, mainRef } =
+  const headerRef = useRef<HTMLElement>(null);
+  const { bottomNavRef, bottomOverlayInset, bottomOverlayInsetPx, handleLayoutElement, layoutElement, mainRef } =
     useLayoutElements(showBottomNav);
+  const headerInset = useLayoutHeaderInset({ hasHeader, headerRef, pathname });
   const layoutElements = useMemo(
     () => ({
       layoutElement,
       mainRef,
       bottomNavRef,
       bottomOverlayInset,
+      bottomOverlayInsetPx,
     }),
-    [bottomNavRef, bottomOverlayInset, layoutElement, mainRef]
+    [bottomNavRef, bottomOverlayInset, bottomOverlayInsetPx, layoutElement, mainRef]
   );
   const layoutStyle = {
     height: 'var(--viewport-height)',
@@ -38,21 +42,25 @@ export default function Layout({ showBottomNav = false, contentClassName }: Layo
     '--layout-bottom-overlay-inset': bottomOverlayInset,
   } as CSSProperties;
   const mainStyle = showBottomNav
-    ? ({ paddingBottom: 'var(--layout-bottom-overlay-inset)' } as CSSProperties)
-    : undefined;
+    ? ({
+        paddingTop: headerInset,
+        paddingBottom: 'var(--layout-bottom-overlay-inset)',
+      } as CSSProperties)
+    : hasHeader
+      ? ({ paddingTop: headerInset } as CSSProperties)
+      : undefined;
 
   return (
     <LayoutElementsContext.Provider value={layoutElements}>
       <div ref={handleLayoutElement} className="fixed inset-0 flex flex-col overflow-hidden" style={layoutStyle}>
-        {hasHeader && <Header />}
+        {hasHeader && <Header headerRef={headerRef} />}
         <main
           ref={mainRef}
           style={mainStyle}
           className={cn(
-            'box-border flex min-h-0 flex-1 flex-col [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+            'scrollbar-hidden box-border flex min-h-0 flex-1 flex-col',
             isChatRoomPage ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain',
             mainBackgroundClassName,
-            hasHeader && contentPaddingClassName,
             contentClassName
           )}
         >

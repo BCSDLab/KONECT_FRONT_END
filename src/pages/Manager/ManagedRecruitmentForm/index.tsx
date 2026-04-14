@@ -76,7 +76,7 @@ function ManagedRecruitmentForm() {
     patchSettings({ isApplicationEnabled: enabled });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const requestData = {
@@ -106,11 +106,7 @@ function ManagedRecruitmentForm() {
 
   return (
     <div className="flex h-full flex-col">
-      <form
-        id="question-form"
-        onSubmit={handleSubmit}
-        className="flex flex-1 flex-col overflow-y-auto px-[19px] pt-[18px]"
-      >
+      <form id="question-form" onSubmit={handleSubmit} className="flex flex-1 flex-col overflow-y-auto px-4.75 pt-4.5">
         <div className="flex flex-col gap-8 pb-8">
           <section className="flex flex-col gap-4">
             <div className="flex justify-end">
@@ -150,7 +146,7 @@ function ManagedRecruitmentForm() {
                         placeholder="질문을 입력해주세요."
                         rows={3}
                         className={cn(
-                          'border-text-200 focus:border-primary-500 min-h-[71px] w-full resize-none rounded-[10px] border bg-white px-4 py-3.5 text-[13px] leading-[1.6] font-medium text-black placeholder:text-indigo-100 focus:outline-none',
+                          'border-text-200 focus:border-primary-500 min-h-17.75 w-full resize-none rounded-[10px] border bg-white px-4 py-3.5 text-[13px] leading-[1.6] font-medium text-black placeholder:text-indigo-100 focus:outline-none',
                           !q.question.trim() && 'border-red-300'
                         )}
                       />
@@ -183,7 +179,7 @@ function ManagedRecruitmentForm() {
             <button
               type="button"
               onClick={handleAddQuestion}
-              className="border-text-400 flex h-[76px] w-full items-center justify-center rounded-2xl border border-dashed text-[16px] leading-[1.6] font-medium text-[#5a6b7f] transition-colors active:bg-white/60"
+              className="border-text-400 flex h-19 w-full items-center justify-center rounded-2xl border border-dashed text-[16px] leading-[1.6] font-medium text-[#5a6b7f] transition-colors active:bg-white/60"
             >
               + 문항 추가하기
             </button>

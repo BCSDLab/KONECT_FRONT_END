@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { managedClubMutations } from '@/apis/club/managedMutations';
 import { managedClubQueryKeys } from '@/apis/club/managedQueries';
+import { clubQueryKeys } from '@/apis/club/queries';
 
 export const useTransferManagedPresidentMutation = (clubId: number) => {
   const queryClient = useQueryClient();
@@ -28,20 +29,8 @@ export const useChangeManagedVicePresidentMutation = (clubId: number) => {
   });
 };
 
-export const useChangeManagedMemberPositionMutation = (
-  clubId: number,
-  { invalidateOnSuccess = true }: { invalidateOnSuccess?: boolean } = {}
-) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    ...managedClubMutations.changeMemberPosition(clubId),
-    onSuccess: async () => {
-      if (invalidateOnSuccess) {
-        await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) });
-      }
-    },
-  });
+export const useChangeManagedMemberPositionMutation = (clubId: number) => {
+  return useMutation(managedClubMutations.changeMemberPosition(clubId));
 };
 
 export const useRemoveManagedMemberMutation = (clubId: number) => {
@@ -76,6 +65,28 @@ export const useDeleteManagedPreMemberMutation = (clubId: number) => {
     ...managedClubMutations.deletePreMember(clubId),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) });
+    },
+  });
+};
+
+export const useUpsertManagedClubSheetMutation = (clubId: number) => {
+  return useMutation(managedClubMutations.upsertSheet(clubId));
+};
+
+export const useConfirmManagedClubSheetImportMutation = (clubId: number) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...managedClubMutations.confirmSheetImport(clubId),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.members(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.preMembers(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.club(clubId) }),
+        queryClient.invalidateQueries({ queryKey: managedClubQueryKeys.sheetImportPreview(clubId) }),
+        queryClient.invalidateQueries({ queryKey: clubQueryKeys.detail(clubId) }),
+        queryClient.invalidateQueries({ queryKey: clubQueryKeys.members(clubId) }),
+      ]);
     },
   });
 };

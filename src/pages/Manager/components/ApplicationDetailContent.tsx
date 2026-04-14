@@ -3,7 +3,7 @@ import type { ClubApplicationDetailResponse } from '@/apis/club/entity';
 import Portal from '@/components/common/Portal';
 import { useBottomOverlayOffset } from '@/components/layout/bottomOverlay';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { formatIsoDateToYYYYMMDDHHMM } from '@/utils/ts/datetime/date';
+import { formatIsoDateToYyyyMmDdHhMm } from '@/utils/ts/datetime/date';
 
 type ApplicationAnswer = ClubApplicationDetailResponse['answers'][number];
 
@@ -23,7 +23,7 @@ function ApplicantSummaryCard({
             {name} ({studentNumber})
           </div>
           <div className="text-[13px] leading-[1.6] font-medium text-[#5A6B7F]">
-            지원일: {formatIsoDateToYYYYMMDDHHMM(appliedAt)}
+            지원일: {formatIsoDateToYyyyMmDdHhMm(appliedAt)}
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@ function FeePaymentSection({
   onOpenImage: () => void;
 }) {
   return (
-    <section className="flex min-h-[261px] flex-col rounded-lg bg-white p-5">
+    <section className="flex min-h-65.25 flex-col rounded-lg bg-white p-5">
       <h2 className="text-[16px] leading-[1.6] font-semibold text-black">회비 납부 인증</h2>
       {feePaymentImageUrl ? (
         <button
@@ -64,7 +64,7 @@ function AnswerCard({ answer, index }: { answer: ApplicationAnswer; index: numbe
           문항{index + 1} {answer.isRequired && <span className="text-red-500">*</span>}
         </p>
         <p className="text-[13px] leading-[1.6] font-medium whitespace-pre-wrap text-[#8497AA]">{answer.question}</p>
-        <div className="min-h-[226px] rounded-[20px] border border-[#C6CFD8] bg-white p-4">
+        <div className="min-h-56.5 rounded-[20px] border border-[#C6CFD8] bg-white p-4">
           <p className="text-[13px] leading-[1.6] font-medium whitespace-pre-wrap text-[#5A6B7F]">
             {answer.answer || '(응답 없음)'}
           </p>
@@ -86,7 +86,7 @@ function ApplicationDetailContent({ application, footer }: ApplicationDetailCont
   return (
     <div className="flex h-full flex-col">
       <div
-        className="flex flex-1 flex-col gap-6 overflow-auto px-[19px] pt-[17px]"
+        className="flex flex-1 flex-col gap-6 overflow-auto px-4.75 pt-4.25"
         style={{ paddingBottom: bottomPadding }}
       >
         <ApplicantSummaryCard

@@ -1,12 +1,14 @@
+import type { Ref } from 'react';
 import { useParams } from 'react-router-dom';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import useChat from '@/pages/Chat/hooks/useChat';
+import { isGroupChatType } from '@/pages/Chat/utils/chatType';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import { cn } from '@/utils/ts/cn';
 
-function ChatHeader() {
+function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
   const smartBack = useSmartBack();
   const { chatRoomId } = useParams();
   const numericRoomId = Number(chatRoomId);
@@ -16,12 +18,12 @@ function ChatHeader() {
   const { value: open, setTrue: openSidebar, setFalse: closeSidebar } = useBooleanState();
 
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
-  const isGroup = chatRoom?.chatType === 'GROUP';
+  const isGroup = isGroupChatType(chatRoom?.chatType);
   const isMuted = chatRoom?.isMuted ?? false;
 
   return (
     <>
-      <header className="fixed top-0 right-0 left-0 z-30 flex h-13 items-center bg-white px-4 py-2">
+      <header ref={headerRef} className="fixed top-0 right-0 left-0 z-30 flex h-13 items-center bg-white px-4 py-2">
         <div className="flex min-w-0 flex-1 items-center gap-3">
           <button type="button" aria-label="뒤로가기" onClick={smartBack} className="shrink-0">
             <ChevronLeftIcon />
@@ -58,7 +60,7 @@ function ChatHeader() {
             <button
               type="button"
               disabled={isTogglingMute}
-              onClick={() => void toggleMute()}
+              onClick={() => void toggleMute(numericRoomId)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                 isMuted ? 'bg-gray-300' : 'bg-primary'
               } disabled:cursor-not-allowed disabled:opacity-60`}

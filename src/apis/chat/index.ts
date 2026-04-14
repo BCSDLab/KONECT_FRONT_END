@@ -49,3 +49,18 @@ export const postAdminChatRoom = async () => {
   });
   return response;
 };
+
+export const patchChatRoomName = async (chatRoomId: number, name: string) => {
+  const response = await apiClient.patch(`chats/rooms/${chatRoomId}/name`, {
+    body: { roomName: name },
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const deleteChatRoom = async (chatRoomId: number) => {
+  const response = await apiClient.delete(`chats/rooms/${chatRoomId}`, {
+    requiresAuth: true,
+  });
+  return response;
+};

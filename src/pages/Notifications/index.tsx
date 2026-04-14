@@ -113,7 +113,7 @@ function NotificationsPage() {
   };
 
   return (
-    <div className="flex min-h-full flex-col bg-[#F4F6F9] px-5 pt-[18px] pb-6">
+    <div className="bg-indigo-5 flex min-h-full flex-col px-5 pt-4.5 pb-6">
       <section className="rounded-2xl bg-white px-5 pt-5 pb-5 shadow-[0_0_20px_rgba(0,0,0,0.03)]">
         {isLoading ? (
           <div className="flex flex-col gap-5">
