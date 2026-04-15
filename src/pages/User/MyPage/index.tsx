@@ -9,9 +9,9 @@ import LayersIcon from '@/assets/svg/layers.svg';
 import LogoutIcon from '@/assets/svg/logout.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
+import { MyPageActionRow, MyPageInfoRow, MyPageLinkRow } from '@/pages/User/MyPage/components/MyPageRows';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
-import { MyPageActionRow, MyPageInfoRow, MyPageLinkRow } from './components/MyPageRows';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 

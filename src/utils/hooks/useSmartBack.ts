@@ -78,7 +78,7 @@ export function useSmartBack() {
       } else if (parts[4] === 'members') {
         targetPath = `/mypage/manager/${clubId}`;
       } else {
-        targetPath = '/mypage/manager';
+        targetPath = '/mypage';
       }
     } else if (pathname === '/mypage/manager') {
       targetPath = '/mypage';
