@@ -2,7 +2,6 @@ import type { ReactNode, Ref } from 'react';
 
 export type HeaderType =
   | 'info'
-  | 'profile'
   | 'chat'
   | 'none'
   | 'notification'

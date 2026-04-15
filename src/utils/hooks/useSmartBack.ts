@@ -61,7 +61,9 @@ export function useSmartBack() {
       const parts = pathname.split('/');
       const clubId = parts[3];
 
-      if (parts[4] === 'info') {
+      if (parts.length === 4) {
+        targetPath = '/mypage';
+      } else if (parts[4] === 'info') {
         targetPath = `/mypage/manager/${clubId}`;
       } else if (parts[4] === 'recruitment' && parts[5]) {
         targetPath = `/mypage/manager/${clubId}/recruitment`;
@@ -76,7 +78,7 @@ export function useSmartBack() {
       } else if (parts[4] === 'members') {
         targetPath = `/mypage/manager/${clubId}`;
       } else {
-        targetPath = `/mypage/manager`;
+        targetPath = '/mypage';
       }
     } else if (pathname === '/mypage/manager') {
       targetPath = '/mypage';
