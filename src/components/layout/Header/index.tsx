@@ -6,7 +6,6 @@ import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
 import ManagerHeader from './components/ManagerHeader';
 import PlainSubpageHeader from './components/PlainSubpageHeader';
-import ProfileHeader from './components/ProfileHeader';
 import ScheduleHeader from './components/ScheduleHeader';
 import SubpageHeader from './components/SubpageHeader';
 import { getHeaderPresentation } from './presentation';
@@ -22,7 +21,6 @@ function Header({ headerRef }: HeaderProps) {
   const { title, type: headerType } = getHeaderPresentation(pathname);
 
   const HEADER_RENDERERS: Record<HeaderType, HeaderRenderer> = {
-    profile: ({ headerRef }) => <ProfileHeader headerRef={headerRef} />,
     info: ({ headerRef }) => <InfoHeader headerRef={headerRef} />,
     chatList: ({ title, headerRef }) => <ChatListHeader title={title} headerRef={headerRef} />,
     chat: ({ headerRef }) => <ChatHeader headerRef={headerRef} />,
