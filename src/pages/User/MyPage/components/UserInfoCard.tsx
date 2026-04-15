@@ -33,7 +33,7 @@ function UserInfoCard() {
   };
 
   return (
-    <Card className="active:bg-indigo-5/50 cursor-pointer gap-0 p-3" onClick={handleCardClick}>
+    <Card className="active:bg-indigo-5/50 cursor-pointer gap-0 rounded-2xl p-3" onClick={handleCardClick}>
       <div className="flex items-center gap-3">
         <UserAvatar imageUrl={myInfo.imageUrl} name={myInfo.name} />
         <div className="min-w-0">

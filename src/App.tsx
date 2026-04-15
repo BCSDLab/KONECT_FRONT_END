@@ -36,7 +36,6 @@ const ManagedApplicationDetail = lazy(() => import('./pages/Manager/ManagedAppli
 const ManagedApplicationList = lazy(() => import('./pages/Manager/ManagedApplicationList'));
 const ManagedClubDetail = lazy(() => import('./pages/Manager/ManagedClubDetail'));
 const ManagedClubInfo = lazy(() => import('./pages/Manager/ManagedClubProfile'));
-const ManagedClubList = lazy(() => import('./pages/Manager/ManagedClubList'));
 const ManagedMemberApplicationDetail = lazy(() => import('./pages/Manager/ManagedMemberApplicationDetail'));
 const ManagedMemberList = lazy(() => import('./pages/Manager/ManagedMemberList'));
 const ManagedRecruitment = lazy(() => import('./pages/Manager/ManagedRecruitment'));
@@ -94,7 +93,6 @@ function App() {
               <Route path="mypage">
                 <Route index element={<MyPage />} />
                 <Route path="manager">
-                  <Route index element={<ManagedClubList />} />
                   <Route path=":clubId" element={<ManagedClubDetail />} />
                   <Route path=":clubId/members" element={<ManagedMemberList />} />
                   <Route path=":clubId/members/:userId/application" element={<ManagedMemberApplicationDetail />} />

@@ -1,86 +1,109 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { authQueries } from '@/apis/auth/queries';
+import { managedClubQueries } from '@/apis/club/managedQueries';
 import ChatIcon from '@/assets/svg/chat.svg';
-import RightArrowIcon from '@/assets/svg/chevron-right.svg';
+import RightArrowIcon from '@/assets/svg/Chevron-left-dark.svg';
 import FileSearchIcon from '@/assets/svg/file-search.svg';
 import FileIcon from '@/assets/svg/file.svg';
 import LayersIcon from '@/assets/svg/layers.svg';
 import LogoutIcon from '@/assets/svg/logout.svg';
-import UserIdCardIcon from '@/assets/svg/user-id-card.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
+import { MyPageActionRow, MyPageInfoRow, MyPageLinkRow } from './components/MyPageRows';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 
-const menuItems = [
-  { to: 'manager', icon: UserIdCardIcon, label: '동아리 관리' },
-  { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스' },
-  { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인' },
-  { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침' },
+interface LegalMenuState {
+  backPath: string;
+}
+
+interface MenuItem {
+  to: string;
+  icon: typeof ChatIcon;
+  label: string;
+  state?: LegalMenuState;
+}
+
+interface ManagedClubSummary {
+  id: number;
+  name: string;
+  categoryName: string;
+  imageUrl: string;
+}
+
+interface ManagedClubLinkProps {
+  club: ManagedClubSummary;
+}
+
+const menuItems: MenuItem[] = [
+  { to: '/legal/oss', icon: FileSearchIcon, label: '오픈소스 라이선스', state: { backPath: '/mypage' } },
+  { to: '/legal/terms', icon: FileIcon, label: '코넥트 약관 확인', state: { backPath: '/mypage' } },
+  { to: '/legal/privacy', icon: UserSquareIcon, label: '개인정보 처리 방침', state: { backPath: '/mypage' } },
 ];
 
+function ManagedClubLink({ club }: ManagedClubLinkProps) {
+  return (
+    <Link to={`manager/${club.id}`} className="active:bg-indigo-5 flex items-center justify-between transition-colors">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
+        <img
+          src={club.imageUrl}
+          alt="Club Avatar"
+          className="border-indigo-5 h-12 w-12 rounded-sm border object-cover"
+        />
+        <div className="flex min-w-0 items-center gap-1.5">
+          <span className="text-sub2 truncate text-indigo-700">{club.name}</span>
+          <span className="text-cap1 truncate text-indigo-300">{club.categoryName}</span>
+        </div>
+      </div>
+      <RightArrowIcon />
+    </Link>
+  );
+}
+
 function MyPage() {
-  const { data: myInfo } = useSuspenseQuery(authQueries.myInfo());
+  const { data: managedClubList } = useSuspenseQuery(managedClubQueries.clubs());
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
   const { value: isOpen, setTrue: openModal, setFalse: closeModal } = useBooleanState(false);
   const { mutate: goToAdminChat, isPending: isCreatingAdminChat } = useAdminChatMutation();
 
   return (
-    <div className="flex flex-col gap-2 p-3 pt-3">
+    <div className="flex flex-col gap-5 p-3 pt-3">
       <UserInfoCard />
-      <div className="flex flex-col gap-2 rounded-sm bg-white p-2">
-        {menuItems
-          .filter(({ to }) => to !== 'manager' || myInfo.isClubManager || myInfo.role === 'ADMIN')
-          .map(({ to, icon: Icon, label }) => (
-            <Link
-              key={to}
-              to={to}
-              state={to.startsWith('/legal/') ? { backPath: '/mypage' } : undefined}
-              className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors"
-            >
-              <div className="flex items-center justify-between px-3 py-2">
-                <div className="flex items-center gap-4">
-                  <Icon />
-                  <div className="text-sub2">{label}</div>
-                </div>
-                <RightArrowIcon />
-              </div>
-            </Link>
+
+      <section className="flex flex-col gap-2">
+        <span className="text-text-700 leading-4.5 font-semibold">관리중인 동아리</span>
+        <div className="flex flex-col gap-3 rounded-2xl bg-white p-3">
+          {managedClubList.joinedClubs.map((club) => (
+            <ManagedClubLink key={club.id} club={club} />
           ))}
+        </div>
+      </section>
+      <div className="flex flex-col gap-2 rounded-2xl bg-white px-3 py-2">
+        {menuItems.map(({ to, icon, label, state }) => (
+          <Link key={to} to={to} state={state} className="bg-indigo-0 active:bg-indigo-5 rounded-sm transition-colors">
+            <MyPageLinkRow icon={icon} label={label} />
+          </Link>
+        ))}
 
         <button
           disabled={isCreatingAdminChat}
           onClick={() => goToAdminChat()}
           className="bg-indigo-0 active:bg-indigo-5 w-full rounded-sm text-left transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
-          <div className="flex items-center justify-between px-3 py-2">
-            <div className="flex items-center gap-4">
-              <ChatIcon />
-              <div className="text-sub2">{isCreatingAdminChat ? '이동 중...' : '문의하기'}</div>
-            </div>
-            <RightArrowIcon />
-          </div>
+          <MyPageLinkRow icon={ChatIcon} label={isCreatingAdminChat ? '이동 중...' : '문의하기'} />
         </button>
 
         <div className="bg-indigo-0 rounded-sm">
-          <div className="flex items-center justify-between px-3 py-2">
-            <div className="flex items-center gap-4">
-              <LayersIcon />
-              <div className="text-sm leading-4 font-semibold">버전관리</div>
-            </div>
-            <div className="text-[13px] leading-4 text-indigo-200">
-              {window.APP_VERSION ? `v${window.APP_VERSION}` : '-'}
-            </div>
-          </div>
+          <MyPageInfoRow
+            icon={LayersIcon}
+            label="버전관리"
+            value={window.APP_VERSION ? `v${window.APP_VERSION}` : '-'}
+          />
         </div>
-        <button className="bg-indigo-0 flex items-center rounded-sm px-3 py-2" onClick={openModal}>
-          <div className="flex items-center gap-4">
-            <LogoutIcon />
-            <div className="text-sm leading-4 font-semibold">로그아웃</div>
-          </div>
+        <button className="bg-indigo-0 rounded-sm" onClick={openModal}>
+          <MyPageActionRow icon={LogoutIcon} label="로그아웃" />
         </button>
       </div>
 

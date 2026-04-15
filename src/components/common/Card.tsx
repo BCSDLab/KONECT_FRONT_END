@@ -7,10 +7,11 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 function Card({ children, className, ...props }: CardProps) {
-  const base = 'border-indigo-5 flex w-full flex-col gap-3 rounded-lg border bg-white p-3';
-
   return (
-    <div className={twMerge(clsx(base, className))} {...props}>
+    <div
+      className={twMerge(clsx('border-indigo-5 flex w-full flex-col gap-3 rounded-lg border bg-white p-3', className))}
+      {...props}
+    >
       {children}
     </div>
   );
