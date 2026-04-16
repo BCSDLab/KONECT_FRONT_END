@@ -33,13 +33,19 @@ const useChat = (chatRoomId?: number, messageId?: number) => {
     refetchInterval: 1000,
   });
 
-  const allMessages =
-    chatMessagesData?.pages
-      .flatMap((page) => page.messages)
-      .filter(
-        (message, index, messages) =>
-          index === messages.findIndex((candidate) => candidate.messageId === message.messageId)
-      ) ?? [];
+  const allMessages = (() => {
+    const messages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
+    const seenMessageIds = new Set<number>();
+
+    return messages.filter((message) => {
+      if (seenMessageIds.has(message.messageId)) {
+        return false;
+      }
+
+      seenMessageIds.add(message.messageId);
+      return true;
+    });
+  })();
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 

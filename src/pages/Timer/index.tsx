@@ -1,4 +1,4 @@
-import { useDeferredValue, useRef, useState } from 'react';
+import { useDeferredValue, useMemo, useRef, useState } from 'react';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import BottomSheet, { type SheetPosition } from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
@@ -31,15 +31,21 @@ function TimerPage() {
 
   const [activeTab, setActiveTab] = useState<TabType>('개인');
   const [sort, setSort] = useState<StudyRankingParams['sort']>('MONTHLY');
-  const deferredActiveTab = useDeferredValue(activeTab);
-  const deferredSort = useDeferredValue(sort);
+  const rankingParams = useMemo(
+    () => ({
+      activeTab,
+      sort,
+    }),
+    [activeTab, sort]
+  );
+  const deferredRankingParams = useDeferredValue(rankingParams);
   const [sheetPosition, setSheetPosition] = useState<SheetPosition>('half');
   const [autoExpandResetKey, setAutoExpandResetKey] = useState(0);
   const { isExitConfirmOpen, closeExitConfirm, confirmExit } = useTimerExitGuard({ isRunning, stop });
 
   const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
-  const isRankingPending = activeTab !== deferredActiveTab || sort !== deferredSort;
+  const isRankingPending = activeTab !== deferredRankingParams.activeTab || sort !== deferredRankingParams.sort;
   const { bottomInsetPx, fullSheetTopOffset, halfSheetTopOffset, timerSectionPaddingTopClassName, timerSize } =
     useTimerLayout({
       bottomOverlayInsetPx,
@@ -105,8 +111,8 @@ function TimerPage() {
               className={cn('min-h-0 flex-1 overflow-hidden px-5', isRankingPending && 'opacity-60 transition-opacity')}
             >
               <RankingList
-                type={TAB_TO_TYPE[deferredActiveTab]}
-                sort={deferredSort}
+                type={TAB_TO_TYPE[deferredRankingParams.activeTab]}
+                sort={deferredRankingParams.sort}
                 sheetPosition={position}
                 hiddenBottomInsetPx={bottomInsetPx}
                 autoExpandResetKey={autoExpandResetKey}
