@@ -1,6 +1,7 @@
-import type { PaginationParams, PaginationResponse } from '../common/pagination';
+import type { PaginationParams, PaginationResponse } from '@/apis/common/pagination';
 
 export type ChatType = 'DIRECT' | 'CLUB_GROUP' | 'GROUP' | 'INQUIRY';
+export type SortBy = 'CLUB' | 'NAME';
 
 export interface Room {
   roomId: number;
@@ -35,6 +36,7 @@ export interface SendChatMessageRequest {
 
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
+  messageId?: number;
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {
@@ -44,4 +46,56 @@ export interface ChatMessagesResponse extends PaginationResponse {
 
 export interface CreateChatRoomResponse {
   chatRoomId: number;
+}
+
+export interface Messages {
+  roomId: number;
+  chatType: ChatType;
+  roomName: string;
+  roomImageUrl: string;
+  matchedMessage: string;
+  matchedMessageSentAt: string;
+  matchedMessageId: number;
+}
+
+export interface RoomMatched extends PaginationResponse {
+  rooms?: Room[];
+}
+
+export interface MessageMatched extends PaginationResponse {
+  messages?: Messages[];
+}
+
+export interface MatchedRequestParams extends PaginationParams {
+  keyword: string;
+}
+
+export interface MatchResponse {
+  roomMatches?: RoomMatched;
+  messageMatches?: MessageMatched;
+}
+
+export interface User {
+  userId: number;
+  name: string;
+  imageUrl: string;
+  studentNumber: string;
+}
+
+export interface Section {
+  clubId: number;
+  clubName: string;
+  users: User[];
+}
+
+export interface InvitableFriendRequestParams extends PaginationParams {
+  query: string;
+  sortBy: SortBy;
+}
+
+export interface InvitableFriend extends PaginationResponse {
+  sortBy: SortBy;
+  grouped: boolean;
+  users?: User[];
+  sections?: Section[];
 }

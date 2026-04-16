@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import type { ChatMessage } from '@/apis/chat/entity';
 import SendArrowIcon from '@/assets/svg/chat-send-arrow.svg';
 import LinkifiedText from '@/components/common/LinkifiedText';
@@ -82,8 +82,12 @@ function ChatMessageRow({ isSameSender, message }: ChatMessageRowProps) {
 
 function ChatRoom() {
   const { chatRoomId } = useParams();
+  const [searchParams] = useSearchParams();
+  const targetMessageId = searchParams.get('messageId') ? Number(searchParams.get('messageId')) : undefined;
+
   const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, isSendingMessage } = useChat(
-    Number(chatRoomId)
+    Number(chatRoomId),
+    targetMessageId
   );
   const [value, setValue] = useState('');
 
@@ -101,6 +105,14 @@ function ChatRoom() {
   useViewportHeightLock(scrollContainerRef);
 
   const sortedMessages = [...chatMessages].reverse();
+
+  useEffect(() => {
+    if (!targetMessageId) return;
+    const el = document.querySelector(`[data-message-id="${targetMessageId}"]`);
+    if (el) {
+      el.scrollIntoView({ block: 'center' });
+    }
+  }, [chatMessages, targetMessageId]);
   const isSubmitDisabled = isSendingMessage || !value.trim();
 
   const resetTextareaHeight = () => {
@@ -167,7 +179,7 @@ function ChatRoom() {
           const isSameSender = prevMessage?.senderId === message.senderId && !showDateHeader;
 
           return (
-            <div key={message.messageId} className="w-full min-w-0">
+            <div key={message.messageId} data-message-id={message.messageId} className="w-full min-w-0">
               {showDateHeader && (
                 <div className={cn('flex justify-center px-6', index === 0 ? 'pb-2' : 'pt-4 pb-2')}>
                   <span className="text-text-400 text-sub4 rounded-2xl bg-white px-3 py-1">

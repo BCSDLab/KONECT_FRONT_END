@@ -33,6 +33,7 @@ function Header({ headerRef }: HeaderProps) {
     signup: ({ title, onBack, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} onBack={onBack} />,
     default: ({ title, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} />,
     manager: ({ title, headerRef }) => <ManagerHeader fallbackTitle={title} headerRef={headerRef} />,
+    chatSearch: ({ title, headerRef }) => <SubpageHeader title={title} headerRef={headerRef} headerClassName="h-13" />,
   };
 
   const onBack = headerType === 'signup' ? () => navigate('/') : undefined;
