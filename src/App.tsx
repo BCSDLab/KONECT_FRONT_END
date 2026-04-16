@@ -20,6 +20,7 @@ const ChatListPage = lazy(() => import('./pages/Chat'));
 const ChatSearch = lazy(() => import('./pages/Chat/ChatSearch'));
 const ChatAdd = lazy(() => import('./pages/Chat/AddChatRoom'));
 const ChatRoom = lazy(() => import('./pages/Chat/ChatRoom'));
+const ChatRoomInfo = lazy(() => import('./pages/Chat/ChatRoomInfo'));
 const ApplicationPage = lazy(() => import('./pages/Club/Application'));
 const ApplyCompletePage = lazy(() => import('./pages/Club/Application/applyCompletePage'));
 const ClubFeePage = lazy(() => import('./pages/Club/Application/clubFeePage'));
@@ -88,6 +89,8 @@ function App() {
             <Route element={<Layout showBottomNav />}>
               <Route path="home" element={<Home />} />
               <Route path="notifications" element={<NotificationsPage />} />
+              <Route path="chats/search" element={<ChatSearch />} />
+              <Route path="chats/add" element={<ChatAdd />} />
               <Route path="council">
                 <Route index element={<CouncilDetail />} />
                 <Route path="notice/:noticeId" element={<CouncilNotice />} />
@@ -122,9 +125,8 @@ function App() {
               <Route path="mypage/manager/:clubId/recruitment/account" element={<ManagedAccount />} />
               <Route path="mypage/manager/:clubId/members/sheet/preview" element={<ManagedSheetImportPreview />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="chats/search" element={<ChatSearch />} />
-              <Route path="chats/add" element={<ChatAdd />} />
               <Route path="chats/:chatRoomId" element={<ChatRoom />} />
+              <Route path="chats/:chatRoomId/info" element={<ChatRoomInfo />} />
             </Route>
           </Route>
 
