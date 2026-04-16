@@ -56,6 +56,8 @@ export interface Messages {
   matchedMessage: string;
   matchedMessageSentAt: string;
   matchedMessageId: number;
+  unreadCount: number;
+  isMuted: boolean;
 }
 
 export interface RoomMatched extends PaginationResponse {

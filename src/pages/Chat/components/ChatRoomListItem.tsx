@@ -44,10 +44,27 @@ interface ChatListItemBaseProps {
   roomName: string;
   sentAt?: string | null;
   preview: ReactNode;
-  titleExtra?: ReactNode;
-  previewExtra?: ReactNode;
+  isMuted?: boolean;
+  unreadCount?: number;
   navigationState?: ComponentProps<typeof Link>['state'];
   linkProps?: Omit<ComponentProps<typeof Link>, 'children' | 'className' | 'to'>;
+}
+
+function UnreadCountBadge({ unreadCount }: { unreadCount: number }) {
+  if (unreadCount <= 0) {
+    return null;
+  }
+
+  return (
+    <span className="shrink-0">
+      <span
+        aria-hidden="true"
+        className="bg-primary-500 flex h-4 min-w-5 items-center justify-center rounded-full px-1 py-0.5 text-[10px] text-white"
+      >
+        {unreadCount > 300 ? '300+' : unreadCount}
+      </span>
+    </span>
+  );
 }
 
 function ChatListItemBase({
@@ -56,8 +73,8 @@ function ChatListItemBase({
   roomName,
   sentAt,
   preview,
-  titleExtra,
-  previewExtra,
+  isMuted = false,
+  unreadCount = 0,
   navigationState,
   linkProps,
 }: ChatListItemBaseProps) {
@@ -73,13 +90,13 @@ function ChatListItemBase({
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-center gap-1">
             <span className="text-text-700 truncate leading-[1.6] font-semibold">{roomName}</span>
-            {titleExtra}
+            {isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
           </div>
           {sentAt && <span className="text-text-500 shrink-0 text-xs leading-[1.6]">{formatTime(sentAt)}</span>}
         </div>
         <div className="mt-0.5 flex items-center gap-3">
           <p className="text-text-500 min-w-0 flex-1 truncate text-xs leading-[1.6]">{preview}</p>
-          {previewExtra}
+          <UnreadCountBadge unreadCount={unreadCount} />
         </div>
       </div>
     </Link>
@@ -87,7 +104,6 @@ function ChatListItemBase({
 }
 
 export function ChatRoomListItem({ room, defaultMessage = '', onLongPress, navigationState }: ChatRoomListItemProps) {
-  const hasUnreadMessage = room.unreadCount > 0;
   const previewMessage = room.lastMessage?.trim() || defaultMessage;
   const longPress = useLongPress({
     onLongPress: (x, y) => onLongPress?.(x, y, room),
@@ -101,20 +117,9 @@ export function ChatRoomListItem({ room, defaultMessage = '', onLongPress, navig
       roomName={room.roomName}
       sentAt={room.lastSentAt}
       preview={previewMessage}
+      isMuted={room.isMuted}
+      unreadCount={room.unreadCount}
       navigationState={navigationState}
-      titleExtra={room.isMuted && <BellOffIcon aria-hidden className="size-3.5 shrink-0 opacity-50" />}
-      previewExtra={
-        hasUnreadMessage && (
-          <span className="shrink-0">
-            <span
-              aria-hidden="true"
-              className="bg-primary-500 flex h-4 min-w-5 items-center justify-center rounded-full px-1 py-0.5 text-[10px] text-white"
-            >
-              {room.unreadCount > 300 ? '300+' : room.unreadCount}
-            </span>
-          </span>
-        )
-      }
     />
   );
 }
@@ -128,6 +133,8 @@ export function ChatMessageListItem({ message, keyword, navigationState }: ChatM
       roomImageUrl={message.roomImageUrl}
       roomName={message.roomName}
       sentAt={message.matchedMessageSentAt}
+      isMuted={message.isMuted}
+      unreadCount={message.unreadCount}
       navigationState={navigationState}
       preview={parts.map((part, index) => (
         <Fragment key={index}>
