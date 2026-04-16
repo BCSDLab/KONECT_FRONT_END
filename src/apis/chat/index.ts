@@ -6,10 +6,10 @@ import type {
   ChatRoomsResponse,
   CreateChatRoomResponse,
   SendChatMessageRequest,
+  InvitableFriendsRequestParams,
+  InvitableFriendsResponse,
   MatchResponse,
   MatchedRequestParams,
-  InvitableFriendRequestParams,
-  InvitableFriend,
 } from './entity';
 
 export const getChatRooms = async () => {
@@ -85,8 +85,8 @@ export const getSearchChat = async ({ ...query }: MatchedRequestParams) => {
   return response;
 };
 
-export const getInvitableFriends = async ({ ...query }: InvitableFriendRequestParams) => {
-  const response = await apiClient.get<InvitableFriend>('chats/rooms/invitables', {
+export const getInvitableFriends = async ({ ...query }: InvitableFriendsRequestParams) => {
+  const response = await apiClient.get<InvitableFriendsResponse>('chats/rooms/invitables', {
     params: query,
     requiresAuth: true,
   });
