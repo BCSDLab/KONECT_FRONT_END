@@ -73,7 +73,7 @@ export function useImagePreparation({
       const files = e.target.files;
       if (!files || files.length === 0 || isDisabled) return;
 
-      const selectedFiles = Array.from(files);
+      const selectedFiles = selectionMode === 'single' ? (files[0] ? [files[0]] : []) : Array.from(files);
       const previousImageCount = images.length;
       const preparedItems: Array<ImageUploadItem | null> = new Array(selectedFiles.length).fill(null);
       const createdItems: ImageUploadItem[] = [];
