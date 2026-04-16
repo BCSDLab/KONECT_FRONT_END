@@ -1,8 +1,7 @@
 import type { ClubMember } from '@/apis/club/entity';
 import CheckIcon from '@/assets/svg/check-icon.svg';
 import BottomModal from '@/components/common/BottomModal';
-
-import { MemberAvatar } from './MemberCard';
+import { MemberAvatar } from '@/components/common/MemberAvatar';
 import RoleManageSelector, { type RoleManageOption } from './RoleManageSelector';
 
 interface RoleManageModalProps {

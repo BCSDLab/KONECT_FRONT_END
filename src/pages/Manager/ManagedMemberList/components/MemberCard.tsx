@@ -1,17 +1,6 @@
 import type { MouseEvent } from 'react';
-
 import MoreHorizontalIcon from '@/assets/svg/more-horizontal.svg';
-
-export function MemberAvatar({ name }: { name: string }) {
-  return (
-    <div
-      className="bg-indigo-25 text-text-600 flex size-10 items-center justify-center rounded-[10px] text-[15px] leading-6 font-medium"
-      aria-hidden="true"
-    >
-      {name.charAt(0)}
-    </div>
-  );
-}
+import { MemberAvatar } from '@/components/common/MemberAvatar';
 
 interface MemberCardProps {
   disabled?: boolean;
