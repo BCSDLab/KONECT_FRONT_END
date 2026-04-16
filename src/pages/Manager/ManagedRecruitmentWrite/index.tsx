@@ -1,13 +1,12 @@
-import { startTransition, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { managedClubQueries } from '@/apis/club/managedQueries';
-import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import CalendarIcon from '@/assets/svg/calendar.svg';
-import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
 import ClockIcon from '@/assets/svg/clock.svg';
 import BottomModal from '@/components/common/BottomModal';
+import ImageUploader, { useImageUploader } from '@/components/common/ImageUploader';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import { useToastContext } from '@/contexts/useToastContext';
 import DatePicker from '@/pages/Manager/components/DatePicker';
@@ -17,13 +16,10 @@ import {
   useUpsertManagedClubRecruitmentMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/datetime/date';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
-import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
-import { mapWithConcurrencyLimit } from '@/utils/ts/promise';
 import {
   combineDateTime,
   DEFAULT_END_TIME,
@@ -33,12 +29,6 @@ import {
   TIME_MINUTE_STEP,
 } from './utils';
 
-interface ImageItem {
-  file?: File; // 새 이미지일 경우에만 존재
-  previewUrl: string; // 미리보기 URL (blob: 또는 기존 URL)
-  isExisting?: boolean; // 기존 이미지 여부
-}
-
 const sectionCardStyle = 'flex w-full flex-col rounded-2xl bg-white px-5 py-5';
 const sectionTitleStyle = 'text-[16px] leading-[1.6] font-semibold text-indigo-700';
 const sectionDividerStyle = 'h-px bg-[#e7ebef]';
@@ -46,59 +36,38 @@ const dateFieldContainerStyle = 'rounded-[20px] border-[0.7px] border-[#c6cfd8] 
 const compactButtonStyle =
   'group flex h-[34px] min-w-0 w-full items-center justify-between rounded-[4px] border-[0.7px] border-[#c6cfd8] bg-white px-1.5 text-left shadow-[0_0_3px_rgba(0,0,0,0.15)]';
 const compactButtonTextStyle = 'text-[11px] leading-[1.6] font-medium text-[#344352]';
-const IMAGE_PREPARATION_CONCURRENCY = 2;
 
 function ManagedRecruitmentWrite() {
-  const { clubId } = useParams<{ clubId: string }>();
-  const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
-  const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
-  const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
-  const [content, setContent] = useState('');
-  const [isRecruitmentEnabled, setIsRecruitmentEnabled] = useState(false);
-  const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
-  const [images, setImages] = useState<ImageItem[]>([]);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isPreparingImages, setIsPreparingImages] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [hasHandledExisting, setHasHandledExisting] = useState(false);
-  const [hasInitializedRecruitmentEnabled, setHasInitializedRecruitmentEnabled] = useState(false);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
+  const { clubId } = useParams<{ clubId: string }>();
+  const clubIdNumber = Number(clubId);
+
+  const { images, resetImages, setImages, isUploadingImages, uploadError, uploadImages } = useImageUploader({
+    target: 'CLUB',
+  });
   const { data: existingRecruitment } = useQuery(managedClubQueries.recruitment(clubIdNumber));
   const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
   const { mutateAsync: saveRecruitment, isPending, error } = useUpsertManagedClubRecruitmentMutation(clubIdNumber);
   const { mutateAsync: patchSettings, isPending: isSettingsPending } =
     usePatchManagedClubSettingsMutation(clubIdNumber);
+
+  const [startDate, setStartDate] = useState<Date>(new Date());
+  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [startTime, setStartTime] = useState(DEFAULT_START_TIME);
+  const [endTime, setEndTime] = useState(DEFAULT_END_TIME);
+  const [content, setContent] = useState('');
+  const [recruitmentEnabledOverride, setRecruitmentEnabledOverride] = useState<boolean | null>(null);
+  const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
+  const [isPreparingImages, setIsPreparingImages] = useState(false);
+  const [hasHandledExisting, setHasHandledExisting] = useState(false);
   const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
-  useEffect(() => {
-    if (existingRecruitment && !hasHandledExisting) {
-      openChoiceModal();
-    }
-  }, [existingRecruitment, hasHandledExisting, openChoiceModal]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [content]);
-
-  useEffect(() => {
-    if (!clubSettings || hasInitializedRecruitmentEnabled) {
-      return;
-    }
-
-    setIsRecruitmentEnabled(clubSettings.isRecruitmentEnabled);
-    setHasInitializedRecruitmentEnabled(true);
-  }, [clubSettings, hasInitializedRecruitmentEnabled]);
+  const isRecruitmentEnabled = recruitmentEnabledOverride ?? clubSettings?.isRecruitmentEnabled ?? false;
 
   const applyExistingRecruitment = () => {
     if (!existingRecruitment) return;
@@ -118,14 +87,7 @@ function ManagedRecruitmentWrite() {
     }
     const isAlways = !existingRecruitment.startAt || !existingRecruitment.endAt;
     setIsAlwaysRecruiting(isAlways);
-    if (existingRecruitment.images && existingRecruitment.images.length > 0) {
-      setImages(
-        existingRecruitment.images.map((img) => ({
-          previewUrl: img.url,
-          isExisting: true,
-        }))
-      );
-    }
+    resetImages(existingRecruitment.images?.map((img) => img.url) ?? []);
     setHasHandledExisting(true);
     closeChoiceModal();
   };
@@ -150,11 +112,7 @@ function ManagedRecruitmentWrite() {
     setEndTime(DEFAULT_END_TIME);
     setContent('');
     setIsAlwaysRecruiting(false);
-    images.forEach((img) => {
-      if (!img.isExisting) URL.revokeObjectURL(img.previewUrl);
-    });
-    setImages([]);
-    setCurrentImageIndex(0);
+    resetImages();
     setHasHandledExisting(true);
     closeChoiceModal();
   };
@@ -167,144 +125,63 @@ function ManagedRecruitmentWrite() {
     }
   };
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0 || isPreparingImages) return;
-
-    const selectedFiles = Array.from(files);
-    const previousImageCount = images.length;
-    let visiblePreparedCount = 0;
-    const preparedItems: Array<ImageItem | null> = new Array(selectedFiles.length).fill(null);
-    setIsPreparingImages(true);
-
-    mapWithConcurrencyLimit(
-      selectedFiles,
-      IMAGE_PREPARATION_CONCURRENCY,
-      (file) => prepareImageFile(file),
-      (preparedFile, index) => {
-        preparedItems[index] = {
-          file: preparedFile,
-          previewUrl: URL.createObjectURL(preparedFile),
-        };
-
-        let nextVisiblePreparedCount = visiblePreparedCount;
-
-        while (nextVisiblePreparedCount < preparedItems.length && preparedItems[nextVisiblePreparedCount]) {
-          nextVisiblePreparedCount += 1;
-        }
-
-        if (nextVisiblePreparedCount === visiblePreparedCount) {
-          return;
-        }
-
-        const shouldFocusFirstPreparedImage = visiblePreparedCount === 0 && nextVisiblePreparedCount > 0;
-        visiblePreparedCount = nextVisiblePreparedCount;
-        const orderedPreparedItems = preparedItems.slice(0, visiblePreparedCount).filter(Boolean) as ImageItem[];
-
-        startTransition(() => {
-          setImages((prev) => [...prev.slice(0, previousImageCount), ...orderedPreparedItems]);
-
-          if (shouldFocusFirstPreparedImage) {
-            setCurrentImageIndex(previousImageCount);
-          }
-        });
-      }
-    )
-      .catch(() => {})
-      .finally(() => {
-        setIsPreparingImages(false);
-        e.target.value = '';
-      });
-  };
-
-  const handlePrevImage = () => {
-    if (images.length <= 1) return;
-
-    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const handleNextImage = () => {
-    if (images.length <= 1) return;
-
-    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const handleDeleteImage = () => {
-    const targetImage = images[currentImageIndex];
-
-    if (!targetImage) return;
-    if (!targetImage.isExisting) {
-      URL.revokeObjectURL(targetImage.previewUrl);
-    }
-
-    const newImages = images.filter((_, index) => index !== currentImageIndex);
-    setImages(newImages);
-    if (currentImageIndex >= newImages.length && newImages.length > 0) {
-      setCurrentImageIndex(newImages.length - 1);
-    } else if (newImages.length === 0) {
-      setCurrentImageIndex(0);
-    }
-  };
-
-  const handleImageClick = () => {
-    if (isPreparingImages) return;
-    fileInputRef.current?.click();
-  };
-
   const handleRecruitmentEnabledChange = (enabled: boolean) => {
-    setIsRecruitmentEnabled(enabled);
+    setRecruitmentEnabledOverride(enabled);
   };
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setIsUploading(true);
-    try {
-      const newImages = images.filter((img) => img.file);
-      const existingImages = images.filter((img) => img.isExisting);
+    const imageUrls = await uploadImages(images);
+    const imageData = imageUrls.map((url) => ({ url }));
+    const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+    const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
+    const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
+    const navigateAfterSave = () =>
+      shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
 
-      const uploadResults = await Promise.all(newImages.map((image) => uploadImage(image.file!)));
-      const uploadedImageData = uploadResults.map((res) => ({ url: res.fileUrl }));
-      const existingImageData = existingImages.map((img) => ({ url: img.previewUrl }));
-      const imageData = [...existingImageData, ...uploadedImageData];
-      const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
-      const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
-      const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
-      const navigateAfterSave = () =>
-        shouldNavigateBack ? navigate(-1) : navigate(`/mypage/manager/${clubId}/recruitment`);
-
-      if (isAlwaysRecruiting) {
-        await saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true });
-      } else {
-        await saveRecruitment({
-          content,
-          images: imageData,
-          isAlwaysRecruiting: false,
-          startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
-          endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
-        });
-      }
-
-      if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
-        try {
-          await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
-        } catch (apiError) {
-          showApiErrorToast(apiError, '모집 공고 활성화 설정에 실패했습니다.');
-          setIsRecruitmentEnabled(previousRecruitmentEnabled);
-          return;
-        }
-      }
-
-      showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
-      navigateAfterSave();
-    } finally {
-      setIsUploading(false);
+    if (isAlwaysRecruiting) {
+      await saveRecruitment({ content, images: imageData, isAlwaysRecruiting: true });
+    } else {
+      await saveRecruitment({
+        content,
+        images: imageData,
+        isAlwaysRecruiting: false,
+        startAt: formatDateTimeDot(startDate, startTime, DEFAULT_START_TIME),
+        endAt: formatDateTimeDot(endDate, endTime, DEFAULT_END_TIME),
+      });
     }
+
+    if (clubSettings?.isRecruitmentEnabled !== nextRecruitmentEnabled) {
+      try {
+        await patchSettings({ isRecruitmentEnabled: nextRecruitmentEnabled });
+      } catch (apiError) {
+        showApiErrorToast(apiError, '모집 공고 활성화 설정에 실패했습니다.');
+        setRecruitmentEnabledOverride(previousRecruitmentEnabled);
+        return;
+      }
+    }
+
+    showToast(existingRecruitment ? '모집 공고가 수정되었습니다' : '모집 공고가 생성되었습니다', 'success');
+    navigateAfterSave();
   };
 
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
   const isSavingRecruitment = isPending || isSettingsPending;
   const recruitmentActionText = existingRecruitment ? '모집공고 수정' : '모집공고 등록';
+
+  useEffect(() => {
+    if (existingRecruitment && !hasHandledExisting) {
+      openChoiceModal();
+    }
+  }, [existingRecruitment, hasHandledExisting, openChoiceModal]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [content]);
 
   return (
     <div className="flex h-full flex-col">
@@ -456,97 +333,14 @@ function ManagedRecruitmentWrite() {
 
           <section className={sectionCardStyle}>
             <span className={sectionTitleStyle}>이미지 등록</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleImageSelect}
-              className="hidden"
+            <ImageUploader
+              value={images}
+              onChange={setImages}
+              selectionMode="multiple"
+              layout="wide"
+              className="mt-3"
+              onPreparingChange={setIsPreparingImages}
             />
-
-            {images.length === 0 ? (
-              <button
-                type="button"
-                onClick={handleImageClick}
-                disabled={isPreparingImages}
-                className="border-text-200 mt-3 flex h-56.5 w-full flex-col items-center justify-center gap-2 rounded-[20px] border-[0.7px] bg-white text-[#5a6b7f]"
-              >
-                <AddPhotoAlternateIcon aria-hidden="true" className="size-15" />
-                <p className="text-center text-[16px] leading-[1.6] font-semibold">
-                  {isPreparingImages ? '이미지를 준비하고 있어요' : '이미지를 추가해주세요'}
-                </p>
-              </button>
-            ) : (
-              <div className="mt-3 flex flex-col gap-3">
-                <div className="border-text-200 relative h-56.5 overflow-hidden rounded-[20px] border-[0.7px] bg-white">
-                  <img
-                    key={images[currentImageIndex].previewUrl}
-                    src={images[currentImageIndex].previewUrl}
-                    alt={`업로드 이미지 ${currentImageIndex + 1}`}
-                    className="h-full w-full object-cover"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={handleDeleteImage}
-                    disabled={isPreparingImages}
-                    aria-label="현재 이미지 삭제"
-                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/45 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    ×
-                  </button>
-
-                  {images.length > 1 && (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handlePrevImage}
-                        disabled={isPreparingImages}
-                        aria-label="이전 이미지"
-                        className="absolute top-1/2 left-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <ChevronLeft aria-hidden="true" className="h-4 w-4 text-indigo-700" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleNextImage}
-                        disabled={isPreparingImages}
-                        aria-label="다음 이미지"
-                        className="absolute top-1/2 right-3 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow-[0_0_3px_rgba(0,0,0,0.15)] disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <ChevronRight aria-hidden="true" className="h-4 w-4 text-indigo-700" />
-                      </button>
-                    </>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5">
-                    {images.map((_, index) => (
-                      <button
-                        key={index}
-                        type="button"
-                        onClick={() => setCurrentImageIndex(index)}
-                        aria-label={`${index + 1}번 이미지 보기`}
-                        className={cn(
-                          'h-2 w-2 rounded-full transition-colors',
-                          index === currentImageIndex ? 'bg-primary-500' : 'bg-text-200'
-                        )}
-                      />
-                    ))}
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleImageClick}
-                    className="bg-primary-500 rounded-full px-4 py-2 text-[13px] leading-[1.6] font-semibold text-white"
-                  >
-                    이미지 추가
-                  </button>
-                </div>
-              </div>
-            )}
           </section>
 
           <div className="flex flex-col gap-2 pb-[calc(12px+var(--sab))]">
@@ -569,11 +363,13 @@ function ManagedRecruitmentWrite() {
             <button
               type="submit"
               className="bg-primary-500 disabled:bg-text-200 h-12 w-full rounded-2xl text-[18px] leading-[1.6] font-semibold text-white disabled:cursor-not-allowed"
-              disabled={isSavingRecruitment || isPreparingImages || isUploading || !content.trim() || hasDateError}
+              disabled={
+                isSavingRecruitment || isPreparingImages || isUploadingImages || !content.trim() || hasDateError
+              }
             >
               {isPreparingImages
                 ? '이미지 준비 중…'
-                : isUploading
+                : isUploadingImages
                   ? '이미지 업로드 중…'
                   : isSavingRecruitment
                     ? `${recruitmentActionText} 중…`

@@ -1,16 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { clubQueries } from '@/apis/club/queries';
-import ImageIcon from '@/assets/svg/image.svg';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
+import ImageUploader, { useImageUploader } from '@/components/common/ImageUploader';
 import Portal from '@/components/common/Portal';
-import { useToastContext } from '@/contexts/useToastContext';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
-import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 import AccountInfoCard from './components/AccountInfo';
 import useApplyToClub from './hooks/useApplyToClub';
 
@@ -20,55 +17,31 @@ function ClubFeePage() {
   const { data: clubFee } = useSuspenseQuery(clubQueries.fee(Number(clubId)));
   const { applyToClub, isPending: isApplyingToClub } = useApplyToClub(Number(clubId));
   const { answers, clubId: storedClubId } = useClubApplicationStore();
+  const {
+    images,
+    isUploadingImages: isUploadingImage,
+    selectedImage,
+    setImages,
+    uploadImages,
+  } = useImageUploader({ target: 'CLUB' });
+
+  const [isPreparingImage, setIsPreparingImage] = useState(false);
+  const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
+  const isSubmitting = isApplyingToClub || isPreparingImage || isUploadingImage;
+  const canSubmitImage = selectedImage?.kind === 'local';
+
+  const handleSubmit = async () => {
+    if (!canSubmitImage) return;
+
+    const [feePaymentImageUrl] = await uploadImages([selectedImage]);
+    await applyToClub({ answers, feePaymentImageUrl });
+  };
 
   useEffect(() => {
     if (storedClubId == null || storedClubId !== Number(clubId)) {
       navigate(`/clubs/${clubId}/apply`, { replace: true });
     }
   }, [storedClubId, clubId, navigate]);
-  const { showToast } = useToastContext();
-  const { mutateAsync: uploadImage, isPending: isUploadingImage } = useUploadImage('CLUB');
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [isPreparingImage, setIsPreparingImage] = useState(false);
-  const { value: isImageOpen, setTrue: openImage, setFalse: closeImage } = useBooleanState();
-  const isSubmitting = isApplyingToClub || isPreparingImage || isUploadingImage;
-
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || isPreparingImage) return;
-
-    setIsPreparingImage(true);
-
-    try {
-      const preparedFile = await prepareImageFile(file);
-
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setImageFile(preparedFile);
-      setPreviewUrl(URL.createObjectURL(preparedFile));
-    } catch {
-      showToast('이미지 처리에 실패했습니다. 다시 시도해주세요.', 'error');
-      if (fileInputRef.current) fileInputRef.current.value = '';
-    } finally {
-      setIsPreparingImage(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!imageFile) return;
-
-    const { fileUrl } = await uploadImage(imageFile);
-    await applyToClub({ answers, feePaymentImageUrl: fileUrl });
-  };
 
   return (
     <div
@@ -98,47 +71,16 @@ function ClubFeePage() {
 
         <Card>
           <div className="text-sm leading-4 font-bold text-indigo-700">입금 확인 인증</div>
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelect}
-            disabled={isPreparingImage}
-            className="hidden"
+          <ImageUploader
+            value={images}
+            onChange={setImages}
+            selectionMode="single"
+            layout="wide"
+            className="mt-3"
+            onPreparingChange={setIsPreparingImage}
+            onPreviewClick={() => openImage()}
+            previewAlt={() => '입금 확인'}
           />
-          <div className="flex justify-center">
-            {previewUrl ? (
-              <div className="relative h-52 w-36 overflow-hidden rounded-xl">
-                <button type="button" onClick={openImage} className="h-full w-full">
-                  <img src={previewUrl} alt="입금 확인" className="h-full w-full object-cover" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (previewUrl) URL.revokeObjectURL(previewUrl);
-                    setPreviewUrl(null);
-                    setImageFile(null);
-                    if (fileInputRef.current) fileInputRef.current.value = '';
-                  }}
-                  className="absolute top-1 right-1 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
-                >
-                  ✕
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isPreparingImage}
-                className="border-indigo-75 hover:bg-indigo-25 flex h-52 w-36 flex-col items-center justify-center gap-2.5 rounded-xl border transition-colors disabled:opacity-50"
-              >
-                <ImageIcon />
-                <p className="text-sub4 text-center whitespace-pre-line text-indigo-100">
-                  {'이미지를 \n 추가해주세요'}
-                </p>
-              </button>
-            )}
-          </div>
         </Card>
       </div>
 
@@ -146,16 +88,16 @@ function ClubFeePage() {
         type="button"
         className="bg-primary mt-5 w-full rounded-lg py-2.5 text-center text-lg leading-7 font-bold text-white disabled:opacity-50"
         onClick={handleSubmit}
-        disabled={!imageFile || isSubmitting}
+        disabled={!canSubmitImage || isSubmitting}
       >
         {isPreparingImage ? '이미지 준비 중...' : isSubmitting ? '제출 중...' : '제출하기'}
       </button>
 
-      {isImageOpen && previewUrl && (
+      {isImageOpen && selectedImage && (
         <Portal>
           <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80" onClick={closeImage}>
             <img
-              src={previewUrl}
+              src={selectedImage.previewUrl}
               alt="입금 확인"
               className="max-h-[85vh] max-w-[90vw] object-contain"
               onClick={(e) => e.stopPropagation()}
