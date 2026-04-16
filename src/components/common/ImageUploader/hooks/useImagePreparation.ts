@@ -77,6 +77,7 @@ export function useImagePreparation({
       const previousImageCount = images.length;
       const preparedItems: Array<ImageUploadItem | null> = new Array(selectedFiles.length).fill(null);
       const createdItems: ImageUploadItem[] = [];
+      const committedImageIds = new Set<string>();
       let visiblePreparedCount = 0;
 
       updatePreparing(true);
@@ -92,6 +93,7 @@ export function useImagePreparation({
 
           if (selectionMode === 'single') {
             startTransition(() => {
+              committedImageIds.add(preparedItem.id);
               onChange([preparedItem]);
               setCurrentImageIndex(0);
             });
@@ -116,6 +118,7 @@ export function useImagePreparation({
             .filter(Boolean) as ImageUploadItem[];
 
           startTransition(() => {
+            orderedPreparedItems.forEach((item) => committedImageIds.add(item.id));
             onChange([...images.slice(0, previousImageCount), ...orderedPreparedItems]);
 
             if (shouldFocusFirstPreparedImage) {
@@ -132,6 +135,8 @@ export function useImagePreparation({
             createdItems.forEach(revokeImagePreviewUrl);
             return;
           }
+
+          createdItems.filter((item) => !committedImageIds.has(item.id)).forEach(revokeImagePreviewUrl);
 
           updatePreparing(false);
           e.target.value = '';
