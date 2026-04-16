@@ -31,10 +31,6 @@ export default function Dropdown<T extends string>({
   useClickTouchOutside(dropdownRef, () => setIsOpen(false));
 
   const selectedOption = options.find((opt) => opt.value === value);
-  const orderedOptions = [
-    ...options.filter((option) => option.value !== value),
-    ...options.filter((option) => option.value === value),
-  ];
 
   const handleSelect = (optionValue: T) => {
     onChange(optionValue);
@@ -47,7 +43,7 @@ export default function Dropdown<T extends string>({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'inline-flex h-7.25 items-center justify-evenly overflow-hidden rounded-full bg-[#69BFDF] px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
+          'bg-primary-500 inline-flex h-7.25 items-center justify-evenly overflow-hidden rounded-full px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
           isOpen && 'opacity-95',
           triggerClassName
         )}
@@ -67,7 +63,7 @@ export default function Dropdown<T extends string>({
         )}
       >
         <div className="flex min-w-14 flex-col gap-1">
-          {orderedOptions.map((option) => (
+          {options.map((option) => (
             <button
               key={option.value}
               type="button"

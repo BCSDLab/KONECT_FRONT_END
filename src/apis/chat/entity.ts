@@ -56,6 +56,8 @@ export interface Messages {
   matchedMessage: string;
   matchedMessageSentAt: string;
   matchedMessageId: number;
+  unreadCount: number;
+  isMuted: boolean;
 }
 
 export interface RoomMatched extends PaginationResponse {
@@ -75,27 +77,40 @@ export interface MatchResponse {
   messageMatches?: MessageMatched;
 }
 
-export interface User {
+export interface InvitableUser {
   userId: number;
   name: string;
   imageUrl: string;
   studentNumber: string;
 }
 
-export interface Section {
+export interface InvitableSection {
   clubId: number;
   clubName: string;
-  users: User[];
+  users: InvitableUser[];
 }
 
-export interface InvitableFriendRequestParams extends PaginationParams {
+export interface InvitableFriendsRequestParams extends PaginationParams {
   query: string;
   sortBy: SortBy;
 }
 
-export interface InvitableFriend extends PaginationResponse {
+interface InvitableFriendsBase extends PaginationResponse {
   sortBy: SortBy;
-  grouped: boolean;
-  users?: User[];
-  sections?: Section[];
 }
+
+export interface GroupedInvitableFriendsResponse extends InvitableFriendsBase {
+  sortBy: 'CLUB';
+  grouped: true;
+  users: [];
+  sections: InvitableSection[];
+}
+
+export interface FlatInvitableFriendsResponse extends InvitableFriendsBase {
+  sortBy: 'NAME';
+  grouped: false;
+  users: InvitableUser[];
+  sections: [];
+}
+
+export type InvitableFriendsResponse = GroupedInvitableFriendsResponse | FlatInvitableFriendsResponse;

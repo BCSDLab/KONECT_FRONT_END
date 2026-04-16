@@ -5,9 +5,13 @@ interface UseChatRoomScrollParams {
   chatRoomId?: string;
   chatMessagesLength: number;
   latestMessageId?: number | string;
+  targetMessageId?: number;
   fetchNextPage: () => void;
+  fetchPreviousPage: () => void;
   hasNextPage: boolean | undefined;
+  hasPreviousPage: boolean | undefined;
   isFetchingNextPage: boolean;
+  isFetchingPreviousPage: boolean;
 }
 
 const BOTTOM_THRESHOLD_PX = 80;
@@ -20,9 +24,13 @@ const useChatRoomScroll = ({
   chatRoomId,
   chatMessagesLength,
   latestMessageId,
+  targetMessageId,
   fetchNextPage,
+  fetchPreviousPage,
   hasNextPage,
+  hasPreviousPage,
   isFetchingNextPage,
+  isFetchingPreviousPage,
 }: UseChatRoomScrollParams) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const chatMessagesLengthRef = useRef(chatMessagesLength);
@@ -56,6 +64,17 @@ const useChatRoomScroll = ({
 
   const topRef = useInfiniteScroll(handleFetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
 
+  const handleFetchPreviousPage = useCallback(() => {
+    if (!hasPreviousPage || isFetchingPreviousPage) return;
+
+    void fetchPreviousPage();
+  }, [fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage]);
+
+  const bottomRef = useInfiniteScroll(handleFetchPreviousPage, hasPreviousPage, isFetchingPreviousPage, {
+    threshold: 0.1,
+    enabled: Boolean(targetMessageId),
+  });
+
   useEffect(() => {
     chatMessagesLengthRef.current = chatMessagesLength;
   }, [chatMessagesLength]);
@@ -67,7 +86,7 @@ const useChatRoomScroll = ({
     previousScrollHeightRef.current = 0;
     previousClientHeightRef.current = 0;
     isNearBottomRef.current = true;
-  }, [chatRoomId]);
+  }, [chatRoomId, targetMessageId]);
 
   useEffect(() => {
     const container = scrollContainerRef.current;
@@ -83,7 +102,7 @@ const useChatRoomScroll = ({
     return () => {
       container.removeEventListener('scroll', handleScroll);
     };
-  }, [chatRoomId]);
+  }, [chatRoomId, targetMessageId]);
 
   useLayoutEffect(() => {
     const container = scrollContainerRef.current;
@@ -134,9 +153,10 @@ const useChatRoomScroll = ({
     return () => {
       resizeObserver?.disconnect();
     };
-  }, [chatRoomId, scrollToBottom]);
+  }, [chatRoomId, targetMessageId, scrollToBottom]);
 
   return {
+    bottomRef,
     scrollContainerRef,
     topRef,
     scrollToBottom,

@@ -23,14 +23,29 @@ const useChat = (chatRoomId?: number, messageId?: number) => {
   const {
     data: chatMessagesData,
     fetchNextPage,
+    fetchPreviousPage,
     hasNextPage,
+    hasPreviousPage,
     isFetchingNextPage,
+    isFetchingPreviousPage,
   } = useInfiniteQuery({
     ...chatQueries.messages(chatRoomId, messageId),
     refetchInterval: 1000,
   });
 
-  const allMessages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
+  const allMessages = (() => {
+    const messages = chatMessagesData?.pages.flatMap((page) => page.messages) ?? [];
+    const seenMessageIds = new Set<number>();
+
+    return messages.filter((message) => {
+      if (seenMessageIds.has(message.messageId)) {
+        return false;
+      }
+
+      seenMessageIds.add(message.messageId);
+      return true;
+    });
+  })();
 
   const totalUnreadCount = chatRoomList.rooms.reduce((sum, room) => sum + room.unreadCount, 0);
 
@@ -53,8 +68,11 @@ const useChat = (chatRoomId?: number, messageId?: number) => {
     isCreatingChatRoom: createChatRoomMutation.isPending,
     chatMessages: allMessages,
     fetchNextPage,
+    fetchPreviousPage,
     hasNextPage,
+    hasPreviousPage,
     isFetchingNextPage,
+    isFetchingPreviousPage,
     totalUnreadCount,
     sendMessage: sendMessageMutation.mutate,
     isSendingMessage: sendMessageMutation.isPending,

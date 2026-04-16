@@ -36,7 +36,7 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
   },
   {
     type: 'chat',
-    match: (pathname) => /^\/chats\/\d+$/.test(pathname),
+    match: (pathname) => /^\/chats\/\d+(?:\/info)?$/.test(pathname),
   },
   {
     type: 'normal',

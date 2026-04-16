@@ -85,21 +85,32 @@ function ChatRoom() {
   const [searchParams] = useSearchParams();
   const targetMessageId = searchParams.get('messageId') ? Number(searchParams.get('messageId')) : undefined;
 
-  const { sendMessage, chatMessages, fetchNextPage, hasNextPage, isFetchingNextPage, isSendingMessage } = useChat(
-    Number(chatRoomId),
-    targetMessageId
-  );
+  const {
+    sendMessage,
+    chatMessages,
+    fetchNextPage,
+    fetchPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    isSendingMessage,
+  } = useChat(Number(chatRoomId), targetMessageId);
   const [value, setValue] = useState('');
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const baseTextareaHeightRef = useRef(0);
-  const { scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
+  const { bottomRef, scrollContainerRef, topRef, scrollToBottom } = useChatRoomScroll({
     chatRoomId,
     chatMessagesLength: chatMessages.length,
     latestMessageId: chatMessages[0]?.messageId,
+    targetMessageId,
     fetchNextPage,
+    fetchPreviousPage,
     hasNextPage,
+    hasPreviousPage,
     isFetchingNextPage,
+    isFetchingPreviousPage,
   });
 
   useViewportHeightLock(scrollContainerRef);
@@ -192,6 +203,8 @@ function ChatRoom() {
             </div>
           );
         })}
+
+        <div ref={bottomRef} />
       </div>
 
       <form
