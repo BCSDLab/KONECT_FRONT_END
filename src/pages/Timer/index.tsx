@@ -1,4 +1,4 @@
-import { useRef, useState, useTransition } from 'react';
+import { useDeferredValue, useMemo, useRef, useState } from 'react';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import BottomSheet, { type SheetPosition } from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
@@ -29,15 +29,23 @@ function TimerPage() {
   const { bottomOverlayInsetPx } = useLayoutElementsContext();
   const timerSectionRef = useRef<HTMLDivElement>(null);
 
-  const [isPending, startTransition] = useTransition();
   const [activeTab, setActiveTab] = useState<TabType>('개인');
   const [sort, setSort] = useState<StudyRankingParams['sort']>('MONTHLY');
+  const rankingParams = useMemo(
+    () => ({
+      activeTab,
+      sort,
+    }),
+    [activeTab, sort]
+  );
+  const deferredRankingParams = useDeferredValue(rankingParams);
   const [sheetPosition, setSheetPosition] = useState<SheetPosition>('half');
   const [autoExpandResetKey, setAutoExpandResetKey] = useState(0);
   const { isExitConfirmOpen, closeExitConfirm, confirmExit } = useTimerExitGuard({ isRunning, stop });
 
   const tabs: TabType[] = ['동아리', '학번', '개인'];
   const isBusy = isStarting || isStopping;
+  const isRankingPending = activeTab !== deferredRankingParams.activeTab || sort !== deferredRankingParams.sort;
   const { bottomInsetPx, fullSheetTopOffset, halfSheetTopOffset, timerSectionPaddingTopClassName, timerSize } =
     useTimerLayout({
       bottomOverlayInsetPx,
@@ -79,12 +87,7 @@ function TimerPage() {
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="relative shrink-0 px-5">
               <div className="text-text-700 text-center text-[16px] leading-[1.6] font-bold">랭킹</div>
-              <Dropdown
-                className="absolute top-0 right-5"
-                options={SORT_OPTIONS}
-                value={sort}
-                onChange={(value) => startTransition(() => setSort(value))}
-              />
+              <Dropdown className="absolute top-0 right-5" options={SORT_OPTIONS} value={sort} onChange={setSort} />
             </div>
 
             <div className="mt-2.5 flex w-full shrink-0 items-center justify-between">
@@ -92,7 +95,7 @@ function TimerPage() {
                 <button
                   key={tab}
                   type="button"
-                  onClick={() => startTransition(() => setActiveTab(tab))}
+                  onClick={() => setActiveTab(tab)}
                   className={cn(
                     'flex-1 border-b-[1.4px] px-0 py-1.5 text-center text-[14px] leading-[1.6] font-medium text-indigo-200',
                     activeTab === tab && 'text-primary-500 border-blue-200 font-bold',
@@ -104,10 +107,12 @@ function TimerPage() {
               ))}
             </div>
 
-            <div className={cn('min-h-0 flex-1 overflow-hidden px-5', isPending && 'opacity-60 transition-opacity')}>
+            <div
+              className={cn('min-h-0 flex-1 overflow-hidden px-5', isRankingPending && 'opacity-60 transition-opacity')}
+            >
               <RankingList
-                type={TAB_TO_TYPE[activeTab]}
-                sort={sort}
+                type={TAB_TO_TYPE[deferredRankingParams.activeTab]}
+                sort={deferredRankingParams.sort}
                 sheetPosition={position}
                 hiddenBottomInsetPx={bottomInsetPx}
                 autoExpandResetKey={autoExpandResetKey}

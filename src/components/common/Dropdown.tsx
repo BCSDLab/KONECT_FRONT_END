@@ -13,6 +13,7 @@ interface DropdownProps<T extends string> extends Omit<HTMLAttributes<HTMLDivEle
   value: T;
   onChange: (value: T) => void;
   menuClassName?: string;
+  triggerClassName?: string;
 }
 
 export default function Dropdown<T extends string>({
@@ -21,6 +22,7 @@ export default function Dropdown<T extends string>({
   onChange,
   className,
   menuClassName,
+  triggerClassName,
   ...props
 }: DropdownProps<T>) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,10 +31,6 @@ export default function Dropdown<T extends string>({
   useClickTouchOutside(dropdownRef, () => setIsOpen(false));
 
   const selectedOption = options.find((opt) => opt.value === value);
-  const orderedOptions = [
-    ...options.filter((option) => option.value !== value),
-    ...options.filter((option) => option.value === value),
-  ];
 
   const handleSelect = (optionValue: T) => {
     onChange(optionValue);
@@ -45,8 +43,9 @@ export default function Dropdown<T extends string>({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'inline-flex h-7.25 items-center justify-center overflow-hidden rounded-full bg-[#69BFDF] px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
-          isOpen && 'opacity-95'
+          'bg-primary-500 inline-flex h-7.25 items-center justify-evenly overflow-hidden rounded-full px-2.5 text-[13px] leading-[1.6] font-medium text-white transition-opacity active:opacity-90',
+          isOpen && 'opacity-95',
+          triggerClassName
         )}
       >
         <span>{selectedOption?.label}</span>
@@ -64,7 +63,7 @@ export default function Dropdown<T extends string>({
         )}
       >
         <div className="flex min-w-14 flex-col gap-1">
-          {orderedOptions.map((option) => (
+          {options.map((option) => (
             <button
               key={option.value}
               type="button"

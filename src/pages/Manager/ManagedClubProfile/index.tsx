@@ -1,15 +1,13 @@
-import { type ChangeEvent, type MutableRefObject, useEffect, useRef, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { clubQueries } from '@/apis/club/queries';
-import ImageIcon from '@/assets/svg/image.svg';
 import BottomModal from '@/components/common/BottomModal';
+import ImageUploader, { useImageUploader } from '@/components/common/ImageUploader';
 import { useToastContext } from '@/contexts/useToastContext';
 import { useUpdateManagedClubInfoMutation } from '@/pages/Manager/hooks/useManagedClubMutations';
-import useUploadImage from '@/utils/hooks/image/useUploadImage';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { getApiErrorMessage, getApiErrorMessages } from '@/utils/ts/error/apiErrorMessage';
-import { prepareImageFile } from '@/utils/ts/image/imagePreprocessor';
 
 const DESCRIPTION_MAX_LENGTH = 25;
 
@@ -21,27 +19,20 @@ const fieldInputClassName = `${fieldControlClassName} h-[31px]`;
 const disabledFieldInputClassName =
   'h-[31px] w-full rounded-lg border border-transparent bg-background px-3 text-[13px] leading-[20.8px] font-medium text-text-500 outline-none disabled:cursor-not-allowed disabled:opacity-100 disabled:[-webkit-text-fill-color:#5A6B7F]';
 const fieldTextAreaClassName = `${fieldControlClassName} min-h-[512px] resize-none py-2.5`;
-const imageActionButtonClassName =
-  'absolute flex size-[25px] items-center justify-center rounded-full bg-[#9f9f9f] text-[18px] leading-none text-white shadow-[0_1px_2px_rgba(0,0,0,0.16)]';
 const clubNameFieldId = 'managed-club-name';
 const categoryFieldId = 'managed-club-category';
 const descriptionFieldId = 'managed-club-description';
 const locationFieldId = 'managed-club-location';
 const introduceFieldId = 'managed-club-introduce';
 
-function clearLocalPreviewUrl(localPreviewUrlRef: MutableRefObject<string | null>) {
-  if (!localPreviewUrlRef.current) return;
-
-  URL.revokeObjectURL(localPreviewUrlRef.current);
-  localPreviewUrlRef.current = null;
-}
-
 function ManagedClubInfo() {
-  const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
-  const numericClubId = Number(clubId);
   const { showToast } = useToastContext();
+  const { clubId } = useParams<{ clubId: string }>();
+
+  const numericClubId = Number(clubId);
   const { data: clubDetail } = useSuspenseQuery(clubQueries.detail(numericClubId));
+  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateManagedClubInfoMutation(numericClubId);
 
   const initialDescription = clubDetail.description ?? '';
   const initialLocation = clubDetail.location ?? '';
@@ -51,39 +42,24 @@ function ManagedClubInfo() {
   const [description, setDescription] = useState(initialDescription);
   const [location, setLocation] = useState(initialLocation);
   const [introduce, setIntroduce] = useState(initialIntroduce);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState(initialImageUrl);
+  const {
+    images,
+    selectedImage: currentImage,
+    selectedImageUrl: currentImageUrl,
+    setImages,
+    isUploadingImages: isUploadingImage,
+    uploadError,
+    uploadImages,
+  } = useImageUploader({ initialImageUrls: initialImageUrl ? [initialImageUrl] : [], target: 'CLUB' });
   const [isPreparingImage, setIsPreparingImage] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const imageDeletedRef = useRef(false);
-  const localPreviewUrlRef = useRef<string | null>(null);
-
-  const { mutateAsync: uploadImage, error: uploadError } = useUploadImage('CLUB');
-  const { mutateAsync: updateClubInfo, isPending, error } = useUpdateManagedClubInfoMutation(numericClubId);
   const { value: isSubmitModalOpen, setTrue: openSubmitModal, setFalse: closeSubmitModal } = useBooleanState(false);
-
-  useEffect(() => {
-    clearLocalPreviewUrl(localPreviewUrlRef);
-    setDescription(initialDescription);
-    setLocation(initialLocation);
-    setIntroduce(initialIntroduce);
-    setImageFile(null);
-    setImagePreview(initialImageUrl);
-  }, [initialDescription, initialImageUrl, initialIntroduce, initialLocation]);
-
-  useEffect(() => {
-    return () => {
-      clearLocalPreviewUrl(localPreviewUrlRef);
-    };
-  }, []);
 
   const hasChanges =
     description !== initialDescription ||
     location !== initialLocation ||
     introduce !== initialIntroduce ||
-    imagePreview !== initialImageUrl;
+    currentImageUrl !== initialImageUrl;
 
   const handleDescriptionChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -93,74 +69,19 @@ function ManagedClubInfo() {
     }
   };
 
-  const handleImageSelect = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-
-    if (!file || isPreparingImage) return;
-
-    imageDeletedRef.current = false;
-    setIsPreparingImage(true);
-
-    try {
-      const preparedFile = await prepareImageFile(file);
-
-      if (imageDeletedRef.current) {
-        e.target.value = '';
-        return;
-      }
-
-      clearLocalPreviewUrl(localPreviewUrlRef);
-
-      const previewUrl = URL.createObjectURL(preparedFile);
-      localPreviewUrlRef.current = previewUrl;
-
-      setImageFile(preparedFile);
-      setImagePreview(previewUrl);
-      e.target.value = '';
-    } catch {
-      e.target.value = '';
-      showToast('이미지 처리에 실패했습니다');
-    } finally {
-      setIsPreparingImage(false);
-    }
-  };
-
-  const handleImageClick = () => {
-    if (isPreparingImage) return;
-    fileInputRef.current?.click();
-  };
-
-  const handleDeleteImage = () => {
-    imageDeletedRef.current = true;
-    clearLocalPreviewUrl(localPreviewUrlRef);
-    setImageFile(null);
-    setImagePreview('');
-  };
-
   const handleSubmit = async () => {
     closeSubmitModal();
-    setIsUploading(true);
+    const [finalImageUrl = ''] = await uploadImages(currentImage ? [currentImage] : []);
 
-    try {
-      let finalImageUrl = imagePreview;
+    await updateClubInfo({
+      description,
+      imageUrl: finalImageUrl,
+      location,
+      introduce,
+    });
 
-      if (imageFile) {
-        const result = await uploadImage(imageFile);
-        finalImageUrl = result.fileUrl;
-      }
-
-      await updateClubInfo({
-        description,
-        imageUrl: finalImageUrl,
-        location,
-        introduce,
-      });
-
-      showToast('클럽 정보가 수정되었습니다');
-      navigate(-1);
-    } finally {
-      setIsUploading(false);
-    }
+    showToast('클럽 정보가 수정되었습니다');
+    navigate(-1);
   };
 
   const readOnlyFields = [
@@ -172,43 +93,15 @@ function ManagedClubInfo() {
     <div className="bg-background flex min-h-full flex-col px-4 pt-5">
       <div className="mx-auto flex w-full max-w-88 flex-1 flex-col gap-5 pb-[calc(40px+var(--sab))]">
         <section className="flex justify-center">
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageSelect} className="hidden" />
-          <div className={`${cardClassName} relative size-62.5 p-3`}>
-            {!imagePreview ? (
-              <button
-                type="button"
-                onClick={handleImageClick}
-                className="border-text-200 bg-background hover:bg-primary-100/50 flex size-full flex-col items-center justify-center gap-3 rounded-sm border border-dashed transition-colors"
-              >
-                <ImageIcon aria-hidden="true" />
-                <p className="text-sub3 text-text-500 text-center whitespace-pre-line">
-                  동아리 이미지를{'\n'}추가해주세요
-                </p>
-              </button>
-            ) : (
-              <>
-                <div className="flex h-full items-center justify-center overflow-hidden rounded-sm bg-white p-4">
-                  <img src={imagePreview} alt="동아리 이미지 미리보기" className="max-h-full w-full object-contain" />
-                </div>
-                <button
-                  type="button"
-                  aria-label="이미지 삭제"
-                  onClick={handleDeleteImage}
-                  className={`${imageActionButtonClassName} top-2 right-2`}
-                >
-                  <span className="-mt-px">×</span>
-                </button>
-                <button
-                  type="button"
-                  aria-label="이미지 변경"
-                  onClick={handleImageClick}
-                  className={`${imageActionButtonClassName} right-2 bottom-2`}
-                >
-                  <span className="-mt-px">+</span>
-                </button>
-              </>
-            )}
-          </div>
+          <ImageUploader
+            value={images}
+            onChange={setImages}
+            selectionMode="single"
+            layout="square"
+            className={`${cardClassName} relative size-62.5 p-3`}
+            onPreparingChange={setIsPreparingImage}
+            previewAlt={() => '동아리 이미지 미리보기'}
+          />
         </section>
 
         <section className={`${cardClassName} px-5 py-6`}>
@@ -290,12 +183,12 @@ function ManagedClubInfo() {
           <button
             type="button"
             onClick={openSubmitModal}
-            disabled={isPending || isPreparingImage || isUploading || !hasChanges}
+            disabled={isPending || isPreparingImage || isUploadingImage || !hasChanges}
             className="text-h2 bg-primary-500 disabled:bg-text-300 w-full rounded-2xl py-[9.5px] text-center text-white transition-colors disabled:cursor-not-allowed"
           >
             {isPreparingImage
               ? '이미지 준비 중...'
-              : isUploading
+              : isUploadingImage
                 ? '이미지 업로드 중...'
                 : isPending
                   ? '수정 중...'
@@ -310,13 +203,13 @@ function ManagedClubInfo() {
           <div>
             <button
               type="button"
-              disabled={isPending || isPreparingImage || isUploading}
+              disabled={isPending || isPreparingImage || isUploadingImage}
               onClick={handleSubmit}
               className="bg-primary-500 text-h3 w-full rounded-lg py-3.5 text-center text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
               {isPreparingImage
                 ? '이미지 준비 중...'
-                : isUploading
+                : isUploadingImage
                   ? '수정 중...'
                   : isPending
                     ? '수정 중...'

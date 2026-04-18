@@ -18,20 +18,25 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => /^\/clubs\/\d+$/.test(pathname),
   },
   {
-    type: 'profile',
-    match: (pathname) => pathname === '/mypage',
-  },
-  {
     type: 'info',
-    match: (pathname) => pathname === '/home' || pathname === '/timer' || pathname === '/council',
+    match: (pathname) =>
+      pathname === '/home' || pathname === '/timer' || pathname === '/council' || pathname === '/mypage',
   },
   {
     type: 'chatList',
     match: (pathname) => pathname === '/chats',
   },
   {
+    type: 'none',
+    match: (pathname) => pathname === '/chats/add',
+  },
+  {
+    type: 'chatSearch',
+    match: (pathname) => pathname === '/chats/search',
+  },
+  {
     type: 'chat',
-    match: (pathname) => /^\/chats\/\d+$/.test(pathname),
+    match: (pathname) => /^\/chats\/\d+(?:\/info)?$/.test(pathname),
   },
   {
     type: 'normal',

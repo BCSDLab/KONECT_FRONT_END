@@ -1,6 +1,7 @@
-import type { PaginationParams, PaginationResponse } from '../common/pagination';
+import type { PaginationParams, PaginationResponse } from '@/apis/common/pagination';
 
 export type ChatType = 'DIRECT' | 'CLUB_GROUP' | 'GROUP' | 'INQUIRY';
+export type SortBy = 'CLUB' | 'NAME';
 
 export interface Room {
   roomId: number;
@@ -35,6 +36,7 @@ export interface SendChatMessageRequest {
 
 export interface ChatMessageRequestParam extends PaginationParams {
   chatRoomId: number;
+  messageId?: number;
 }
 
 export interface ChatMessagesResponse extends PaginationResponse {
@@ -45,3 +47,70 @@ export interface ChatMessagesResponse extends PaginationResponse {
 export interface CreateChatRoomResponse {
   chatRoomId: number;
 }
+
+export interface Messages {
+  roomId: number;
+  chatType: ChatType;
+  roomName: string;
+  roomImageUrl: string;
+  matchedMessage: string;
+  matchedMessageSentAt: string;
+  matchedMessageId: number;
+  unreadCount: number;
+  isMuted: boolean;
+}
+
+export interface RoomMatched extends PaginationResponse {
+  rooms?: Room[];
+}
+
+export interface MessageMatched extends PaginationResponse {
+  messages?: Messages[];
+}
+
+export interface MatchedRequestParams extends PaginationParams {
+  keyword: string;
+}
+
+export interface MatchResponse {
+  roomMatches?: RoomMatched;
+  messageMatches?: MessageMatched;
+}
+
+export interface InvitableUser {
+  userId: number;
+  name: string;
+  imageUrl: string;
+  studentNumber: string;
+}
+
+export interface InvitableSection {
+  clubId: number;
+  clubName: string;
+  users: InvitableUser[];
+}
+
+export interface InvitableFriendsRequestParams extends PaginationParams {
+  query: string;
+  sortBy: SortBy;
+}
+
+interface InvitableFriendsBase extends PaginationResponse {
+  sortBy: SortBy;
+}
+
+export interface GroupedInvitableFriendsResponse extends InvitableFriendsBase {
+  sortBy: 'CLUB';
+  grouped: true;
+  users: [];
+  sections: InvitableSection[];
+}
+
+export interface FlatInvitableFriendsResponse extends InvitableFriendsBase {
+  sortBy: 'NAME';
+  grouped: false;
+  users: InvitableUser[];
+  sections: [];
+}
+
+export type InvitableFriendsResponse = GroupedInvitableFriendsResponse | FlatInvitableFriendsResponse;

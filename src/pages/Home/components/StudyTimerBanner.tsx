@@ -12,10 +12,11 @@ function StudyTimerBanner() {
       }}
     >
       <div className="relative z-10 max-w-36.25 text-[#324839]">
-        <h2 className="text-[18px] leading-[1.6] font-extrabold tracking-[-0.18px] whitespace-pre-line">
-          Konect와 공부하고{'\n'}핫식스 받자!
+        <h2 className="text-[18px] leading-[1.6] font-extrabold tracking-[-0.18px] break-keep">
+          <span className="block whitespace-nowrap">Konect와 공부하고</span>
+          <span className="block whitespace-nowrap">핫식스 받자!</span>
         </h2>
-        <p className="mt-0.75 text-[10px] leading-[1.6] font-medium whitespace-pre-line">
+        <p className="mt-0.75 text-[10px] leading-[1.6] font-medium break-keep whitespace-pre-line">
           커넥트의 타이머 기능을{'\n'}사용해보세요!
         </p>
       </div>

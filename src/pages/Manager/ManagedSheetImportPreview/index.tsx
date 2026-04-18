@@ -5,11 +5,11 @@ import type { PositionType } from '@/apis/club/entity';
 import { managedClubQueries } from '@/apis/club/managedQueries';
 import CheckIcon from '@/assets/svg/check.svg';
 import PersonAddIcon from '@/assets/svg/person-add-icon.svg';
+import { MemberAvatar } from '@/components/common/MemberAvatar';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import { useInAppNotificationToastContext } from '@/contexts/useInAppNotificationToastContext';
 import { useToastContext } from '@/contexts/useToastContext';
 import { useConfirmManagedClubSheetImportMutation } from '@/pages/Manager/hooks/useManagedMemberMutations';
-import { MemberAvatar } from '@/pages/Manager/ManagedMemberList/components/MemberCard';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
 

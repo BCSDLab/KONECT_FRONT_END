@@ -6,7 +6,6 @@ import DefaultHeader from './components/DefaultHeader';
 import InfoHeader from './components/InfoHeader';
 import ManagerHeader from './components/ManagerHeader';
 import PlainSubpageHeader from './components/PlainSubpageHeader';
-import ProfileHeader from './components/ProfileHeader';
 import ScheduleHeader from './components/ScheduleHeader';
 import SubpageHeader from './components/SubpageHeader';
 import { getHeaderPresentation } from './presentation';
@@ -22,7 +21,6 @@ function Header({ headerRef }: HeaderProps) {
   const { title, type: headerType } = getHeaderPresentation(pathname);
 
   const HEADER_RENDERERS: Record<HeaderType, HeaderRenderer> = {
-    profile: ({ headerRef }) => <ProfileHeader headerRef={headerRef} />,
     info: ({ headerRef }) => <InfoHeader headerRef={headerRef} />,
     chatList: ({ title, headerRef }) => <ChatListHeader title={title} headerRef={headerRef} />,
     chat: ({ headerRef }) => <ChatHeader headerRef={headerRef} />,
@@ -35,6 +33,7 @@ function Header({ headerRef }: HeaderProps) {
     signup: ({ title, onBack, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} onBack={onBack} />,
     default: ({ title, headerRef }) => <DefaultHeader title={title} headerRef={headerRef} />,
     manager: ({ title, headerRef }) => <ManagerHeader fallbackTitle={title} headerRef={headerRef} />,
+    chatSearch: ({ title, headerRef }) => <SubpageHeader title={title} headerRef={headerRef} headerClassName="h-13" />,
   };
 
   const onBack = headerType === 'signup' ? () => navigate('/') : undefined;

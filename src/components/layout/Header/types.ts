@@ -2,7 +2,6 @@ import type { ReactNode, Ref } from 'react';
 
 export type HeaderType =
   | 'info'
-  | 'profile'
   | 'chat'
   | 'none'
   | 'notification'
@@ -13,7 +12,8 @@ export type HeaderType =
   | 'signup'
   | 'schedule'
   | 'manager'
-  | 'chatList';
+  | 'chatList'
+  | 'chatSearch';
 
 export interface HeaderConfig {
   type: HeaderType;
