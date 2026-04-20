@@ -59,7 +59,7 @@ export const clubQueries = {
     queryOptions({
       queryKey: clubId ? clubQueryKeys.members(clubId, position) : clubQueryKeys.membersDisabled(),
       queryFn: () => getClubMembers(clubId!, position),
-      enabled: Boolean(clubId),
+      enabled: clubId != null,
     }),
   recruitment: (clubId: number) =>
     queryOptions({

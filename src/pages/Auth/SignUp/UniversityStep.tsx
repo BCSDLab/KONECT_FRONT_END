@@ -29,7 +29,7 @@ function UniversityStep() {
   const filteredUniversities = !trimmed
     ? (universityList?.universities ?? [])
     : (universityList?.universities.filter((university) => university.name.includes(trimmed)) ?? []);
-  const hasNoSearchResult = Boolean(trimmed) && filteredUniversities.length === 0;
+  const hasNoSearchResult = trimmed.length > 0 && filteredUniversities.length === 0;
 
   const handleUniversitySelect = (universityId: string, universityName: string) => () => {
     update({ universityId, universityName });
