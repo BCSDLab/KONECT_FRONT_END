@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { StudyTimeSummaryResponse } from '@/apis/studyTime/entity';
 import { studyTimeMutations } from '@/apis/studyTime/mutations';
 import { studyTimeQueryKeys } from '@/apis/studyTime/queries';
 import { API_ERROR_CODES, isApiError } from '@/utils/ts/error/apiError';
@@ -8,7 +9,17 @@ export const useStopStudyTimerMutation = () => {
 
   return useMutation({
     ...studyTimeMutations.stopTimer(),
-    onSuccess: async () => {
+    onSuccess: async (response) => {
+      queryClient.setQueryData<StudyTimeSummaryResponse>(studyTimeQueryKeys.summary(), (previousData) => {
+        const nextSummary = {
+          todayStudyTime: response.dailySeconds,
+          monthlyStudyTime: response.monthlySeconds,
+          totalStudyTime: response.totalSeconds,
+        };
+
+        return previousData ? { ...previousData, ...nextSummary } : nextSummary;
+      });
+
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() }),
         queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.rankings() }),
