@@ -1,7 +1,9 @@
-import type { Ref } from 'react';
+import type { MouseEvent, Ref } from 'react';
 import { Link } from 'react-router-dom';
 import type { Club } from '@/apis/club/entity';
 import CircleWarningIcon from '@/assets/svg/circle-warning.svg';
+
+const SCROLL_RESTORE_KEY = 'clubList_shouldRestore';
 
 interface ClubCardProps {
   club: Club;
@@ -60,11 +62,19 @@ function ClubCard({ club, itemRef }: ClubCardProps) {
     return null;
   })();
 
+  const handleClick = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) {
+      return;
+    }
+
+    sessionStorage.setItem(SCROLL_RESTORE_KEY, 'true');
+  };
+
   return (
     <Link
       ref={itemRef}
       to={`/clubs/${club.id}${club.status === 'ONGOING' ? '?tab=recruitment' : ''}`}
-      state={{ from: 'clubList' }}
+      onClick={handleClick}
       className="border-indigo-5 flex w-full items-start gap-3 rounded-2xl border bg-white p-4"
     >
       <img src={club.imageUrl} className="border-indigo-5 h-12 w-12 rounded-sm border object-cover" alt={club.name} />
