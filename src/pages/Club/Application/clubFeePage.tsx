@@ -1,22 +1,25 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { clubQueries } from '@/apis/club/queries';
 import WarningCircleIcon from '@/assets/svg/warning-circle.svg';
 import Card from '@/components/common/Card';
 import ImageUploader, { useImageUploader } from '@/components/common/ImageUploader';
 import Portal from '@/components/common/Portal';
+import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
 import { useClubApplicationStore } from '@/stores/clubApplicationStore';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import AccountInfoCard from './components/AccountInfo';
 import useApplyToClub from './hooks/useApplyToClub';
 
-function ClubFeePage() {
-  const { clubId } = useParams();
-  const navigate = useNavigate();
-  const { data: clubFee } = useSuspenseQuery(clubQueries.fee(Number(clubId)));
-  const { applyToClub, isPending: isApplyingToClub } = useApplyToClub(Number(clubId));
-  const { answers, clubId: storedClubId } = useClubApplicationStore();
+interface ClubFeePageContentProps {
+  answers: ReturnType<typeof useClubApplicationStore.getState>['answers'];
+  clubIdNumber: number;
+}
+
+function ClubFeePageContent({ answers, clubIdNumber }: ClubFeePageContentProps) {
+  const { data: clubFee } = useSuspenseQuery(clubQueries.fee(clubIdNumber));
+  const { applyToClub, isPending: isApplyingToClub } = useApplyToClub(clubIdNumber);
   const {
     images,
     isUploadingImages: isUploadingImage,
@@ -36,12 +39,6 @@ function ClubFeePage() {
     const [feePaymentImageUrl] = await uploadImages([selectedImage]);
     await applyToClub({ answers, feePaymentImageUrl });
   };
-
-  useEffect(() => {
-    if (storedClubId == null || storedClubId !== Number(clubId)) {
-      navigate(`/clubs/${clubId}/apply`, { replace: true });
-    }
-  }, [storedClubId, clubId, navigate]);
 
   return (
     <div
@@ -107,6 +104,23 @@ function ClubFeePage() {
       )}
     </div>
   );
+}
+
+function ClubFeePage() {
+  const { clubId } = useParams();
+  const clubIdNumber = Number(clubId);
+  const hasHydratedClubApplication = useClubApplicationStore.persist.hasHydrated();
+  const { answers, clubId: storedClubId } = useClubApplicationStore();
+
+  if (!hasHydratedClubApplication) {
+    return <RouteLoadingFallback />;
+  }
+
+  if (!Number.isFinite(clubIdNumber) || storedClubId == null || storedClubId !== clubIdNumber) {
+    return <Navigate to={clubId ? `/clubs/${clubId}/apply` : '/clubs'} replace />;
+  }
+
+  return <ClubFeePageContent answers={answers} clubIdNumber={clubIdNumber} />;
 }
 
 export default ClubFeePage;
