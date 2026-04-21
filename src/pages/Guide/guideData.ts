@@ -7,7 +7,7 @@ export interface GuideItem {
 const GUIDE_IMAGE_BASE_URL = 'https://stage-static.koreatech.in/konect/guide';
 const GUIDE_ITEM_DURATION = 3000;
 
-const GUIDE_IMAGE_FILE_NAMES = ['가이드1.webp', '가이드2.webp', '가이드3.webp', '가이드4.webp', '순공시간_개인별.webp'];
+const GUIDE_IMAGE_FILE_NAMES = ['1.webp', '2.webp', '3.webp', '4.webp', '5.webp'];
 
 const getGuideImageUrl = (fileName: string) => `${GUIDE_IMAGE_BASE_URL}/${encodeURIComponent(fileName)}`;
 
