@@ -21,7 +21,6 @@ export const useStopStudyTimerMutation = () => {
       });
 
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.summary() }),
         queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.rankings() }),
         queryClient.invalidateQueries({ queryKey: studyTimeQueryKeys.myRankings() }),
       ]);
