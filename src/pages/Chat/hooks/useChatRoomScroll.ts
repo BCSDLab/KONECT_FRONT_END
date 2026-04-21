@@ -72,7 +72,7 @@ const useChatRoomScroll = ({
 
   const bottomRef = useInfiniteScroll(handleFetchPreviousPage, hasPreviousPage, isFetchingPreviousPage, {
     threshold: 0.1,
-    enabled: Boolean(targetMessageId),
+    enabled: targetMessageId != null,
   });
 
   useEffect(() => {

@@ -135,7 +135,7 @@ function ManagedRecruitmentWrite() {
 
     const imageUrls = await uploadImages(images);
     const imageData = imageUrls.map((url) => ({ url }));
-    const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+    const shouldNavigateBack = location.state?.enableAfterSave === true;
     const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
     const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
     const navigateAfterSave = () =>

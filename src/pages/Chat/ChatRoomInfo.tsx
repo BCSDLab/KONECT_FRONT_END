@@ -118,7 +118,7 @@ function ChatRoomInfo() {
         (member) => member.name === currentUser.name && member.studentNumber === currentUser.studentNumber
       )
     : null;
-  const isCurrentClubExecutive = Boolean(currentClubMember && currentClubMember.position !== 'MEMBER');
+  const isCurrentClubExecutive = currentClubMember != null && currentClubMember.position !== 'MEMBER';
   const canManageMembers = isClubGroupChat ? isCurrentClubExecutive : false;
 
   const handleToggleMemberAction = (userId: number) => {

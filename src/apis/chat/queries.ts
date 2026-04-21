@@ -34,7 +34,7 @@ export const chatQueries = {
           page: pageParam.page,
           limit,
         }),
-      initialPageParam: { page: 1, useMessageId: Boolean(messageId) } satisfies ChatMessagesPageParam,
+      initialPageParam: { page: 1, useMessageId: messageId != null } satisfies ChatMessagesPageParam,
       getNextPageParam: (lastPage: ChatMessagesResponse) =>
         lastPage.currentPage < lastPage.totalPage
           ? ({ page: lastPage.currentPage + 1, useMessageId: false } satisfies ChatMessagesPageParam)
@@ -43,7 +43,7 @@ export const chatQueries = {
         firstPage.currentPage > 1
           ? ({ page: firstPage.currentPage - 1, useMessageId: false } satisfies ChatMessagesPageParam)
           : undefined,
-      enabled: Boolean(chatRoomId),
+      enabled: chatRoomId != null,
     }),
   search: (keyword: string) =>
     queryOptions({

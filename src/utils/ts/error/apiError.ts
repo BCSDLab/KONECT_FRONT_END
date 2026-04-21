@@ -89,7 +89,7 @@ export function isApiError(value: unknown): value is ApiError {
 }
 
 export function hasApiFieldErrors(error: unknown): error is ApiErrorWithFieldErrors {
-  return isApiError(error) && Boolean(error.apiError?.fieldErrors?.length);
+  return isApiError(error) && (error.apiError?.fieldErrors?.length ?? 0) > 0;
 }
 
 export function isAuthError(error: unknown): boolean {
