@@ -16,6 +16,7 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
+      ...tseslint.configs.recommendedTypeChecked,
       react.configs.flat.recommended,
       react.configs.flat['jsx-runtime'],
       reactHooks.configs.flat['recommended-latest'],
@@ -25,6 +26,10 @@ export default defineConfig([
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
     },
     settings: {
       react: { version: 'detect' },
@@ -36,9 +41,17 @@ export default defineConfig([
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint.plugin,
       prettier: prettierPlugin,
     },
     rules: {
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-misused-promises': [
+        'error',
+        {
+          checksVoidReturn: false,
+        },
+      ],
       'import/order': [
         'error',
         {

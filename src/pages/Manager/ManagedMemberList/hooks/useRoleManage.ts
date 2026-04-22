@@ -96,7 +96,7 @@ export default function useRoleManage(clubId: number, members: ClubMember[]) {
 
   const handleSubmit = async () => {
     if (target === 'PRESIDENT') {
-      const nextPresidentId = selectedUserIds.values().next().value as number | undefined;
+      const nextPresidentId = selectedUserIds.values().next().value;
       if (!nextPresidentId || nextPresidentId === currentPresident?.userId) {
         close();
         return;
@@ -116,7 +116,7 @@ export default function useRoleManage(clubId: number, members: ClubMember[]) {
     }
 
     if (target === 'VICE_PRESIDENT') {
-      const nextVicePresidentId = (selectedUserIds.values().next().value as number | undefined) ?? null;
+      const nextVicePresidentId = selectedUserIds.values().next().value ?? null;
       if (nextVicePresidentId === (currentVicePresident?.userId ?? null)) {
         close();
         return;

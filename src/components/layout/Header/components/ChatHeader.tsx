@@ -5,6 +5,7 @@ import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
 import useChat from '@/pages/Chat/hooks/useChat';
 import { isGroupChatType } from '@/pages/Chat/utils/chatType';
+import type { SmartBackState } from '@/types/navigation';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
 import { cn } from '@/utils/ts/cn';
@@ -13,8 +14,9 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
   const smartBack = useSmartBack();
   const navigate = useNavigate();
   const location = useLocation();
-  const { pathname, state } = location;
-  const { chatRoomId } = useParams();
+  const pathname = location.pathname;
+  const navigationState = location.state as SmartBackState | null;
+  const { chatRoomId } = useParams<{ chatRoomId: string }>();
   const numericRoomId = Number(chatRoomId);
   const isInfoPage = pathname.endsWith('/info');
 
@@ -27,7 +29,7 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
 
   const handleBack = () => {
     if (isInfoPage && chatRoomId) {
-      navigate(`/chats/${chatRoomId}`, { state });
+      navigate(`/chats/${chatRoomId}`, { state: navigationState });
       return;
     }
 
@@ -73,7 +75,12 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
           className="shrink-0"
         />
       ) : (
-        <Link to={`/chats/${chatRoomId}/info`} state={state} className="shrink-0" aria-label="채팅방 정보 열기">
+        <Link
+          to={`/chats/${chatRoomId}/info`}
+          state={navigationState}
+          className="shrink-0"
+          aria-label="채팅방 정보 열기"
+        >
           <HamburgerIcon />
         </Link>
       )}

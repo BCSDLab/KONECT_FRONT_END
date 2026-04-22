@@ -1,11 +1,12 @@
 export function setCookie(name: string, value: unknown, day?: number) {
   const date = new Date();
+  const serializedValue = String(value);
 
   if (day) {
     date.setTime(date.getTime() + day * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/;`;
+    document.cookie = `${name}=${serializedValue}; expires=${date.toUTCString()}; path=/;`;
   } else {
-    document.cookie = `${name}=${value}; path=/;`;
+    document.cookie = `${name}=${serializedValue}; path=/;`;
   }
 }
 

@@ -11,6 +11,7 @@ import {
   usePatchManagedClubSettingsMutation,
   useUpdateManagedClubFeeMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
@@ -25,6 +26,7 @@ function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationState = location.state as EnableAfterSaveState | null;
   const clubIdNumber = Number(clubId);
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
@@ -72,7 +74,7 @@ function ManagedAccount() {
 
     updateClubFee(payload, {
       onSuccess: () => {
-        if (location.state?.enableAfterSave) {
+        if (navigationState?.enableAfterSave) {
           patchSettings(
             { isFeeEnabled: true },
             {

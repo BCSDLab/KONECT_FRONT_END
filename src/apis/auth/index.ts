@@ -12,6 +12,10 @@ import type {
 
 let refreshAccessTokenPromise: Promise<string> | null = null;
 
+function isRefreshTokenResponse(value: unknown): value is RefreshTokenResponse {
+  return typeof value === 'object' && value !== null && 'accessToken' in value && typeof value.accessToken === 'string';
+}
+
 const requestAccessTokenRefresh = async (): Promise<string> => {
   const url = `${NORMALIZED_API_BASE_URL}/users/refresh`;
 
@@ -47,7 +51,11 @@ const requestAccessTokenRefresh = async (): Promise<string> => {
     throw error;
   }
 
-  const data: RefreshTokenResponse = await response.json();
+  const data: unknown = await response.json();
+  if (!isRefreshTokenResponse(data)) {
+    throw new Error('토큰 갱신 응답 형식이 올바르지 않습니다.');
+  }
+
   return data.accessToken;
 };
 

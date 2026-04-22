@@ -4,6 +4,7 @@ import type { Messages, Room } from '@/apis/chat/entity';
 import BellOffIcon from '@/assets/svg/bell-off.svg';
 import PersonIcon from '@/assets/svg/person.svg';
 import { formatTime } from '@/pages/Chat/utils/formatTime';
+import type { SmartBackState } from '@/types/navigation';
 import { useLongPress } from '@/utils/hooks/useLongPress';
 
 export function ChatRoomAvatar({ roomImageUrl }: Pick<Room, 'roomImageUrl'>) {
@@ -29,13 +30,13 @@ interface ChatRoomListItemProps {
   room: Room;
   defaultMessage?: string;
   onLongPress?: (x: number, y: number, room: Room) => void;
-  navigationState?: ComponentProps<typeof Link>['state'];
+  navigationState?: SmartBackState;
 }
 
 interface ChatMessageListItemProps {
   message: Messages;
   keyword: string;
-  navigationState?: ComponentProps<typeof Link>['state'];
+  navigationState?: SmartBackState;
 }
 
 interface ChatListItemBaseProps {
@@ -46,7 +47,7 @@ interface ChatListItemBaseProps {
   preview: ReactNode;
   isMuted?: boolean;
   unreadCount?: number;
-  navigationState?: ComponentProps<typeof Link>['state'];
+  navigationState?: SmartBackState;
   linkProps?: Omit<ComponentProps<typeof Link>, 'children' | 'className' | 'to'>;
 }
 
