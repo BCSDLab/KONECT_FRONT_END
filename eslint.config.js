@@ -79,5 +79,19 @@ export default defineConfig([
       'prettier/prettier': 'error',
     },
   },
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['src/utils/ts/nativeBridge.ts'],
+    rules: {
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'window',
+          property: 'ReactNativeWebView',
+          message: 'ReactNativeWebView 브릿지는 @/utils/ts/nativeBridge를 통해서만 사용하세요.',
+        },
+      ],
+    },
+  },
   eslintConfigPrettier,
 ]);
