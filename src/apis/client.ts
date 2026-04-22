@@ -1,6 +1,6 @@
 import { refreshAccessToken } from '@/apis/auth';
 import { useAuthStore } from '@/stores/authStore';
-import type { ApiError, ApiErrorResponse } from '@/utils/ts/error/apiError';
+import { isApiErrorResponse, type ApiError, type ApiErrorResponse } from '@/utils/ts/error/apiError';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 
@@ -247,7 +247,7 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
 ): Promise<T> {
   await refreshAuthSession();
 
-  return await sendRequest<T, P>(endPoint, options, timeout, false);
+  return sendRequest<T, P>(endPoint, options, timeout, false);
 }
 
 export async function refreshAuthSession(): Promise<string> {
@@ -270,7 +270,8 @@ async function parseErrorResponse(response: Response): Promise<ApiErrorResponse 
   const contentType = response.headers.get('Content-Type') || '';
   if (contentType.includes('application/json')) {
     try {
-      return await response.json();
+      const data: unknown = await response.json();
+      return isApiErrorResponse(data) ? data : null;
     } catch {
       return null;
     }

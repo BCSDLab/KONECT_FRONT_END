@@ -10,20 +10,17 @@ import LogoutIcon from '@/assets/svg/logout.svg';
 import UserSquareIcon from '@/assets/svg/user-square.svg';
 import BottomModal from '@/components/common/BottomModal';
 import { MyPageActionRow, MyPageInfoRow, MyPageLinkRow } from '@/pages/User/MyPage/components/MyPageRows';
+import type { SmartBackState } from '@/types/navigation';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
 import UserInfoCard from './components/UserInfoCard';
 import { useLogoutMutation } from './hooks/useLogout';
 
-interface LegalMenuState {
-  backPath: string;
-}
-
 interface MenuItem {
   to: string;
   icon: typeof ChatIcon;
   label: string;
-  state?: LegalMenuState;
+  state?: SmartBackState;
 }
 
 interface ManagedClubSummary {

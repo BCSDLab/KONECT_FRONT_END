@@ -59,7 +59,7 @@ const useChatRoomScroll = ({
       shouldRestoreScrollRef.current = true;
     }
 
-    void fetchNextPage();
+    fetchNextPage();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   const topRef = useInfiniteScroll(handleFetchNextPage, hasNextPage, isFetchingNextPage, { threshold: 0.1 });
@@ -67,7 +67,7 @@ const useChatRoomScroll = ({
   const handleFetchPreviousPage = useCallback(() => {
     if (!hasPreviousPage || isFetchingPreviousPage) return;
 
-    void fetchPreviousPage();
+    fetchPreviousPage();
   }, [fetchPreviousPage, hasPreviousPage, isFetchingPreviousPage]);
 
   const bottomRef = useInfiniteScroll(handleFetchPreviousPage, hasPreviousPage, isFetchingPreviousPage, {

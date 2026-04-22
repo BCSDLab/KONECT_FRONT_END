@@ -17,6 +17,10 @@ interface TimerDisplayModeOptions {
   keepAwake?: boolean;
 }
 
+export function hasNativeBridge(): boolean {
+  return typeof window !== 'undefined' && window.ReactNativeWebView != null;
+}
+
 export function postNativeMessage(message: BridgeMessage): void {
   try {
     window.ReactNativeWebView?.postMessage(JSON.stringify(message));

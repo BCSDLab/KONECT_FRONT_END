@@ -1,3 +1,5 @@
+import { hasNativeBridge } from '@/utils/ts/nativeBridge';
+
 type TimerDisplayPlatform = 'android' | 'ios' | 'web';
 
 const TIMER_BRIGHTNESS_LEVEL_BY_PLATFORM: Partial<Record<TimerDisplayPlatform, number>> = {
@@ -10,7 +12,7 @@ function isBrowserEnvironment(): boolean {
 }
 
 function getTimerDisplayPlatform(): TimerDisplayPlatform {
-  if (!isBrowserEnvironment() || !window.ReactNativeWebView) return 'web';
+  if (!isBrowserEnvironment() || !hasNativeBridge()) return 'web';
 
   const { userAgent } = navigator;
 

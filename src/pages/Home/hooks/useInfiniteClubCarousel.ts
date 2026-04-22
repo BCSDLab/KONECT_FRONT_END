@@ -109,7 +109,7 @@ export const useInfiniteClubCarousel = ({ clubs }: UseInfiniteClubCarouselParams
     // scrollLeft 변경을 즉시 레이아웃에 반영(reflow)한 뒤 snap을 동기적으로 복원한다.
     // 기존 double-rAF 방식은 snap이 꺼진 채 2프레임이 렌더되어,
     // 복원 시 위치가 snap point와 미세하게 어긋나면 re-snap 애니메이션이 발생했다.
-    void scrollNode.scrollLeft;
+    scrollNode.getBoundingClientRect();
     scrollNode.style.scrollSnapType = '';
 
     restoreSnapFrameRef.current = window.requestAnimationFrame(() => {

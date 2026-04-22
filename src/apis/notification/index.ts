@@ -1,8 +1,9 @@
 import { apiClient } from '@/apis/client';
 import type { InboxNotificationListResponse, InboxNotificationUnreadCountResponse } from '@/apis/notification/entity';
+import { hasNativeBridge } from '@/utils/ts/nativeBridge';
 
 export const registerPushToken = async (token: string) => {
-  if (window.ReactNativeWebView) {
+  if (hasNativeBridge()) {
     if (import.meta.env.DEV) {
       console.log('RN WebView 환경: 웹에서 푸시 토큰 등록 생략 (네이티브가 처리)');
     }

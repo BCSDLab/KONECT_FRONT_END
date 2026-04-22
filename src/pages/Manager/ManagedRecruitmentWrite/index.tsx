@@ -15,6 +15,7 @@ import {
   usePatchManagedClubSettingsMutation,
   useUpsertManagedClubRecruitmentMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/datetime/date';
@@ -39,6 +40,7 @@ const compactButtonTextStyle = 'text-[11px] leading-[1.6] font-medium text-[#344
 function ManagedRecruitmentWrite() {
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationState = location.state as EnableAfterSaveState | null;
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
   const { clubId } = useParams<{ clubId: string }>();
@@ -135,7 +137,7 @@ function ManagedRecruitmentWrite() {
 
     const imageUrls = await uploadImages(images);
     const imageData = imageUrls.map((url) => ({ url }));
-    const shouldNavigateBack = location.state?.enableAfterSave === true;
+    const shouldNavigateBack = navigationState?.enableAfterSave === true;
     const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
     const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
     const navigateAfterSave = () =>

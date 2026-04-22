@@ -53,7 +53,7 @@ export const useStudyTimer = () => {
 
   // Stop the timer if the page becomes hidden or loses focus
   const stopIfRunning = useEffectEvent(() => {
-    if (isRunning) void stop();
+    if (isRunning) stop();
   });
 
   useEffect(() => {
