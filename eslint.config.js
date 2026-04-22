@@ -93,5 +93,23 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['**/*.{ts,tsx}'],
+    ignores: ['src/apis/auth/index.ts', 'src/apis/client.ts', 'src/components/notification/hooks/useInboxNotificationStream.ts'],
+    rules: {
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.type='Identifier'][callee.name='fetch']",
+          message: 'fetch 직접 호출 대신 apiClient를 사용하세요. 예외가 필요한 경우 허용 파일에서만 사용하세요.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.object.type='Identifier'][callee.object.name='window'][callee.property.type='Identifier'][callee.property.name='fetch']",
+          message: 'fetch 직접 호출 대신 apiClient를 사용하세요. 예외가 필요한 경우 허용 파일에서만 사용하세요.',
+        },
+      ],
+    },
+  },
   eslintConfigPrettier,
 ]);
