@@ -201,7 +201,7 @@ export function useInboxNotificationStream(
     const scheduleRefresh = (delay: number) => {
       refreshTimeoutId = window.setTimeout(() => {
         refreshTimeoutId = null;
-        void refreshAccessTokenBeforeExpiry();
+        refreshAccessTokenBeforeExpiry();
       }, delay);
     };
 
@@ -276,11 +276,11 @@ export function useInboxNotificationStream(
       }
 
       reconnectTimeoutId = window.setTimeout(() => {
-        void connect();
+        connect();
       }, NOTIFICATION_STREAM_RECONNECT_DELAY);
     };
 
-    void connect();
+    connect();
 
     return () => {
       abortController.abort();

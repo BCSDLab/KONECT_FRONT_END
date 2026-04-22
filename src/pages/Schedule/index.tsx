@@ -30,7 +30,7 @@ function Schedule() {
 
   const { data } = useQuery({
     ...scheduleQueries.monthly({ year, month }),
-    enabled: Boolean(year && month),
+    enabled: Number.isFinite(year) && Number.isFinite(month) && month >= 1 && month <= 12,
   });
 
   const { isCurrentMonth, isSelectedDay, isSunday, getMonthDateList } = dateUtils(year, month, day);

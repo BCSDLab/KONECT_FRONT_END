@@ -113,7 +113,7 @@ function RecruitingClubSection() {
 
   useEffect(() => {
     if (hasNextPage && !isFetchingNextPage) {
-      void fetchNextPage();
+      fetchNextPage();
     }
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 

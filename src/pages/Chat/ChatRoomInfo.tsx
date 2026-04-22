@@ -118,7 +118,7 @@ function ChatRoomInfo() {
         (member) => member.name === currentUser.name && member.studentNumber === currentUser.studentNumber
       )
     : null;
-  const isCurrentClubExecutive = Boolean(currentClubMember && currentClubMember.position !== 'MEMBER');
+  const isCurrentClubExecutive = currentClubMember != null && currentClubMember.position !== 'MEMBER';
   const canManageMembers = isClubGroupChat ? isCurrentClubExecutive : false;
 
   const handleToggleMemberAction = (userId: number) => {
@@ -239,7 +239,7 @@ function ChatRoomInfo() {
             <button
               type="button"
               className="bg-primary-500 border-primary-500 flex-1 rounded-[10px] border text-white disabled:opacity-60"
-              onClick={() => void handleLeaveRoom()}
+              onClick={() => handleLeaveRoom()}
               disabled={isDeletingChatRoom}
             >
               나가기

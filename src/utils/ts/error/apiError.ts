@@ -7,6 +7,7 @@ export const API_ERROR_CODES = {
 } as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[keyof typeof API_ERROR_CODES];
+type UnknownApiErrorCode = string & {};
 
 export interface FieldError {
   field: string;
@@ -15,7 +16,7 @@ export interface FieldError {
 }
 
 export interface ApiErrorResponse {
-  code: ApiErrorCode | string;
+  code: ApiErrorCode | UnknownApiErrorCode;
   message: string;
   errorTraceId: string;
   fieldErrors?: FieldError[];
@@ -89,7 +90,7 @@ export function isApiError(value: unknown): value is ApiError {
 }
 
 export function hasApiFieldErrors(error: unknown): error is ApiErrorWithFieldErrors {
-  return isApiError(error) && Boolean(error.apiError?.fieldErrors?.length);
+  return isApiError(error) && (error.apiError?.fieldErrors?.length ?? 0) > 0;
 }
 
 export function isAuthError(error: unknown): boolean {

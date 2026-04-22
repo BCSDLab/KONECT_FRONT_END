@@ -7,12 +7,24 @@ interface ChatMessagesPageParam {
   useMessageId: boolean;
 }
 
+interface ChatMessagesQueryKeyParams {
+  chatRoomId: number;
+  messageId?: number;
+  limit: number;
+}
+
+interface ChatMessagesQueryParams {
+  chatRoomId?: number;
+  messageId?: number;
+  limit?: number;
+}
+
 export const chatQueryKeys = {
   all: ['chat'] as const,
   rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
   messagesByRoom: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId] as const,
-  messages: (chatRoomId: number, messageId?: number) =>
-    [...chatQueryKeys.messagesByRoom(chatRoomId), messageId ?? 'latest'] as const,
+  messages: ({ chatRoomId, messageId, limit }: ChatMessagesQueryKeyParams) =>
+    [...chatQueryKeys.messagesByRoom(chatRoomId), messageId ?? 'latest', limit] as const,
   disabledMessages: () => [...chatQueryKeys.all, 'messages', 'disabled'] as const,
   search: (keyword: string) => [...chatQueryKeys.all, 'search', keyword],
   invite: (query: string, sortBy: SortBy) => [...chatQueryKeys.all, 'invite', query, sortBy],
@@ -24,17 +36,24 @@ export const chatQueries = {
       queryKey: chatQueryKeys.rooms(),
       queryFn: getChatRooms,
     }),
-  messages: (chatRoomId?: number, messageId?: number, limit = 20) =>
+  messages: ({ chatRoomId, messageId, limit = 20 }: ChatMessagesQueryParams) =>
     infiniteQueryOptions({
-      queryKey: chatRoomId ? chatQueryKeys.messages(chatRoomId, messageId) : chatQueryKeys.disabledMessages(),
-      queryFn: ({ pageParam }) =>
-        getChatMessages({
-          chatRoomId: chatRoomId!,
+      queryKey: chatRoomId
+        ? chatQueryKeys.messages({ chatRoomId, messageId, limit })
+        : chatQueryKeys.disabledMessages(),
+      queryFn: ({ pageParam }) => {
+        if (chatRoomId == null) {
+          throw new Error('채팅방 ID가 필요합니다.');
+        }
+
+        return getChatMessages({
+          chatRoomId,
           messageId: pageParam.useMessageId ? messageId : undefined,
           page: pageParam.page,
           limit,
-        }),
-      initialPageParam: { page: 1, useMessageId: Boolean(messageId) } satisfies ChatMessagesPageParam,
+        });
+      },
+      initialPageParam: { page: 1, useMessageId: messageId != null } satisfies ChatMessagesPageParam,
       getNextPageParam: (lastPage: ChatMessagesResponse) =>
         lastPage.currentPage < lastPage.totalPage
           ? ({ page: lastPage.currentPage + 1, useMessageId: false } satisfies ChatMessagesPageParam)
@@ -43,7 +62,7 @@ export const chatQueries = {
         firstPage.currentPage > 1
           ? ({ page: firstPage.currentPage - 1, useMessageId: false } satisfies ChatMessagesPageParam)
           : undefined,
-      enabled: Boolean(chatRoomId),
+      enabled: chatRoomId != null,
     }),
   search: (keyword: string) =>
     queryOptions({

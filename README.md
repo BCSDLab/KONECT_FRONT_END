@@ -1,75 +1,41 @@
-# React + TypeScript + Vite
+# KONECT Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+모바일 중심의 동아리 통합 플랫폼 프론트엔드입니다.  
+동아리 탐색, 지원, 채팅, 공지/알림, 일정 확인, 관리자 기능, 학습 타이머를 하나의 웹 경험으로 연결하는 데 초점을 맞췄습니다.
 
-Currently, two official plugins are available:
+## 프로젝트 소개
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+KONECT는 학생이 동아리 활동 전반을 한 곳에서 처리할 수 있도록 설계된 서비스입니다.
 
-## React Compiler
+- 동아리 목록 탐색과 검색
+- 지원서 작성과 제출
+- 채팅방 목록, 생성, 실시간 대화 흐름
+- 일정, 학생회 공지, 인앱 알림 확인
+- 회장단/운영진을 위한 관리자 화면
+- 학습 타이머와 모바일 디바이스 제어 연동
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## 핵심 기능
 
-Note: This will impact Vite dev & build performances.
+- 소셜 로그인: Google, Kakao, Naver, Apple
+- 회원가입 플로우: 약관, 학교, 학번, 이름, 확인, 완료
+- 홈 화면: 동아리, 일정, 학생회 공지, 타이머 배너
+- 동아리: 목록, 검색, 상세, 지원, 회비 확인
+- 채팅: 채팅방 목록, 검색, 생성, 대화방, 대화방 정보
+- 알림: 인앱 알림함, unread count, 읽음 처리
+- 일정: 행사/학사 일정 확인
+- 타이머: 학습 타이머 및 네이티브 디바이스 제어
+- 관리자 기능: 지원서 관리, 멤버 관리, 모집 관리, 회비/계좌, 시트 미리보기
+- 법률 페이지: 이용약관, 개인정보처리방침, 마케팅 정책, OSS 라이선스
 
-## Expanding the ESLint configuration
+## 기술 스택
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| 영역 | 사용 기술 |
+| --- | --- |
+| Framework | React 19, TypeScript, Vite 8 |
+| Routing | `react-router-dom` v7 |
+| Server State | `@tanstack/react-query` |
+| Client State | `zustand` |
+| Styling | Tailwind CSS v4 |
+| Monitoring | Sentry |
+| Tooling | ESLint, Prettier, pnpm |
+| Runtime | Node `22.20.0+` |

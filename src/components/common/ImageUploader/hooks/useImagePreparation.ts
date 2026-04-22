@@ -75,7 +75,7 @@ export function useImagePreparation({
 
       const selectedFiles = selectionMode === 'single' ? (files[0] ? [files[0]] : []) : Array.from(files);
       const previousImageCount = images.length;
-      const preparedItems: Array<ImageUploadItem | null> = new Array(selectedFiles.length).fill(null);
+      const preparedItems = new Array<ImageUploadItem | null>(selectedFiles.length).fill(null);
       const createdItems: ImageUploadItem[] = [];
       const committedImageIds = new Set<string>();
       let visiblePreparedCount = 0;

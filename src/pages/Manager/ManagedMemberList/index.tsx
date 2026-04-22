@@ -160,7 +160,7 @@ function ManagedMemberList() {
         onChangeTarget={roleManage.handleChangeTarget}
         onClose={roleManage.close}
         onMemberClick={roleManage.handleMemberClick}
-        onSubmit={() => void roleManage.handleSubmit()}
+        onSubmit={() => roleManage.handleSubmit()}
         roleManageTarget={roleManage.target}
         selectedUserIds={roleManage.selectedUserIds}
       />

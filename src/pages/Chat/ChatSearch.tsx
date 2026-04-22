@@ -15,8 +15,8 @@ function ChatSearchResults({ keyword }: { keyword: string }) {
 
   const backPath = keyword ? `/chats/search?keyword=${encodeURIComponent(keyword)}` : '/chats/search';
   const navigationState = { backPath };
-  const hasRoomMatches = Boolean(data?.roomMatches?.rooms?.length);
-  const hasMessageMatches = Boolean(data?.messageMatches?.messages?.length);
+  const hasRoomMatches = (data?.roomMatches?.rooms?.length ?? 0) > 0;
+  const hasMessageMatches = (data?.messageMatches?.messages?.length ?? 0) > 0;
   const hasResults = hasRoomMatches || hasMessageMatches;
 
   return (

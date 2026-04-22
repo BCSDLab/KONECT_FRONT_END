@@ -10,6 +10,7 @@ import {
   usePatchManagedClubSettingsMutation,
   useUpdateManagedClubQuestionsMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { cn } from '@/utils/ts/cn';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
@@ -32,6 +33,7 @@ function ManagedRecruitmentForm() {
   const clubIdNumber = Number(clubId);
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationState = location.state as EnableAfterSaveState | null;
   const { showToast } = useToastContext();
   const { data: managedClubQuestions } = useSuspenseQuery(managedClubQueries.questions(clubIdNumber));
   const { data: clubSettings } = useQuery(managedClubQueries.settings(clubIdNumber));
@@ -91,7 +93,7 @@ function ManagedRecruitmentForm() {
       onSuccess: () => {
         showToast('질문이 수정되었습니다', 'success');
 
-        if (location.state?.enableAfterSave) {
+        if (navigationState?.enableAfterSave) {
           patchSettings({ isApplicationEnabled: true }, { onSuccess: () => navigate(-1) });
           return;
         }

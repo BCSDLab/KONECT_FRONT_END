@@ -58,8 +58,14 @@ export const clubQueries = {
   members: (clubId?: number, position?: PositionType) =>
     queryOptions({
       queryKey: clubId ? clubQueryKeys.members(clubId, position) : clubQueryKeys.membersDisabled(),
-      queryFn: () => getClubMembers(clubId!, position),
-      enabled: Boolean(clubId),
+      queryFn: () => {
+        if (clubId == null) {
+          throw new Error('동아리 ID가 필요합니다.');
+        }
+
+        return getClubMembers(clubId, position);
+      },
+      enabled: clubId != null,
     }),
   recruitment: (clubId: number) =>
     queryOptions({

@@ -15,8 +15,8 @@ import {
   usePatchManagedClubSettingsMutation,
   useUpsertManagedClubRecruitmentMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
+import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import useBooleanState from '@/utils/hooks/useBooleanState';
 import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/datetime/date';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
@@ -40,6 +40,7 @@ const compactButtonTextStyle = 'text-[11px] leading-[1.6] font-medium text-[#344
 function ManagedRecruitmentWrite() {
   const navigate = useNavigate();
   const location = useLocation();
+  const navigationState = location.state as EnableAfterSaveState | null;
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
   const { clubId } = useParams<{ clubId: string }>();
@@ -63,11 +64,11 @@ function ManagedRecruitmentWrite() {
   const [isAlwaysRecruiting, setIsAlwaysRecruiting] = useState(false);
   const [isPreparingImages, setIsPreparingImages] = useState(false);
   const [hasHandledExisting, setHasHandledExisting] = useState(false);
-  const { value: isChoiceModalOpen, setTrue: openChoiceModal, setFalse: closeChoiceModal } = useBooleanState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isRecruitmentEnabled = recruitmentEnabledOverride ?? clubSettings?.isRecruitmentEnabled ?? false;
+  const isChoiceModalOpen = existingRecruitment != null && !hasHandledExisting;
 
   const applyExistingRecruitment = () => {
     if (!existingRecruitment) return;
@@ -89,7 +90,6 @@ function ManagedRecruitmentWrite() {
     setIsAlwaysRecruiting(isAlways);
     resetImages(existingRecruitment.images?.map((img) => img.url) ?? []);
     setHasHandledExisting(true);
-    closeChoiceModal();
   };
 
   const startDateTime = combineDateTime(startDate, startTime);
@@ -114,7 +114,10 @@ function ManagedRecruitmentWrite() {
     setIsAlwaysRecruiting(false);
     resetImages();
     setHasHandledExisting(true);
-    closeChoiceModal();
+  };
+
+  const handleCloseChoiceModal = () => {
+    setHasHandledExisting(true);
   };
 
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -134,7 +137,7 @@ function ManagedRecruitmentWrite() {
 
     const imageUrls = await uploadImages(images);
     const imageData = imageUrls.map((url) => ({ url }));
-    const shouldNavigateBack = Boolean(location.state?.enableAfterSave);
+    const shouldNavigateBack = navigationState?.enableAfterSave === true;
     const previousRecruitmentEnabled = clubSettings?.isRecruitmentEnabled ?? false;
     const nextRecruitmentEnabled = shouldNavigateBack ? true : isRecruitmentEnabled;
     const navigateAfterSave = () =>
@@ -169,12 +172,6 @@ function ManagedRecruitmentWrite() {
   const recruitmentStatusLabel = isRecruitmentEnabled ? '활성화' : '비활성화';
   const isSavingRecruitment = isPending || isSettingsPending;
   const recruitmentActionText = existingRecruitment ? '모집공고 수정' : '모집공고 등록';
-
-  useEffect(() => {
-    if (existingRecruitment && !hasHandledExisting) {
-      openChoiceModal();
-    }
-  }, [existingRecruitment, hasHandledExisting, openChoiceModal]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -380,7 +377,7 @@ function ManagedRecruitmentWrite() {
       </form>
       <BottomModal
         isOpen={isChoiceModalOpen}
-        onClose={closeChoiceModal}
+        onClose={handleCloseChoiceModal}
         className="overflow-hidden rounded-t-[30px]"
         overlayClassName="bg-black/30"
       >

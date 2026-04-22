@@ -1,12 +1,6 @@
 import { useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-
-interface SmartBackState {
-  backPath?: string;
-  backReplace?: boolean;
-  backState?: { from?: string };
-  from?: string;
-}
+import type { SmartBackState } from '@/types/navigation';
 
 export function useSmartBack() {
   const navigate = useNavigate();

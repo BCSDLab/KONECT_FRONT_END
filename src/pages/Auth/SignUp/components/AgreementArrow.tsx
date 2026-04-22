@@ -1,16 +1,13 @@
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
-
-interface AgreementLinkState {
-  backPath?: string;
-}
+import type { SmartBackState } from '@/types/navigation';
 
 type AgreementRowProps = {
   checked: boolean;
   onChange: (next: boolean) => void;
   label: string;
   route: string;
-  state?: AgreementLinkState;
+  state?: SmartBackState;
   RightIcon?: ComponentType<React.SVGAttributes<SVGElement>>;
   CheckIcon: ComponentType<React.SVGAttributes<SVGElement>>;
 };

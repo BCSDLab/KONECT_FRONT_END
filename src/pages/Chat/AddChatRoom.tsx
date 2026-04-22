@@ -79,7 +79,7 @@ export default function AddChatRoom() {
     ...chatQueries.invite(debouncedQuery, sortBy),
     placeholderData: keepPreviousData,
   });
-  const hasData = Boolean(data);
+  const hasData = data != null;
   const visibleSelectedUserIds = (() => {
     if (!data) {
       return [];

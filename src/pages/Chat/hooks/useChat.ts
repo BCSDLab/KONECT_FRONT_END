@@ -29,7 +29,7 @@ const useChat = (chatRoomId?: number, messageId?: number) => {
     isFetchingNextPage,
     isFetchingPreviousPage,
   } = useInfiniteQuery({
-    ...chatQueries.messages(chatRoomId, messageId),
+    ...chatQueries.messages({ chatRoomId, messageId }),
     refetchInterval: 1000,
   });
 

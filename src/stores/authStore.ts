@@ -63,13 +63,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     if (authStatus === 'authenticated' && accessToken && hasValidAccessToken) {
-      void hydrateUser(accessToken);
+      hydrateUser(accessToken);
       return;
     }
 
     if (accessToken && hasValidAccessToken) {
       set({ authStatus: 'authenticated' });
-      void hydrateUser(accessToken);
+      hydrateUser(accessToken);
       return;
     }
 
@@ -87,7 +87,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
         // Open protected routes as soon as the access token is restored.
         set({ accessToken: nextAccessToken, authStatus: 'authenticated' });
-        void hydrateUser(nextAccessToken);
+        hydrateUser(nextAccessToken);
       } catch {
         get().clearAuth();
       } finally {

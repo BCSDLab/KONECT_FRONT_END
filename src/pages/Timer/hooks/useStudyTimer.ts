@@ -8,11 +8,11 @@ const TIMER_DISPLAY_MODE = getTimerDisplayMode();
 export const useStudyTimer = () => {
   const { studyTime, startStudyTimer, stopStudyTimer, isStarting, isStopping } = useStudyTime();
 
-  const [todayAccumulatedSeconds, setTodayAccumulatedSeconds] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [sessionStartMs, setSessionStartMs] = useState<number | null>(null);
 
   const isStopInProgressRef = useRef(false);
+  const todayAccumulatedSeconds = studyTime?.todayStudyTime ?? 0;
 
   const getSessionSeconds = () => {
     if (sessionStartMs === null) return 0;
@@ -38,9 +38,8 @@ export const useStudyTimer = () => {
 
     try {
       const sessionSeconds = getSessionSeconds();
-      const response = await stopStudyTimer({ totalSeconds: sessionSeconds });
+      await stopStudyTimer({ totalSeconds: sessionSeconds });
 
-      setTodayAccumulatedSeconds((prev) => response?.dailySeconds ?? prev + sessionSeconds);
       setSessionStartMs(null);
       setIsRunning(false);
     } catch (error) {
@@ -54,7 +53,7 @@ export const useStudyTimer = () => {
 
   // Stop the timer if the page becomes hidden or loses focus
   const stopIfRunning = useEffectEvent(() => {
-    if (isRunning) void stop();
+    if (isRunning) stop();
   });
 
   useEffect(() => {
@@ -82,12 +81,6 @@ export const useStudyTimer = () => {
       syncTimerDisplayMode(false, TIMER_DISPLAY_MODE);
     };
   }, [isRunning]);
-
-  useEffect(() => {
-    if (studyTime?.todayStudyTime != null) {
-      setTodayAccumulatedSeconds(studyTime.todayStudyTime);
-    }
-  }, [studyTime?.todayStudyTime]);
 
   const toggle = () => (isRunning ? stop() : start());
 
