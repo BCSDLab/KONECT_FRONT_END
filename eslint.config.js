@@ -4,6 +4,7 @@ import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import importPlugin from 'eslint-plugin-import';
+import pluginQuery from '@tanstack/eslint-plugin-query';
 import tseslint from 'typescript-eslint';
 import prettierPlugin from 'eslint-plugin-prettier';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
@@ -22,6 +23,7 @@ export default defineConfig([
       reactHooks.configs.flat['recommended-latest'],
       reactRefresh.configs.vite,
       importPlugin.flatConfigs.recommended,
+      ...pluginQuery.configs['flat/recommended-strict'],
     ],
     languageOptions: {
       ecmaVersion: 2020,
