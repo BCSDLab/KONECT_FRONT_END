@@ -139,7 +139,7 @@ function TimerPage() {
             <button
               type="button"
               className="bg-primary-500 border-primary-500 flex-1 cursor-pointer rounded-[10px] border text-white disabled:opacity-60"
-              onClick={() => void confirmExit()}
+              onClick={() => confirmExit()}
               disabled={isStopping}
             >
               종료

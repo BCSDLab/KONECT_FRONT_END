@@ -104,7 +104,7 @@ function NotificationsPage() {
         await markAsRead({ notificationId: notification.id });
       }
     } catch {
-      void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+      queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
     }
 
     if (destinationPath) {
@@ -139,7 +139,7 @@ function NotificationsPage() {
                 key={notification.id}
                 notification={notification}
                 disabled={isMarkingAsRead}
-                onClick={(nextNotification) => void handleNotificationClick(nextNotification)}
+                onClick={(nextNotification) => handleNotificationClick(nextNotification)}
               />
             ))}
 

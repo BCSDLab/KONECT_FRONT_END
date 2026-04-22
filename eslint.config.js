@@ -56,6 +56,7 @@ export default defineConfig([
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
+      'no-void': 'error',
       'prettier/prettier': 'error',
     },
   },

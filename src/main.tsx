@@ -17,7 +17,7 @@ initSentry();
 const appImportPromise = import('./App.tsx');
 
 function startSessionRestore() {
-  void useAuthStore.getState().initialize();
+  useAuthStore.getState().initialize();
 }
 
 if (window.location.pathname !== SERVER_ERROR_PATH) {
@@ -69,4 +69,4 @@ async function bootstrap() {
   );
 }
 
-void bootstrap();
+bootstrap();

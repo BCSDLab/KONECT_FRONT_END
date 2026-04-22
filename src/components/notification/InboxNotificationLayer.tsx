@@ -69,7 +69,7 @@ function InboxNotificationLayer() {
           try {
             await markAsRead({ notificationId: notification.id });
           } catch {
-            void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+            queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
           }
         }
 
@@ -120,7 +120,7 @@ function InboxNotificationLayer() {
     }
 
     lastReconnectResyncAtRef.current = now;
-    void queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+    queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
   };
 
   useInboxNotificationStream(enqueueNotification, { onReconnect: handleStreamReconnect });
@@ -141,7 +141,7 @@ function InboxNotificationLayer() {
     return null;
   }
 
-  return <InAppNotificationToast toast={activeToast} onAction={() => void handleNotificationAction()} />;
+  return <InAppNotificationToast toast={activeToast} onAction={() => handleNotificationAction()} />;
 }
 
 export default InboxNotificationLayer;

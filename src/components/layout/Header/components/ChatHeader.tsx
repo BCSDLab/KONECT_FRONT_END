@@ -65,7 +65,7 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
         <ToggleSwitch
           label={isMuted ? '알림 켜기' : '알림 끄기'}
           enabled={!isMuted}
-          onChange={() => void handleToggleMute()}
+          onChange={() => handleToggleMute()}
           disabled={isTogglingMute}
           ariaLabel="채팅방 알림 설정"
           layout="horizontal"
