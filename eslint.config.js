@@ -74,6 +74,7 @@ export default defineConfig([
           alphabetize: { order: 'asc', caseInsensitive: true },
         },
       ],
+      'import/no-cycle': 'error',
       'no-void': 'error',
       'prettier/prettier': 'error',
     },
