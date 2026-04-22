@@ -34,6 +34,9 @@ function InboxNotificationLayer() {
     useInAppNotificationToastContext();
   const { mutateAsync: markAsRead } = useMarkInboxNotificationAsReadMutation();
   const activeToast = toastQueue[0] ?? null;
+  const invalidateInboxQueries = () => {
+    queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+  };
 
   const enqueueNotification = (notification: InboxNotification) => {
     if (seenNotificationIdsRef.current.includes(notification.id)) {
@@ -69,7 +72,7 @@ function InboxNotificationLayer() {
           try {
             await markAsRead({ notificationId: notification.id });
           } catch {
-            queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+            invalidateInboxQueries();
           }
         }
 
@@ -120,7 +123,7 @@ function InboxNotificationLayer() {
     }
 
     lastReconnectResyncAtRef.current = now;
-    queryClient.invalidateQueries({ queryKey: notificationQueryKeys.inbox.all() });
+    invalidateInboxQueries();
   };
 
   useInboxNotificationStream(enqueueNotification, { onReconnect: handleStreamReconnect });

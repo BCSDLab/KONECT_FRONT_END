@@ -1,12 +1,13 @@
 export function setCookie(name: string, value: unknown, day?: number) {
   const date = new Date();
   const serializedValue = String(value);
+  const encodedValue = encodeURIComponent(serializedValue);
 
   if (day) {
     date.setTime(date.getTime() + day * 24 * 60 * 60 * 1000);
-    document.cookie = `${name}=${serializedValue}; expires=${date.toUTCString()}; path=/;`;
+    document.cookie = `${name}=${encodedValue}; expires=${date.toUTCString()}; path=/;`;
   } else {
-    document.cookie = `${name}=${serializedValue}; path=/;`;
+    document.cookie = `${name}=${encodedValue}; path=/;`;
   }
 }
 
@@ -15,7 +16,9 @@ export function getCookie(name: string) {
   const parts = value.split(`; ${name}=`);
 
   if (parts.length === 2) {
-    return parts.pop()?.split(';').shift();
+    const cookieValue = parts.pop()?.split(';').shift();
+
+    return cookieValue ? decodeURIComponent(cookieValue) : cookieValue;
   }
   return undefined;
 }

@@ -22,11 +22,21 @@ const fieldControlClassName =
   'w-full rounded-lg border border-text-200 bg-white px-3 text-[13px] leading-[20.8px] font-medium text-black outline-none placeholder:text-text-300 focus:border-primary-500';
 const fieldInputClassName = `${fieldControlClassName} h-[31px]`;
 
+function isEnableAfterSaveState(value: unknown): value is EnableAfterSaveState {
+  if (typeof value !== 'object' || value === null) {
+    return false;
+  }
+
+  const candidate = value as Partial<EnableAfterSaveState>;
+
+  return candidate.enableAfterSave === undefined || typeof candidate.enableAfterSave === 'boolean';
+}
+
 function ManagedAccount() {
   const { clubId } = useParams<{ clubId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
-  const navigationState = location.state as EnableAfterSaveState | null;
+  const navigationState = isEnableAfterSaveState(location.state) ? location.state : null;
   const clubIdNumber = Number(clubId);
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();

@@ -108,6 +108,16 @@ export default defineConfig([
             "CallExpression[callee.type='MemberExpression'][callee.object.type='Identifier'][callee.object.name='window'][callee.property.type='Identifier'][callee.property.name='fetch']",
           message: 'fetch 직접 호출 대신 apiClient를 사용하세요. 예외가 필요한 경우 허용 파일에서만 사용하세요.',
         },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.object.type='Identifier'][callee.object.name='globalThis'][callee.property.type='Identifier'][callee.property.name='fetch']",
+          message: 'fetch 직접 호출 대신 apiClient를 사용하세요. 예외가 필요한 경우 허용 파일에서만 사용하세요.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.object.type='Identifier'][callee.object.name='self'][callee.property.type='Identifier'][callee.property.name='fetch']",
+          message: 'fetch 직접 호출 대신 apiClient를 사용하세요. 예외가 필요한 경우 허용 파일에서만 사용하세요.',
+        },
       ],
     },
   },

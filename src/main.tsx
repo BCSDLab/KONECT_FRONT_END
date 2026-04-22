@@ -20,6 +20,32 @@ function startSessionRestore() {
   useAuthStore.getState().initialize();
 }
 
+function renderBootstrapError() {
+  const rootElement = document.getElementById('root');
+
+  if (!rootElement) {
+    const fallbackElement = document.createElement('div');
+    fallbackElement.textContent = '앱을 불러오지 못했습니다. 새로고침 후 다시 시도해 주세요.';
+    document.body.replaceChildren(fallbackElement);
+    return;
+  }
+
+  createRoot(rootElement).render(
+    <div className="flex min-h-screen items-center justify-center px-6 text-center">
+      <div className="space-y-3">
+        <p className="text-body2 text-slate-900">앱을 불러오지 못했습니다.</p>
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="text-body3-strong rounded-lg bg-indigo-600 px-4 py-2 text-white"
+        >
+          Reload
+        </button>
+      </div>
+    </div>
+  );
+}
+
 if (window.location.pathname !== SERVER_ERROR_PATH) {
   startSessionRestore();
 }
@@ -74,4 +100,7 @@ async function bootstrap() {
   );
 }
 
-bootstrap();
+bootstrap().catch((error) => {
+  console.error('애플리케이션 bootstrap에 실패했습니다.', error);
+  renderBootstrapError();
+});
