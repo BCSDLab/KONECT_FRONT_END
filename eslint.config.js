@@ -45,6 +45,7 @@ export default defineConfig([
       prettier: prettierPlugin,
     },
     rules: {
+      '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/no-floating-promises': 'off',
       '@typescript-eslint/no-misused-promises': [
         'error',
@@ -52,6 +53,8 @@ export default defineConfig([
           checksVoidReturn: false,
         },
       ],
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/return-await': 'error',
       'import/order': [
         'error',
         {

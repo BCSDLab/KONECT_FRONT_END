@@ -27,13 +27,18 @@ export const chatQueries = {
   messages: (chatRoomId?: number, messageId?: number, limit = 20) =>
     infiniteQueryOptions({
       queryKey: chatRoomId ? chatQueryKeys.messages(chatRoomId, messageId) : chatQueryKeys.disabledMessages(),
-      queryFn: ({ pageParam }) =>
-        getChatMessages({
-          chatRoomId: chatRoomId!,
+      queryFn: ({ pageParam }) => {
+        if (chatRoomId == null) {
+          throw new Error('채팅방 ID가 필요합니다.');
+        }
+
+        return getChatMessages({
+          chatRoomId,
           messageId: pageParam.useMessageId ? messageId : undefined,
           page: pageParam.page,
           limit,
-        }),
+        });
+      },
       initialPageParam: { page: 1, useMessageId: messageId != null } satisfies ChatMessagesPageParam,
       getNextPageParam: (lastPage: ChatMessagesResponse) =>
         lastPage.currentPage < lastPage.totalPage

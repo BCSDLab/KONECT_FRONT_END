@@ -38,8 +38,13 @@ const queryClient = new QueryClient({
 
 async function bootstrap() {
   const { default: App } = await appImportPromise;
+  const rootElement = document.getElementById('root');
 
-  createRoot(document.getElementById('root')!).render(
+  if (!rootElement) {
+    throw new Error('root element를 찾을 수 없습니다.');
+  }
+
+  createRoot(rootElement).render(
     <StrictMode>
       <Sentry.ErrorBoundary
         fallback={

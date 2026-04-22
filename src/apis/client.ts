@@ -247,7 +247,7 @@ async function handleUnauthorized<T = unknown, P extends object = Record<string,
 ): Promise<T> {
   await refreshAuthSession();
 
-  return await sendRequest<T, P>(endPoint, options, timeout, false);
+  return sendRequest<T, P>(endPoint, options, timeout, false);
 }
 
 export async function refreshAuthSession(): Promise<string> {
