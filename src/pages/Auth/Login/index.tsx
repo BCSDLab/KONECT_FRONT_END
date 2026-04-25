@@ -46,8 +46,8 @@ const LOGIN_HERO_LINES = ['모든 동아리 활동을', '한 곳에서'] as cons
 
 function Login() {
   return (
-    <div className="bg-primary-500 flex min-h-full flex-1 flex-col px-8 pt-[68px] pb-[calc(72px+var(--sab))] text-white">
-      <div className="flex w-[239px] flex-col gap-2">
+    <div className="bg-primary-500 flex min-h-full flex-1 flex-col px-8 pt-17 pb-[calc(72px+var(--sab))] text-white">
+      <div className="flex w-59.75 flex-col gap-2">
         <div className="flex flex-col">
           {LOGIN_HERO_LINES.map((line) => (
             <p key={line} className="text-[32px] leading-10 font-extrabold">
@@ -56,7 +56,7 @@ function Login() {
           ))}
         </div>
         <p
-          className="w-[239px] text-[48px] leading-10 tracking-[-0.04em]"
+          className="w-59.75 text-[48px] leading-10 tracking-[-0.04em]"
           style={{ fontFamily: "'Tilt Neon', var(--font-suit)" }}
         >
           Konect
@@ -64,7 +64,7 @@ function Login() {
       </div>
 
       <div className="flex flex-1 items-center justify-center px-4 pb-8">
-        <div className="relative h-[151px] w-[181px]">
+        <div className="relative h-37.75 w-45.25">
           <div className="absolute inset-x-4 bottom-3 h-6 rounded-full bg-[#4F9CB7]/40 blur-[10px]" aria-hidden />
           <img
             src={chatCatLoginImage}
@@ -79,7 +79,7 @@ function Login() {
         </div>
       </div>
 
-      <div className="flex w-[293px] items-center justify-between self-center">
+      <div className="flex w-73.25 items-center justify-between self-center">
         {SOCIAL_LOGIN_LIST.map(({ provider, label, icon: Icon, buttonClassName, iconClassName }) => (
           <a
             key={provider}
