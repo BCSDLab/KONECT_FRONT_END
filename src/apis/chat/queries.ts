@@ -1,5 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
-import { getChatMessages, getChatRooms, getSearchChat, getInvitableFriends } from '@/apis/chat';
+import { getChatMessages, getChatRoomMembers, getChatRooms, getInvitableFriends, getSearchChat } from '@/apis/chat';
 import type { ChatMessagesResponse, SortBy } from '@/apis/chat/entity';
 
 interface ChatMessagesPageParam {
@@ -22,6 +22,8 @@ interface ChatMessagesQueryParams {
 export const chatQueryKeys = {
   all: ['chat'] as const,
   rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
+  members: (chatRoomId: number) => [...chatQueryKeys.all, 'members', chatRoomId] as const,
+  membersDisabled: () => [...chatQueryKeys.all, 'members', 'disabled'] as const,
   messagesByRoom: (chatRoomId: number) => [...chatQueryKeys.all, 'messages', chatRoomId] as const,
   messages: ({ chatRoomId, messageId, limit }: ChatMessagesQueryKeyParams) =>
     [...chatQueryKeys.messagesByRoom(chatRoomId), messageId ?? 'latest', limit] as const,
@@ -35,6 +37,18 @@ export const chatQueries = {
     queryOptions({
       queryKey: chatQueryKeys.rooms(),
       queryFn: getChatRooms,
+    }),
+  members: (chatRoomId?: number) =>
+    queryOptions({
+      queryKey: chatRoomId ? chatQueryKeys.members(chatRoomId) : chatQueryKeys.membersDisabled(),
+      queryFn: () => {
+        if (chatRoomId == null) {
+          throw new Error('채팅방 ID가 필요합니다.');
+        }
+
+        return getChatRoomMembers(chatRoomId);
+      },
+      enabled: chatRoomId != null,
     }),
   messages: ({ chatRoomId, messageId, limit = 20 }: ChatMessagesQueryParams) =>
     infiniteQueryOptions({
