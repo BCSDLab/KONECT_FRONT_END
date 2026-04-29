@@ -73,6 +73,10 @@ export const ROUTE_TITLES: RouteTitle[] = [
     title: '채팅방 추가',
   },
   {
+    match: (pathname) => /^\/chats\/\d+\/invite$/.test(pathname),
+    title: '인원 추가하기',
+  },
+  {
     match: (pathname) => pathname === '/chats/search',
     title: '채팅방 검색',
   },

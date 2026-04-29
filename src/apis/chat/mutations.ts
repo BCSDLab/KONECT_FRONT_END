@@ -1,18 +1,20 @@
 import { mutationOptions } from '@tanstack/react-query';
 import {
+  deleteChatRoom,
   patchChatRoomName,
-  postChatRoomsGroup,
   postAdminChatRoom,
+  postChatRoomMembers,
   postChatMessage,
   postChatMute,
   postChatRooms,
-  deleteChatRoom,
+  postChatRoomsGroup,
 } from '@/apis/chat';
 
 export const chatMutationKeys = {
   createRoom: () => ['chat', 'createRoom'] as const,
   createAdminRoom: () => ['chat', 'createAdminRoom'] as const,
   createRoomGroup: () => ['chat', 'createRoomGroup'] as const,
+  inviteMembers: () => ['chat', 'inviteMembers'] as const,
   sendMessage: () => ['chat', 'sendMessage'] as const,
   toggleMute: (chatRoomId?: number) => ['chat', 'toggleMute', chatRoomId ?? 'unknown'] as const,
   updateRoomName: () => ['chat', 'updateRoomName'] as const,
@@ -34,6 +36,12 @@ export const chatMutations = {
     mutationOptions({
       mutationKey: chatMutationKeys.createRoomGroup(),
       mutationFn: postChatRoomsGroup,
+    }),
+  inviteMembers: () =>
+    mutationOptions({
+      mutationKey: chatMutationKeys.inviteMembers(),
+      mutationFn: ({ chatRoomId, userIds }: { chatRoomId: number; userIds: number[] }) =>
+        postChatRoomMembers(chatRoomId, userIds),
     }),
   sendMessage: () =>
     mutationOptions({

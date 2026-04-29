@@ -31,6 +31,10 @@ export const HEADER_CONFIGS: HeaderConfig[] = [
     match: (pathname) => pathname === '/chats/add',
   },
   {
+    type: 'none',
+    match: (pathname) => /^\/chats\/\d+\/invite$/.test(pathname),
+  },
+  {
     type: 'chatSearch',
     match: (pathname) => pathname === '/chats/search',
   },

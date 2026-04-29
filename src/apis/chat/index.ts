@@ -3,13 +3,14 @@ import type {
   ChatMessage,
   ChatMessageRequestParam,
   ChatMessagesResponse,
+  ChatRoomMembersResponse,
   ChatRoomsResponse,
   CreateChatRoomResponse,
-  SendChatMessageRequest,
   InvitableFriendsRequestParams,
   InvitableFriendsResponse,
-  MatchResponse,
   MatchedRequestParams,
+  MatchResponse,
+  SendChatMessageRequest,
 } from './entity';
 
 export const getChatRooms = async () => {
@@ -29,6 +30,21 @@ export const postChatRooms = async (userId: number) => {
 
 export const postChatRoomsGroup = async (userIds: number[]) => {
   const response = await apiClient.post<CreateChatRoomResponse>('chats/rooms/group', {
+    body: { userIds },
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const getChatRoomMembers = async (chatRoomId: number) => {
+  const response = await apiClient.get<ChatRoomMembersResponse>(`chats/rooms/${chatRoomId}/members`, {
+    requiresAuth: true,
+  });
+  return response;
+};
+
+export const postChatRoomMembers = async (chatRoomId: number, userIds: number[]) => {
+  const response = await apiClient.post<void>(`chats/rooms/${chatRoomId}/members`, {
     body: { userIds },
     requiresAuth: true,
   });

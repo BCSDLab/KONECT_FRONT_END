@@ -48,6 +48,18 @@ export interface CreateChatRoomResponse {
   chatRoomId: number;
 }
 
+export interface ChatRoomMember {
+  userId: number;
+  name: string;
+  profileImageUrl: string | null;
+  isOwner: boolean;
+  joinedAt: string;
+}
+
+export interface ChatRoomMembersResponse {
+  members: ChatRoomMember[];
+}
+
 export interface Messages {
   roomId: number;
   chatType: ChatType;

@@ -24,6 +24,20 @@ export const useCreateChatRoomGroupMutation = () => {
   });
 };
 
+export const useInviteChatRoomMembersMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    ...chatMutations.inviteMembers(),
+    onSuccess: async (_, variables) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: chatQueryKeys.members(variables.chatRoomId) }),
+        queryClient.invalidateQueries({ queryKey: chatQueryKeys.rooms() }),
+      ]);
+    },
+  });
+};
+
 export const useSendChatMessageMutation = () => {
   const queryClient = useQueryClient();
 

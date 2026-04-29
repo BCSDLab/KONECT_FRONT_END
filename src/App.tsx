@@ -127,6 +127,7 @@ function App() {
               <Route path="profile" element={<Profile />} />
               <Route path="chats/:chatRoomId" element={<ChatRoom />} />
               <Route path="chats/:chatRoomId/info" element={<ChatRoomInfo />} />
+              <Route path="chats/:chatRoomId/invite" element={<ChatAdd />} />
             </Route>
           </Route>
 
