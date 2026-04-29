@@ -11,7 +11,7 @@ import ScheduleSection, {
   ScheduleSectionSkeleton,
 } from '@/pages/Home/components/ScheduleSection';
 import SectionAsyncBoundary from '@/pages/Home/components/SectionAsyncBoundary';
-import StudyTimerBanner from '@/pages/Home/components/StudyTimerBanner';
+// import StudyTimerBanner from '@/pages/Home/components/StudyTimerBanner';
 
 function Home() {
   return (
@@ -22,9 +22,9 @@ function Home() {
         </SectionAsyncBoundary>
       </section>
 
-      <section aria-label="행사 배너">
+      {/* <section aria-label="행사 배너">
         <StudyTimerBanner />
-      </section>
+      </section> */}
 
       <section>
         <SectionAsyncBoundary fallback={<ScheduleSectionSkeleton />} errorFallback={<ScheduleSectionErrorFallback />}>
