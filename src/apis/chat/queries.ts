@@ -19,6 +19,8 @@ interface ChatMessagesQueryParams {
   limit?: number;
 }
 
+const hasValidChatRoomId = (chatRoomId?: number): chatRoomId is number => Number.isFinite(chatRoomId);
+
 export const chatQueryKeys = {
   all: ['chat'] as const,
   rooms: () => [...chatQueryKeys.all, 'rooms'] as const,
@@ -38,18 +40,21 @@ export const chatQueries = {
       queryKey: chatQueryKeys.rooms(),
       queryFn: getChatRooms,
     }),
-  members: (chatRoomId?: number) =>
-    queryOptions({
-      queryKey: chatRoomId ? chatQueryKeys.members(chatRoomId) : chatQueryKeys.membersDisabled(),
+  members: (chatRoomId?: number) => {
+    const isEnabled = hasValidChatRoomId(chatRoomId);
+
+    return queryOptions({
+      queryKey: isEnabled ? chatQueryKeys.members(chatRoomId) : chatQueryKeys.membersDisabled(),
       queryFn: () => {
-        if (chatRoomId == null) {
+        if (!hasValidChatRoomId(chatRoomId)) {
           throw new Error('채팅방 ID가 필요합니다.');
         }
 
         return getChatRoomMembers(chatRoomId);
       },
-      enabled: chatRoomId != null,
-    }),
+      enabled: isEnabled,
+    });
+  },
   messages: ({ chatRoomId, messageId, limit = 20 }: ChatMessagesQueryParams) =>
     infiniteQueryOptions({
       queryKey: chatRoomId

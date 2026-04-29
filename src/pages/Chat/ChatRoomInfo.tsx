@@ -115,15 +115,8 @@ function ChatRoomInfo() {
   const currentUser = useAuthStore((state) => state.user);
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
-  const {
-    chatMessages,
-    chatRoomList,
-    clubMembers,
-    createChatRoom,
-    isCreatingChatRoom,
-    deleteChatRoom,
-    isDeletingChatRoom,
-  } = useChat(numericRoomId);
+  const { chatRoomList, clubMembers, createChatRoom, isCreatingChatRoom, deleteChatRoom, isDeletingChatRoom } =
+    useChat(numericRoomId);
   const [activeMemberId, setActiveMemberId] = useState<number | null>(null);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
@@ -132,16 +125,21 @@ function ChatRoomInfo() {
   const isGroupChat = isGroupChatType(chatRoom?.chatType);
   const isClubGroupChat = chatType === 'CLUB_GROUP';
   const isGeneralGroupChat = chatType === 'GROUP';
+  const currentUserId =
+    currentUser != null && 'userId' in currentUser && typeof currentUser.userId === 'number'
+      ? currentUser.userId
+      : undefined;
   const { data: chatRoomMembersData, isPending: isChatRoomMembersPending } = useQuery(
     chatQueries.members(isGeneralGroupChat ? numericRoomId : undefined)
   );
   const generalGroupMembers = chatRoomMembersData?.members ?? [];
   const canLeaveRoom = isDirectChatType(chatType) || isGeneralGroupChat;
-  const currentClubMember = currentUser
-    ? clubMembers.find(
-        (member) => member.name === currentUser.name && member.studentNumber === currentUser.studentNumber
-      )
-    : null;
+  const currentClubMember =
+    clubMembers.find((member) =>
+      currentUserId != null
+        ? member.userId === currentUserId
+        : member.name === currentUser?.name && member.studentNumber === currentUser?.studentNumber
+    ) ?? null;
   const isCurrentClubExecutive = currentClubMember != null && currentClubMember.position !== 'MEMBER';
   const canManageMembers = isClubGroupChat ? isCurrentClubExecutive : false;
   const canInviteMembers = isGeneralGroupChat;
@@ -157,17 +155,9 @@ function ChatRoomInfo() {
         studentNumber: member.studentNumber,
       }));
   const memberCount = displayedMembers.length;
-  const inferredCurrentUserId = chatMessages.find((message) => message.isMine)?.senderId;
-  const currentUserNameMatchCount = currentUser
-    ? displayedMembers.filter((member) => member.name === currentUser.name).length
-    : 0;
   const isCurrentDisplayedMember = (member: ChatRoomInfoMember) => {
-    if (isGeneralGroupChat) {
-      if (inferredCurrentUserId != null) {
-        return member.userId === inferredCurrentUserId;
-      }
-
-      return currentUser != null && currentUserNameMatchCount === 1 && member.name === currentUser.name;
+    if (currentUserId != null) {
+      return member.userId === currentUserId;
     }
 
     return member.name === currentUser?.name && member.studentNumber === currentUser?.studentNumber;

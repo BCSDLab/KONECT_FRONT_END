@@ -86,11 +86,16 @@ export default function AddChatRoom() {
     ...chatQueries.invite(debouncedQuery, sortBy),
     placeholderData: keepPreviousData,
   });
-  const { data: chatRoomMembersData } = useQuery(chatQueries.members(isInviteMode ? numericRoomId : undefined));
+  const { data: chatRoomMembersData, isPending: isChatRoomMembersPending } = useQuery(
+    chatQueries.members(isInviteMode ? numericRoomId : undefined)
+  );
   const hasData = data != null;
-  const currentRoomMemberIds = new Set(chatRoomMembersData?.members.map((member) => member.userId) ?? []);
+  const isCurrentRoomMembersReady = !isInviteMode || chatRoomMembersData != null;
+  const currentRoomMemberIds = isCurrentRoomMembersReady
+    ? new Set(chatRoomMembersData?.members.map((member) => member.userId) ?? [])
+    : null;
   const filteredSections =
-    data?.grouped === true
+    data?.grouped === true && currentRoomMemberIds != null
       ? data.sections
           .map((section) => ({
             ...section,
@@ -99,9 +104,11 @@ export default function AddChatRoom() {
           .filter((section) => section.users.length > 0)
       : [];
   const filteredUsers =
-    data?.grouped === false ? data.users.filter((user) => !currentRoomMemberIds.has(user.userId)) : [];
+    data?.grouped === false && currentRoomMemberIds != null
+      ? data.users.filter((user) => !currentRoomMemberIds.has(user.userId))
+      : [];
   const visibleSelectedUserIds = (() => {
-    if (!data) {
+    if (!data || currentRoomMemberIds == null) {
       return [];
     }
 
@@ -116,9 +123,10 @@ export default function AddChatRoom() {
     );
   })();
   const isSubmitting = isCreatingRoomGroup || isInvitingChatRoomMembers;
+  const isInviteMembersLoading = isInviteMode && (!isCurrentRoomMembersReady || isChatRoomMembersPending);
 
   const onConfirm = async () => {
-    if (visibleSelectedUserIds.length === 0 || isSubmitting) {
+    if (visibleSelectedUserIds.length === 0 || isSubmitting || isInviteMembersLoading) {
       return;
     }
 
@@ -165,6 +173,10 @@ export default function AddChatRoom() {
   };
 
   const toggleUser = (userId: number) => {
+    if (isInviteMembersLoading) {
+      return;
+    }
+
     setSelectedUserIds((prev) => {
       const next = new Set(prev);
       if (next.has(userId)) {
@@ -195,17 +207,18 @@ export default function AddChatRoom() {
     return <InvitableUserList users={filteredUsers} onToggle={toggleUser} selectedUserIds={selectedUserIds} />;
   })();
   const selectedCount = visibleSelectedUserIds.length;
-  const isInvitableListEmpty = data
-    ? data.grouped
-      ? filteredSections.length === 0
-      : filteredUsers.length === 0
-    : false;
+  const isInvitableListEmpty =
+    !isInviteMembersLoading && data
+      ? data.grouped
+        ? filteredSections.length === 0
+        : filteredUsers.length === 0
+      : false;
   const emptyMessage = keyword.trim()
     ? '검색 결과가 없어요.'
     : isInviteMode
       ? '초대할 수 있는 친구가 없어요.'
       : '선택할 수 있는 친구가 없어요.';
-  const isConfirmDisabled = selectedCount === 0 || isSubmitting;
+  const isConfirmDisabled = selectedCount === 0 || isSubmitting || isInviteMembersLoading;
 
   return (
     <div className="flex h-full flex-col items-center px-5 pt-19">
@@ -234,7 +247,9 @@ export default function AddChatRoom() {
           />
         </div>
 
-        {isPending && !hasData ? (
+        {isInviteMembersLoading ? (
+          <RouteLoadingFallback />
+        ) : isPending && !hasData ? (
           <RouteLoadingFallback />
         ) : (
           <>
