@@ -1,5 +1,7 @@
 import type { Ref } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { chatQueries } from '@/apis/chat/queries';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import HamburgerIcon from '@/assets/svg/hamburger.svg';
 import ToggleSwitch from '@/components/common/ToggleSwitch';
@@ -25,7 +27,11 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
 
   const chatRoom = chatRoomList.rooms.find((room) => room.roomId === numericRoomId);
   const isGroup = isGroupChatType(chatRoom?.chatType);
+  const { data: chatRoomMembersData } = useQuery(
+    chatQueries.members(isGroup && chatRoom?.chatType === 'GROUP' ? numericRoomId : undefined)
+  );
   const isMuted = chatRoom?.isMuted ?? false;
+  const memberCount = chatRoom?.chatType === 'GROUP' ? (chatRoomMembersData?.members.length ?? 0) : clubMembers.length;
 
   const handleBack = () => {
     if (isInfoPage && chatRoomId) {
@@ -59,7 +65,7 @@ function ChatHeader({ headerRef }: { headerRef?: Ref<HTMLElement> }) {
 
         <div className="flex min-w-0 items-center gap-1">
           <span className="truncate leading-5 font-bold text-indigo-700">{chatRoom?.roomName ?? ''}</span>
-          {isGroup && <span className="text-text-700 text-[13px] leading-5">{clubMembers.length}</span>}
+          {isGroup && <span className="text-text-700 text-[13px] leading-5">{memberCount}</span>}
         </div>
       </div>
 

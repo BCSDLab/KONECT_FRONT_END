@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { ClubMember } from '@/apis/club/entity';
+import { chatQueries } from '@/apis/chat/queries';
 import { MemberAvatar } from '@/components/common/MemberAvatar';
 import Modal from '@/components/common/Modal';
 import { useToastContext } from '@/contexts/useToastContext';
@@ -10,15 +11,22 @@ import { useAuthStore } from '@/stores/authStore';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import { cn } from '@/utils/ts/cn';
 
+interface ChatRoomInfoMember {
+  isOwner?: boolean;
+  name: string;
+  studentNumber?: string;
+  userId: number;
+}
+
 interface MemberRowProps {
-  member: ClubMember;
+  member: ChatRoomInfoMember;
   isCurrentUser: boolean;
   isActive: boolean;
   canOpenActions: boolean;
   showKickAction: boolean;
   isCreatingChatRoom: boolean;
   onToggle: (userId: number) => void;
-  onCreateDirectChat: (member: ClubMember) => void;
+  onCreateDirectChat: (member: ChatRoomInfoMember) => void;
   onShowUnsupportedAction: () => void;
 }
 
@@ -50,8 +58,13 @@ function MemberRow({
       >
         <MemberAvatar name={member.name} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[15px] leading-[1.6] font-semibold text-indigo-700">
-            {member.name} ({member.studentNumber})
+          <div className="flex items-center gap-1.5">
+            <div className="truncate text-[15px] leading-[1.6] font-semibold text-indigo-700">
+              {member.studentNumber ? `${member.name} (${member.studentNumber})` : member.name}
+            </div>
+            {member.isOwner && (
+              <span className="text-primary-500 shrink-0 text-[12px] leading-[1.6] font-medium">방장</span>
+            )}
           </div>
         </div>
         {isCurrentUser && <span className="text-text-300 text-[12px] leading-[1.6] font-medium">나</span>}
@@ -102,8 +115,15 @@ function ChatRoomInfo() {
   const currentUser = useAuthStore((state) => state.user);
   const { showToast } = useToastContext();
   const showApiErrorToast = useApiErrorToast();
-  const { chatRoomList, clubMembers, createChatRoom, isCreatingChatRoom, deleteChatRoom, isDeletingChatRoom } =
-    useChat(numericRoomId);
+  const {
+    chatMessages,
+    chatRoomList,
+    clubMembers,
+    createChatRoom,
+    isCreatingChatRoom,
+    deleteChatRoom,
+    isDeletingChatRoom,
+  } = useChat(numericRoomId);
   const [activeMemberId, setActiveMemberId] = useState<number | null>(null);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
@@ -112,6 +132,10 @@ function ChatRoomInfo() {
   const isGroupChat = isGroupChatType(chatRoom?.chatType);
   const isClubGroupChat = chatType === 'CLUB_GROUP';
   const isGeneralGroupChat = chatType === 'GROUP';
+  const { data: chatRoomMembersData, isPending: isChatRoomMembersPending } = useQuery(
+    chatQueries.members(isGeneralGroupChat ? numericRoomId : undefined)
+  );
+  const generalGroupMembers = chatRoomMembersData?.members ?? [];
   const canLeaveRoom = isDirectChatType(chatType) || isGeneralGroupChat;
   const currentClubMember = currentUser
     ? clubMembers.find(
@@ -120,20 +144,52 @@ function ChatRoomInfo() {
     : null;
   const isCurrentClubExecutive = currentClubMember != null && currentClubMember.position !== 'MEMBER';
   const canManageMembers = isClubGroupChat ? isCurrentClubExecutive : false;
+  const canInviteMembers = isGeneralGroupChat;
+  const displayedMembers: ChatRoomInfoMember[] = isGeneralGroupChat
+    ? generalGroupMembers.map((member) => ({
+        userId: member.userId,
+        name: member.name,
+        isOwner: member.isOwner,
+      }))
+    : clubMembers.map((member) => ({
+        userId: member.userId,
+        name: member.name,
+        studentNumber: member.studentNumber,
+      }));
+  const memberCount = displayedMembers.length;
+  const inferredCurrentUserId = chatMessages.find((message) => message.isMine)?.senderId;
+  const currentUserNameMatchCount = currentUser
+    ? displayedMembers.filter((member) => member.name === currentUser.name).length
+    : 0;
+  const isCurrentDisplayedMember = (member: ChatRoomInfoMember) => {
+    if (isGeneralGroupChat) {
+      if (inferredCurrentUserId != null) {
+        return member.userId === inferredCurrentUserId;
+      }
+
+      return currentUser != null && currentUserNameMatchCount === 1 && member.name === currentUser.name;
+    }
+
+    return member.name === currentUser?.name && member.studentNumber === currentUser?.studentNumber;
+  };
 
   const handleToggleMemberAction = (userId: number) => {
     setActiveMemberId((previous) => (previous === userId ? null : userId));
   };
 
   const handleAddMember = () => {
-    showToast('인원 추가 기능은 준비 중입니다.', 'info');
+    navigate(`/chats/${numericRoomId}/invite`, {
+      state: {
+        backPath: `/chats/${numericRoomId}/info`,
+      },
+    });
   };
 
   const handleShowUnsupportedAction = () => {
     showToast('멤버 관리 기능은 아직 연결되지 않았습니다.', 'info');
   };
 
-  const handleCreateDirectChat = async (member: ClubMember) => {
+  const handleCreateDirectChat = async (member: ChatRoomInfoMember) => {
     try {
       const response = await createChatRoom(member.userId);
       navigate(`/chats/${response.chatRoomId}`);
@@ -161,10 +217,10 @@ function ChatRoomInfo() {
             <section className="rounded-2xl bg-white px-5 py-4 shadow-[0_0_20px_0_rgba(0,0,0,0.03)]">
               <div className="flex flex-col gap-5">
                 <div className="text-text-700 text-[15px] leading-5">
-                  {isGroupChat ? `친구 (${clubMembers.length})` : '채팅방 정보'}
+                  {isGroupChat ? `친구 (${memberCount})` : '채팅방 정보'}
                 </div>
 
-                {isGroupChat && canManageMembers && (
+                {canInviteMembers && (
                   <button type="button" onClick={handleAddMember} className="flex items-center gap-3 text-left">
                     <div className="bg-text-100 text-text-600 flex size-10 shrink-0 items-center justify-center rounded-[10px] text-[15px] leading-[1.6] font-medium">
                       +
@@ -173,12 +229,12 @@ function ChatRoomInfo() {
                   </button>
                 )}
 
-                {clubMembers.length > 0 ? (
+                {isGeneralGroupChat && isChatRoomMembersPending ? (
+                  <p className="text-text-500 text-[14px] leading-[1.6]">멤버 목록을 불러오는 중...</p>
+                ) : memberCount > 0 ? (
                   <div className="flex flex-col gap-5">
-                    {clubMembers.map((member) => {
-                      const isCurrentUser = currentUser
-                        ? member.name === currentUser.name && member.studentNumber === currentUser.studentNumber
-                        : false;
+                    {displayedMembers.map((member) => {
+                      const isCurrentUser = isCurrentDisplayedMember(member);
                       const canOpenActions = isGroupChat && !isCurrentUser;
                       const showKickAction = canManageMembers;
 
