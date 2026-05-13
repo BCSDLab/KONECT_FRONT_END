@@ -1,3 +1,5 @@
+import { fileURLToPath, URL } from 'node:url';
+
 import babel from '@rolldown/plugin-babel';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
@@ -16,6 +18,7 @@ const shouldUploadSourcemaps = Boolean(sentryOrg && sentryProject && sentryAuthT
 
 // https://vite.dev/config/
 export default defineConfig({
+  envDir: fileURLToPath(new URL('../..', import.meta.url)),
   build: {
     // Preserve the Vite 7 browser baseline until we intentionally drop older WebViews.
     target: ['chrome107', 'edge107', 'firefox104', 'safari16'],
@@ -58,7 +61,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': '/src',
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
   server: {

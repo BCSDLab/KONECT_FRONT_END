@@ -11,7 +11,7 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['**/dist/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -81,7 +81,7 @@ export default defineConfig([
   },
   {
     files: ['**/*.{ts,tsx}'],
-    ignores: ['src/utils/ts/nativeBridge.ts'],
+    ignores: ['**/src/utils/ts/nativeBridge.ts'],
     rules: {
       'no-restricted-properties': [
         'error',
@@ -95,7 +95,11 @@ export default defineConfig([
   },
   {
     files: ['**/*.{ts,tsx}'],
-    ignores: ['src/apis/auth/index.ts', 'src/apis/client.ts', 'src/components/notification/hooks/useInboxNotificationStream.ts'],
+    ignores: [
+      '**/src/apis/auth/index.ts',
+      '**/src/apis/client.ts',
+      '**/src/components/notification/hooks/useInboxNotificationStream.ts',
+    ],
     rules: {
       'no-restricted-syntax': [
         'error',
