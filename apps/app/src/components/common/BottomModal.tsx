@@ -1,8 +1,8 @@
 import { useRef, type HTMLAttributes, type ReactNode } from 'react';
+import { cn } from '@konect/utils/cn';
 import { twMerge } from 'tailwind-merge';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
 import useScrollLock from '@/utils/hooks/useScrollLock';
-import { cn } from '@/utils/ts/cn';
 import Portal from './Portal';
 
 interface BottomModalProps extends HTMLAttributes<HTMLDivElement> {

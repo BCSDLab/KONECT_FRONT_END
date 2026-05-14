@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode, Ref } from 'react';
+import { cn } from '@konect/utils/cn';
 import ChevronLeftIcon from '@/assets/svg/chevron-left.svg';
 import { useSmartBack } from '@/utils/hooks/useSmartBack';
-import { cn } from '@/utils/ts/cn';
 
 interface BackTitleHeaderProps {
   title: string;

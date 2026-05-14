@@ -1,3 +1,4 @@
+import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { managedClubQueries } from '@/apis/club/managedQueries';
@@ -10,7 +11,6 @@ import {
 } from '@/pages/Manager/hooks/useManagedApplicationMutations';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { cn } from '@/utils/ts/cn';
 
 const BUTTON_BASE_CLASS =
   'flex h-[55px] flex-1 items-center justify-center rounded-2xl border border-[#69BFDF] text-center text-[16px] leading-[22px] font-bold tracking-[-0.408px]';

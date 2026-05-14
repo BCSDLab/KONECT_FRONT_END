@@ -1,8 +1,8 @@
+import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import type { ClubMember, PositionType } from '@/apis/club/entity';
 import { clubQueries } from '@/apis/club/queries';
-import { cn } from '@/utils/ts/cn';
 
 const POSITION_LABELS: Record<PositionType, string> = {
   PRESIDENT: '회장',

@@ -1,7 +1,7 @@
+import { cn } from '@konect/utils/cn';
 import AddPhotoAlternateIcon from '@/assets/svg/add-photo-alternate.svg';
 import ChevronLeft from '@/assets/svg/chevron-left.svg';
 import ChevronRight from '@/assets/svg/chevron-right.svg';
-import { cn } from '@/utils/ts/cn';
 import { useImageCarousel } from './hooks/useImageCarousel';
 import { useImagePreparation } from './hooks/useImagePreparation';
 import { type ImageUploaderLayout, type ImageUploaderSelectionMode, type ImageUploadItem } from './types';

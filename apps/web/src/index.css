@@ -1,3 +1,9 @@
+@import 'tailwindcss';
+
+@import '@konect/design-tokens/colors.css';
+@import '@konect/design-tokens/typography.css';
+@import '@konect/design-tokens/theme.css';
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;

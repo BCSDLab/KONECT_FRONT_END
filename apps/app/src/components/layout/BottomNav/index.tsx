@@ -1,4 +1,5 @@
 import { type ComponentType, type Ref, type SVGProps } from 'react';
+import { cn } from '@konect/utils/cn';
 import { Link, useLocation } from 'react-router-dom';
 import HomeResultImage from '@/assets/image/bottom-nav-home.png';
 import ClubsIcon from '@/assets/svg/bottom-nav-clubs.svg';
@@ -6,7 +7,6 @@ import MyPageIcon from '@/assets/svg/bottom-nav-mypage.svg';
 import ChatIcon from '@/assets/svg/bottom-nav-sms.svg';
 import TimerIcon from '@/assets/svg/bottom-nav-timer.svg';
 import useUnreadChatCount from '@/pages/Chat/hooks/useUnreadChatCount';
-import { cn } from '@/utils/ts/cn';
 
 interface BottomNavItemConfig {
   to: string;

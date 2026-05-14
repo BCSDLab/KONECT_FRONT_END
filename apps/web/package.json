@@ -11,12 +11,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@sentry/react": "^10.40.0",
+    "@konect/design-tokens": "workspace:*",
+    "@konect/utils": "workspace:*",
+    "@sentry/react": "catalog:",
     "@tailwindcss/vite": "^4.2.2",
     "@tanstack/react-query": "^5.90.10",
     "clsx": "^2.1.1",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "react-router-dom": "^7.14.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.2.2",
@@ -25,7 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.29.0",
     "@rolldown/plugin-babel": "^0.2.2",
-    "@sentry/vite-plugin": "^5.1.1",
+    "@sentry/vite-plugin": "catalog:",
     "@types/babel__core": "^7.20.5",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.14",
@@ -34,8 +36,8 @@
     "babel-plugin-react-compiler": "^1.0.0",
     "baseline-browser-mapping": "^2.9.19",
     "rollup-plugin-visualizer": "^7.0.1",
-    "typescript": "^6.0.2",
-    "vite": "^8.0.5",
+    "typescript": "catalog:",
+    "vite": "catalog:",
     "vite-plugin-svgr": "^5.2.0"
   }
 }

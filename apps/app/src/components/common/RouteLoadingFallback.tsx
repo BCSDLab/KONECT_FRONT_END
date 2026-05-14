@@ -1,4 +1,4 @@
-import { cn } from '@/utils/ts/cn';
+import { cn } from '@konect/utils/cn';
 
 interface RouteLoadingFallbackProps {
   fullScreen?: boolean;

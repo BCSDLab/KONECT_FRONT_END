@@ -1,10 +1,10 @@
 import { Activity, type CSSProperties } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { councilQueries } from '@/apis/council/queries';
 import BottomOverlaySpacer from '@/components/layout/BottomOverlaySpacer';
 import useScrollToTop from '@/utils/hooks/useScrollToTop';
-import { cn } from '@/utils/ts/cn';
 import CouncilIntro from './components/CouncilIntro';
 import CouncilNotice from './components/CouncilNotice';
 

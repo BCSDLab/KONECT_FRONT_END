@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { managedClubQueries } from '@/apis/club/managedQueries';
@@ -17,7 +18,6 @@ import {
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import { cn } from '@/utils/ts/cn';
 import { formatDateDot } from '@/utils/ts/datetime/date';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 import {

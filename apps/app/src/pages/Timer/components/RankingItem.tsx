@@ -1,5 +1,5 @@
+import { cn } from '@konect/utils/cn';
 import type { StudyRanking, StudyRankingParams } from '@/apis/studyTime/entity';
-import { cn } from '@/utils/ts/cn';
 import { formatTime } from '@/utils/ts/datetime/time';
 
 interface RankingItemProps {

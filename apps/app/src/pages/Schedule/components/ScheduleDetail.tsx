@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef } from 'react';
+import { cn } from '@konect/utils/cn';
 import type { Schedule } from '@/apis/schedule/entity';
 import { SCHEDULE_COLOR } from '@/constants/schedule';
 import { formatScheduleTime } from '@/utils/hooks/useFormatTime';
-import { cn } from '@/utils/ts/cn';
 import { parseDateDot } from '@/utils/ts/datetime/date';
 
 type ScheduleDetailProps = {

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { ClubFeeRequest } from '@/apis/club/entity';
@@ -13,7 +14,6 @@ import {
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import { cn } from '@/utils/ts/cn';
 import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';

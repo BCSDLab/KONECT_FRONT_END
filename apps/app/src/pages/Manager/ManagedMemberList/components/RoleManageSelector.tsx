@@ -1,9 +1,9 @@
 import { useRef } from 'react';
 
+import { cn } from '@konect/utils/cn';
 import DropDownIcon from '@/assets/svg/drop-down-icon.svg';
 import useBooleanState from '@/utils/hooks/useBooleanState';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
-import { cn } from '@/utils/ts/cn';
 
 const ROLE_OPTIONS = [
   { label: '회장', value: 'PRESIDENT' },

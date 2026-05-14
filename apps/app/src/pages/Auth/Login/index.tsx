@@ -1,9 +1,9 @@
+import { cn } from '@konect/utils/cn';
 import chatCatLoginImage from '@/assets/image/chat-cat-login.png';
 import AppleFigmaIcon from '@/assets/svg/apple-figma.svg';
 import GoogleIcon from '@/assets/svg/google.svg';
 import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
-import { cn } from '@/utils/ts/cn';
 import { getOAuthAuthorizationUrl } from '@/utils/ts/oauth';
 
 function getRedirectUri() {

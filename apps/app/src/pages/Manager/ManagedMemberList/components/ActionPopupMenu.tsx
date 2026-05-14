@@ -1,5 +1,5 @@
+import { cn } from '@konect/utils/cn';
 import Portal from '@/components/common/Portal';
-import { cn } from '@/utils/ts/cn';
 
 const ACTION_MENU_WIDTH = 148;
 const ACTION_MENU_OFFSET = 8;

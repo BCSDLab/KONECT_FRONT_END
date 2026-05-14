@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { cn } from '@/utils/ts/cn';
 
 interface TimePickerProps {
   value: string;

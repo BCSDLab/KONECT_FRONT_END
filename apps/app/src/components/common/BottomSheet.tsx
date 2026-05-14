@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useBottomSheet, type SheetPosition } from '@/utils/hooks/useBottomSheet';
-import { cn } from '@/utils/ts/cn';
 
 export type { SheetPosition } from '@/utils/hooks/useBottomSheet';
 

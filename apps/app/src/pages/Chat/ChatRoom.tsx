@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useParams, useSearchParams } from 'react-router-dom';
 import type { ChatMessage } from '@/apis/chat/entity';
 import SendArrowIcon from '@/assets/svg/chat-send-arrow.svg';
 import LinkifiedText from '@/components/common/LinkifiedText';
 import useViewportHeightLock from '@/utils/hooks/useViewportHeightLock';
-import { cn } from '@/utils/ts/cn';
 import useChat from './hooks/useChat';
 import useChatRoomScroll from './hooks/useChatRoomScroll';
 

@@ -1,7 +1,7 @@
 import { useRef, useState, type HTMLAttributes } from 'react';
+import { cn } from '@konect/utils/cn';
 import ChevronDownIcon from '@/assets/svg/chevron-down.svg';
 import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
-import { cn } from '@/utils/ts/cn';
 
 type Option<T extends string> = {
   value: T;

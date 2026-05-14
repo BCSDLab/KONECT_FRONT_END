@@ -1,10 +1,10 @@
 import type { HTMLAttributes } from 'react';
+import { cn } from '@konect/utils/cn';
 import {
   DEFAULT_BOTTOM_OVERLAY_GAP,
   type BottomOverlayGap,
   useBottomOverlayOffset,
 } from '@/components/layout/bottomOverlay';
-import { cn } from '@/utils/ts/cn';
 
 interface BottomOverlaySpacerProps extends HTMLAttributes<HTMLDivElement> {
   gap?: BottomOverlayGap;

@@ -1,10 +1,10 @@
 import type { ComponentType, ReactNode, SVGProps } from 'react';
+import { cn } from '@konect/utils/cn';
 import type { CouncilResponse } from '@/apis/council/entity';
 import ClockIcon from '@/assets/svg/clock.svg';
 import InstagramIcon from '@/assets/svg/instagram.svg';
 import LocationPinIcon from '@/assets/svg/location-pin.svg';
 import Card from '@/components/common/Card';
-import { cn } from '@/utils/ts/cn';
 
 interface CouncilIntroProps {
   councilDetail: CouncilResponse;

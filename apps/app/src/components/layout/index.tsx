@@ -1,9 +1,9 @@
 import { Suspense, useMemo, useRef, type CSSProperties } from 'react';
+import { cn } from '@konect/utils/cn';
 import { Outlet, useLocation } from 'react-router-dom';
 import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
 import InboxNotificationLayer from '@/components/notification/InboxNotificationLayer';
 import { LayoutElementsContext } from '@/contexts/useLayoutElementsContext';
-import { cn } from '@/utils/ts/cn';
 import BottomNav from './BottomNav';
 import Header from './Header';
 import { SUBPAGE_HEADER_HEIGHT } from './Header/constants';

@@ -1,9 +1,10 @@
 @import 'tailwindcss';
 
+@import '@konect/design-tokens/colors.css';
+@import '@konect/design-tokens/typography.css';
+@import '@konect/design-tokens/theme.css';
+
 @import './styles/font.css';
-@import './styles/colors.css';
-@import './styles/typography.css';
-@import './styles/theme.css';
 
 :root {
   --primary-black: #021730;

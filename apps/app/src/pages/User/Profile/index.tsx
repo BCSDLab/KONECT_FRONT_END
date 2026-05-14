@@ -1,4 +1,5 @@
 import type { ComponentType, SVGAttributes } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import type { OAuthProvider } from '@/apis/auth/entity';
 import { authQueries } from '@/apis/auth/queries';
@@ -8,7 +9,6 @@ import KakaoIcon from '@/assets/svg/kakao.svg';
 import NaverIcon from '@/assets/svg/naver.svg';
 import BottomModal from '@/components/common/BottomModal';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { cn } from '@/utils/ts/cn';
 import { getOAuthAuthorizationUrl } from '@/utils/ts/oauth';
 import { useAdminChatMutation } from '../hooks/useAdminChatMutation';
 import { useWithdrawMutation } from '../MyPage/hooks/useWithdraw';

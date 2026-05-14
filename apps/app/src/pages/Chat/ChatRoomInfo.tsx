@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { chatQueries } from '@/apis/chat/queries';
@@ -9,7 +10,6 @@ import useChat from '@/pages/Chat/hooks/useChat';
 import { isDirectChatType, isGroupChatType } from '@/pages/Chat/utils/chatType';
 import { useAuthStore } from '@/stores/authStore';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import { cn } from '@/utils/ts/cn';
 
 interface ChatRoomInfoMember {
   isOwner?: boolean;

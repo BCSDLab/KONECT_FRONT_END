@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
+import { cn } from '@konect/utils/cn';
 import useOutsideTapDismiss from '@/utils/hooks/useOutsideTapDismiss';
-import { cn } from '@/utils/ts/cn';
 
 interface MenuItem {
   label: string;

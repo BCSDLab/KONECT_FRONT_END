@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { PositionType } from '@/apis/club/entity';
@@ -11,7 +12,6 @@ import { useInAppNotificationToastContext } from '@/contexts/useInAppNotificatio
 import { useToastContext } from '@/contexts/useToastContext';
 import { useConfirmManagedClubSheetImportMutation } from '@/pages/Manager/hooks/useManagedMemberMutations';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import { cn } from '@/utils/ts/cn';
 
 const POSITION_LABELS: Record<PositionType, string> = {
   PRESIDENT: '회장',

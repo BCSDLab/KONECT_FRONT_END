@@ -1,4 +1,5 @@
 import { useDeferredValue, useMemo, useRef, useState } from 'react';
+import { cn } from '@konect/utils/cn';
 import type { StudyRankingParams } from '@/apis/studyTime/entity';
 import BottomSheet, { type SheetPosition } from '@/components/common/BottomSheet';
 import Dropdown from '@/components/common/Dropdown';
@@ -9,7 +10,6 @@ import TimerButton from '@/pages/Timer/components/TimerButton';
 import { useStudyTimer } from '@/pages/Timer/hooks/useStudyTimer';
 import { useTimerExitGuard } from '@/pages/Timer/hooks/useTimerExitGuard';
 import { useTimerLayout } from '@/pages/Timer/hooks/useTimerLayout';
-import { cn } from '@/utils/ts/cn';
 
 type TabType = '동아리' | '학번' | '개인';
 

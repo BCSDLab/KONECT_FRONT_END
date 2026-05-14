@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode, Ref } from 'react';
+import { cn } from '@konect/utils/cn';
 import BackTitleHeader from '@/components/layout/Header/components/BackTitleHeader';
-import { cn } from '@/utils/ts/cn';
 
 interface SubpageHeaderProps {
   title: string;

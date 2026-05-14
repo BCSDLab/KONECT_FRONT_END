@@ -1,6 +1,6 @@
+import { cn } from '@konect/utils/cn';
 import { Link } from 'react-router-dom';
 import type { HomeClubCardItem } from '@/pages/Home/types';
-import { cn } from '@/utils/ts/cn';
 
 export const RECOMMENDED_CLUB_CARD_WIDTH = 191;
 export const RECOMMENDED_CLUB_CARD_HEIGHT = 97;

@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from 'react';
-import { cn } from '@/utils/ts/cn';
+import { cn } from '@konect/utils/cn';
 
 const URL_REGEX = /(?:https?:\/\/|www\.)[^\s]+/gi;
 const TRAILING_PUNCTUATION_REGEX = /[)\]}>.,!?;:'"`]+$/;

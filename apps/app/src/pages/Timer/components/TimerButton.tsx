@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { cn } from '@/utils/ts/cn';
+import { cn } from '@konect/utils/cn';
 import { formatTime } from '@/utils/ts/datetime/time';
 
 interface TimerButtonProps {
