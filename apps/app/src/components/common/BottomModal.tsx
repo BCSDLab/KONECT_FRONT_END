@@ -1,0 +1,50 @@
+import { useRef, type HTMLAttributes, type ReactNode } from 'react';
+import { cn } from '@konect/utils/cn';
+import { twMerge } from 'tailwind-merge';
+import useClickTouchOutside from '@/utils/hooks/useClickTouchOutside';
+import useScrollLock from '@/utils/hooks/useScrollLock';
+import Portal from './Portal';
+
+interface BottomModalProps extends HTMLAttributes<HTMLDivElement> {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+  overlayClassName?: string;
+}
+
+function BottomModal({ isOpen, onClose, children, className, overlayClassName }: BottomModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useClickTouchOutside(modalRef, onClose);
+  useScrollLock(isOpen);
+
+  if (!isOpen) return null;
+
+  return (
+    <Portal>
+      <div
+        className={cn('fixed inset-0 z-100 bg-black/60', overlayClassName)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
+        onMouseDown={(e) => e.stopPropagation()}
+        onTouchStart={(e) => e.stopPropagation()}
+      >
+        <div
+          ref={modalRef}
+          role="dialog"
+          aria-modal="true"
+          className={twMerge('fixed inset-x-0 bottom-0 rounded-t-3xl bg-white', className)}
+          onClick={(e) => e.stopPropagation()}
+          onMouseDown={(e) => e.stopPropagation()}
+          onTouchStart={(e) => e.stopPropagation()}
+        >
+          {children}
+        </div>
+      </div>
+    </Portal>
+  );
+}
+
+export default BottomModal;

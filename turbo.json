@@ -1,0 +1,21 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "start": {
+      "cache":false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "env":["VITE_API_PATH"],
+      "outputs": ["dist/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
