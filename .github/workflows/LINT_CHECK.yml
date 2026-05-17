@@ -32,3 +32,10 @@ jobs:
         env:
           CI: true
         run: pnpm lint
+
+      - name: Check build
+        env:
+          CI: true
+          VITE_API_PATH: https://example.com
+          VITE_SENTRY_ENABLED: false
+        run: pnpm build

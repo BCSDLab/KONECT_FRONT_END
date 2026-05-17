@@ -1,9 +1,9 @@
 import { StrictMode } from 'react';
+import { isNetworkError, isTimeoutError } from '@konect/utils/api-error';
 import * as Sentry from '@sentry/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import { useAuthStore } from '@/stores/authStore';
-import { isNetworkError, isTimeoutError } from '@/utils/ts/error/apiError';
 import { SERVER_ERROR_PATH } from '@/utils/ts/error/errorRedirect';
 import './index.css';
 import { initSentry } from './config/sentry.ts';

@@ -1,8 +1,8 @@
+import { API_ERROR_CODES, isApiError } from '@konect/utils/api-error';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { StudyTimeSummaryResponse } from '@/apis/studyTime/entity';
 import { studyTimeMutations } from '@/apis/studyTime/mutations';
 import { studyTimeQueryKeys } from '@/apis/studyTime/queries';
-import { API_ERROR_CODES, isApiError } from '@/utils/ts/error/apiError';
 
 export const useStopStudyTimerMutation = () => {
   const queryClient = useQueryClient();

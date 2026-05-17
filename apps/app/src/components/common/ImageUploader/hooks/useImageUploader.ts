@@ -2,10 +2,10 @@ import { useCallback, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { uploadImage } from '@/apis/upload';
 import type { UploadTarget } from '@/apis/upload/entity';
-import type { ApiError } from '@/utils/ts/error/apiError';
 import { createExistingImageUploadItem } from '../utils/imageUploadItem';
 import { resolveImageUploadItemUrls } from '../utils/resolveImageUploadItems';
 import type { ImageUploadItem } from '../types';
+import type { ApiError } from '@konect/utils/api-error';
 
 interface UseImageUploaderOptions {
   initialImageUrls?: string[];

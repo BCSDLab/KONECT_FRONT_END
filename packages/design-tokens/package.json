@@ -5,6 +5,10 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": true,
+  "scripts": {
+    "build": "prettier --check \"src/**/*.css\" && node scripts/validate-tokens.mjs",
+    "lint": "prettier --check \"src/**/*.css\" && node scripts/validate-tokens.mjs"
+  },
   "exports": {
     "./colors.css": "./src/colors.css",
     "./typography.css": "./src/typography.css",

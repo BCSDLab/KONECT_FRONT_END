@@ -1,4 +1,3 @@
-import type { ApiError } from '@/utils/ts/error/apiError';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';
 import { apiClient } from '../client';
@@ -9,6 +8,7 @@ import type {
   RefreshTokenResponse,
   SignupRequest,
 } from './entity';
+import type { ApiError } from '@konect/utils/api-error';
 
 let refreshAccessTokenPromise: Promise<string> | null = null;
 

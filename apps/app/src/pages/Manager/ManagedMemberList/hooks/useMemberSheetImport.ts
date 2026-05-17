@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { isApiError } from '@konect/utils/api-error';
+import { getApiErrorMessage } from '@konect/utils/api-error-message';
 import { useNavigate } from 'react-router-dom';
 import { useUpsertManagedClubSheetMutation } from '@/pages/Manager/hooks/useManagedMemberMutations';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { isApiError } from '@/utils/ts/error/apiError';
-import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 const EMPTY_URL_ERROR_MESSAGE = '링크가 첨부되지 않았습니다. 첨부 후 다시 클릭해주세요.';
 const INVALID_URL_ERROR_MESSAGE = '유효하지 않은 링크입니다. 첨부 후 다시 클릭해주세요.';

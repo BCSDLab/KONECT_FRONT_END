@@ -1,4 +1,4 @@
-import { hasApiFieldErrors, isApiError } from '@/utils/ts/error/apiError';
+import { hasApiFieldErrors, isApiError } from './api-error';
 
 export function getApiErrorMessages(error: unknown, fallbackMessage: string): string[] {
   if (isApiError(error)) {

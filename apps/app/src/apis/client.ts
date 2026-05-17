@@ -1,6 +1,6 @@
+import { isApiErrorResponse, type ApiError, type ApiErrorResponse } from '@konect/utils/api-error';
 import { refreshAccessToken } from '@/apis/auth';
 import { useAuthStore } from '@/stores/authStore';
-import { isApiErrorResponse, type ApiError, type ApiErrorResponse } from '@/utils/ts/error/apiError';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 

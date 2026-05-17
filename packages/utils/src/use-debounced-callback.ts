@@ -10,7 +10,7 @@ function useIsomorphicLayoutEffect(effect: EffectCallback, deps?: DependencyList
 const DEBOUNCE_DEFAULT_TIME = 300;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function useDebouncedCallback<F extends (...args: any[]) => ReturnType<F>>(
+export function useDebouncedCallback<F extends (...args: any[]) => ReturnType<F>>(
   callback: F,
   debounceTime: number = DEBOUNCE_DEFAULT_TIME
 ) {
