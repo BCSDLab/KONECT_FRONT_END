@@ -1,5 +1,3 @@
-import { isServerErrorStatus } from '@/utils/ts/error/errorRedirect';
-
 export const API_ERROR_CODES = {
   INVALID_SESSION: 'INVALID_SESSION',
   ALREADY_RUNNING_STUDY_TIMER: 'ALREADY_RUNNING_STUDY_TIMER',
@@ -99,6 +97,10 @@ export function isAuthError(error: unknown): boolean {
   }
 
   return error instanceof Error && error.message === AUTH_EXPIRED_ERROR_MESSAGE;
+}
+
+export function isServerErrorStatus(status: number): boolean {
+  return status >= 500 && status < 600;
 }
 
 export function isServerError(error: unknown): boolean {

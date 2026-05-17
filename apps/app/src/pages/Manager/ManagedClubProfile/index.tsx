@@ -1,4 +1,5 @@
 import { type ChangeEvent, useState } from 'react';
+import { getApiErrorMessage, getApiErrorMessages } from '@konect/utils/api-error-message';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { clubQueries } from '@/apis/club/queries';
@@ -7,7 +8,6 @@ import ImageUploader, { useImageUploader } from '@/components/common/ImageUpload
 import { useToastContext } from '@/contexts/useToastContext';
 import { useUpdateManagedClubInfoMutation } from '@/pages/Manager/hooks/useManagedClubMutations';
 import useBooleanState from '@/utils/hooks/useBooleanState';
-import { getApiErrorMessage, getApiErrorMessages } from '@/utils/ts/error/apiErrorMessage';
 
 const DESCRIPTION_MAX_LENGTH = 25;
 

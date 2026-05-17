@@ -1,3 +1,4 @@
+import { isApiError } from '@konect/utils/api-error';
 import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import {
   getBanks,
@@ -15,7 +16,6 @@ import {
   getPreMembers,
   postClubSheetImportPreview,
 } from '@/apis/club';
-import { isApiError } from '@/utils/ts/error/apiError';
 
 interface ManagedClubApplicationsParams {
   clubId: number;

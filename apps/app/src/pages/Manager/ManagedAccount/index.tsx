@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiErrorMessage } from '@konect/utils/api-error-message';
 import { cn } from '@konect/utils/cn';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -14,7 +15,6 @@ import {
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import type { EnableAfterSaveState } from '@/pages/Manager/types';
 import { useApiErrorToast } from '@/utils/hooks/error/useApiErrorToast';
-import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 const cardClassName = 'rounded-2xl bg-white px-5 py-5';
 const fieldLabelClassName = 'text-body3-strong text-text-700';

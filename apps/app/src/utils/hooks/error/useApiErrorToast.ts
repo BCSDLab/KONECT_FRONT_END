@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
+import { isAuthError, isCanceledError, isServerError } from '@konect/utils/api-error';
+import { getApiErrorMessage } from '@konect/utils/api-error-message';
 import { useToastContext } from '@/contexts/useToastContext';
-import { isAuthError, isCanceledError, isServerError } from '@/utils/ts/error/apiError';
-import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 export function useApiErrorToast() {
   const { showToast } = useToastContext();

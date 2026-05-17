@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getApiErrorMessage } from '@konect/utils/api-error-message';
 import { cn } from '@konect/utils/cn';
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -12,7 +13,6 @@ import {
   useUpdateManagedClubQuestionsMutation,
 } from '@/pages/Manager/hooks/useManagedClubMutations';
 import type { EnableAfterSaveState } from '@/pages/Manager/types';
-import { getApiErrorMessage } from '@/utils/ts/error/apiErrorMessage';
 
 interface QuestionItem extends ClubQuestionRequest {
   tempId: string;

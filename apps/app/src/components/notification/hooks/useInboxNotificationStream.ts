@@ -1,10 +1,10 @@
 import { useEffect, useEffectEvent, useRef } from 'react';
+import { isAuthError } from '@konect/utils/api-error';
 import { refreshAccessToken } from '@/apis/auth';
 import { refreshAuthSession } from '@/apis/client';
 import type { InboxNotification } from '@/apis/notification/entity';
 import { useAuthStore } from '@/stores/authStore';
 import { getAccessTokenExpirationTime } from '@/utils/ts/accessToken';
-import { isAuthError } from '@/utils/ts/error/apiError';
 import { isServerErrorStatus, redirectToServerErrorPage } from '@/utils/ts/error/errorRedirect';
 import { postNativeMessage } from '@/utils/ts/nativeBridge';
 import { NORMALIZED_API_BASE_URL } from '@/utils/ts/oauth';

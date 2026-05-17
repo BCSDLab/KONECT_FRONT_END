@@ -1,10 +1,10 @@
 import { startTransition, useState } from 'react';
+import useDebouncedCallback from '@konect/utils/use-debounced-callback';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { chatQueries } from '@/apis/chat/queries';
 import SearchIcon from '@/assets/svg/big-search-icon.svg';
 import RouteLoadingFallback from '@/components/common/RouteLoadingFallback';
-import useDebouncedCallback from '@/utils/hooks/useDebounce';
 import { ChatMessageListItem, ChatRoomListItem } from './components/ChatRoomListItem';
 
 function ChatSearchResults({ keyword }: { keyword: string }) {

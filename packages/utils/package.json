@@ -5,11 +5,25 @@
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
+  "scripts": {
+    "build": "tsc -b",
+    "lint": "eslint ."
+  },
   "exports": {
-    "./cn": "./src/cn.ts"
+    "./api-error": "./src/api-error.ts",
+    "./api-error-message": "./src/api-error-message.ts",
+    "./cn": "./src/cn.ts",
+    "./use-debounced-callback": "./src/use-debounced-callback.ts"
   },
   "dependencies": {
-    "clsx": "^2.1.1",
-    "tailwind-merge": "^3.4.0"
+    "clsx": "catalog:",
+    "tailwind-merge": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "react": "catalog:"
   }
 }

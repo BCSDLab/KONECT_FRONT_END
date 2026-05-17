@@ -1,8 +1,8 @@
 import { useState } from 'react';
+import useDebouncedCallback from '@konect/utils/use-debounced-callback';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { clubQueries } from '@/apis/club/queries';
-import useDebouncedCallback from '@/utils/hooks/useDebounce';
 import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
 import ClubCard from '../ClubList/components/ClubCard';
 import SearchBar from '../ClubList/components/SearchBar';
