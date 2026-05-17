@@ -6,11 +6,17 @@
   "type": "module",
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "start": "turbo run start",
+    "start": "pnpm --filter @konect/app start",
+    "start:app": "pnpm --filter @konect/app start",
+    "start:web": "pnpm --filter @konect/web start",
     "build": "turbo run build",
-    "build:analyze:staging": "ANALYZE=true tsc -b && ANALYZE=true vite build --mode staging",
+    "build:analyze:staging": "pnpm build:analyze:staging:app",
+    "build:analyze:staging:app": "turbo run build:analyze:staging --filter @konect/app",
+    "build:analyze:staging:web": "turbo run build:analyze:staging --filter @konect/web",
     "lint": "turbo run lint",
-    "preview": "turbo run preview"
+    "preview": "pnpm --filter @konect/app preview",
+    "preview:app": "pnpm --filter @konect/app preview",
+    "preview:web": "pnpm --filter @konect/web preview"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
