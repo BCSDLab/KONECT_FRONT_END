@@ -85,14 +85,23 @@ jobs:
             } > .env
           fi
 
-      - name: Build project
+      - name: Build app
         env:
           CI: true
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ env.SENTRY_PROJECT_FOR_BUILD }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_RELEASE: ${{ github.sha }}
-        run: pnpm build
+        run: pnpm --filter @konect/app build
+
+      - name: Build web
+        env:
+          CI: true
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ env.SENTRY_PROJECT_FOR_BUILD }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: pnpm --filter @konect/web build
 
       - name: Setup SSH key
         run: |
@@ -101,14 +110,28 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }} 2>/dev/null >> ~/.ssh/known_hosts
 
-      - name: Deploy dist to server
+      - name: Deploy app dist to server
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
             DEPLOY_PATH="/opt/konect/prod/client"
           else
             DEPLOY_PATH="/opt/konect/stage/client"
           fi
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p $DEPLOY_PATH"
           rsync -avz --delete-after \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
-            ./dist/ \
+            ./apps/app/dist/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:$DEPLOY_PATH
+
+      - name: Deploy web dist to server
+        run: |
+          if [ "${{ github.ref_name }}" = "main" ]; then
+            DEPLOY_PATH="/opt/konect/prod/web"
+          else
+            DEPLOY_PATH="/opt/konect/stage/web"
+          fi
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p $DEPLOY_PATH"
+          rsync -avz --delete-after \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            ./apps/web/dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:$DEPLOY_PATH
