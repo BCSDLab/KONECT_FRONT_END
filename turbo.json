@@ -1,0 +1,52 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "ANALYZE",
+    "SENTRY_AUTH_TOKEN",
+    "SENTRY_ORG",
+    "SENTRY_PROJECT",
+    "SENTRY_RELEASE",
+    "VITE_API_PATH",
+    "VITE_SENTRY_DEBUG_TRANSACTIONS",
+    "VITE_SENTRY_DSN",
+    "VITE_SENTRY_ENABLED",
+    "VITE_SENTRY_ENVIRONMENT",
+    "VITE_SENTRY_RELEASE",
+    "VITE_SENTRY_REPLAY_ON_ERROR_SAMPLE_RATE",
+    "VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE",
+    "VITE_SENTRY_TRACES_SAMPLE_RATE"
+  ],
+  "tasks": {
+    "start": {
+      "cache": false,
+      "persistent": true
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
+    "@konect/app#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "@konect/web#build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "@konect/app#build:analyze:staging": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "docs/perf/assets/**"]
+    },
+    "@konect/web#build:analyze:staging": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "docs/perf/assets/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "preview": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}

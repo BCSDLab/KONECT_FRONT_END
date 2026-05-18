@@ -15,22 +15,75 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect deployment targets
+        id: targets
+        run: |
+          changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" || true)"
+
+          if [ -z "$changed_files" ]; then
+            changed_files="$(git show --name-only --pretty=format: "${{ github.sha }}" || true)"
+          fi
+
+          app_changed=false
+          web_changed=false
+          shared_changed=false
+
+          while IFS= read -r file; do
+            case "$file" in
+              apps/app/*)
+                app_changed=true
+                ;;
+              apps/web/*)
+                web_changed=true
+                ;;
+              packages/*|package.json|pnpm-lock.yaml|pnpm-workspace.yaml|turbo.json|tsconfig*.json|eslint.config.js|.github/workflows/deploy.yml)
+                shared_changed=true
+                ;;
+            esac
+          done <<< "$changed_files"
+
+          if [ "$shared_changed" = "true" ]; then
+            app_changed=true
+            web_changed=true
+          fi
+
+          deploy_web=$web_changed
+
+          if [ "${{ github.ref_name }}" != "main" ]; then
+            deploy_web=false
+          fi
+
+          {
+            echo "app=$app_changed"
+            echo "web=$deploy_web"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "Changed files:"
+          echo "$changed_files"
+          echo "Deploy app: $app_changed"
+          echo "Web changed: $web_changed"
+          echo "Deploy web: $deploy_web"
 
       - name: Setup pnpm
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         uses: pnpm/action-setup@v4
-        with:
-          version: 10
 
       - name: Setup Node.js
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '22.20.0'
           cache: 'pnpm'
 
       - name: Install dependencies
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Validate runtime secrets
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         run: |
           missing=0
 
@@ -45,7 +98,7 @@ jobs:
           [ "$missing" -eq 0 ] || exit 1
 
       - name: Validate production sourcemap secrets
-        if: github.ref_name == 'main'
+        if: github.ref_name == 'main' && (steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true')
         run: |
           missing=0
           [ -n "${{ secrets.SENTRY_ORG }}" ] || { echo "::error::Missing secret: SENTRY_ORG"; missing=1; }
@@ -54,6 +107,7 @@ jobs:
           [ "$missing" -eq 0 ] || exit 1
 
       - name: Resolve Sentry project
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
             echo "SENTRY_PROJECT_FOR_BUILD=${{ secrets.SENTRY_PROJECT }}" >> "$GITHUB_ENV"
@@ -62,6 +116,7 @@ jobs:
           fi
 
       - name: Create .env file
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
             {
@@ -87,30 +142,54 @@ jobs:
             } > .env
           fi
 
-      - name: Build project
+      - name: Build app
+        if: steps.targets.outputs.app == 'true'
         env:
           CI: true
           SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ env.SENTRY_PROJECT_FOR_BUILD }}
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_RELEASE: ${{ github.sha }}
-        run: pnpm build
+        run: pnpm --filter @konect/app build
+
+      - name: Build web
+        if: steps.targets.outputs.web == 'true'
+        env:
+          CI: true
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ env.SENTRY_PROJECT_FOR_BUILD }}
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: pnpm --filter @konect/web build
 
       - name: Setup SSH key
+        if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SERVER_IP }} 2>/dev/null >> ~/.ssh/known_hosts
 
-      - name: Deploy dist to server
+      - name: Deploy app dist to server
+        if: steps.targets.outputs.app == 'true'
         run: |
           if [ "${{ github.ref_name }}" = "main" ]; then
             DEPLOY_PATH="/opt/konect/prod/client"
           else
             DEPLOY_PATH="/opt/konect/stage/client"
           fi
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p $DEPLOY_PATH"
           rsync -avz --delete-after \
             -e "ssh -p ${{ secrets.SSH_PORT }}" \
-            ./dist/ \
+            ./apps/app/dist/ \
+            ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:$DEPLOY_PATH
+
+      - name: Deploy web dist to server
+        if: steps.targets.outputs.web == 'true'
+        run: |
+          DEPLOY_PATH="/opt/konect/web"
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} "mkdir -p $DEPLOY_PATH"
+          rsync -avz --delete-after \
+            -e "ssh -p ${{ secrets.SSH_PORT }}" \
+            ./apps/web/dist/ \
             ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }}:$DEPLOY_PATH

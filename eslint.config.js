@@ -11,33 +11,36 @@ import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import { defineConfig, globalIgnores } from 'eslint/config';
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['**/dist/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,
       ...tseslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
-      react.configs.flat.recommended,
-      react.configs.flat['jsx-runtime'],
-      reactHooks.configs.flat['recommended-latest'],
-      reactRefresh.configs.vite,
       importPlugin.flatConfigs.recommended,
-      ...pluginQuery.configs['flat/recommended-strict'],
     ],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+      },
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
     settings: {
-      react: { version: 'detect' },
       'import/resolver': {
         typescript: {
-          project: './tsconfig.json',
+          project: [
+            './tsconfig.json',
+            './apps/*/tsconfig.app.json',
+            './apps/*/tsconfig.node.json',
+            './packages/*/tsconfig.json',
+          ],
+          noWarnOnMultipleProjects: true,
           alwaysTryTypes: true,
         },
       },
@@ -80,8 +83,21 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
-    ignores: ['src/utils/ts/nativeBridge.ts'],
+    files: ['apps/*/src/**/*.{ts,tsx}'],
+    extends: [
+      react.configs.flat.recommended,
+      react.configs.flat['jsx-runtime'],
+      reactHooks.configs.flat['recommended-latest'],
+      reactRefresh.configs.vite,
+      ...pluginQuery.configs['flat/recommended-strict'],
+    ],
+    settings: {
+      react: { version: 'detect' },
+    },
+  },
+  {
+    files: ['apps/app/src/**/*.{ts,tsx}'],
+    ignores: ['apps/app/src/utils/ts/nativeBridge.ts'],
     rules: {
       'no-restricted-properties': [
         'error',
@@ -94,8 +110,12 @@ export default defineConfig([
     },
   },
   {
-    files: ['**/*.{ts,tsx}'],
-    ignores: ['src/apis/auth/index.ts', 'src/apis/client.ts', 'src/components/notification/hooks/useInboxNotificationStream.ts'],
+    files: ['apps/app/src/**/*.{ts,tsx}'],
+    ignores: [
+      'apps/app/src/apis/auth/index.ts',
+      'apps/app/src/apis/client.ts',
+      'apps/app/src/components/notification/hooks/useInboxNotificationStream.ts',
+    ],
     rules: {
       'no-restricted-syntax': [
         'error',

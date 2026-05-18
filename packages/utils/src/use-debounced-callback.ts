@@ -1,0 +1,41 @@
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import type { DependencyList, EffectCallback } from 'react';
+
+function useIsomorphicLayoutEffect(effect: EffectCallback, deps?: DependencyList) {
+  const effectHook = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+  effectHook(effect, deps);
+}
+
+const DEBOUNCE_DEFAULT_TIME = 300;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function useDebouncedCallback<F extends (...args: any[]) => ReturnType<F>>(
+  callback: F,
+  debounceTime: number = DEBOUNCE_DEFAULT_TIME
+) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const callbackRef = useRef(callback);
+
+  useIsomorphicLayoutEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
+  useIsomorphicLayoutEffect(() => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+  }, []);
+
+  return (...params: Parameters<F>) => {
+    if (timer.current) {
+      clearTimeout(timer.current);
+    }
+
+    timer.current = setTimeout(() => {
+      callbackRef.current(...params);
+    }, debounceTime);
+  };
+}
+
+export default useDebouncedCallback;

@@ -1,0 +1,76 @@
+import { useState } from 'react';
+import useDebouncedCallback from '@konect/utils/use-debounced-callback';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'react-router-dom';
+import { clubQueries } from '@/apis/club/queries';
+import { useInfiniteScroll } from '@/utils/hooks/useInfiniteScroll';
+import ClubCard from '../ClubList/components/ClubCard';
+import SearchBar from '../ClubList/components/SearchBar';
+
+function ClubSearch() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialQuery = searchParams.get('query') ?? '';
+
+  const [keyword, setKeyword] = useState(initialQuery);
+  const [debouncedQuery, setDebouncedQuery] = useState(initialQuery);
+
+  const updateDebouncedQuery = useDebouncedCallback((value: string) => {
+    const trimmed = value.trim();
+    if (trimmed) {
+      setSearchParams({ query: trimmed }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+    setDebouncedQuery(trimmed);
+  }, 300);
+
+  const handleChange = (value: string) => {
+    setKeyword(value);
+    updateDebouncedQuery(value);
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
+    ...clubQueries.infiniteList({ limit: 10, query: debouncedQuery || undefined, isRecruiting: false }),
+    enabled: !!debouncedQuery,
+  });
+
+  const observerRef = useInfiniteScroll(fetchNextPage, hasNextPage, isFetchingNextPage, {
+    enabled: !!debouncedQuery,
+  });
+
+  const totalCount = data?.pages[0]?.totalCount ?? 0;
+  const allClubs = data?.pages.flatMap((page) => page.clubs) ?? [];
+
+  return (
+    <>
+      <SearchBar value={keyword} onChange={handleChange} autoFocus />
+      <div className="h-16 shrink-0" />
+
+      <div className="flex flex-col gap-2 px-5 pt-2 pb-4">
+        {!debouncedQuery ? (
+          <div className="py-6 text-center text-xs text-indigo-300">검색어를 입력해서 동아리를 검색해보세요.</div>
+        ) : (
+          <>
+            <div className="text-sub2 px-3 text-indigo-300">총 {totalCount}개의 동아리</div>
+
+            <div className="flex flex-col gap-2">
+              {allClubs.map((club) => (
+                <ClubCard key={club.id} club={club} />
+              ))}
+
+              {debouncedQuery && !allClubs.length && (
+                <div className="py-8 text-center text-xs text-indigo-300">
+                  {debouncedQuery}에 해당하는 동아리가 없습니다.
+                </div>
+              )}
+            </div>
+
+            {hasNextPage && <div ref={observerRef} className="flex h-20 items-center justify-center" />}
+          </>
+        )}
+      </div>
+    </>
+  );
+}
+
+export default ClubSearch;

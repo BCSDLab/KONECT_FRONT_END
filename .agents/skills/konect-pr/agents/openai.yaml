@@ -1,0 +1,7 @@
+interface:
+  display_name: "KONECT PR Publish"
+  short_description: "KONECT 이슈·커밋·PR 발행 자동화"
+  default_prompt: "Use $konect-pr to turn the current KONECT_FRONT_END worktree into a Korean issue, commits, labels, assignees, and a PR."
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,29 @@
+{
+  "name": "@konect/utils",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -b",
+    "lint": "eslint ."
+  },
+  "exports": {
+    "./api-error": "./src/api-error.ts",
+    "./api-error-message": "./src/api-error-message.ts",
+    "./cn": "./src/cn.ts",
+    "./use-debounced-callback": "./src/use-debounced-callback.ts"
+  },
+  "dependencies": {
+    "clsx": "catalog:",
+    "tailwind-merge": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "react": "catalog:"
+  }
+}
