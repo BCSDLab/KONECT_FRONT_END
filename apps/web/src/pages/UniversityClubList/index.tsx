@@ -2,22 +2,14 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useDebouncedCallback } from '@konect/utils/use-debounced-callback';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import type { ClubCategory, UniversityClub, UniversityClubListRequestParams } from '@/apis/universityClub/entity';
 import { universityClubQueries } from '@/apis/universityClub/queries';
 import SearchIcon from '@/assets/svg/search-icon.svg';
+import { CATEGORY_TEXT_COLORS } from '@/constants/club';
 
 const PAGE_LIMIT = 12;
-
-const CATEGORY_TEXT_COLORS: Record<ClubCategory, string> = {
-  ACADEMIC: 'text-primary-500',
-  SPORTS: 'text-info-600',
-  HOBBY: 'text-danger-600',
-  RELIGION: 'text-warning-700',
-  PERFORMANCE: 'text-[#cd3bf6]',
-  JUNIOR: 'text-success-700',
-};
 
 function UniversityClubList() {
   const { universityId } = useParams();
@@ -97,7 +89,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 
   return (
     <main className="bg-web-background min-h-screen text-black">
-      <div className="mx-auto flex w-full max-w-[1478px] flex-col px-5 pt-12 pb-20 sm:px-8 lg:pt-[102px] xl:px-0">
+      <div className="mx-auto flex w-full max-w-369.5 flex-col px-5 pt-12 pb-20 sm:px-8 lg:pt-25.5 xl:px-0">
         <nav className="text-text-400 flex items-center gap-3 text-sm leading-8 font-semibold sm:gap-3.5 sm:text-[24px] sm:leading-10">
           <Link className="hover:text-primary-600 transition-colors" to="/">
             홈
@@ -114,7 +106,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 
         <div className="mt-10 grid gap-8 lg:mt-15 lg:grid-cols-[407px_minmax(0,1050px)] lg:gap-5">
           <aside className="flex flex-col gap-6 lg:gap-10">
-            <section className="border-text-100 flex h-55 items-center justify-center rounded-[32px] border bg-white px-8 py-8 text-center sm:h-66 sm:rounded-[40px] sm:px-21 sm:py-10">
+            <section className="border-text-100 flex h-55 items-center justify-center rounded-4xl border bg-white px-8 py-8 text-center sm:h-66 sm:rounded-[40px] sm:px-21 sm:py-10">
               <div className="flex min-w-0 flex-col items-center gap-3">
                 <img className="h-22 w-17.5 object-contain" src={university.imageUrl} alt="" />
                 <div className="flex max-w-full flex-col items-center leading-10">
@@ -124,7 +116,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
               </div>
             </section>
 
-            <section className="border-text-100 rounded-[32px] border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
+            <section className="border-text-100 rounded-4xl border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
               <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
               <div className="mt-10 flex flex-col gap-5">
                 {recentClubs.length > 0 ? (
@@ -151,7 +143,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
                 <SearchIcon className="h-8 shrink-0 sm:h-10" />
               </label>
 
-              <div className="border-text-100 flex h-[78px] items-center overflow-hidden rounded-[30px] border px-4 py-1.5 sm:px-8">
+              <div className="border-text-100 flex h-19.5 items-center overflow-hidden rounded-[30px] border px-4 py-1.5 sm:px-8">
                 <div className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <CategoryFilterButton
                     label="전체"
@@ -205,12 +197,14 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 }
 
 function RecentClubCard({ club }: { club: UniversityClub }) {
+  const navigate = useNavigate();
   return (
     <button
-      className="border-primary-200 bg-web-background hover:border-primary-500 focus-visible:outline-primary-500 flex h-[122px] max-h-[122px] min-h-[122px] w-full shrink-0 items-center gap-7 overflow-hidden rounded-[20px] border px-7.5 py-6.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-primary-200 bg-web-background hover:border-primary-500 focus-visible:outline-primary-500 flex h-30.5 max-h-30.5 min-h-30.5 w-full shrink-0 items-center gap-7 overflow-hidden rounded-[20px] border px-7.5 py-6.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
+      onClick={() => navigate(`/clubs/${club.id}`)}
     >
-      <ClubImage className="size-[70px]" imageUrl={club.imageUrl} name={club.name} />
+      <ClubImage className="size-17.5" imageUrl={club.imageUrl} name={club.name} />
       <ClubMeta
         club={club}
         titleClassName="w-57 text-[20px]"
@@ -222,12 +216,14 @@ function RecentClubCard({ club }: { club: UniversityClub }) {
 }
 
 function ClubCard({ club }: { club: UniversityClub }) {
+  const navigate = useNavigate();
   return (
     <button
       className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center gap-5 overflow-hidden rounded-[20px] border bg-white px-5.5 py-8 text-left transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
+      onClick={() => navigate(`/clubs/${club.id}`)}
     >
-      <ClubImage className="size-[50px]" imageUrl={club.imageUrl} name={club.name} />
+      <ClubImage className="size-12.5" imageUrl={club.imageUrl} name={club.name} />
       <ClubMeta
         club={club}
         titleClassName="w-57 text-[20px]"
