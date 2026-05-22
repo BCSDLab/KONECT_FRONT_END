@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useDebouncedCallback } from '@konect/utils/use-debounced-callback';
 import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import type { ClubCategory, UniversityClub, UniversityClubListRequestParams } from '@/apis/universityClub/entity';
 import { universityClubQueries } from '@/apis/universityClub/queries';
@@ -197,12 +197,11 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 }
 
 function RecentClubCard({ club }: { club: UniversityClub }) {
-  const navigate = useNavigate();
   return (
-    <button
+    <Link
       className="border-primary-200 bg-web-background hover:border-primary-500 focus-visible:outline-primary-500 flex h-30.5 max-h-30.5 min-h-30.5 w-full shrink-0 items-center gap-7 overflow-hidden rounded-[20px] border px-7.5 py-6.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
-      onClick={() => navigate(`/clubs/${club.id}`)}
+      to={`/clubs/${club.id}`}
     >
       <ClubImage className="size-17.5" imageUrl={club.imageUrl} name={club.name} />
       <ClubMeta
@@ -211,17 +210,16 @@ function RecentClubCard({ club }: { club: UniversityClub }) {
         categoryClassName="text-[16px]"
         descriptionClassName="text-[16px]"
       />
-    </button>
+    </Link>
   );
 }
 
 function ClubCard({ club }: { club: UniversityClub }) {
-  const navigate = useNavigate();
   return (
-    <button
+    <Link
       className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center gap-5 overflow-hidden rounded-[20px] border bg-white px-5.5 py-8 text-left transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
-      onClick={() => navigate(`/clubs/${club.id}`)}
+      to={`/clubs/${club.id}`}
     >
       <ClubImage className="size-12.5" imageUrl={club.imageUrl} name={club.name} />
       <ClubMeta
@@ -230,7 +228,7 @@ function ClubCard({ club }: { club: UniversityClub }) {
         categoryClassName="text-[14px]"
         descriptionClassName="text-[14px]"
       />
-    </button>
+    </Link>
   );
 }
 

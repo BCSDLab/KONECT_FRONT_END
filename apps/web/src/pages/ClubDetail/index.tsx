@@ -63,7 +63,7 @@ export default function ClubDetail() {
         <nav className="text-text-400 flex items-center gap-3 text-sm leading-8 font-semibold sm:gap-3.5 sm:text-[24px] sm:leading-10">
           <Link to="/">홈</Link>
           <span className="text-text-300 text-lg sm:text-[20px]">›</span>
-          <Link to="/universities/1/clubs">대학교 동아리</Link>
+          <Link to={`/universities/${clubDetail.university.id}/clubs`}>대학교 동아리</Link>
           <span className="text-text-300 text-lg sm:text-[20px]">›</span>
           <span>{clubDetail.name}</span>
         </nav>
@@ -76,7 +76,7 @@ export default function ClubDetail() {
                   <h1 className="max-w-full truncate text-[24px] font-semibold text-black">
                     {clubDetail.university.name}
                   </h1>
-                  <p className="text-text-400 text-[20px]">{clubDetail.university.clubCount}개 동아리</p>
+                  <p className="text-text-400 text-[20px]">{clubDetail.university.clubCount ?? 0}개 동아리</p>
                 </div>
               </div>
             </section>
