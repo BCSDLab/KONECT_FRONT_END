@@ -16,6 +16,7 @@ export interface UniversitySummary {
   region: Region;
   regionName: string;
   imageUrl: string;
+  clubCount?: number;
 }
 
 export interface ClubCategorySummary {
