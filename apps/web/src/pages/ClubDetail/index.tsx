@@ -44,18 +44,9 @@ function NoneIntroduce() {
   );
 }
 
-function formatDate(date: string | null) {
-  return date?.slice(0, 10) ?? '';
-}
-
 export default function ClubDetail() {
   const { clubId } = useParams();
   const { data: clubDetail } = useSuspenseQuery(clubDetailQueries.detail(Number(clubId)));
-
-  const IsAlwaysRecruiting = clubDetail.recruitment.isAlwaysRecruiting;
-  const startDate = formatDate(clubDetail.recruitment.startAt);
-  const endDate = formatDate(clubDetail.recruitment.endAt);
-  const recruitmentPeriod = startDate && endDate ? `${startDate}~${endDate}` : '미정';
 
   return (
     <main className="bg-web-background min-h-screen text-black">
@@ -65,7 +56,7 @@ export default function ClubDetail() {
           <span className="text-text-300 text-lg sm:text-[20px]">›</span>
           <Link to={`/universities/${clubDetail.university.id}/clubs`}>대학교 동아리</Link>
           <span className="text-text-300 text-lg sm:text-[20px]">›</span>
-          <span>{clubDetail.name}</span>
+          <span className="text-text-600 text-2xl font-semibold">{clubDetail.name}</span>
         </nav>
         <div className="mt-10 grid gap-8 lg:mt-15 lg:grid-cols-[407px_minmax(0,1050px)] lg:gap-5">
           <aside className="flex flex-col gap-6 lg:gap-10">
@@ -98,7 +89,7 @@ export default function ClubDetail() {
                     </span>
                     <span className="bg-text-200 size-1.5 shrink-0 rounded-full" aria-hidden="true" />
                     <span className="text-text-600 min-w-0 truncate text-[20px] font-medium">
-                      {clubDetail.description || `${clubDetail.memberCount}명`}
+                      {clubDetail.description}
                     </span>
                   </div>
                 </div>
@@ -110,9 +101,6 @@ export default function ClubDetail() {
                 </div>
                 <div className="flex gap-10">
                   <h2 className="text-text-500 text-[20px] font-semibold">모집시기</h2>
-                  <p className="text-text-900 text-[20px] font-semibold">
-                    {IsAlwaysRecruiting ? '상시모집' : recruitmentPeriod}
-                  </p>
                 </div>
               </div>
             </section>
