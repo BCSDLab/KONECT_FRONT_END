@@ -1,6 +1,8 @@
 import { useState, type ChangeEvent } from 'react';
 import { useDebouncedCallback } from '@konect/utils/use-debounced-callback';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
+
 import type { Region, HomeRequestParams, University } from '@/apis/home/entity';
 import { homeQueries } from '@/apis/home/queries';
 import clubBadgeBlue from '@/assets/club-badge-blue.png';
@@ -75,6 +77,7 @@ function Home() {
   const { data: homeData } = useSuspenseQuery(homeQueries.detail(homeParams));
   const universities = homeData.universities ?? [];
   const totalUniversityCount = homeData.totalUniversityCount;
+  const isSearching = searchKeyword.trim().length > 0 || searchQuery.length > 0;
 
   const handleSearchKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -124,14 +127,20 @@ function Home() {
           </label>
         </section>
 
-        <section className="mt-20 w-full sm:mt-24">
-          <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
-          <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {recentClubs.map((club) => (
-              <RecentClubCard key={club.id} club={club} />
-            ))}
-          </div>
-        </section>
+        <div
+          className={`grid w-full transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out ${
+            isSearching ? 'mt-0 grid-rows-[0fr] opacity-0' : 'mt-20 grid-rows-[1fr] opacity-100 sm:mt-24'
+          }`}
+        >
+          <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
+            <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
+            <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {recentClubs.map((club) => (
+                <RecentClubCard key={club.id} club={club} />
+              ))}
+            </div>
+          </section>
+        </div>
 
         <section className="mt-10 w-full sm:mt-20">
           <SectionTitle title="전체 대학" description="학교별 동아리를 자유롭게 탐색해보세요." />
@@ -187,7 +196,7 @@ function SectionTitle({ title, description }: { title: string; description: stri
 function RecentClubCard({ club }: { club: RecentClub }) {
   return (
     <button
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center justify-center gap-7 rounded-[20px] border bg-white py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center gap-7 rounded-[20px] border bg-white px-5.5 py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
     >
       <img className="size-12.5 shrink-0 rounded-full object-cover" src={club.logo} alt="" />
@@ -228,14 +237,14 @@ function UniversityCard({ university }: { university: University }) {
   const universityLabel = university.campusName ? `${university.name} ${university.campusName}` : university.name;
 
   return (
-    <button
+    <Link
+      to={`/universities/${university.id}/clubs`}
       className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-45 flex-col items-center justify-center rounded-[20px] border bg-white py-7 text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
-      type="button"
     >
       <img className="size-12.5 object-contain" src={university.imageUrl} alt="" />
       <span className="mt-3 block truncate text-[20px] leading-10 font-semibold text-black">{universityLabel}</span>
       <span className="text-text-600 text-[14px] leading-6 font-medium">{university.clubCount}개 동아리</span>
-    </button>
+    </Link>
   );
 }
 
