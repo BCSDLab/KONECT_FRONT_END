@@ -99,9 +99,6 @@ export default function ClubDetail() {
                   <h2 className="text-text-500 text-[20px] font-semibold">한줄소개</h2>
                   <p className="text-text-900 text-[20px] font-semibold">{clubDetail.description}</p>
                 </div>
-                <div className="flex gap-10">
-                  <h2 className="text-text-500 text-[20px] font-semibold">모집시기</h2>
-                </div>
               </div>
             </section>
             <section className="flex min-h-127.5 w-258 flex-col items-start gap-2.5 rounded-4xl bg-white px-10 py-11">
