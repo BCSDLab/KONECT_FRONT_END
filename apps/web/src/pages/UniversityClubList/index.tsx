@@ -7,6 +7,7 @@ import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 import type { ClubCategory, UniversityClub, UniversityClubListRequestParams } from '@/apis/universityClub/entity';
 import { universityClubQueries } from '@/apis/universityClub/queries';
 import SearchIcon from '@/assets/svg/search-icon.svg';
+import RecentClubSidebarSection from '@/components/RecentClubSidebarSection';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
 
 const PAGE_LIMIT = 12;
@@ -52,7 +53,6 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
   const universityLabel = university.campusName ? `${university.name} ${university.campusName}` : university.name;
   const categoryTotalCount = categories.reduce((sum, category) => sum + category.count, 0);
   const allClubCount = categoryTotalCount || totalCount;
-  const recentClubs = clubs.slice(0, 4);
 
   useEffect(() => {
     setSearchKeyword(query);
@@ -116,18 +116,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
               </div>
             </section>
 
-            <section className="border-text-100 rounded-4xl border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
-              <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
-              <div className="mt-10 flex flex-col gap-5">
-                {recentClubs.length > 0 ? (
-                  recentClubs.map((club) => <RecentClubCard key={club.id} club={club} />)
-                ) : (
-                  <p className="border-primary-200 text-text-400 bg-web-background rounded-[20px] border px-6 py-8 text-center text-[16px] leading-7">
-                    표시할 동아리가 없어요.
-                  </p>
-                )}
-              </div>
-            </section>
+            <RecentClubSidebarSection />
           </aside>
 
           <section className="flex min-w-0 flex-col items-center gap-10">
@@ -193,24 +182,6 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
         </div>
       </div>
     </main>
-  );
-}
-
-function RecentClubCard({ club }: { club: UniversityClub }) {
-  return (
-    <Link
-      className="border-primary-200 bg-web-background hover:border-primary-500 focus-visible:outline-primary-500 flex h-30.5 max-h-30.5 min-h-30.5 w-full shrink-0 items-center gap-7 overflow-hidden rounded-[20px] border px-7.5 py-6.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
-      type="button"
-      to={`/clubs/${club.id}`}
-    >
-      <ClubImage className="size-17.5" imageUrl={club.imageUrl} name={club.name} />
-      <ClubMeta
-        club={club}
-        titleClassName="w-57 text-[20px]"
-        categoryClassName="text-[16px]"
-        descriptionClassName="text-[16px]"
-      />
-    </Link>
   );
 }
 

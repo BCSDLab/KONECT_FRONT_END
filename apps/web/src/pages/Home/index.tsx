@@ -5,10 +5,11 @@ import { Link } from 'react-router-dom';
 
 import type { Region, HomeRequestParams, University } from '@/apis/home/entity';
 import { homeQueries } from '@/apis/home/queries';
-import clubBadgeBlue from '@/assets/club-badge-blue.png';
-import clubBadgeRed from '@/assets/club-badge-red.png';
+import type { RecentClub } from '@/apis/recentClub/entity';
 import heroCatBook from '@/assets/hero-cat-book.png';
 import SearchIcon from '@/assets/svg/search-icon.svg';
+import { CATEGORY_TEXT_COLORS } from '@/constants/club';
+import { useRecentClubs } from '@/hooks/useRecentClubs';
 
 const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '전체' },
@@ -19,45 +20,6 @@ const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '경상도', value: 'GYEONGSANG' },
   { label: '강원도', value: 'GANGWON' },
   { label: '제주도', value: 'JEJU' },
-];
-
-type RecentClub = {
-  id: number;
-  name: string;
-  category: string;
-  keyword: string;
-  logo: string;
-};
-
-const recentClubs: RecentClub[] = [
-  {
-    id: 1,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
-  {
-    id: 2,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeRed,
-  },
-  {
-    id: 3,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
-  {
-    id: 4,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
 ];
 
 function Home() {
@@ -75,7 +37,9 @@ function Home() {
   } satisfies HomeRequestParams;
 
   const { data: homeData } = useSuspenseQuery(homeQueries.detail(homeParams));
+  const { data: recentClubData } = useRecentClubs();
   const universities = homeData.universities ?? [];
+  const recentClubs = recentClubData?.clubs ?? [];
   const totalUniversityCount = homeData.totalUniversityCount;
   const isSearching = searchKeyword.trim().length > 0 || searchQuery.length > 0;
 
@@ -135,9 +99,11 @@ function Home() {
           <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
             <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
             <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {recentClubs.map((club) => (
-                <RecentClubCard key={club.id} club={club} />
-              ))}
+              {recentClubs.length > 0 ? (
+                recentClubs.map((club) => <RecentClubCard key={club.id} club={club} />)
+              ) : (
+                <RecentClubListMessage />
+              )}
             </div>
           </section>
         </div>
@@ -195,20 +161,34 @@ function SectionTitle({ title, description }: { title: string; description: stri
 
 function RecentClubCard({ club }: { club: RecentClub }) {
   return (
-    <button
+    <Link
       className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center gap-7 rounded-[20px] border bg-white px-5.5 py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
-      type="button"
+      to={`/clubs/${club.id}`}
     >
-      <img className="size-12.5 shrink-0 rounded-full object-cover" src={club.logo} alt="" />
+      {club.imageUrl ? (
+        <img className="size-12.5 shrink-0 rounded-full object-cover" src={club.imageUrl} alt="" />
+      ) : (
+        <span className="bg-primary-100 border-primary-200 block size-12.5 shrink-0 rounded-full border">
+          <span className="sr-only">{club.name}</span>
+        </span>
+      )}
       <span className="min-w-0">
         <span className="block truncate text-[20px] leading-10 font-semibold text-black">{club.name}</span>
         <span className="flex items-center gap-2 text-[14px] leading-10">
-          <span className="text-primary-600 font-semibold">{club.category}</span>
+          <span className={`${CATEGORY_TEXT_COLORS[club.category]} font-semibold`}>{club.categoryName}</span>
           <span className="bg-text-200 size-1.5 rounded-full" aria-hidden="true" />
-          <span className="text-text-600 font-medium">{club.keyword}</span>
+          <span className="text-text-600 min-w-0 truncate font-medium">{club.topic || club.description}</span>
         </span>
       </span>
-    </button>
+    </Link>
+  );
+}
+
+function RecentClubListMessage() {
+  return (
+    <div className="border-text-100 text-text-500 flex h-35 items-center justify-center rounded-[20px] border bg-white text-center text-[18px] leading-8 sm:col-span-2 lg:col-span-3 xl:col-span-4">
+      최근에 본 동아리가 없어요.
+    </div>
   );
 }
 

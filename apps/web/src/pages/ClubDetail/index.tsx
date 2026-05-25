@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { Link, useParams } from 'react-router-dom';
@@ -6,7 +7,9 @@ import { clubDetailQueries } from '@/apis/clubDetail/queries';
 import AddMov from '@/assets/add-mov.svg';
 import AddPhoto from '@/assets/add-photo.svg';
 import NoneImage from '@/assets/None-image.png';
+import RecentClubSidebarSection from '@/components/RecentClubSidebarSection';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
+import { addRecentClubId } from '@/hooks/useRecentClubIds';
 
 function Introduce({ introduce }: { introduce: string }) {
   return (
@@ -57,6 +60,10 @@ export default function ClubDetail() {
   const endDate = formatDate(clubDetail.recruitment.endAt);
   const recruitmentPeriod = startDate && endDate ? `${startDate}~${endDate}` : '미정';
 
+  useEffect(() => {
+    addRecentClubId(clubDetail.id);
+  }, [clubDetail.id]);
+
   return (
     <main className="bg-web-background min-h-screen text-black">
       <div className="mx-auto flex w-full max-w-369.5 flex-col px-5 pt-12 pb-20 sm:px-8 lg:pt-25.5 xl:px-0">
@@ -80,9 +87,7 @@ export default function ClubDetail() {
                 </div>
               </div>
             </section>
-            <section className="border-text-100 rounded-4xl border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
-              <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
-            </section>
+            <RecentClubSidebarSection currentClubId={clubDetail.id} />
           </aside>
           <div className="flex flex-col gap-10">
             <section className="flex min-h-75 flex-col gap-[37.5px] rounded-4xl bg-white px-11 py-10">
