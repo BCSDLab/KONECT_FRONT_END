@@ -6,18 +6,9 @@ export interface ClubDetailResponse {
   imageUrl: string;
   category: ClubCategory;
   categoryName: string;
+  topic: string;
   description: string;
   introduce: string;
   location: string;
-  memberCount: number;
   university: UniversitySummary;
-  recruitment: Recruitment;
-}
-
-export interface Recruitment {
-  isRecruitmentEnabled: boolean;
-  isAlwaysRecruiting: boolean;
-  startAt: string | null;
-  endAt: string | null;
-  content: string;
 }
