@@ -9,7 +9,7 @@ import type { UniversityClub, UniversityClubListRequestParams } from '@/apis/uni
 import { universityClubQueries } from '@/apis/universityClub/queries';
 import SearchIcon from '@/assets/svg/search-icon.svg';
 import Breadcrumb from '@/components/Breadcrumb';
-import RecentClubList from '@/components/RecentClubList';
+import UniversityClubSidebar from '@/components/UniversityClubSidebar';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
 
 const PAGE_LIMIT = 12;
@@ -49,12 +49,8 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     universityClubQueries.infiniteList(universityId, requestParams)
   );
-  const firstPage = data.pages[0];
-  const { university, totalCount, categories } = firstPage;
+  const [{ university, totalCount, categories }] = data.pages;
   const clubs = data.pages.flatMap((pageData) => pageData.clubs);
-  const universityLabel = university.campusName ? `${university.name} ${university.campusName}` : university.name;
-  const categoryTotalCount = categories.reduce((sum, category) => sum + category.count, 0);
-  const allClubCount = categoryTotalCount || totalCount;
 
   const handleSearchKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -95,22 +91,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
         <Breadcrumb items={[{ label: '홈', to: '/' }, { label: university.regionName }, { label: university.name }]} />
 
         <div className="mt-10 grid gap-8 md:grid-cols-[296px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
-          <aside className="flex flex-col gap-6 lg:gap-10">
-            <section className="border-text-100 flex items-center justify-center rounded-4xl border bg-white py-8 text-center sm:rounded-[40px] sm:py-10">
-              <div className="flex min-w-0 flex-col items-center gap-3">
-                <img className="h-16 w-12.5 object-contain" src={university.imageUrl} alt="" />
-                <div className="flex max-w-full flex-col items-center leading-10">
-                  <h1 className="max-w-full truncate text-[24px] font-semibold text-black">{universityLabel}</h1>
-                  <p className="text-text-400 text-[20px]">{allClubCount}개 동아리</p>
-                </div>
-              </div>
-            </section>
-
-            <section className="border-text-100 rounded-4xl border bg-white px-3 py-7 sm:rounded-[40px] sm:px-6 sm:py-11">
-              <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
-              <RecentClubList className="mt-10 flex flex-col gap-5" />
-            </section>
-          </aside>
+          <UniversityClubSidebar university={university} clubCount={totalCount} />
 
           <section className="flex min-w-0 flex-col items-center gap-10">
             <div className="flex w-full flex-col gap-5">
@@ -129,7 +110,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
                 <div className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   <CategoryFilterButton
                     label="전체"
-                    count={allClubCount}
+                    count={totalCount}
                     isSelected={!selectedCategory}
                     onClick={() => handleCategoryChange()}
                   />

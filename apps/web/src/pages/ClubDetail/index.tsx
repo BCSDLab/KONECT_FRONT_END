@@ -1,36 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import { clubDetailQueries } from '@/apis/clubDetail/queries';
-import AddMov from '@/assets/add-mov.svg';
-import AddPhoto from '@/assets/add-photo.svg';
 import NoneImage from '@/assets/None-image.png';
+import AddMovIcon from '@/assets/svg/add-mov-icon.svg';
+import AddPhotoIcon from '@/assets/svg/add-photo-icon.svg';
 import Breadcrumb from '@/components/Breadcrumb';
-import RecentClubList from '@/components/RecentClubList';
+import UniversityClubSidebar from '@/components/UniversityClubSidebar';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
 import { saveRecentClubId } from '@/utils/recentClubStorage';
+
+const INTRODUCE_MEDIA_ITEMS = [
+  { label: '활동 사진', icon: <AddPhotoIcon /> },
+  { label: '소개 영상', icon: <AddMovIcon /> },
+];
 
 function Introduce({ introduce }: { introduce: string }) {
   return (
     <div className="flex flex-col">
-      <div className="flex h-full w-full gap-5">
-        <section className="border-primary-200 h-72.5 w-144.5 rounded-[20px] border bg-[#F8FAFC] px-7.5 py-6.5">
-          <div className="flex h-full w-full flex-col items-center justify-center">
-            <AddPhoto />
-            <span className="text-text-400 text-[20px] leading-10">활동 사진</span>
-          </div>
-        </section>
-        <section className="border-primary-200 w-87.25 rounded-[20px] border bg-[#F8FAFC] px-7.5 py-6.5">
-          <div className="flex h-full w-full flex-col items-center justify-center">
-            <AddMov />
-            <span className="text-text-400 text-[20px] leading-10">소개 영상</span>
-          </div>
-        </section>
+      <div className="flex gap-5">
+        {INTRODUCE_MEDIA_ITEMS.map(({ label, icon }) => (
+          <IntroduceMediaCard key={label} icon={icon} label={label} />
+        ))}
       </div>
-      <span className="text-text-500 text-[20px] leading-10 font-semibold">{introduce}</span>
+      <span className="text-text-500 mt-2.5 text-[20px] leading-10 font-semibold">{introduce}</span>
     </div>
+  );
+}
+
+function IntroduceMediaCard({ icon, label }: { icon: ReactNode; label: string }) {
+  return (
+    <section className="border-primary-200 flex h-59.5 w-83.25 flex-col items-center justify-center rounded-[20px] border bg-[#F8FAFC]">
+      {icon}
+      <span className="text-text-400 text-[20px] leading-10">{label}</span>
+    </section>
   );
 }
 
@@ -57,8 +62,8 @@ export default function ClubDetail() {
   }, [clubDetail.id]);
 
   return (
-    <main className="bg-web-background min-h-screen text-black">
-      <div className="mx-auto flex w-full max-w-369.5 flex-col px-5 pt-12 pb-20 sm:px-8 lg:pt-25.5 xl:px-0">
+    <main className="min-h-screen text-black">
+      <div className="mx-auto mt-12 flex w-full max-w-277.5 flex-col px-5 pb-20 lg:mt-25 xl:px-0">
         <Breadcrumb
           items={[
             { label: '홈', to: '/' },
@@ -66,40 +71,20 @@ export default function ClubDetail() {
             { label: clubDetail.name },
           ]}
         />
-        <div className="mt-10 grid gap-8 lg:mt-15 lg:grid-cols-[407px_minmax(0,1050px)] lg:gap-5">
-          <aside className="flex flex-col gap-6 lg:gap-10">
-            <section className="border-text-100 flex h-55 items-center justify-center rounded-4xl border bg-white px-8 py-8 text-center sm:h-66 sm:rounded-[40px] sm:px-21 sm:py-10">
-              <div className="flex min-w-0 flex-col items-center gap-3">
-                <img className="h-22 w-17.5 object-contain" src={clubDetail.university.imageUrl} alt="" />
-                <div className="flex max-w-full flex-col items-center leading-10">
-                  <h1 className="max-w-full truncate text-[24px] font-semibold text-black">
-                    {clubDetail.university.name}
-                  </h1>
-                  <p className="text-text-400 text-[20px]">{clubDetail.university.clubCount ?? 0}개 동아리</p>
-                </div>
-              </div>
-            </section>
-            <section className="border-text-100 rounded-4xl border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
-              <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
-              <RecentClubList className="mt-10 flex flex-col gap-5" />
-            </section>
-          </aside>
+        <div className="mt-10 grid gap-8 md:mt-15 md:grid-cols-[296px_minmax(0,1050px)] lg:gap-10">
+          <UniversityClubSidebar university={clubDetail.university} clubCount={clubDetail.university.clubCount} />
           <div className="flex flex-col gap-10">
-            <section className="flex min-h-75 flex-col gap-[37.5px] rounded-4xl bg-white px-11 py-10">
-              <div className="flex h-29.75 gap-10">
+            <section className="border-text-100 flex flex-col gap-5 rounded-[20px] border bg-white px-11 py-10">
+              <div className="flex gap-10 py-[14.5px]">
                 <img className="size-22.5 object-cover" src={clubDetail.imageUrl} alt="" />
-                <div className="flex flex-col">
-                  <h1 className="text-[40px] leading-14 font-bold">{clubDetail.name}</h1>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={cn('shrink-0 text-[20px] font-semibold', CATEGORY_TEXT_COLORS[clubDetail.category])}
-                    >
+                <div className="flex flex-col gap-1 leading-10">
+                  <h1 className="text-[36px] font-extrabold">{clubDetail.name}</h1>
+                  <div className="flex items-center gap-2 text-[20px]">
+                    <span className={cn('font-semibold', CATEGORY_TEXT_COLORS[clubDetail.category])}>
                       {clubDetail.categoryName}
                     </span>
                     <span className="bg-text-200 size-1.5 shrink-0 rounded-full" aria-hidden="true" />
-                    <span className="text-text-600 min-w-0 truncate text-[20px] font-medium">
-                      {clubDetail.description}
-                    </span>
+                    <span className="text-text-600 min-w-0 truncate font-medium">{clubDetail.description}</span>
                   </div>
                 </div>
               </div>
@@ -110,7 +95,7 @@ export default function ClubDetail() {
                 </div>
               </div>
             </section>
-            <section className="flex min-h-127.5 w-258 flex-col items-start gap-2.5 rounded-4xl bg-white px-10 py-11">
+            <section className="border-text-100 flex flex-col gap-2.5 rounded-[20px] border bg-white px-11 py-10">
               <h2 className="text-text-900 text-[24px] font-bold">동아리 소개</h2>
               {clubDetail.introduce ? <Introduce introduce={clubDetail.introduce} /> : <NoneIntroduce />}
             </section>
