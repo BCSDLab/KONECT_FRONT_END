@@ -1,12 +1,16 @@
+import { useEffect } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { clubDetailQueries } from '@/apis/clubDetail/queries';
 import AddMov from '@/assets/add-mov.svg';
 import AddPhoto from '@/assets/add-photo.svg';
 import NoneImage from '@/assets/None-image.png';
+import Breadcrumb from '@/components/Breadcrumb';
+import RecentClubList from '@/components/RecentClubList';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
+import { saveRecentClubId } from '@/utils/recentClubStorage';
 
 function Introduce({ introduce }: { introduce: string }) {
   return (
@@ -48,16 +52,20 @@ export default function ClubDetail() {
   const { clubId } = useParams();
   const { data: clubDetail } = useSuspenseQuery(clubDetailQueries.detail(Number(clubId)));
 
+  useEffect(() => {
+    saveRecentClubId(clubDetail.id);
+  }, [clubDetail.id]);
+
   return (
     <main className="bg-web-background min-h-screen text-black">
       <div className="mx-auto flex w-full max-w-369.5 flex-col px-5 pt-12 pb-20 sm:px-8 lg:pt-25.5 xl:px-0">
-        <nav className="text-text-400 flex items-center gap-3 text-sm leading-8 font-semibold sm:gap-3.5 sm:text-[24px] sm:leading-10">
-          <Link to="/">홈</Link>
-          <span className="text-text-300 text-lg sm:text-[20px]">›</span>
-          <Link to={`/universities/${clubDetail.university.id}/clubs`}>대학교 동아리</Link>
-          <span className="text-text-300 text-lg sm:text-[20px]">›</span>
-          <span className="text-text-600 text-2xl font-semibold">{clubDetail.name}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: '홈', to: '/' },
+            { label: '대학교 동아리', to: `/universities/${clubDetail.university.id}/clubs` },
+            { label: clubDetail.name },
+          ]}
+        />
         <div className="mt-10 grid gap-8 lg:mt-15 lg:grid-cols-[407px_minmax(0,1050px)] lg:gap-5">
           <aside className="flex flex-col gap-6 lg:gap-10">
             <section className="border-text-100 flex h-55 items-center justify-center rounded-4xl border bg-white px-8 py-8 text-center sm:h-66 sm:rounded-[40px] sm:px-21 sm:py-10">
@@ -73,6 +81,7 @@ export default function ClubDetail() {
             </section>
             <section className="border-text-100 rounded-4xl border bg-white px-5 py-7 sm:rounded-[40px] sm:px-10 sm:py-11">
               <h2 className="text-text-600 text-[24px] leading-10 font-medium">최근에 본 동아리</h2>
+              <RecentClubList className="mt-10 flex flex-col gap-5" />
             </section>
           </aside>
           <div className="flex flex-col gap-10">

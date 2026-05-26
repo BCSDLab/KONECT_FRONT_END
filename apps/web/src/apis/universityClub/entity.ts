@@ -1,6 +1,5 @@
+import type { ClubCategory } from '@/apis/common/club';
 import type { Region } from '@/apis/home/entity';
-
-export type ClubCategory = 'ACADEMIC' | 'SPORTS' | 'HOBBY' | 'RELIGION' | 'PERFORMANCE' | 'JUNIOR';
 
 export interface UniversityClubListRequestParams {
   page?: number;
@@ -16,7 +15,6 @@ export interface UniversitySummary {
   region: Region;
   regionName: string;
   imageUrl: string;
-  clubCount?: number;
 }
 
 export interface ClubCategorySummary {
@@ -31,8 +29,8 @@ export interface UniversityClub {
   imageUrl: string;
   category: ClubCategory;
   categoryName: string;
+  topic: string;
   description: string;
-  memberCount: number;
 }
 
 export interface UniversityClubListResponse {
