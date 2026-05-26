@@ -134,7 +134,7 @@ function Home() {
         >
           <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
             <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
-            <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {recentClubs.map((club) => (
                 <RecentClubCard key={club.id} club={club} />
               ))}
