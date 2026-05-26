@@ -87,18 +87,18 @@ function Home() {
 
   return (
     <div className="min-h-screen text-black">
-      <main className="mx-auto flex w-full max-w-315 flex-col items-center px-6 pt-16 pb-24 sm:pt-24 lg:pt-34">
+      <main className="mx-auto flex w-full max-w-264 flex-col items-center pt-16 pb-24 sm:pt-24 lg:pt-34">
         <section className="relative flex w-full flex-col items-center text-center">
           <div className="border-primary-400 bg-primary-100 text-primary-500 rounded-full border px-5 py-1 leading-10 font-semibold">
             전국 대학 동아리를 한 곳에서
           </div>
-          <div className="mt-11 w-full">
-            <h1 className="text-[30px] leading-[1.3] font-extrabold text-black sm:text-[48px] sm:leading-tight lg:text-[60px] lg:leading-[1.18]">
+          <div className="mt-5 w-full">
+            <h1 className="text-[30px] leading-[1.3] font-extrabold text-black md:text-[48px] md:leading-10">
               <span className="block sm:inline">입학 전에도, 재학 중에도</span>
               <br className="hidden sm:block" />
-              <span className="mt-1 flex flex-wrap items-center justify-center gap-x-2 sm:mt-0 sm:inline-flex sm:gap-x-3">
+              <span className="mt-1 flex flex-wrap items-center justify-center gap-x-2 md:mt-2.5 md:inline-flex md:gap-x-3">
                 <span>동아리 정보는</span>
-                <span className="text-primary-500 inline-flex items-center [font-family:var(--font-cal-sans)] text-[44px] leading-none font-normal sm:text-[72px] lg:text-[80px]">
+                <span className="text-primary-500 inline-flex items-center [font-family:var(--font-cal-sans)] text-[44px] leading-none md:text-[64px]">
                   Konect
                 </span>
                 <span>에서</span>
@@ -106,16 +106,16 @@ function Home() {
             </h1>
           </div>
           <img
-            className="pointer-events-none absolute hidden object-contain xl:-top-4 xl:right-[7%] xl:block xl:size-58.25"
+            className="pointer-events-none absolute hidden object-contain lg:-top-6 lg:right-[9%] lg:block lg:size-46"
             src={heroCatBook}
             alt=""
           />
-          <p className="text-text-400 mt-8 sm:mt-15 sm:text-[24px] sm:leading-8">
+          <p className="text-text-400 mt-8 md:mt-20 md:text-[20px] md:leading-8">
             대학 이름을 검색하거나 목록에서 선택하면 <br className="block md:hidden" />
             해당 학교에 등록된 동아리 정보를 확인할 수 있어요.
           </p>
 
-          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-270 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-25 sm:h-21 sm:px-8">
+          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-255 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-25 sm:h-19.5">
             <span className="sr-only">학교명 검색</span>
             <input
               className="text-text-700 placeholder:text-text-300 min-w-0 flex-1 bg-transparent text-sm outline-none sm:text-[24px] sm:leading-10 sm:font-medium"
@@ -134,7 +134,7 @@ function Home() {
         >
           <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
             <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
-            <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="xl: mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {recentClubs.map((club) => (
                 <RecentClubCard key={club.id} club={club} />
               ))}
@@ -142,7 +142,7 @@ function Home() {
           </section>
         </div>
 
-        <section className="mt-10 w-full sm:mt-20">
+        <section className="mt-10 w-full sm:mt-31.75">
           <SectionTitle title="전체 대학" description="학교별 동아리를 자유롭게 탐색해보세요." />
           <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-2">
             <div className="flex min-w-0 flex-wrap gap-2">
@@ -151,7 +151,7 @@ function Home() {
 
                 return (
                   <button
-                    className={`h-11 shrink-0 rounded-[26px] px-5 text-sm transition-colors sm:h-14 sm:text-[24px] sm:leading-10 ${
+                    className={`shrink-0 rounded-[26px] px-3 transition-colors sm:px-5 ${
                       isSelected
                         ? 'bg-primary-900 text-indigo-5 font-medium'
                         : 'border-text-300 text-text-300 hover:border-primary-500 hover:text-primary-700 border bg-transparent'
@@ -161,17 +161,17 @@ function Home() {
                     aria-pressed={isSelected}
                     onClick={() => setSelectedRegion(region.value)}
                   >
-                    {region.label}
+                    <span className="leading-7 sm:text-[20px] sm:leading-10">{region.label}</span>
                   </button>
                 );
               })}
             </div>
-            <p className="text-text-500 flex h-11 shrink-0 items-center text-right text-sm whitespace-nowrap sm:h-14 sm:text-[24px] sm:leading-10">
+            <p className="text-text-500 flex shrink-0 items-center text-right text-sm leading-7 whitespace-nowrap sm:text-[20px] sm:leading-10">
               총<strong className="ml-1 font-bold">{totalUniversityCount}</strong>개 대학
             </p>
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {universities.length > 0 ? (
               universities.map((university) => <UniversityCard key={university.id} university={university} />)
             ) : (
@@ -186,9 +186,9 @@ function Home() {
 
 function SectionTitle({ title, description }: { title: string; description: string }) {
   return (
-    <div className="flex flex-col gap-2">
-      <h2 className="text-[28px] leading-10 font-semibold text-black sm:text-[32px]">{title}</h2>
-      <p className="text-text-400 sm:text-[20px] sm:leading-10">{description}</p>
+    <div className="flex flex-col">
+      <h2 className="leading-10 font-semibold text-black sm:text-[20px]">{title}</h2>
+      <p className="text-text-400 sm:leading-10">{description}</p>
     </div>
   );
 }
@@ -196,15 +196,15 @@ function SectionTitle({ title, description }: { title: string; description: stri
 function RecentClubCard({ club }: { club: RecentClub }) {
   return (
     <button
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 items-center gap-7 rounded-[20px] border bg-white px-5.5 py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 w-62.25 items-center gap-7 rounded-[20px] border bg-white px-5.5 py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
     >
       <img className="size-12.5 shrink-0 rounded-full object-cover" src={club.logo} alt="" />
       <span className="min-w-0">
-        <span className="block truncate text-[20px] leading-10 font-semibold text-black">{club.name}</span>
-        <span className="flex items-center gap-2 text-[14px] leading-10">
+        <span className="block truncate leading-10 font-semibold text-black">{club.name}</span>
+        <span className="flex items-center gap-2 text-[13px] leading-10">
           <span className="text-primary-600 font-semibold">{club.category}</span>
-          <span className="bg-text-200 size-1.5 rounded-full" aria-hidden="true" />
+          <span className="bg-text-200 size-1 rounded-full" aria-hidden="true" />
           <span className="text-text-600 font-medium">{club.keyword}</span>
         </span>
       </span>
@@ -239,11 +239,11 @@ function UniversityCard({ university }: { university: University }) {
   return (
     <Link
       to={`/universities/${university.id}/clubs`}
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-45 flex-col items-center justify-center rounded-[20px] border bg-white py-7 text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-62.25 flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
     >
-      <img className="size-12.5 object-contain" src={university.imageUrl} alt="" />
-      <span className="mt-3 block truncate text-[20px] leading-10 font-semibold text-black">{universityLabel}</span>
-      <span className="text-text-600 text-[14px] leading-6 font-medium">{university.clubCount}개 동아리</span>
+      <img className="size-10 object-contain" src={university.imageUrl} alt="" />
+      <span className="block truncate text-[18px] leading-10 font-semibold text-black">{universityLabel}</span>
+      <span className="text-text-600 text-[13px] leading-6 font-medium">{university.clubCount}개 동아리</span>
     </Link>
   );
 }
