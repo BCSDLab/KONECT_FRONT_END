@@ -16,8 +16,8 @@ function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/universities/:universityId/clubs" element={<UniversityClubList />} />
-          <Route path="/clubs/:clubId" element={<ClubDetail />} />
           <Route path="/clubs/register" element={<RegisterClub />} />
+          <Route path="/clubs/:clubId" element={<ClubDetail />} />
         </Route>
       </SentryRoutes>
     </BrowserRouter>
