@@ -3,6 +3,17 @@ name: Deploy KONECT Frontend to Server
 on:
   push:
     branches: ['main', 'develop']
+  workflow_dispatch:
+    inputs:
+      target:
+        description: 'Deployment target'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - app
+          - web
 
 concurrency:
   group: deploy-${{ github.ref_name }}
@@ -21,6 +32,49 @@ jobs:
       - name: Detect deployment targets
         id: targets
         run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            app_changed=false
+            web_changed=false
+
+            case "${{ inputs.target }}" in
+              all)
+                app_changed=true
+                web_changed=true
+                ;;
+              app)
+                app_changed=true
+                ;;
+              web)
+                web_changed=true
+                ;;
+              *)
+                echo "::error::Unknown deployment target: ${{ inputs.target }}"
+                exit 1
+                ;;
+            esac
+
+            if [ "${{ inputs.target }}" = "web" ] && [ "${{ github.ref_name }}" != "main" ]; then
+              echo "::error::Web deploy can only run from main"
+              exit 1
+            fi
+
+            deploy_web=$web_changed
+
+            if [ "${{ github.ref_name }}" != "main" ]; then
+              deploy_web=false
+            fi
+
+            {
+              echo "app=$app_changed"
+              echo "web=$deploy_web"
+            } >> "$GITHUB_OUTPUT"
+
+            echo "Manual deployment target: ${{ inputs.target }}"
+            echo "Deploy app: $app_changed"
+            echo "Deploy web: $deploy_web"
+            exit 0
+          fi
+
           changed_files="$(git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" || true)"
 
           if [ -z "$changed_files" ]; then
