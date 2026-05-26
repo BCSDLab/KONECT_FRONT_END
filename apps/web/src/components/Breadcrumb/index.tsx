@@ -18,7 +18,7 @@ function Breadcrumb({ items }: BreadcrumbProps) {
       aria-label="breadcrumb"
     >
       {items.map((item, index) => {
-        const isLast = items.at(-1) === item;
+        const isLast = index === items.length - 1;
 
         return (
           <Fragment key={`${item.label}-${index}`}>
