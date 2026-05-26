@@ -5,10 +5,9 @@ import { Link } from 'react-router-dom';
 
 import type { Region, HomeRequestParams, University } from '@/apis/home/entity';
 import { homeQueries } from '@/apis/home/queries';
-import clubBadgeBlue from '@/assets/club-badge-blue.png';
-import clubBadgeRed from '@/assets/club-badge-red.png';
 import heroCatBook from '@/assets/hero-cat-book.png';
 import SearchIcon from '@/assets/svg/search-icon.svg';
+import RecentClubList from '@/components/RecentClubList';
 
 const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '전체' },
@@ -19,45 +18,6 @@ const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '경상도', value: 'GYEONGSANG' },
   { label: '강원도', value: 'GANGWON' },
   { label: '제주도', value: 'JEJU' },
-];
-
-type RecentClub = {
-  id: number;
-  name: string;
-  category: string;
-  keyword: string;
-  logo: string;
-};
-
-const recentClubs: RecentClub[] = [
-  {
-    id: 1,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
-  {
-    id: 2,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeRed,
-  },
-  {
-    id: 3,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
-  {
-    id: 4,
-    name: '경영전략연구회',
-    category: '학술',
-    keyword: '경영',
-    logo: clubBadgeBlue,
-  },
 ];
 
 function Home() {
@@ -134,11 +94,10 @@ function Home() {
         >
           <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
             <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
-            <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {recentClubs.map((club) => (
-                <RecentClubCard key={club.id} club={club} />
-              ))}
-            </div>
+            <RecentClubList
+              className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+              emptyClassName="mt-4"
+            />
           </section>
         </div>
 
@@ -190,25 +149,6 @@ function SectionTitle({ title, description }: { title: string; description: stri
       <h2 className="leading-10 font-semibold text-black sm:text-[20px]">{title}</h2>
       <p className="text-text-400 sm:leading-10">{description}</p>
     </div>
-  );
-}
-
-function RecentClubCard({ club }: { club: RecentClub }) {
-  return (
-    <button
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-35 w-62.25 items-center gap-7 rounded-[20px] border bg-white px-5.5 py-8 transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
-      type="button"
-    >
-      <img className="size-12.5 shrink-0 rounded-full object-cover" src={club.logo} alt="" />
-      <span className="min-w-0">
-        <span className="block truncate leading-10 font-semibold text-black">{club.name}</span>
-        <span className="flex items-center gap-2 text-[13px] leading-10">
-          <span className="text-primary-600 font-semibold">{club.category}</span>
-          <span className="bg-text-200 size-1 rounded-full" aria-hidden="true" />
-          <span className="text-text-600 font-medium">{club.keyword}</span>
-        </span>
-      </span>
-    </button>
   );
 }
 
