@@ -5,14 +5,17 @@ import { useSuspenseInfiniteQuery } from '@tanstack/react-query';
 import { Link, Navigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { isClubCategory, type ClubCategory } from '@/apis/common/club';
+import type { Region } from '@/apis/home/entity';
 import type { UniversityClub, UniversityClubListRequestParams } from '@/apis/universityClub/entity';
 import { universityClubQueries } from '@/apis/universityClub/queries';
 import SearchIcon from '@/assets/svg/search-icon.svg';
 import Breadcrumb from '@/components/Breadcrumb';
 import UniversityClubSidebar from '@/components/UniversityClubSidebar';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
+import useResetScroll from '@/utils/hooks/useResetScroll';
 
 const PAGE_LIMIT = 12;
+const HOME_UNIVERSITY_SECTION = 'universities';
 
 function UniversityClubList() {
   const { universityId } = useParams();
@@ -32,6 +35,8 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
   const [searchKeyword, setSearchKeyword] = useState(query);
   const observerRef = useRef<HTMLDivElement>(null);
 
+  useResetScroll(universityId);
+
   const updateSearchQuery = useDebouncedCallback((value: string) => {
     updateListSearchParams(setSearchParams, { query: value.trim() });
   });
@@ -49,7 +54,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useSuspenseInfiniteQuery(
     universityClubQueries.infiniteList(universityId, requestParams)
   );
-  const [{ university, totalCount, categories }] = data.pages;
+  const [{ university, categories }] = data.pages;
   const clubs = data.pages.flatMap((pageData) => pageData.clubs);
 
   const handleSearchKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -88,10 +93,16 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
   return (
     <main className="min-h-screen text-black">
       <div className="mx-auto mt-12 flex w-full max-w-278 flex-col px-5 pb-20 md:px-0 lg:mt-25">
-        <Breadcrumb items={[{ label: '홈', to: '/' }, { label: university.regionName }, { label: university.name }]} />
+        <Breadcrumb
+          items={[
+            { label: '홈', to: '/' },
+            { label: university.regionName, to: getHomeUniversitySectionPath(university.region) },
+            { label: university.name },
+          ]}
+        />
 
         <div className="mt-10 grid gap-8 md:grid-cols-[296px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
-          <UniversityClubSidebar university={university} clubCount={totalCount} />
+          <UniversityClubSidebar university={university} clubCount={university.clubCount} />
 
           <section className="flex min-w-0 flex-col items-center gap-10">
             <div className="flex w-full flex-col gap-5">
@@ -106,29 +117,27 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
                 <SearchIcon className="h-8 sm:h-10" />
               </label>
 
-              <div className="border-text-100 flex items-center overflow-hidden rounded-[30px] border px-4 py-[9.5px] sm:px-8">
-                <div className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <CategoryFilterButton
+                  label="전체"
+                  count={university.clubCount}
+                  isSelected={!selectedCategory}
+                  onClick={() => handleCategoryChange()}
+                />
+                {categories.map((category) => (
                   <CategoryFilterButton
-                    label="전체"
-                    count={totalCount}
-                    isSelected={!selectedCategory}
-                    onClick={() => handleCategoryChange()}
+                    key={category.category}
+                    label={category.categoryName}
+                    count={category.count}
+                    isSelected={category.category === selectedCategory}
+                    onClick={() => handleCategoryChange(category.category)}
                   />
-                  {categories.map((category) => (
-                    <CategoryFilterButton
-                      key={category.category}
-                      label={category.categoryName}
-                      count={category.count}
-                      isSelected={category.category === selectedCategory}
-                      onClick={() => handleCategoryChange(category.category)}
-                    />
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
 
             <div className="flex w-full flex-col gap-5">
-              <p className="text-text-400 text-[16px] leading-7 sm:text-[20px]">
+              <p className="text-text-400 text-[16px] leading-7">
                 선택한 대학의 동아리를 확인해보세요. 관심 있는 동아리의 소개를 살펴볼 수 있어요.
               </p>
 
@@ -222,6 +231,16 @@ function getCategoryParam(value: string | null): ClubCategory | undefined {
   }
 
   return undefined;
+}
+
+function getHomeUniversitySectionPath(region: Region) {
+  const params = new URLSearchParams({ section: HOME_UNIVERSITY_SECTION });
+
+  if (region !== 'UNKNOWN') {
+    params.set('region', region);
+  }
+
+  return `/?${params.toString()}`;
 }
 
 function updateListSearchParams(
