@@ -24,7 +24,7 @@ function UniversityClubSidebar({ university, clubCount }: UniversityClubSidebarP
         </div>
       </section>
 
-      <section className="border-text-100 rounded-4xl border bg-white px-3 py-7 sm:rounded-[40px] sm:px-6 sm:py-11">
+      <section className="border-text-100 rounded-4xl border bg-white px-3 py-7 sm:rounded-[40px] sm:px-7.5 sm:py-6">
         <h2 className="text-text-600 text-[20px] leading-10 font-medium">최근에 본 동아리</h2>
         <RecentClubList className="mt-5 flex flex-col gap-5" />
       </section>

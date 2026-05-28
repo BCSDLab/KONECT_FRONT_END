@@ -10,6 +10,7 @@ import AddPhotoIcon from '@/assets/svg/add-photo-icon.svg';
 import Breadcrumb from '@/components/Breadcrumb';
 import UniversityClubSidebar from '@/components/UniversityClubSidebar';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
+import useResetScroll from '@/utils/hooks/useResetScroll';
 import { saveRecentClubId } from '@/utils/recentClubStorage';
 
 const INTRODUCE_MEDIA_ITEMS = [
@@ -55,6 +56,9 @@ function NoneIntroduce() {
 
 export default function ClubDetail() {
   const { clubId } = useParams();
+
+  useResetScroll(clubId);
+
   const { data: clubDetail } = useSuspenseQuery(clubDetailQueries.detail(Number(clubId)));
 
   useEffect(() => {

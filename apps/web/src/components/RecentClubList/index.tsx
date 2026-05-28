@@ -10,9 +10,17 @@ interface RecentClubListProps {
   emptyClassName?: string;
 }
 
+interface RecentClubListByIdsProps extends RecentClubListProps {
+  recentClubIds: number[];
+}
+
 function RecentClubList({ className, emptyClassName }: RecentClubListProps) {
   const recentClubIds = useRecentClubIds();
 
+  return <RecentClubListByIds className={className} emptyClassName={emptyClassName} recentClubIds={recentClubIds} />;
+}
+
+export function RecentClubListByIds({ className, emptyClassName, recentClubIds }: RecentClubListByIdsProps) {
   if (recentClubIds.length === 0) {
     return <RecentClubListMessage className={emptyClassName} message="최근에 본 동아리가 없어요." />;
   }

@@ -1,29 +1,37 @@
-import { useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { useDebouncedCallback } from '@konect/utils/use-debounced-callback';
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import type { Region, HomeRequestParams, University } from '@/apis/home/entity';
 import { homeQueries } from '@/apis/home/queries';
 import heroCatBook from '@/assets/hero-cat-book.png';
 import SearchIcon from '@/assets/svg/search-icon.svg';
-import RecentClubList from '@/components/RecentClubList';
+import { RecentClubListByIds } from '@/components/RecentClubList';
+import { useRecentClubIds } from '@/utils/recentClubStorage';
 
 const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '전체' },
   { label: '서울', value: 'SEOUL' },
   { label: '경기도', value: 'GYEONGGI' },
-  { label: '충청도', value: 'CHUNGCHEONG' },
-  { label: '전라도', value: 'JEOLLA' },
-  { label: '경상도', value: 'GYEONGSANG' },
   { label: '강원도', value: 'GANGWON' },
+  { label: '충청도', value: 'CHUNGCHEONG' },
+  { label: '경상도', value: 'GYEONGSANG' },
+  { label: '전라도', value: 'JEOLLA' },
   { label: '제주도', value: 'JEJU' },
 ];
 
+const HOME_UNIVERSITY_SECTION = 'universities';
+const REGION_PARAM = 'region';
+const SECTION_PARAM = 'section';
+
 function Home() {
-  const [selectedRegion, setSelectedRegion] = useState<Region>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchKeyword, setSearchKeyword] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const universityListRef = useRef<HTMLElement>(null);
+  const selectedRegion = getRegionParam(searchParams.get(REGION_PARAM));
+  const targetSection = searchParams.get(SECTION_PARAM);
 
   const updateSearchQuery = useDebouncedCallback((value: string) => {
     setSearchQuery(value.trim());
@@ -37,13 +45,37 @@ function Home() {
   const { data: homeData } = useSuspenseQuery(homeQueries.detail(homeParams));
   const universities = homeData.universities ?? [];
   const totalUniversityCount = homeData.totalUniversityCount;
+  const recentClubIds = useRecentClubIds();
   const isSearching = searchKeyword.trim().length > 0 || searchQuery.length > 0;
+  const hasRecentClubs = recentClubIds.length > 0;
 
   const handleSearchKeywordChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setSearchKeyword(value);
     updateSearchQuery(value);
   };
+
+  const handleRegionChange = (region?: Region) => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev);
+
+      if (region) params.set(REGION_PARAM, region);
+      else params.delete(REGION_PARAM);
+
+      params.delete(SECTION_PARAM);
+      return params;
+    });
+  };
+
+  useEffect(() => {
+    if (targetSection !== HOME_UNIVERSITY_SECTION) return;
+
+    const animationFrameId = requestAnimationFrame(() => {
+      universityListRef.current?.scrollIntoView({ block: 'start' });
+    });
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [selectedRegion, targetSection]);
 
   return (
     <div className="min-h-screen text-black">
@@ -87,21 +119,27 @@ function Home() {
           </label>
         </section>
 
-        <div
-          className={`grid w-full transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out ${
-            isSearching ? 'mt-0 grid-rows-[0fr] opacity-0' : 'mt-20 grid-rows-[1fr] opacity-100 sm:mt-24'
-          }`}
-        >
-          <section className="min-h-0 overflow-hidden" aria-hidden={isSearching}>
-            <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
-            <RecentClubList
-              className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-              emptyClassName="mt-4"
-            />
-          </section>
-        </div>
+        {hasRecentClubs ? (
+          <div
+            className={`grid w-full transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out ${
+              isSearching ? 'mt-0 grid-rows-[0fr] opacity-0' : 'mt-10 grid-rows-[1fr] opacity-100 sm:mt-24'
+            }`}
+          >
+            <section
+              className={`min-h-0 ${isSearching ? 'overflow-hidden' : 'overflow-visible'}`}
+              aria-hidden={isSearching}
+            >
+              <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
+              <RecentClubListByIds
+                className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                emptyClassName="mt-4"
+                recentClubIds={recentClubIds}
+              />
+            </section>
+          </div>
+        ) : null}
 
-        <section className="mt-10 w-full sm:mt-31.75">
+        <section ref={universityListRef} className="mt-10 w-full scroll-mt-5 sm:mt-31.75">
           <SectionTitle title="전체 대학" description="학교별 동아리를 자유롭게 탐색해보세요." />
           <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-x-4 gap-y-2">
             <div className="flex min-w-0 flex-wrap gap-2">
@@ -110,15 +148,15 @@ function Home() {
 
                 return (
                   <button
-                    className={`shrink-0 rounded-[26px] px-3 transition-colors sm:px-5 ${
+                    className={`shrink-0 rounded-[26px] border px-3 font-medium transition-colors sm:px-5 ${
                       isSelected
-                        ? 'bg-primary-900 text-indigo-5 font-medium'
-                        : 'border-text-300 text-text-300 hover:border-primary-500 hover:text-primary-700 border bg-transparent'
+                        ? 'border-primary-900 bg-primary-900 text-indigo-5'
+                        : 'border-text-300 text-text-300 hover:border-primary-500 hover:text-primary-700 bg-transparent'
                     }`}
                     key={region.label}
                     type="button"
                     aria-pressed={isSelected}
-                    onClick={() => setSelectedRegion(region.value)}
+                    onClick={() => handleRegionChange(region.value)}
                   >
                     <span className="leading-7 sm:text-[20px] sm:leading-10">{region.label}</span>
                   </button>
@@ -186,6 +224,10 @@ function UniversityCard({ university }: { university: University }) {
       <span className="text-text-600 text-[13px] leading-6 font-medium">{university.clubCount}개 동아리</span>
     </Link>
   );
+}
+
+function getRegionParam(value: string | null): Region | undefined {
+  return REGION_OPTIONS.some((region) => region.value === value) ? (value as Region) : undefined;
 }
 
 export default Home;
