@@ -10,7 +10,7 @@ export default function RegisterClub() {
       title: '동아리 정보 수정',
       description: '이미 KONECT에 등록된 동아리의 소개, 사진, 상세정보를 추가하거나 수정할 수 있어요',
       target: '대상 : 동아리 회장, 임원진',
-      link: 'clubs/register', //추후 페이지 추가후 수정
+      link: '/clubs/register', //추후 페이지 추가후 수정
     },
     {
       image: NewClub,

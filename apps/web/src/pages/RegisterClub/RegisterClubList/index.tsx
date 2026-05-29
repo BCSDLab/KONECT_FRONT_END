@@ -19,10 +19,10 @@ export default function RegisterClubList() {
       <form className="flex flex-col gap-10">
         <section className="flex h-183.75 w-254 flex-col gap-10 rounded-[20px] border border-[#E7EBEF] bg-[#FFF] px-11 py-10">
           <div className="flex w-full flex-col gap-2.5">
-            <span className="flex">
+            <div className="flex">
               <p className="text-text-900 text-[24px] font-bold">대학교명</p>
               <p className="text-[24px] font-bold text-[#DD2E44]">*</p>
-            </span>
+            </div>
             <UniversityDropdown
               value={selectedUniversity}
               onChange={setSelectedUniversity}
