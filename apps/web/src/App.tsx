@@ -8,6 +8,7 @@ import ClubRegistration from './pages/ClubRegistration';
 import ClubRequestComplete from './pages/ClubRequestComplete';
 import Home from './pages/Home';
 import RegisterClub from './pages/RegisterClub';
+import RegisterClubList from './pages/RegisterClub/RegisterClubList';
 import UniversityClubList from './pages/UniversityClubList';
 
 const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/universities/:universityId/clubs" element={<UniversityClubList />} />
           <Route path="/clubs/register" element={<RegisterClub />} />
+          <Route path="/register-club/list" element={<RegisterClubList />} />
           <Route path="/clubs/registration-requests" element={<ClubRegistration />} />
           <Route path="/clubs/register/complete" element={<ClubRequestComplete />} />
           <Route path="/clubs/information-update-requests" element={<ClubInformationUpdate />} />

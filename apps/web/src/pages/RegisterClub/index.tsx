@@ -29,6 +29,7 @@ export default function RegisterClub() {
       title: '학교 동아리 목록 등록',
       description: '총동 / 학생회 담당자가 학교 단위의 동아리 목록과 기본 정보를 한 번에 전달할 수 있어요.',
       target: '대상 : 총동아리 연합회 / 학생회 담당자',
+      link: '/register-club/list',
     },
   ];
   return (
