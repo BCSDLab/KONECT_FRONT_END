@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import EditClub from '@/assets/edit-club-detail.png';
 import NewClub from '@/assets/new-club.png';
 import Register from '@/assets/register-club.png';
@@ -9,6 +10,7 @@ export default function RegisterClub() {
       title: '동아리 정보 수정',
       description: '이미 KONECT에 등록된 동아리의 소개, 사진, 상세정보를 추가하거나 수정할 수 있어요',
       target: '대상 : 동아리 회장, 임원진',
+      link: 'clubs/register', //추후 페이지 추가후 수정
     },
     {
       image: NewClub,
@@ -16,6 +18,7 @@ export default function RegisterClub() {
       title: '신규 동아리 등록',
       description: '아직 KONECT에 등록되지 않은 동아리의 기본 정보와 소개 정보를 제출할 수 있어요.',
       target: '대상 : 미등록된 동아리의 관계자',
+      link: '/clubs/register',
     },
     {
       image: Register,
@@ -23,6 +26,7 @@ export default function RegisterClub() {
       title: '학교 동아리 목록 등록',
       description: '총동 / 학생회 담당자가 학교 단위의 동아리 목록과 기본 정보를 한 번에 전달할 수 있어요.',
       target: '대상 : 총동아리 연합회 / 학생회 담당자',
+      link: '/register-club/list',
     },
   ];
   return (
@@ -38,9 +42,10 @@ export default function RegisterClub() {
       </section>
       <section className="flex gap-5">
         {registerClubCards.map((card) => (
-          <div
+          <Link
             key={card.title}
             className="border-text-100 flex h-92.75 w-82.75 flex-col items-center gap-10 rounded-[20px] border bg-[#ffffff] px-7.5 py-10"
+            to={card.link}
           >
             <img src={card.image} alt={card.imageAlt} />
             <div className="flex flex-col items-center">
@@ -48,7 +53,7 @@ export default function RegisterClub() {
               <span className="text-text-600 mt-10 w-65 text-center text-[14px] leading-4">{card.description}</span>
               <span className="text-text-600 pt-5 text-[14px]">{card.target}</span>
             </div>
-          </div>
+          </Link>
         ))}
       </section>
     </main>
