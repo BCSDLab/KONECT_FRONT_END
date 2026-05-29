@@ -14,7 +14,7 @@ interface BreadcrumbProps {
 function Breadcrumb({ items }: BreadcrumbProps) {
   return (
     <nav
-      className="text-text-400 flex items-center gap-3 text-sm leading-8 font-semibold sm:gap-3.5 sm:text-2xl sm:leading-10"
+      className="text-text-400 flex items-center gap-3 text-sm leading-8 font-semibold sm:gap-3.5 sm:text-[16px] sm:leading-10"
       aria-label="breadcrumb"
     >
       {items.map((item, index) => {
