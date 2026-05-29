@@ -92,7 +92,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 
   return (
     <main className="min-h-screen text-black">
-      <div className="mx-auto mt-12 flex w-full max-w-278 flex-col px-5 pb-20 md:px-0 lg:mt-25">
+      <div className="mx-auto mt-12 flex w-full max-w-258.5 flex-col px-5 pb-20 md:px-0 lg:mt-25">
         <Breadcrumb
           items={[
             { label: '홈', to: '/' },
@@ -101,20 +101,20 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
           ]}
         />
 
-        <div className="mt-10 grid gap-8 md:grid-cols-[296px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
+        <div className="mt-10 grid gap-8 md:grid-cols-[279px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
           <UniversityClubSidebar university={university} clubCount={university.clubCount} />
 
           <section className="flex min-w-0 flex-col items-center gap-10">
             <div className="flex w-full flex-col gap-5">
-              <label className="border-text-100 focus-within:border-primary-500 flex items-center rounded-[30px] border bg-white px-5 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] sm:px-8 sm:py-3.5">
+              <label className="border-text-100 focus-within:border-primary-500 flex items-center rounded-[30px] border bg-white px-5 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] sm:px-8 sm:py-2.25">
                 <span className="sr-only">동아리명 검색</span>
                 <input
-                  className="placeholder:text-text-300 text-text-700 min-w-0 flex-1 bg-transparent text-base leading-10 font-medium outline-none sm:text-[24px]"
+                  className="placeholder:text-text-300 text-text-700 min-w-0 flex-1 bg-transparent leading-10 font-medium outline-none sm:text-[20px]"
                   value={searchKeyword}
                   onChange={handleSearchKeywordChange}
                   placeholder="동아리명을 검색해 보세요"
                 />
-                <SearchIcon className="h-8 sm:h-10" />
+                <SearchIcon className="h-6 sm:h-8" />
               </label>
 
               <div className="flex min-w-0 gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -136,7 +136,7 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
               </div>
             </div>
 
-            <div className="flex w-full flex-col gap-5">
+            <div className="flex w-full flex-col gap-3">
               <p className="text-text-400 text-[16px] leading-7">
                 선택한 대학의 동아리를 확인해보세요. 관심 있는 동아리의 소개를 살펴볼 수 있어요.
               </p>
@@ -171,14 +171,14 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
 function ClubCard({ club }: { club: UniversityClub }) {
   return (
     <Link
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex items-center gap-5 overflow-hidden rounded-[20px] border bg-white px-5.5 py-5 text-left transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex items-center gap-4 overflow-hidden rounded-[20px] border bg-white px-5.5 py-7.5 text-left transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] focus-visible:outline-2 focus-visible:outline-offset-2"
       type="button"
       to={`/clubs/${club.id}`}
     >
-      <img className="size-12.5 shrink-0 object-contain" src={club.imageUrl} alt="" />
+      <img className="size-15 shrink-0 object-contain" src={club.imageUrl} alt="" />
       <span className="min-w-0">
-        <span className={cn('block truncate text-[18px] leading-10 font-semibold text-black')}>{club.name}</span>
-        <span className="flex min-w-0 items-center gap-2 leading-10">
+        <span className="block truncate leading-8 font-semibold text-black">{club.name}</span>
+        <span className="flex min-w-0 items-center gap-2 text-[13px] leading-7">
           <span className={cn('shrink-0 font-semibold', CATEGORY_TEXT_COLORS[club.category])}>{club.categoryName}</span>
           <span className="bg-text-200 size-1.5 shrink-0 rounded-full" aria-hidden="true" />
           <span className={cn('text-text-600 min-w-0 truncate font-medium')}>{club.topic}</span>
