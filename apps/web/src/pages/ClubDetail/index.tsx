@@ -80,7 +80,7 @@ export default function ClubDetail() {
           <div className="flex flex-col gap-5">
             <section className="border-text-100 flex flex-col gap-5 rounded-[20px] border bg-white px-11 py-10">
               <div className="flex gap-10 py-[14.5px]">
-                <img className="size-22.5 object-cover" src={clubDetail.imageUrl} alt="" />
+                <img className="size-22.5 object-cover" src={clubDetail.categoryEmoji} alt="" />
                 <div className="flex flex-col gap-1 leading-10">
                   <h1 className="text-[32px] font-extrabold">{clubDetail.name}</h1>
                   <div className="flex items-center gap-2 text-[16px]">

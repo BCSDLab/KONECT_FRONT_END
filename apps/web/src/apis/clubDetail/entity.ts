@@ -5,7 +5,7 @@ import type { UniversitySummary } from '../universityClub/entity';
 export interface ClubDetailResponse {
   id: number;
   name: string;
-  imageUrl: string;
+  categoryEmoji: string;
   category: ClubCategory;
   categoryName: string;
   topic: string;
