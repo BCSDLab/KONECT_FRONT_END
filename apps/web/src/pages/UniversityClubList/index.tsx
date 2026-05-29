@@ -175,7 +175,7 @@ function ClubCard({ club }: { club: UniversityClub }) {
       type="button"
       to={`/clubs/${club.id}`}
     >
-      <img className="size-15 shrink-0 object-contain" src={club.imageUrl} alt="" />
+      <img className="size-15 shrink-0 object-contain" src={club.categoryEmoji} alt="" />
       <span className="min-w-0">
         <span className="block truncate leading-8 font-semibold text-black">{club.name}</span>
         <span className="flex min-w-0 items-center gap-2 text-[13px] leading-7">

@@ -7,7 +7,7 @@ export interface RecentClubRequestParams {
 export interface RecentClub {
   id: number;
   name: string;
-  imageUrl: string;
+  categoryEmoji: string;
   category: ClubCategory;
   categoryName: string;
   topic: string;
