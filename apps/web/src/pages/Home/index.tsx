@@ -79,12 +79,12 @@ function Home() {
 
   return (
     <div className="min-h-screen text-black">
-      <main className="mx-auto flex w-full max-w-264 flex-col items-center pt-16 pb-24 sm:pt-24 lg:pt-34">
+      <main className="mx-auto flex w-full max-w-254.5 flex-col items-center pt-16 pb-24 sm:pt-20 lg:pt-25">
         <section className="relative flex w-full flex-col items-center text-center">
           <div className="border-primary-400 bg-primary-100 text-primary-500 rounded-full border px-5 py-1 leading-10 font-semibold">
             전국 대학 동아리를 한 곳에서
           </div>
-          <div className="mt-5 w-full">
+          <div className="mt-8 w-full">
             <h1 className="text-[30px] leading-[1.3] font-extrabold text-black md:text-[48px] md:leading-10">
               <span className="block sm:inline">입학 전에도, 재학 중에도</span>
               <br className="hidden sm:block" />
@@ -102,7 +102,7 @@ function Home() {
             src={heroCatBook}
             alt=""
           />
-          <p className="text-text-400 mt-8 md:mt-20 md:text-[20px] md:leading-8">
+          <p className="text-text-400 mt-8 md:mt-10 md:text-[20px] md:leading-8">
             대학 이름을 검색하거나 목록에서 선택하면 <br className="block md:hidden" />
             해당 학교에 등록된 동아리 정보를 확인할 수 있어요.
           </p>
@@ -119,10 +119,10 @@ function Home() {
           </label>
         </section>
 
-        {hasRecentClubs ? (
+        {hasRecentClubs && (
           <div
             className={`grid w-full transition-[grid-template-rows,opacity,margin-top] duration-300 ease-out ${
-              isSearching ? 'mt-0 grid-rows-[0fr] opacity-0' : 'mt-10 grid-rows-[1fr] opacity-100 sm:mt-24'
+              isSearching ? 'mt-0 grid-rows-[0fr] opacity-0' : 'mt-10 grid-rows-[1fr] opacity-100 sm:mt-20'
             }`}
           >
             <section
@@ -137,7 +137,7 @@ function Home() {
               />
             </section>
           </div>
-        ) : null}
+        )}
 
         <section ref={universityListRef} className="mt-10 w-full scroll-mt-5 sm:mt-31.75">
           <SectionTitle title="전체 대학" description="학교별 동아리를 자유롭게 탐색해보세요." />
@@ -184,7 +184,7 @@ function Home() {
 function SectionTitle({ title, description }: { title: string; description: string }) {
   return (
     <div className="flex flex-col">
-      <h2 className="leading-10 font-semibold text-black sm:text-[20px]">{title}</h2>
+      <h2 className="leading-10 font-semibold text-black sm:text-[24px]">{title}</h2>
       <p className="text-text-400 sm:leading-10">{description}</p>
     </div>
   );
@@ -217,10 +217,10 @@ function UniversityCard({ university }: { university: University }) {
   return (
     <Link
       to={`/universities/${university.id}/clubs`}
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-62.25 flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-57.5 flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       <img className="size-10 object-contain" src={university.imageUrl} alt="" />
-      <span className="block truncate text-[18px] leading-10 font-semibold text-black">{universityLabel}</span>
+      <span className="mt-1 block truncate leading-9 font-semibold text-black">{universityLabel}</span>
       <span className="text-text-600 text-[13px] leading-6 font-medium">{university.clubCount}개 동아리</span>
     </Link>
   );

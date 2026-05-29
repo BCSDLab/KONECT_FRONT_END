@@ -27,7 +27,7 @@ export interface ClubCategorySummary {
 export interface UniversityClub {
   id: number;
   name: string;
-  imageUrl: string;
+  categoryEmoji: string;
   category: ClubCategory;
   categoryName: string;
   topic: string;
