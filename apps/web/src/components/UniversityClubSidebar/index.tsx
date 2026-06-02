@@ -1,4 +1,5 @@
 import RecentClubList from '@/components/RecentClubList';
+import { getUniversityLabel } from '@/utils/universityLabel';
 
 interface UniversityClubSidebarProps {
   university: {
@@ -10,7 +11,7 @@ interface UniversityClubSidebarProps {
 }
 
 function UniversityClubSidebar({ university, clubCount }: UniversityClubSidebarProps) {
-  const universityLabel = university.campusName ? `${university.name} ${university.campusName}` : university.name;
+  const universityLabel = getUniversityLabel(university);
 
   return (
     <aside className="flex flex-col gap-6 lg:gap-10">
