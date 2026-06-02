@@ -124,6 +124,20 @@ function ClubInformationUpdate() {
     setMediaError('');
   };
 
+  const handleRemoveMediaItem = (id: string) => {
+    setMediaItems((prevItems) =>
+      prevItems.filter((item) => {
+        if (item.id === id) {
+          URL.revokeObjectURL(item.previewUrl);
+          return false;
+        }
+
+        return true;
+      })
+    );
+    setMediaError('');
+  };
+
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     setFormMessage('');
@@ -230,6 +244,7 @@ function ClubInformationUpdate() {
             mediaItems={mediaItems}
             onAppendMediaFiles={handleAppendMediaItems}
             onClearMediaItems={handleClearMediaItems}
+            onRemoveMediaItem={handleRemoveMediaItem}
           />
 
           <FieldGroup label="동아리 소개" required>
