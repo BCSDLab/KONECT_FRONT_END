@@ -9,6 +9,7 @@ import heroCatBook from '@/assets/hero-cat-book.png';
 import SearchIcon from '@/assets/svg/search-icon.svg';
 import { RecentClubListByIds } from '@/components/RecentClubList';
 import { useRecentClubIds } from '@/utils/recentClubStorage';
+import { getUniversityLabel } from '@/utils/universityLabel';
 
 const REGION_OPTIONS: { label: string; value?: Region }[] = [
   { label: '전체' },
@@ -212,7 +213,7 @@ function UniversityListMessage({ message }: { message: string }) {
 }
 
 function UniversityCard({ university }: { university: University }) {
-  const universityLabel = university.campusName ? `${university.name} ${university.campusName}` : university.name;
+  const universityLabel = getUniversityLabel(university);
 
   return (
     <Link

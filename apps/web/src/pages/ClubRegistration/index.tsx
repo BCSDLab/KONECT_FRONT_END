@@ -42,7 +42,7 @@ function ClubRegistration() {
   const [universityInput, setUniversityInput] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
   const [clubName, setClubName] = useState('');
-  const [clubEmoji, setClubEmoji] = useState('🏀');
+  const [clubEmoji, setClubEmoji] = useState('');
   const [clubCategory, setClubCategory] = useState<ClubCategory | ''>('');
   const [clubTopic, setClubTopic] = useState('');
   const [shortDescription, setShortDescription] = useState('');
@@ -106,6 +106,20 @@ function ClubRegistration() {
     setMediaError('');
   };
 
+  const handleRemoveMediaItem = (id: string) => {
+    setMediaItems((prevItems) =>
+      prevItems.filter((item) => {
+        if (item.id === id) {
+          URL.revokeObjectURL(item.previewUrl);
+          return false;
+        }
+
+        return true;
+      })
+    );
+    setMediaError('');
+  };
+
   const handleCategoryChange = (event: ChangeEvent<HTMLSelectElement>) => {
     setClubCategory(event.target.value as ClubCategory | '');
   };
@@ -139,7 +153,7 @@ function ClubRegistration() {
 
       handleClearMediaItems();
       setClubName('');
-      setClubEmoji('🏀');
+      setClubEmoji('');
       setClubCategory('');
       setClubTopic('');
       setShortDescription('');
@@ -191,19 +205,7 @@ function ClubRegistration() {
             />
           </FieldGroup>
 
-          <div className="grid gap-5 lg:grid-cols-[221px_minmax(0,367px)_minmax(0,1fr)]">
-            <FieldGroup label="동아리 이모지" required>
-              <div className="border-text-100 focus-within:border-primary-500 flex h-33 items-center justify-center rounded-[20px] border bg-white transition-colors">
-                <input
-                  className="text-text-900 h-full w-full bg-transparent text-center text-[48px] outline-none"
-                  value={clubEmoji}
-                  onChange={(event) => setClubEmoji(event.target.value)}
-                  maxLength={8}
-                  aria-label="동아리 이모지"
-                />
-              </div>
-            </FieldGroup>
-
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,367px)_minmax(0,1fr)_221px]">
             <FieldGroup label="동아리 분과" required>
               <div className="border-text-100 focus-within:border-primary-500 relative flex h-15.25 items-center rounded-[20px] border bg-white transition-colors">
                 <select
@@ -231,6 +233,23 @@ function ClubRegistration() {
                 maxLength={20}
               />
             </FieldGroup>
+
+            <FieldGroup label="동아리 이모지" required>
+              <div className="border-text-100 focus-within:border-primary-500 relative flex h-33 items-center justify-center rounded-[20px] border bg-white transition-colors">
+                {!clubEmoji && (
+                  <span className="text-text-300 pointer-events-none absolute inset-0 flex items-center justify-center text-[20px] font-medium">
+                    이모지를 입력해주세요.
+                  </span>
+                )}
+                <input
+                  className="text-text-900 relative z-10 h-full w-full bg-transparent text-center text-[48px] outline-none"
+                  value={clubEmoji}
+                  onChange={(event) => setClubEmoji(event.target.value)}
+                  maxLength={8}
+                  aria-label="동아리 이모지"
+                />
+              </div>
+            </FieldGroup>
           </div>
 
           <FieldGroup
@@ -252,6 +271,7 @@ function ClubRegistration() {
             mediaItems={mediaItems}
             onAppendMediaFiles={handleAppendMediaItems}
             onClearMediaItems={handleClearMediaItems}
+            onRemoveMediaItem={handleRemoveMediaItem}
           />
 
           <FieldGroup label="동아리 소개" required>

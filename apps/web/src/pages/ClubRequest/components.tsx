@@ -276,30 +276,35 @@ export function MediaUploader({
   mediaItems,
   onAppendMediaFiles,
   onClearMediaItems,
+  onRemoveMediaItem,
 }: {
   mediaError: string;
   mediaItems: LocalMediaItem[];
   onAppendMediaFiles: (files: File[]) => void;
   onClearMediaItems: () => void;
+  onRemoveMediaItem: (id: string) => void;
 }) {
   const handleMediaInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     onAppendMediaFiles(Array.from(event.currentTarget.files ?? []));
     event.currentTarget.value = '';
   };
 
-  const handleMediaDrop = (event: DragEvent<HTMLLabelElement>) => {
+  const mediaInputId = useId();
+
+  const handleMediaDrop = (event: DragEvent<HTMLDivElement>) => {
     event.preventDefault();
     onAppendMediaFiles(Array.from(event.dataTransfer.files));
   };
 
   return (
     <FieldGroup label="사진/영상 첨부" trailingText={`${mediaItems.length}/${MAX_MEDIA_COUNT}`}>
-      <label
+      <div
         className="border-text-100 flex min-h-62 cursor-pointer flex-col items-center justify-center rounded-[20px] border bg-white px-5 py-6 text-center"
         onDragOver={(event) => event.preventDefault()}
         onDrop={handleMediaDrop}
       >
         <input
+          id={mediaInputId}
           className="sr-only"
           type="file"
           accept="image/jpeg,image/png,image/gif"
@@ -309,17 +314,37 @@ export function MediaUploader({
         {mediaItems.length > 0 ? (
           <div className="grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {mediaItems.map((item) => (
-              <img key={item.id} className="size-50 w-full rounded-[10px] object-cover" src={item.previewUrl} alt="" />
+              <div key={item.id} className="relative">
+                <img className="size-50 w-full rounded-[10px] object-cover" src={item.previewUrl} alt="" />
+                <button
+                  className="bg-text-200 absolute top-2.5 right-2.5 flex size-7.5 items-center justify-center rounded-full transition-opacity hover:opacity-90"
+                  type="button"
+                  aria-label="첨부 이미지 삭제"
+                  onClick={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onRemoveMediaItem(item.id);
+                  }}
+                >
+                  <span className="relative size-3" aria-hidden="true">
+                    <span className="absolute top-1/2 left-0 h-0.5 w-3 -translate-y-1/2 rotate-45 rounded-full bg-white" />
+                    <span className="absolute top-1/2 left-0 h-0.5 w-3 -translate-y-1/2 -rotate-45 rounded-full bg-white" />
+                  </span>
+                </button>
+              </div>
             ))}
             {mediaItems.length < MAX_MEDIA_COUNT && (
-              <div className="border-text-200 text-text-400 flex size-50 flex-col items-center justify-center rounded-[20px] border">
+              <label
+                className="border-text-200 text-text-400 flex size-50 cursor-pointer flex-col items-center justify-center rounded-[20px] border"
+                htmlFor={mediaInputId}
+              >
                 <span className="text-[40px] leading-none font-extralight">+</span>
                 <span className="text-[14px] font-medium">영상, 이미지 추가</span>
-              </div>
+              </label>
             )}
           </div>
         ) : (
-          <div className="flex flex-col items-center gap-5">
+          <label className="flex cursor-pointer flex-col items-center gap-5" htmlFor={mediaInputId}>
             <span className="bg-primary-500 flex h-13 items-center justify-center rounded-[20px] px-7 text-[18px] leading-10 font-semibold text-white sm:text-[20px]">
               사진 선택
             </span>
@@ -327,12 +352,12 @@ export function MediaUploader({
               (선택) 첨부할 사진을 여기에 끌어놓거나, 사진 선택 버튼을 눌러 직접 사진을 선택해주세요.
               <br />( 파일 형식 : . JPG, PNG, GIF )
             </p>
-          </div>
+          </label>
         )}
-      </label>
+      </div>
       {mediaItems.length > 0 && (
         <button
-          className="bg-primary-500 mt-2 flex h-11 items-center justify-center rounded-[20px] px-5 text-[16px] font-semibold text-white transition-opacity hover:opacity-90"
+          className="bg-primary-500 mt-2.5 flex h-13 w-39.5 items-center justify-center rounded-[20px] text-[20px] leading-10 font-semibold text-white transition-opacity hover:opacity-90"
           type="button"
           onClick={onClearMediaItems}
         >
