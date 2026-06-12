@@ -1,42 +1,21 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect } from 'react';
 import { cn } from '@konect/utils/cn';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 
 import { clubDetailQueries } from '@/apis/clubDetail/queries';
 import NoneImage from '@/assets/None-image.png';
-import AddMovIcon from '@/assets/svg/add-mov-icon.svg';
-import AddPhotoIcon from '@/assets/svg/add-photo-icon.svg';
 import Breadcrumb from '@/components/Breadcrumb';
 import UniversityClubSidebar from '@/components/UniversityClubSidebar';
 import { CATEGORY_TEXT_COLORS } from '@/constants/club';
 import useResetScroll from '@/utils/hooks/useResetScroll';
 import { saveRecentClubId } from '@/utils/recentClubStorage';
 
-const INTRODUCE_MEDIA_ITEMS = [
-  { label: '활동 사진', icon: <AddPhotoIcon /> },
-  { label: '소개 영상', icon: <AddMovIcon /> },
-];
-
 function Introduce({ introduce }: { introduce: string }) {
   return (
     <div className="flex flex-col">
-      <div className="flex gap-5">
-        {INTRODUCE_MEDIA_ITEMS.map(({ label, icon }) => (
-          <IntroduceMediaCard key={label} icon={icon} label={label} />
-        ))}
-      </div>
       <span className="text-text-500 mt-2.5 leading-10 font-semibold">{introduce}</span>
     </div>
-  );
-}
-
-function IntroduceMediaCard({ icon, label }: { icon: ReactNode; label: string }) {
-  return (
-    <section className="border-primary-200 flex h-59.5 w-83.25 flex-col items-center justify-center rounded-[20px] border bg-[#F8FAFC]">
-      {icon}
-      <span className="text-text-400 text-[20px] leading-10">{label}</span>
-    </section>
   );
 }
 
