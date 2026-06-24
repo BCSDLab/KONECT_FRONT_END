@@ -101,12 +101,12 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
           ]}
         />
 
-        <div className="mt-10 grid gap-8 md:grid-cols-[279px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
+        <div className="mt-10 grid gap-8 md:grid-cols-[259px_minmax(0,1050px)] lg:mt-15 lg:gap-5">
           <UniversityClubSidebar university={university} clubCount={university.clubCount} />
 
           <section className="flex min-w-0 flex-col items-center gap-10">
             <div className="flex w-full flex-col gap-5">
-              <label className="border-text-100 focus-within:border-primary-500 flex items-center rounded-[30px] border bg-white px-5 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] sm:px-8 sm:py-2.25">
+              <label className="border-text-100 focus-within:border-primary-500 flex h-13 items-center rounded-[30px] border bg-white px-5 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.18)] sm:px-8 sm:py-2.25">
                 <span className="sr-only">동아리명 검색</span>
                 <input
                   className="placeholder:text-text-300 text-text-700 min-w-0 flex-1 bg-transparent leading-10 font-medium outline-none sm:text-[20px]"
@@ -137,12 +137,12 @@ function UniversityClubListContent({ universityId }: { universityId: number }) {
             </div>
 
             <div className="flex w-full flex-col gap-3">
-              <p className="text-text-400 text-[16px] leading-7">
+              <p className="text-text-400 text-[16px] leading-4.75">
                 선택한 대학의 동아리를 확인해보세요. 관심 있는 동아리의 소개를 살펴볼 수 있어요.
               </p>
 
               {clubs.length > 0 ? (
-                <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
+                <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
                   {clubs.map((club) => (
                     <ClubCard key={club.id} club={club} />
                   ))}
