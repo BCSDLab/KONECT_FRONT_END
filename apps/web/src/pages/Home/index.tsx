@@ -108,15 +108,15 @@ function Home() {
             해당 학교에 등록된 동아리 정보를 확인할 수 있어요.
           </p>
 
-          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-255 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-25 sm:h-19.5">
+          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-225 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-20 sm:h-13">
             <span className="sr-only">학교명 검색</span>
             <input
-              className="text-text-700 placeholder:text-text-300 min-w-0 flex-1 bg-transparent text-sm outline-none sm:text-[24px] sm:leading-10 sm:font-medium"
+              className="text-text-700 placeholder:text-text-300 min-w-0 flex-1 bg-transparent text-sm outline-none sm:text-[16px] sm:leading-10 sm:font-medium"
               value={searchKeyword}
               onChange={handleSearchKeywordChange}
               placeholder="학교명을 검색해 보세요"
             />
-            <SearchIcon className="h-6 sm:h-12" />
+            <SearchIcon className="h-6 sm:h-8" />
           </label>
         </section>
 
@@ -132,8 +132,8 @@ function Home() {
             >
               <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
               <RecentClubListByIds
-                className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                emptyClassName="mt-4"
+                className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                emptyClassName="mt-5"
                 recentClubIds={recentClubIds}
               />
             </section>
@@ -149,7 +149,7 @@ function Home() {
 
                 return (
                   <button
-                    className={`shrink-0 rounded-[26px] border px-3 font-medium transition-colors sm:px-5 ${
+                    className={`flex shrink-0 items-center justify-center rounded-[26px] border px-3 transition-colors sm:h-7.5 sm:min-w-13 ${
                       isSelected
                         ? 'border-primary-900 bg-primary-900 text-indigo-5'
                         : 'border-text-300 text-text-300 hover:border-primary-500 hover:text-primary-700 bg-transparent'
@@ -159,7 +159,7 @@ function Home() {
                     aria-pressed={isSelected}
                     onClick={() => handleRegionChange(region.value)}
                   >
-                    <span className="leading-7 sm:text-[20px] sm:leading-10">{region.label}</span>
+                    <span className="leading-7 sm:leading-2.5">{region.label}</span>
                   </button>
                 );
               })}
@@ -169,7 +169,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {universities.length > 0 ? (
               universities.map((university) => <UniversityCard key={university.id} university={university} />)
             ) : (
