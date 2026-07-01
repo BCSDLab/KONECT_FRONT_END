@@ -14,8 +14,8 @@ function UniversityClubSidebar({ university, clubCount }: UniversityClubSidebarP
   const universityLabel = getUniversityLabel(university);
 
   return (
-    <aside className="flex flex-col gap-6 lg:gap-10">
-      <section className="border-text-100 flex items-center justify-center rounded-2xl border bg-white py-8 text-center sm:rounded-[20px] sm:py-7">
+    <aside className="flex w-full flex-col gap-6 md:w-64.75 lg:gap-5">
+      <section className="border-text-100 flex items-center justify-center rounded-2xl border bg-white py-8 text-center sm:min-h-41 sm:rounded-[20px] sm:py-5.5">
         <div className="flex min-w-0 flex-col items-center gap-1">
           <img className="size-10 object-contain" src={university.imageUrl} alt="" />
           <div className="flex max-w-full flex-col items-center">

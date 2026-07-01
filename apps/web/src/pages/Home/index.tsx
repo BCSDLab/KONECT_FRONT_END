@@ -80,7 +80,7 @@ function Home() {
 
   return (
     <div className="min-h-screen text-black">
-      <main className="mx-auto flex w-full max-w-254.5 flex-col items-center pt-16 pb-24 sm:pt-20 lg:pt-25">
+      <main className="mx-auto flex w-full max-w-254.5 flex-col items-center px-4 pt-16 pb-24 sm:px-6 sm:pt-20 lg:px-0 lg:pt-25">
         <section className="relative flex w-full flex-col items-center text-center">
           <div className="border-primary-400 bg-primary-100 text-primary-500 rounded-full border px-5 py-1 leading-10 font-semibold">
             전국 대학 동아리를 한 곳에서
@@ -108,15 +108,15 @@ function Home() {
             해당 학교에 등록된 동아리 정보를 확인할 수 있어요.
           </p>
 
-          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-255 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-25 sm:h-19.5">
+          <label className="border-text-100 focus-within:border-primary-500 mt-12 flex h-16 w-full max-w-225 items-center rounded-[30px] border bg-white px-8 transition-[border-color,box-shadow] focus-within:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] sm:mt-20 sm:h-13">
             <span className="sr-only">학교명 검색</span>
             <input
-              className="text-text-700 placeholder:text-text-300 min-w-0 flex-1 bg-transparent text-sm outline-none sm:text-[24px] sm:leading-10 sm:font-medium"
+              className="text-text-700 placeholder:text-text-300 min-w-0 flex-1 bg-transparent text-sm outline-none sm:text-[16px] sm:leading-10 sm:font-medium"
               value={searchKeyword}
               onChange={handleSearchKeywordChange}
               placeholder="학교명을 검색해 보세요"
             />
-            <SearchIcon className="h-6 sm:h-12" />
+            <SearchIcon className="h-6 sm:h-8" />
           </label>
         </section>
 
@@ -132,8 +132,8 @@ function Home() {
             >
               <SectionTitle title="최근에 본 동아리" description="관심있게 봤던 동아리를 다시 확인해보세요." />
               <RecentClubListByIds
-                className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
-                emptyClassName="mt-4"
+                className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+                emptyClassName="mt-5"
                 recentClubIds={recentClubIds}
               />
             </section>
@@ -149,7 +149,7 @@ function Home() {
 
                 return (
                   <button
-                    className={`shrink-0 rounded-[26px] border px-3 font-medium transition-colors sm:px-5 ${
+                    className={`flex shrink-0 items-center justify-center rounded-[26px] border px-3 transition-colors sm:h-7.5 sm:min-w-13 ${
                       isSelected
                         ? 'border-primary-900 bg-primary-900 text-indigo-5'
                         : 'border-text-300 text-text-300 hover:border-primary-500 hover:text-primary-700 bg-transparent'
@@ -159,7 +159,7 @@ function Home() {
                     aria-pressed={isSelected}
                     onClick={() => handleRegionChange(region.value)}
                   >
-                    <span className="leading-7 sm:text-[20px] sm:leading-10">{region.label}</span>
+                    <span className="leading-7 sm:leading-2.5">{region.label}</span>
                   </button>
                 );
               })}
@@ -169,7 +169,7 @@ function Home() {
             </p>
           </div>
 
-          <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {universities.length > 0 ? (
               universities.map((university) => <UniversityCard key={university.id} university={university} />)
             ) : (
@@ -218,7 +218,7 @@ function UniversityCard({ university }: { university: University }) {
   return (
     <Link
       to={`/universities/${university.id}/clubs`}
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-57.5 flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-full flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       <img className="size-10 object-contain" src={university.imageUrl} alt="" />
       <span className="mt-1 block truncate leading-9 font-semibold text-black">{universityLabel}</span>
