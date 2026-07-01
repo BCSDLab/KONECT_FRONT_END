@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import EditClub from '@/assets/edit-club-detail.png';
 import NewClub from '@/assets/new-club.png';
 import Register from '@/assets/register-club.png';
+import InfoBadge from './InfoBadge';
 
 export default function RegisterClub() {
   const registerClubCards = [
@@ -35,10 +36,7 @@ export default function RegisterClub() {
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 px-4 py-11.5 sm:px-6 lg:px-0">
       <section className="flex flex-col items-center gap-5">
-        <div className="bg-primary-100 border-primary-400 text-primary-500 flex h-16 w-full max-w-74.25 items-center justify-center gap-2.5 rounded-[30px] border-2 px-7.5 py-3 text-[20px] leading-10 font-semibold sm:text-[24px]">
-          <span className="bg-primary-500 size-2 rounded-full" aria-hidden="true" />
-          동아리 정보 등록/수정
-        </div>
+        <InfoBadge className="max-w-74.25">동아리 정보 등록/수정</InfoBadge>
         <span className="text-text-400 text-[20px]">
           작성자 유형에 따라 필요한 항목이 다릅니다. 현재 상황에 맞는 항목을 선택해주세요.
         </span>
@@ -74,7 +72,7 @@ function RegisterClubCard({
   children: ReactNode;
 }) {
   const className =
-    'border-text-100 focus-visible:outline-primary-500 flex min-h-92.75 w-full flex-col items-center gap-10 rounded-[20px] border bg-[#ffffff] px-7.5 py-10 transition-[border-color,box-shadow] hover:border-primary-500 hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-82.75';
+    'border-text-100 focus-visible:outline-primary-500 flex min-h-92.75 w-full flex-col items-center gap-10 rounded-[20px] border bg-white px-7.5 py-10 transition-[border-color,box-shadow] hover:border-primary-500 hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2 sm:w-82.75';
 
   if (card.to) {
     return (

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import UniversityDropdown from '@/components/UniversityDropdown';
+import InfoBadge from '../InfoBadge';
 export default function RegisterClubList() {
   const [selectedUniversity, setSelectedUniversity] = useState('');
   //dropdown 확인용 임시 데이터
@@ -10,10 +11,7 @@ export default function RegisterClubList() {
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 px-4 py-11.5 sm:px-6 lg:px-0">
       <section className="flex w-full flex-col items-center gap-5">
-        <div className="bg-primary-100 border-primary-400 text-primary-500 flex h-16 w-full max-w-93 items-center justify-center gap-2.5 rounded-[30px] border-2 px-7.5 py-3 text-[20px] leading-10 font-semibold sm:text-[24px]">
-          <span className="bg-primary-500 size-2 rounded-full" aria-hidden="true" />
-          동아리 소개 내용을 보내주세요
-        </div>
+        <InfoBadge className="max-w-93">동아리 소개 내용을 보내주세요</InfoBadge>
         <span className="text-text-400 text-[20px]">입력하신 내용은 확인 후 동아리 상세 페이지에 등록돼요.</span>
       </section>
       <form className="flex w-full max-w-254 flex-col gap-10">
