@@ -80,7 +80,7 @@ function Home() {
 
   return (
     <div className="min-h-screen text-black">
-      <main className="mx-auto flex w-full max-w-254.5 flex-col items-center pt-16 pb-24 sm:pt-20 lg:pt-25">
+      <main className="mx-auto flex w-full max-w-254.5 flex-col items-center px-4 pt-16 pb-24 sm:px-6 sm:pt-20 lg:px-0 lg:pt-25">
         <section className="relative flex w-full flex-col items-center text-center">
           <div className="border-primary-400 bg-primary-100 text-primary-500 rounded-full border px-5 py-1 leading-10 font-semibold">
             전국 대학 동아리를 한 곳에서
@@ -218,7 +218,7 @@ function UniversityCard({ university }: { university: University }) {
   return (
     <Link
       to={`/universities/${university.id}/clubs`}
-      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-57.5 flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
+      className="border-text-100 hover:border-primary-500 focus-visible:outline-primary-500 flex h-38.75 w-full flex-col items-center justify-center rounded-[20px] border bg-white text-center transition-colors hover:shadow-[0_0_30px_0_rgba(105,191,223,0.30)] focus-visible:outline-2 focus-visible:outline-offset-2"
     >
       <img className="size-10 object-contain" src={university.imageUrl} alt="" />
       <span className="mt-1 block truncate leading-9 font-semibold text-black">{universityLabel}</span>
