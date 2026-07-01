@@ -18,17 +18,15 @@ function Introduce({ introduce }: { introduce: string }) {
     </div>
   );
 }
-
 function NoneIntroduce() {
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
-      <img src={NoneImage} alt="" className="size-25" />
-      <div className="flex flex-col items-center leading-15">
-        <span className="text-text-400 text-[24px]">
-          동아리 소개를 준비 중이에요. 동아리 관리자라면 오른쪽 상단의 등록하기를 통해
-        </span>
-        <span className="text-text-400 text-[24px]">소개 내용을 보내주세요! 확인 후 페이지에 반영해드릴게요.</span>
-      </div>
+    <div className="flex h-full w-full flex-col items-center justify-center gap-4 py-8">
+      <img src={NoneImage} alt="" className="size-20 sm:size-25" />
+      <p className="text-text-400 text-center text-[14px] leading-7 sm:text-[20px] sm:leading-10">
+        동아리 소개를 준비 중이에요. 동아리 관리자라면 오른쪽 상단의 등록하기를 통해
+        <br className="hidden sm:block" />
+        소개 내용을 보내주세요! 확인 후 페이지에 반영해드릴게요.
+      </p>
     </div>
   );
 }
