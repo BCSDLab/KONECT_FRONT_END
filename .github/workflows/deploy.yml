@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -123,13 +123,12 @@ jobs:
 
       - name: Setup pnpm
         if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Setup Node.js
         if: steps.targets.outputs.app == 'true' || steps.targets.outputs.web == 'true'
-        uses: actions/setup-node@v4
+        uses: BCSDLab/.github/.github/actions/setup-node@v1
         with:
-          node-version: '22.20.0'
           cache: 'pnpm'
 
       - name: Install dependencies
