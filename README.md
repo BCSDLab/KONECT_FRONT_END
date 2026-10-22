@@ -38,4 +38,4 @@ KONECT는 학생이 동아리 활동 전반을 한 곳에서 처리할 수 있�
 | Styling | Tailwind CSS v4 |
 | Monitoring | Sentry |
 | Tooling | ESLint, Prettier, pnpm |
-| Runtime | Node `22.20.0+` |
+| Runtime | Node `22.23.4+` |
