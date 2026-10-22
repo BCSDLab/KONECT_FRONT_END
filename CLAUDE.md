@@ -3,7 +3,7 @@
 ## Project
 
 React 19 + TypeScript + Vite 8 기반 pnpm/Turbo 모노레포.
-패키지 매니저: `pnpm` 10.x (`engine-strict=true`, Node >=22.20.0).
+패키지 매니저: `pnpm` 10.x (`engine-strict=true`, Node >=22.23.4).
 
 ## Workspace
 

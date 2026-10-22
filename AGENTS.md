@@ -8,7 +8,7 @@
 
 ## Project Snapshot
 
-- Runtime: Node `22.20.0+` (`.nvmrc`)
+- Runtime: Node `22.23.4+` (`.nvmrc`)
 - Package Manager: `pnpm` 10.x (`engine-strict=true`)
 - Build System: Turborepo
 - Apps: React 19 + TypeScript + Vite 8
